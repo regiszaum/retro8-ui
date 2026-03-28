@@ -48,6 +48,16 @@ function isActive(to: string) {
         </ul>
 
         <div class="r8-navbar__actions docs-toolbar">
+          <DocsSearchPalette
+            :locale="locale"
+            :components="site.components"
+            :current-path="currentPath"
+            :search-label="site.search.label"
+            :search-placeholder="site.search.placeholder"
+            :search-hint="site.search.hint"
+            :empty-label="site.search.empty"
+            :close-label="site.search.close"
+          />
           <DocsLocaleSwitch :locale="locale" :label="site.localeSwitcher.label" />
           <DocsThemeToggle
             :label="site.theme.label"

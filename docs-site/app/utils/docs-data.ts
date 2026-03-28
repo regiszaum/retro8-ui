@@ -98,6 +98,13 @@ const localized = {
     localeSwitcher: {
       label: "Language",
     },
+    search: {
+      label: "Search components",
+      placeholder: "Search components...",
+      hint: "Use Arrow keys to navigate and Enter to open.",
+      empty: "No matching components found.",
+      close: "Esc",
+    },
     home: {
       heroWindowTitle: "Retro catalog em escala real",
       heroKicker: "81 componentes core + extras retro8",
@@ -275,6 +282,13 @@ const localized = {
     },
     localeSwitcher: {
       label: "Language",
+    },
+    search: {
+      label: "Search components",
+      placeholder: "Search components...",
+      hint: "Use Arrow keys to navigate and Enter to open.",
+      empty: "No matching components found.",
+      close: "Esc",
     },
     home: {
       heroWindowTitle: "Retro catalog at full scale",
@@ -567,6 +581,7 @@ export function getSiteContent(locale = "pt-br") {
     nav: dictionary.nav,
     theme: dictionary.theme,
     localeSwitcher: dictionary.localeSwitcher,
+    search: dictionary.search,
     home: {
       ...dictionary.home,
       stats,
