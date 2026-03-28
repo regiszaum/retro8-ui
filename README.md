@@ -1,177 +1,143 @@
 # retro8-ui
 
-`retro8-ui` e uma biblioteca de UI retro 8-bit feita com HTML + CSS, authorada com Tailwind CSS, mas distribuida como CSS compilado, runtime JS opcional e classes semanticas. O foco da v1 e entregar uma base visual forte, reutilizavel e realmente framework-agnostic.
+Retro 8-bit UI library authored with Tailwind CSS and shipped as framework-agnostic semantic CSS classes, plus an optional JavaScript runtime for interactive components.
 
-## Objetivo
+## Overview
 
-- Entregar componentes com API publica baseada em classes `r8-*`
-- Permitir uso em HTML puro, Vue, Nuxt, React, Next, Astro, Laravel e afins
-- Evitar que o consumidor dependa de utility classes gigantes no markup
-- Manter a authoring experience em Tailwind, com tokens e camadas organizadas
-- Gerar assets finais prontos para importacao em `dist/retro8.css`, `dist/retro8.min.css`, `dist/retro8.js` e `dist/retro8.min.js`
+`retro8-ui` is a design system for building retro game-inspired interfaces without locking consumers into a specific framework. It is written with Tailwind CSS as an authoring tool, but the public API is intentionally simple:
 
-## Caracteristicas
+- semantic class names such as `r8-btn`, `r8-panel`, `r8-window`, and `r8-badge`;
+- compiled CSS that can be imported anywhere;
+- optional browser-side JavaScript for components that need runtime behavior;
+- no dependency on Vue, React, or any other UI framework.
 
-- Sem dependencias de framework de UI
-- Runtime JavaScript opcional para components interativos
-- Preflight do Tailwind desativado para reduzir impacto global no projeto consumidor
-- Design tokens em CSS Custom Properties
-- Componentes organizados por arquivo e por responsabilidade
-- Estados visuais retro com bordas grossas, sombras duras e deslocamento em hover/active
-- Foco visivel, contraste consistente e estados `disabled`
+The goal is to provide a strong visual foundation for plain HTML, React, Next.js, Vue, Nuxt, Astro, Laravel, and similar stacks, while keeping the consumer markup short, readable, and predictable.
 
-## Estrutura
+## Why retro8-ui
 
-```text
-retro8-ui/
-├── dist/
-├── docs/
-├── docs-site/
-├── examples/
-├── src/
-│   └── styles/
-│       ├── base/
-│       ├── components/
-│       ├── utilities/
-│       └── index.css
-├── package.json
-├── postcss.config.cjs
-├── tailwind.config.cjs
-└── README.md
-```
+- Framework-agnostic by design.
+- Semantic class API instead of utility-heavy consumer markup.
+- Strong retro 8-bit visual language with thick borders, hard shadows, and pixel-shift interactions.
+- Optional JavaScript runtime for dropdowns, dialogs, tabs, drawers, tooltips, and other interactive patterns.
+- Clear design tokens for color, spacing, borders, shadows, typography, and interaction states.
+- Public documentation site with bilingual content, component routes, light mode, dark mode, and live previews.
 
-## Instalacao
+## Core Principles
 
-Para desenvolver a library localmente:
+- CSS-first product. The primary deliverable is compiled CSS.
+- Optional runtime. JavaScript is available when behavior is needed, but it is not required for static styling.
+- Semantic API. Consumers work with `r8-*` classes, not internal Tailwind utilities.
+- Framework independence. The same assets should work anywhere CSS and browser JavaScript work.
+- Scalable architecture. Tokens, components, utilities, examples, and docs are organized for maintainability and future npm publishing.
 
-```bash
-npm install
-```
-
-Para usar a library em outro projeto publicado no npm, a ideia de consumo e:
+## Installation
 
 ```bash
 npm install retro8-ui
 ```
 
-## Scripts
+For local development inside this repository:
 
 ```bash
-npm run build
+npm install
 ```
 
-Gera:
+## Package Outputs
+
+The build produces four distributable assets:
 
 - `dist/retro8.css`
 - `dist/retro8.min.css`
 - `dist/retro8.js`
 - `dist/retro8.min.js`
 
-```bash
-npm run dev
-```
+Use the CSS files for styling. Add the JavaScript runtime only if you want ready-to-use interactive behavior.
 
-Roda em paralelo:
+## Quick Start
 
-- watch do CSS da library
-- docs publica em Nuxt
-
-```bash
-npm run build:docs
-```
-
-Gera:
-
-- `dist/retro8.css`
-- `dist/retro8.min.css`
-- `dist/retro8.js`
-- `dist/retro8.min.js`
-- `docs-site/.output/public`
-
-```bash
-npm run preview
-```
-
-Faz preview da documentacao visual buildada.
-
-## Docs UI
-
-Ao rodar `npm run dev`, o app em [`docs-site`](/home/regiszaum/Projects/tudonovo/docs-site) sobe como a documentacao publica da library:
-
-- docs bilingue em `pt-br` e `en`
-- uma pagina real por componente
-- dark mode e light mode com persistencia local
-- sidebar com navegacao por catalogo e guias
-- quick start
-- tokens de design
-- overview de componentes
-- pagina individual para cada componente com preview, API, notas de uso e snippet HTML
-- fonte pixel local (`Press Start 2P`) empacotada no build da docs
-- secao de ecossistema recomendando um pacote externo de icones 8-bit, sem acoplar isso na library
-- geracao estatica em `docs-site/.output/public`
-
-## Como usar
-
-### HTML puro
+### Plain HTML
 
 ```html
 <link rel="stylesheet" href="./node_modules/retro8-ui/dist/retro8.css" />
 <script src="./node_modules/retro8-ui/dist/retro8.js"></script>
 
-<button class="r8-btn r8-btn--primary">Start Game</button>
+<button class="r8-btn r8-btn--primary" type="button">
+  Start Mission
+</button>
 ```
 
-### React / Next / Vite
+### ESM / Bundler
 
 ```js
 import "retro8-ui/retro8.css";
 import "retro8-ui/retro8.js";
 ```
 
+### CSS-only usage
+
+If your project does not need runtime behavior, import only the stylesheet:
+
+```js
+import "retro8-ui/retro8.css";
+```
+
+## Usage by Stack
+
+### React / Next.js / Vite
+
 ```jsx
+import "retro8-ui/retro8.css";
+import "retro8-ui/retro8.js";
+
 export function Example() {
-  return <button className="r8-btn r8-btn--danger">Delete Save</button>;
+  return (
+    <button className="r8-btn r8-btn--danger" type="button">
+      Delete Save
+    </button>
+  );
 }
 ```
 
 ### Vue / Nuxt
 
-```js
+```vue
+<script setup>
 import "retro8-ui/retro8.css";
 import "retro8-ui/retro8.js";
-```
+</script>
 
-```vue
-<button class="r8-btn r8-btn--success">Confirmar</button>
+<template>
+  <button class="r8-btn r8-btn--success" type="button">
+    Confirm
+  </button>
+</template>
 ```
 
 ### Laravel / Blade
 
 ```blade
 <link rel="stylesheet" href="{{ asset('vendor/retro8-ui/retro8.css') }}">
+<script src="{{ asset('vendor/retro8-ui/retro8.js') }}"></script>
 
-<div class="r8-panel">
-  <div class="r8-panel__body">Conteudo retro</div>
-</div>
+<section class="r8-panel">
+  <div class="r8-panel__body">
+    Retro content goes here.
+  </div>
+</section>
 ```
 
-## Convencao de nomenclatura
+## Public API Convention
 
-- Prefixo global: `r8-`
-- Bloco: `r8-btn`, `r8-window`, `r8-navbar`
-- Modificador: `r8-btn--danger`, `r8-badge--success`
-- Elemento interno: `r8-window__titlebar`, `r8-panel__footer`
+The public API follows a simple naming system:
 
-Essa convencao deixa a API previsivel, facil de documentar e simples de expandir.
+- Prefix: `r8-`
+- Base class: `r8-btn`, `r8-window`, `r8-navbar`
+- Modifier: `r8-btn--primary`, `r8-btn--danger`, `r8-badge--success`
+- Inner element: `r8-window__titlebar`, `r8-panel__footer`, `r8-dialog__body`
 
-## Catalogo atual
+This convention keeps the library readable, predictable, and easy to document.
 
-- 81 componentes core alinhados ao overview atual do Element Plus
-- Grupos: Basic, Configuration, Form, Data, Navigation, Feedback e Others
-- Extras nativos da retro8-ui: Panel, Window e Navbar
-- Todos com classe semantica `r8-*`, preview na docs, rota individual e runtime opcional quando houver interacao
-
-## Exemplo rapido
+## Example Markup
 
 ```html
 <section class="r8-panel">
@@ -187,81 +153,155 @@ Essa convencao deixa a API previsivel, facil de documentar e simples de expandir
 
     <div class="r8-row">
       <span class="r8-badge r8-badge--info">online</span>
-      <button class="r8-btn r8-btn--primary">Salvar</button>
-      <button class="r8-btn r8-btn--ghost">Cancelar</button>
+      <button class="r8-btn r8-btn--primary" type="button">Save</button>
+      <button class="r8-btn r8-btn--ghost" type="button">Cancel</button>
     </div>
   </div>
 </section>
 ```
 
-## Tokens de design
+## Optional JavaScript Runtime
 
-Os tokens principais vivem em [`src/styles/base/tokens.css`](/home/regiszaum/Projects/tudonovo/src/styles/base/tokens.css) e cobrem:
+The runtime is designed to feel similar to the role Bootstrap JavaScript plays for Bootstrap CSS: it enhances components that need client-side behavior while leaving the styling system usable on its own.
 
-- cores
-- spacing
-- bordas
-- sombras
-- tipografia
-- foco
-- movimento interativo
+The current runtime covers patterns such as:
 
-Todos os componentes consomem esses tokens, o que ajuda a manter consistencia visual e facilita futuras themes/skins.
+- dropdowns;
+- dialogs;
+- drawers;
+- tabs;
+- collapses;
+- carousels;
+- select-like controls;
+- sliders;
+- input tags;
+- transfer lists;
+- popovers, tooltips, notifications, and dismissible feedback surfaces.
 
-## Exemplos e docs
+You can use the bundled runtime or replace it with your own application logic if your stack already manages state and accessibility behavior.
 
-- Showcase em HTML puro: [`examples/index.html`](/home/regiszaum/Projects/tudonovo/examples/index.html)
-- Exemplo de dashboard: [`examples/dashboard.html`](/home/regiszaum/Projects/tudonovo/examples/dashboard.html)
-- App da docs em Nuxt: [`docs-site`](/home/regiszaum/Projects/tudonovo/docs-site)
-- Shell principal da docs: [`docs-site/app/components/docs/DocsShell.vue`](/home/regiszaum/Projects/tudonovo/docs-site/app/components/docs/DocsShell.vue)
-- Conteudo markdown da docs: [`docs-site/content`](/home/regiszaum/Projects/tudonovo/docs-site/content)
-- Catalogo compartilhado de componentes: [`docs-site/shared/component-catalog.ts`](/home/regiszaum/Projects/tudonovo/docs-site/shared/component-catalog.ts)
-- Dados localizados da docs: [`docs-site/app/utils/docs-data.ts`](/home/regiszaum/Projects/tudonovo/docs-site/app/utils/docs-data.ts)
-- Documentacao inicial: [`docs/index.md`](/home/regiszaum/Projects/tudonovo/docs/index.md)
+## Component Coverage
 
-## Rotas da docs
+The current catalog includes:
 
-As paginas da docs agora sao servidas por Nuxt com prerender estatico. O texto guia fica em [`docs-site/content`](/home/regiszaum/Projects/tudonovo/docs-site/content), o catalogo-base em [`docs-site/shared/component-catalog.ts`](/home/regiszaum/Projects/tudonovo/docs-site/shared/component-catalog.ts) e os dados localizados em [`docs-site/app/utils/docs-data.ts`](/home/regiszaum/Projects/tudonovo/docs-site/app/utils/docs-data.ts).
+- 81 core components aligned with the current Element Plus overview coverage used as the reference for parity in this project;
+- grouped categories across Basic, Configuration, Form, Data, Navigation, Feedback, and Others;
+- native `retro8-ui` extras such as `Panel`, `Window`, and `Navbar`.
 
-- `/{locale}/`
-- `/{locale}/getting-started`
-- `/{locale}/tokens`
-- `/{locale}/icons`
-- `/{locale}/components`
-- `/{locale}/components/{component}/`
+Every documented component has:
 
-Exemplos:
+- a dedicated documentation page;
+- semantic API notes;
+- anatomy guidance;
+- accessibility notes;
+- HTML snippets;
+- a live preview in the docs site.
 
-- `/pt-br/`
-- `/en/`
-- `/pt-br/getting-started/`
-- `/en/tokens/`
-- `/pt-br/components/button/`
-- `/en/components/dialog/`
+## Design Tokens
 
-## Pacote opcional de icones
+The design system is built on CSS custom properties covering:
 
-A `retro8-ui` continua sem pacote de icones embutido. Para combinar com a estetica 8-bit sem misturar responsabilidades, a docs recomenda:
+- colors;
+- spacing;
+- border thickness;
+- shadow depth;
+- typography;
+- focus styles;
+- interaction motion.
 
-- Pixelarticons: [`pixelarticons.com`](https://pixelarticons.com/)
-- Repositorio oficial: [`halfmage/pixelarticons`](https://github.com/halfmage/pixelarticons)
+All components consume the same token layer, which helps preserve visual consistency and makes future theme or skin variations easier to introduce.
 
-Como alternativa secundaria, a docs tambem referencia o HackerNoon Pixel Icon Library, mas com observacao de licenciamento na camada free.
+## Documentation Site
 
-## Decisoes arquiteturais
+The public docs are built with Nuxt and live in `docs-site/`. The site includes:
 
-- O produto principal continua sendo CSS compilado, com um runtime JS opcional para behavior pronto.
-- Tailwind fica restrito a authoring, com `@layer` e `@apply`.
-- O build usa PostCSS + Tailwind + Autoprefixer + cssnano.
-- A documentacao publica roda em Nuxt, mas a library continua framework-agnostic e CSS-first.
-- O app da docs usa i18n por prefixo de rota, tema claro/escuro e prerender para gerar paginas estaticas reais por idioma e componente.
-- A library evita resets globais agressivos para conviver melhor com projetos consumidores.
+- `pt-br` and `en` locales;
+- individual pages for every component;
+- light mode and dark mode;
+- live previews powered by the compiled library assets;
+- guides for quick start, tokens, icons, and component browsing;
+- a local pixel font for the docs interface.
 
-## Publicacao futura no npm
+The docs are statically generated, so they can be deployed to any static hosting provider.
 
-O `package.json` ja esta preparado para publicar os arquivos de distribuicao e a documentacao essencial. Antes de publicar:
+## Recommended Icon Pairing
 
-1. rode `npm run build`
-2. revise a saida em `dist/`
-3. ajuste versao e metadados do pacote
-4. publique com `npm publish`
+`retro8-ui` does not ship with an icon pack in the core package. That separation is intentional.
+
+The documentation currently recommends external 8-bit icon libraries such as:
+
+- [Pixelarticons](https://pixelarticons.com/)
+- [HackerNoon Pixel Icon Library](https://github.com/hackernoon/pixel-icon-library)
+
+This keeps the core package focused on layout, surfaces, and interaction patterns instead of bundling icons by default.
+
+## Development
+
+### Scripts
+
+```bash
+npm run build
+```
+
+Builds the compiled CSS and JavaScript outputs.
+
+```bash
+npm run dev
+```
+
+Runs the local development workflow in parallel:
+
+- CSS watch;
+- JavaScript runtime watch;
+- Nuxt docs site.
+
+```bash
+npm run build:docs
+```
+
+Builds the library and generates the static docs site in `docs-site/.output/public`.
+
+```bash
+npm run preview
+```
+
+Builds everything and previews the generated documentation locally.
+
+## Project Structure
+
+```text
+retro8-ui/
+├── dist/                    # Compiled CSS and JS outputs.
+├── docs/                    # Internal project notes.
+├── docs-site/               # Public Nuxt documentation app.
+├── examples/                # Plain HTML usage examples.
+├── scripts/                 # Build helpers.
+├── src/
+│   ├── scripts/             # Optional runtime source.
+│   └── styles/
+│       ├── base/            # Tokens and reset layer.
+│       ├── components/      # Semantic component styles.
+│       ├── utilities/       # Small layout helpers.
+│       └── index.css        # Main stylesheet entry point.
+├── package.json
+├── postcss.config.cjs
+├── tailwind.config.cjs
+└── README.md
+```
+
+## Architecture Notes
+
+- Tailwind CSS is used for authoring, not as the public consumer API.
+- Tailwind `preflight` is disabled to reduce unwanted global resets in host projects.
+- PostCSS, Autoprefixer, and cssnano handle the CSS pipeline.
+- The JavaScript runtime is intentionally lightweight and browser-first.
+- The documentation app is separate from the library package, so the product remains framework-agnostic.
+
+## Examples
+
+- `examples/index.html` contains a general showcase.
+- `examples/dashboard.html` contains a dashboard-style composition example.
+
+## License
+
+MIT
