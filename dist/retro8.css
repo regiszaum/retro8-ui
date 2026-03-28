@@ -854,20 +854,14 @@ dialog.r8-dialog::backdrop {
 .static {
     position: static;
 }
-.fixed {
-    position: fixed;
-}
-.relative {
-    position: relative;
-}
-.sticky {
-    position: sticky;
-}
 .mt-r8-2 {
     margin-top: var(--r8-space-2);
 }
 .block {
     display: block;
+}
+.inline {
+    display: inline;
 }
 .flex {
     display: flex;
@@ -889,6 +883,9 @@ dialog.r8-dialog::backdrop {
 }
 .w-r8-4 {
     width: var(--r8-space-4);
+}
+.grow {
+    flex-grow: 1;
 }
 .transform {
     transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
@@ -1034,6 +1031,11 @@ dialog.r8-dialog::backdrop {
 .text-r8-ink {
     color: var(--r8-color-ink);
 }
+.shadow {
+    --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
 .shadow-r8 {
     --tw-shadow: var(--r8-shadow-md);
     --tw-shadow-colored: var(--r8-shadow-md);
@@ -1047,10 +1049,8 @@ dialog.r8-dialog::backdrop {
 .outline {
     outline-style: solid;
 }
-.transition {
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 150ms;
+.filter {
+    filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 .transition-transform {
     transition-property: transform;

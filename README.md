@@ -26,8 +26,8 @@
 retro8-ui/
 ├── dist/
 ├── docs/
+├── docs-site/
 ├── examples/
-├── playground/
 ├── src/
 │   └── styles/
 │       ├── base/
@@ -72,8 +72,17 @@ npm run dev
 Roda em paralelo:
 
 - watch do CSS da library
-- docs UI local com Vite
-- geracao previa das paginas estaticas da docs
+- docs publica em Nuxt
+
+```bash
+npm run build:docs
+```
+
+Gera:
+
+- `dist/retro8.css`
+- `dist/retro8.min.css`
+- `docs-site/.output/public`
 
 ```bash
 npm run preview
@@ -83,11 +92,10 @@ Faz preview da documentacao visual buildada.
 
 ## Docs UI
 
-Ao rodar `npm run dev`, a pasta [`playground/index.html`](/home/regiszaum/Projects/tudonovo/playground/index.html) sobe como uma documentacao visual estilo docs site:
+Ao rodar `npm run dev`, o app em [`docs-site`](/home/regiszaum/Projects/tudonovo/docs-site) sobe como a documentacao publica da library:
 
-- landing page para escolha de idioma
 - docs bilingue em `pt-br` e `en`
-- uma rota por componente, gerada estaticamente antes do Vite subir
+- uma pagina real por componente
 - dark mode e light mode com persistencia local
 - sidebar com navegacao por catalogo e guias
 - quick start
@@ -96,6 +104,7 @@ Ao rodar `npm run dev`, a pasta [`playground/index.html`](/home/regiszaum/Projec
 - pagina individual para cada componente com preview, API, notas de uso e snippet HTML
 - fonte pixel local (`Press Start 2P`) empacotada no build da docs
 - secao de ecossistema recomendando um pacote externo de icones 8-bit, sem acoplar isso na library
+- geracao estatica em `docs-site/.output/public`
 
 ## Como usar
 
@@ -198,26 +207,33 @@ Os tokens principais vivem em [`src/styles/base/tokens.css`](/home/regiszaum/Pro
 
 Todos os componentes consomem esses tokens, o que ajuda a manter consistencia visual e facilita futuras themes/skins.
 
-## Playground e exemplos
+## Exemplos e docs
 
 - Showcase em HTML puro: [`examples/index.html`](/home/regiszaum/Projects/tudonovo/examples/index.html)
 - Exemplo de dashboard: [`examples/dashboard.html`](/home/regiszaum/Projects/tudonovo/examples/dashboard.html)
-- Docs UI local com Vite: [`playground/index.html`](/home/regiszaum/Projects/tudonovo/playground/index.html)
-- Home PT-BR da docs: [`playground/pt-br/index.html`](/home/regiszaum/Projects/tudonovo/playground/pt-br/index.html)
-- Home EN da docs: [`playground/en/index.html`](/home/regiszaum/Projects/tudonovo/playground/en/index.html)
+- App da docs em Nuxt: [`docs-site`](/home/regiszaum/Projects/tudonovo/docs-site)
+- Shell principal da docs: [`docs-site/app/components/docs/DocsShell.vue`](/home/regiszaum/Projects/tudonovo/docs-site/app/components/docs/DocsShell.vue)
+- Conteudo markdown da docs: [`docs-site/content`](/home/regiszaum/Projects/tudonovo/docs-site/content)
+- Catalogo bilingue de componentes: [`docs-site/app/utils/docs-data.ts`](/home/regiszaum/Projects/tudonovo/docs-site/app/utils/docs-data.ts)
 - Documentacao inicial: [`docs/index.md`](/home/regiszaum/Projects/tudonovo/docs/index.md)
 
 ## Rotas da docs
 
-As paginas da docs sao geradas a partir de um catalogo central de conteudo em [`playground/site-data.mjs`](/home/regiszaum/Projects/tudonovo/playground/site-data.mjs) e de um gerador simples em [`playground/generate-pages.mjs`](/home/regiszaum/Projects/tudonovo/playground/generate-pages.mjs).
+As paginas da docs agora sao servidas por Nuxt com prerender estatico. O texto guia fica em [`docs-site/content`](/home/regiszaum/Projects/tudonovo/docs-site/content) e os metadados/component previews em [`docs-site/app/utils/docs-data.ts`](/home/regiszaum/Projects/tudonovo/docs-site/app/utils/docs-data.ts).
 
 - `/{locale}/`
+- `/{locale}/getting-started`
+- `/{locale}/tokens`
+- `/{locale}/icons`
+- `/{locale}/components`
 - `/{locale}/components/{component}/`
 
 Exemplos:
 
 - `/pt-br/`
 - `/en/`
+- `/pt-br/getting-started/`
+- `/en/tokens/`
 - `/pt-br/components/button/`
 - `/en/components/dialog/`
 
@@ -235,7 +251,8 @@ Como alternativa secundaria, a docs tambem referencia o HackerNoon Pixel Icon Li
 - O produto principal e CSS compilado, nao componentes JavaScript.
 - Tailwind fica restrito a authoring, com `@layer` e `@apply`.
 - O build usa PostCSS + Tailwind + Autoprefixer + cssnano.
-- O playground evoluiu para uma docs UI em Vite, com i18n, rotas estaticas por componente e tema claro/escuro, mas continua desacoplado da library e serve apenas como ambiente de documentacao e visualizacao.
+- A documentacao publica roda em Nuxt, mas a library continua framework-agnostic e CSS-first.
+- O app da docs usa i18n por prefixo de rota, tema claro/escuro e prerender para gerar paginas estaticas reais por idioma e componente.
 - A library evita resets globais agressivos para conviver melhor com projetos consumidores.
 
 ## Publicacao futura no npm

@@ -20,7 +20,7 @@ npm run build
 npm run dev
 ```
 
-Ao rodar `npm run dev`, a documentacao visual abre pelo Vite em [`playground/index.html`](/home/regiszaum/Projects/tudonovo/playground/index.html). Ela inclui uma home por idioma, pagina individual para cada componente, preview real, HTML recomendado, tokens e uma tipografia pixel local para a interface da docs.
+Ao rodar `npm run dev`, a documentacao publica sobe via Nuxt em [`docs-site`](/home/regiszaum/Projects/tudonovo/docs-site). Ela inclui uma home por idioma, pagina individual para cada componente, preview real, HTML recomendado, tokens e uma tipografia pixel local para a interface da docs.
 
 Hoje a docs tambem inclui:
 
@@ -36,9 +36,10 @@ Hoje a docs tambem inclui:
 - componentes: [`src/styles/components`](/home/regiszaum/Projects/tudonovo/src/styles/components)
 - utilitarios: [`src/styles/utilities/layout.css`](/home/regiszaum/Projects/tudonovo/src/styles/utilities/layout.css)
 - exemplos: [`examples`](/home/regiszaum/Projects/tudonovo/examples)
-- playground: [`playground`](/home/regiszaum/Projects/tudonovo/playground)
-- catalogo de conteudo da docs: [`playground/site-data.mjs`](/home/regiszaum/Projects/tudonovo/playground/site-data.mjs)
-- gerador de paginas da docs: [`playground/generate-pages.mjs`](/home/regiszaum/Projects/tudonovo/playground/generate-pages.mjs)
+- app da docs: [`docs-site`](/home/regiszaum/Projects/tudonovo/docs-site)
+- paginas e componentes da docs: [`docs-site/app`](/home/regiszaum/Projects/tudonovo/docs-site/app)
+- conteudo markdown da docs: [`docs-site/content`](/home/regiszaum/Projects/tudonovo/docs-site/content)
+- catalogo bilingue da docs: [`docs-site/app/utils/docs-data.ts`](/home/regiszaum/Projects/tudonovo/docs-site/app/utils/docs-data.ts)
 
 ## Arquitetura CSS
 
@@ -62,5 +63,7 @@ O site da docs gera paginas como:
 
 - `/pt-br/`
 - `/en/`
+- `/pt-br/getting-started/`
+- `/en/components/`
 - `/pt-br/components/button/`
 - `/en/components/navbar/`

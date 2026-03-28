@@ -32,22 +32,19 @@
     "build:css": "postcss src/styles/index.css -o dist/retro8.css",
     "build:css:min": "postcss src/styles/index.css -o dist/retro8.min.css --env production",
     "build": "npm run clean && npm run build:css && npm run build:css:min",
-    "prepare:playground": "node playground/generate-pages.mjs",
     "dev:css": "postcss src/styles/index.css -o dist/retro8.css --watch",
-    "dev:playground": "npm run prepare:playground && vite --config playground/vite.config.mjs",
-    "dev": "npm-run-all --parallel dev:css dev:playground",
-    "build:playground": "npm run build && npm run prepare:playground && vite build --config playground/vite.config.mjs",
-    "preview": "npm run build:playground && vite preview --config playground/vite.config.mjs"
+    "dev:docs": "npm --prefix docs-site run dev",
+    "dev": "npm run build:css && npm-run-all --parallel dev:css dev:docs",
+    "build:docs": "npm run build && npm --prefix docs-site run generate",
+    "preview": "npm run build:docs && npm --prefix docs-site run preview"
   },
   "devDependencies": {
-    "@fontsource/press-start-2p": "^5.2.7",
     "autoprefixer": "^10.4.19",
     "cssnano": "^6.1.2",
     "npm-run-all": "^4.1.5",
     "postcss": "^8.4.38",
     "postcss-cli": "^10.1.0",
     "postcss-import": "^16.1.0",
-    "tailwindcss": "^3.4.13",
-    "vite": "^5.4.8"
+    "tailwindcss": "^3.4.13"
   }
 }
