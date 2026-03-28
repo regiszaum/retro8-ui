@@ -522,6 +522,31 @@ pre {
   letter-spacing: 0.06em;
 }
 
+.docs-toolbar__button--external {
+  min-width: 2rem;
+  padding: 0.35rem 0.5rem;
+}
+
+.docs-toolbar__button--external:hover,
+.docs-toolbar__button--external:focus-visible {
+  background: var(--docs-toolbar-active-bg);
+  color: var(--docs-toolbar-active-text);
+  border-color: #241f31;
+  box-shadow: 2px 2px 0 0 #241f31;
+  transform: translate(-1px, -1px);
+}
+
+.docs-toolbar__button--external:focus-visible {
+  outline: 3px solid #ffe066;
+  outline-offset: 2px;
+}
+
+.docs-toolbar__icon {
+  width: 0.9rem;
+  height: 0.9rem;
+  flex: 0 0 auto;
+}
+
 .docs-toolbar__button.is-active,
 .docs-toolbar__button[aria-current="page"] {
   background: var(--docs-toolbar-active-bg);
