@@ -4,3 +4,7 @@ node_modules
 npm-debug.log*
 yarn-debug.log*
 pnpm-debug.log*
+docs-site/node_modules
+docs-site/.nuxt
+docs-site/.output
+docs-site/.data

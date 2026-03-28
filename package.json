@@ -1,7 +1,7 @@
 {
   "name": "retro8-ui",
   "version": "0.1.0",
-  "description": "Retro 8-bit UI component library authored with Tailwind CSS and shipped as framework-agnostic CSS.",
+  "description": "Retro 8-bit UI component library authored with Tailwind CSS and shipped as framework-agnostic CSS and optional JavaScript.",
   "license": "MIT",
   "keywords": [
     "retro",
@@ -15,6 +15,7 @@
   "engines": {
     "node": ">=18.0.0"
   },
+  "main": "./dist/retro8.js",
   "style": "./dist/retro8.css",
   "files": [
     "dist",
@@ -23,6 +24,9 @@
     "README.md"
   ],
   "exports": {
+    ".": "./dist/retro8.js",
+    "./retro8.js": "./dist/retro8.js",
+    "./retro8.min.js": "./dist/retro8.min.js",
     "./retro8.css": "./dist/retro8.css",
     "./retro8.min.css": "./dist/retro8.min.css",
     "./package.json": "./package.json"
@@ -31,16 +35,16 @@
     "clean": "rm -rf dist/*",
     "build:css": "postcss src/styles/index.css -o dist/retro8.css",
     "build:css:min": "postcss src/styles/index.css -o dist/retro8.min.css --env production",
-    "build": "npm run clean && npm run build:css && npm run build:css:min",
-    "prepare:playground": "node playground/generate-pages.mjs",
+    "build:js": "node scripts/build-js.mjs",
+    "build": "npm run clean && npm run build:css && npm run build:css:min && npm run build:js",
     "dev:css": "postcss src/styles/index.css -o dist/retro8.css --watch",
-    "dev:playground": "npm run prepare:playground && vite --config playground/vite.config.mjs",
-    "dev": "npm-run-all --parallel dev:css dev:playground",
-    "build:playground": "npm run build && npm run prepare:playground && vite build --config playground/vite.config.mjs",
-    "preview": "npm run build:playground && vite preview --config playground/vite.config.mjs"
+    "dev:js": "node scripts/build-js.mjs --watch",
+    "dev:docs": "npm --prefix docs-site run dev",
+    "dev": "npm run build:css && npm run build:js && npm-run-all --parallel dev:css dev:js dev:docs",
+    "build:docs": "npm run build && npm --prefix docs-site run generate",
+    "preview": "npm run build:docs && npm --prefix docs-site run preview"
   },
   "devDependencies": {
-    "@fontsource/press-start-2p": "^5.2.7",
     "autoprefixer": "^10.4.19",
     "cssnano": "^6.1.2",
     "npm-run-all": "^4.1.5",
@@ -48,6 +52,6 @@
     "postcss-cli": "^10.1.0",
     "postcss-import": "^16.1.0",
     "tailwindcss": "^3.4.13",
-    "vite": "^5.4.8"
+    "terser": "^5.39.2"
   }
 }

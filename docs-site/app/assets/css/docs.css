@@ -1,8 +1,6 @@
-html {
-  scroll-behavior: smooth;
-}
-
+:root,
 html[data-theme="dark"] {
+  scroll-behavior: smooth;
   --docs-bg: #0d1530;
   --docs-grid-line: rgba(255, 255, 255, 0.03);
   --docs-text: #f7f1d1;
@@ -21,6 +19,10 @@ html[data-theme="dark"] {
     linear-gradient(180deg, rgba(61, 194, 255, 0.1), rgba(255, 247, 220, 0.5)),
     #fff7dc;
   --docs-preview-text: #241f31;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 html[data-theme="light"] {
@@ -175,6 +177,10 @@ pre {
   top: 5.6rem;
 }
 
+.docs-sidebar__panel {
+  max-height: calc(100vh - 6.4rem);
+}
+
 .docs-sidebar__copy {
   margin: 0.75rem 0 0;
   color: var(--docs-soft);
@@ -185,6 +191,9 @@ pre {
 .docs-sidebar__body {
   display: grid;
   gap: 1rem;
+  max-height: calc(100vh - 13rem);
+  overflow: auto;
+  padding-right: 0.2rem;
 }
 
 .docs-sidebar__group {
@@ -193,12 +202,20 @@ pre {
 }
 
 .docs-sidebar__eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin: 0 0 0.25rem;
   color: var(--docs-soft);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-size: 0.6875rem;
   font-family: "Press Start 2P", "Courier New", Courier, monospace;
+}
+
+.docs-sidebar__count {
+  color: var(--docs-text);
+  font-size: 0.62rem;
 }
 
 .docs-sidebar__link {
@@ -336,6 +353,11 @@ pre {
   color: var(--docs-panel-text);
 }
 
+.docs-stat small {
+  color: #5c566e;
+  line-height: 1.5;
+}
+
 .docs-checklist p,
 .docs-panel__copy {
   margin: 0;
@@ -378,6 +400,22 @@ pre {
 
 .docs-framework-grid {
   grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+}
+
+.docs-catalog,
+.docs-catalog-section {
+  display: grid;
+  gap: 1rem;
+}
+
+.docs-catalog-section__header,
+.docs-catalog-section__copy {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.docs-catalog-section__meta {
+  justify-content: flex-start;
 }
 
 .docs-list-block {
@@ -430,6 +468,12 @@ pre {
   height: 1.2rem;
   border: 2px solid #241f31;
   box-shadow: 2px 2px 0 0 #241f31;
+}
+
+.docs-token-list__swatch--ghost {
+  background: transparent;
+  border-style: dashed;
+  box-shadow: none;
 }
 
 .docs-token-list__meta {
@@ -564,6 +608,86 @@ pre {
 
 dialog#docs-dialog-demo {
   color: #241f31;
+}
+
+dialog.r8-dialog {
+  color: #241f31;
+}
+
+.docs-prose {
+  color: var(--docs-panel-text);
+  line-height: 1.75;
+}
+
+.docs-prose > :first-child {
+  margin-top: 0;
+}
+
+.docs-prose > :last-child {
+  margin-bottom: 0;
+}
+
+.docs-prose h1,
+.docs-prose h2,
+.docs-prose h3,
+.docs-prose h4 {
+  margin: 1.4rem 0 0.75rem;
+  font-family: "Press Start 2P", "Courier New", Courier, monospace;
+  text-transform: uppercase;
+  line-height: 1.45;
+  color: var(--docs-panel-text);
+}
+
+.docs-prose h2 {
+  font-size: 1rem;
+}
+
+.docs-prose h3 {
+  font-size: 0.85rem;
+}
+
+.docs-prose p,
+.docs-prose ul,
+.docs-prose ol {
+  margin: 0.8rem 0;
+}
+
+.docs-prose ul,
+.docs-prose ol {
+  padding-left: 1.25rem;
+}
+
+.docs-prose li + li {
+  margin-top: 0.5rem;
+}
+
+.docs-prose a {
+  color: #0f7bff;
+  text-decoration-thickness: 2px;
+}
+
+.docs-prose code {
+  font-size: 0.82em;
+  background: rgba(36, 31, 49, 0.08);
+  border: 1px solid rgba(36, 31, 49, 0.18);
+  padding: 0.15rem 0.3rem;
+}
+
+.docs-prose pre {
+  margin: 1rem 0;
+  padding: 1rem;
+  overflow: auto;
+  border: 2px solid var(--docs-code-border);
+  background: var(--docs-code-bg);
+  color: #f7f1d1;
+  line-height: 1.65;
+  font-size: 0.875rem;
+}
+
+.docs-prose pre code {
+  background: transparent;
+  border: 0;
+  padding: 0;
 }
 
 @media (max-width: 1080px) {

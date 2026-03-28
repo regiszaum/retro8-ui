@@ -142,13 +142,27 @@
           <div class="r8-panel__body">
             <div class="r8-tabs">
               <div class="r8-tabs__list" role="tablist" aria-label="Ship data">
-                <button class="r8-tabs__tab" type="button" role="tab" aria-selected="true">Stats</button>
-                <button class="r8-tabs__tab" type="button" role="tab" aria-selected="false">Loot</button>
-                <button class="r8-tabs__tab" type="button" role="tab" aria-selected="false">Crew</button>
+                <button
+                  class="r8-tabs__tab r8-tabs__tab--active"
+                  type="button"
+                  role="tab"
+                  aria-controls="example-tabs-stats"
+                  aria-selected="true"
+                >
+                  Stats
+                </button>
+                <button class="r8-tabs__tab" type="button" role="tab" aria-controls="example-tabs-loot" aria-selected="false">Loot</button>
+                <button class="r8-tabs__tab" type="button" role="tab" aria-controls="example-tabs-crew" aria-selected="false">Crew</button>
               </div>
 
-              <div class="r8-tabs__panel" role="tabpanel">
+              <div id="example-tabs-stats" class="r8-tabs__panel" role="tabpanel">
                 Hull integrity stable. Three active relics equipped. Fuel reserve at 61%.
+              </div>
+              <div id="example-tabs-loot" class="r8-tabs__panel" role="tabpanel" hidden>
+                2 keycards, 4 batteries and 1 encrypted map fragment secured.
+              </div>
+              <div id="example-tabs-crew" class="r8-tabs__panel" role="tabpanel" hidden>
+                Captain online, medic ready and engineer calibrating the relay.
               </div>
             </div>
           </div>
@@ -159,18 +173,21 @@
             <h2 class="r8-panel__title">Dialog</h2>
           </div>
           <div class="r8-panel__body">
-            <div class="r8-dialog" role="dialog" aria-labelledby="dialog-title" aria-modal="false">
+            <button class="r8-btn r8-btn--primary" type="button" data-r8-toggle="dialog" data-r8-target="#example-dialog">
+              Open dialog
+            </button>
+            <dialog id="example-dialog" class="r8-dialog" aria-labelledby="dialog-title">
               <div class="r8-dialog__titlebar">
                 <h3 id="dialog-title" class="r8-dialog__title">Exit current mission?</h3>
               </div>
               <div class="r8-dialog__body">
-                Unsaved progress will be lost. Use native <code>&lt;dialog&gt;</code> for modal behavior.
+                Unsaved progress will be lost. The optional runtime handles open, close and escape behavior.
               </div>
               <div class="r8-dialog__footer">
-                <button class="r8-btn" type="button">Cancel</button>
-                <button class="r8-btn r8-btn--danger" type="button">Exit</button>
+                <button class="r8-btn" type="button" data-r8-close="#example-dialog">Cancel</button>
+                <button class="r8-btn r8-btn--danger" type="button" data-r8-close="#example-dialog">Exit</button>
               </div>
-            </div>
+            </dialog>
           </div>
         </section>
       </section>
@@ -179,5 +196,6 @@
         Open <code>examples/dashboard.html</code> for a second real-world composition example.
       </p>
     </main>
+    <script src="../dist/retro8.js"></script>
   </body>
 </html>

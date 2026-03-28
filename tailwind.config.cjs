@@ -3,7 +3,9 @@ module.exports = {
   content: [
     "./src/**/*.{css,html,js,cjs,mjs}",
     "./examples/**/*.html",
-    "./playground/**/*.{html,js,css}",
+    "./docs-site/app/**/*.{vue,ts,js,html}",
+    "./docs-site/content/**/*.md",
+    "./docs-site/README.md",
     "./docs/**/*.md",
     "./README.md",
   ],
