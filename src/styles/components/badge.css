@@ -1,0 +1,25 @@
+@layer components {
+  .r8-badge {
+    @apply inline-flex items-center border-r8-sm border-r8-border bg-r8-surface-3 px-r8-2 py-r8-1 font-display text-r8-xs uppercase leading-none tracking-r8 text-r8-ink shadow-r8-sm;
+  }
+
+  .r8-badge--primary {
+    @apply bg-r8-accent;
+  }
+
+  .r8-badge--success {
+    @apply bg-r8-success;
+  }
+
+  .r8-badge--warning {
+    @apply bg-r8-warning;
+  }
+
+  .r8-badge--danger {
+    @apply bg-r8-danger text-white;
+  }
+
+  .r8-badge--info {
+    @apply bg-r8-info;
+  }
+}

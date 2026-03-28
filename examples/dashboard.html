@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>retro8-ui Dashboard Example</title>
+    <link rel="stylesheet" href="../dist/retro8.css" />
+    <link rel="stylesheet" href="./example.css" />
+  </head>
+  <body>
+    <main class="example-shell example-stack">
+      <nav class="r8-navbar">
+        <a class="r8-navbar__brand" href="./index.html">orbital-control</a>
+        <ul class="r8-navbar__menu">
+          <li><a class="r8-navbar__item" href="./index.html">Showcase</a></li>
+          <li><a class="r8-navbar__item" aria-current="page" href="#">Dashboard</a></li>
+        </ul>
+        <div class="r8-navbar__actions">
+          <button class="r8-btn r8-btn--sm r8-btn--primary" type="button">Sync</button>
+        </div>
+      </nav>
+
+      <section class="example-grid">
+        <section class="r8-window">
+          <div class="r8-window__titlebar">
+            <span class="r8-window__title">sector telemetry</span>
+            <div class="r8-window__controls" aria-hidden="true">
+              <span class="r8-window__control"></span>
+              <span class="r8-window__control"></span>
+              <span class="r8-window__control"></span>
+            </div>
+          </div>
+          <div class="r8-window__body r8-stack">
+            <div class="r8-progress" style="--r8-progress-value: 68%;">
+              <div class="r8-progress__label">
+                <span>Signal strength</span>
+                <span>68%</span>
+              </div>
+              <div class="r8-progress__track">
+                <div class="r8-progress__bar"></div>
+              </div>
+            </div>
+
+            <div class="r8-progress r8-progress--warning" style="--r8-progress-value: 43%;">
+              <div class="r8-progress__label">
+                <span>Fuel reserve</span>
+                <span>43%</span>
+              </div>
+              <div class="r8-progress__track">
+                <div class="r8-progress__bar"></div>
+              </div>
+            </div>
+
+            <div class="r8-progress r8-progress--danger" style="--r8-progress-value: 24%;">
+              <div class="r8-progress__label">
+                <span>Hull shield</span>
+                <span>24%</span>
+              </div>
+              <div class="r8-progress__track">
+                <div class="r8-progress__bar"></div>
+              </div>
+            </div>
+          </div>
+          <div class="r8-window__statusbar">Last sync 02:14 ago</div>
+        </section>
+
+        <section class="r8-panel">
+          <div class="r8-panel__header">
+            <h2 class="r8-panel__title">Queued tasks</h2>
+          </div>
+          <div class="r8-panel__body r8-stack">
+            <div class="r8-row">
+              <span class="r8-badge r8-badge--success">active</span>
+              <strong>Deploy repair drones</strong>
+            </div>
+            <div class="r8-row">
+              <span class="r8-badge r8-badge--warning">pending</span>
+              <strong>Rotate solar shields</strong>
+            </div>
+            <div class="r8-row">
+              <span class="r8-badge r8-badge--danger">alert</span>
+              <strong>Investigate sector beacon</strong>
+            </div>
+          </div>
+          <div class="r8-panel__footer">
+            <div class="r8-row">
+              <button class="r8-btn r8-btn--primary" type="button">Dispatch</button>
+              <button class="r8-btn r8-btn--ghost" type="button">Archive</button>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+  </body>
+</html>

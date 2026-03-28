@@ -1,0 +1,37 @@
+@layer components {
+  .r8-window {
+    @apply overflow-hidden border-r8 border-r8-border bg-r8-surface text-r8-ink shadow-r8-lg;
+  }
+
+  .r8-window__titlebar {
+    @apply flex items-center justify-between gap-r8-3 border-b-r8 border-r8-border bg-r8-accent px-r8-4 py-r8-3 text-r8-ink;
+  }
+
+  .r8-window__title {
+    @apply font-display text-r8-sm uppercase tracking-r8;
+  }
+
+  .r8-window__controls {
+    @apply flex items-center gap-r8-2;
+  }
+
+  .r8-window__control {
+    @apply h-r8-4 w-r8-4 border-r8-sm border-r8-border bg-r8-surface-3 shadow-r8-sm;
+  }
+
+  .r8-window__body {
+    @apply px-r8-4 py-r8-4;
+  }
+
+  .r8-window__statusbar {
+    @apply border-t-r8-sm border-r8-border bg-r8-surface-2 px-r8-4 py-r8-2 text-r8-xs text-r8-ink-muted;
+  }
+
+  .r8-window--danger .r8-window__titlebar {
+    @apply bg-r8-danger text-white;
+  }
+
+  .r8-window--success .r8-window__titlebar {
+    @apply bg-r8-success text-r8-ink;
+  }
+}

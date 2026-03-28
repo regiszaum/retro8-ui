@@ -1,0 +1,25 @@
+@layer base {
+  *,
+  ::before,
+  ::after {
+    box-sizing: border-box;
+  }
+
+  :where(img, svg) {
+    display: block;
+    max-width: 100%;
+  }
+
+  :where(button, input, select, textarea) {
+    font: inherit;
+    color: inherit;
+  }
+
+  :where(dialog) {
+    color: inherit;
+  }
+
+  :where(.r8-btn, .r8-input, .r8-panel, .r8-window, .r8-badge, .r8-dialog, .r8-tabs, .r8-progress, .r8-navbar) {
+    font-family: var(--r8-font-body);
+  }
+}

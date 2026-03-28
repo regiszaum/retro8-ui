@@ -1,0 +1,38 @@
+@layer components {
+  .r8-tabs {
+    @apply flex flex-col gap-r8-3;
+  }
+
+  .r8-tabs__list {
+    @apply flex flex-wrap gap-r8-2;
+  }
+
+  .r8-tabs__tab {
+    @apply inline-flex items-center border-r8 border-r8-border bg-r8-surface-2 px-r8-3 py-r8-2 font-display text-r8-xs uppercase tracking-r8 text-r8-ink shadow-r8-sm transition-transform duration-75 ease-r8;
+    text-decoration: none;
+  }
+
+  .r8-tabs__tab:hover {
+    box-shadow: var(--r8-shadow-md);
+    transform: translate(var(--r8-motion-lift), var(--r8-motion-lift));
+  }
+
+  .r8-tabs__tab:focus-visible {
+    outline: var(--r8-focus-width) solid var(--r8-color-focus);
+    outline-offset: var(--r8-focus-offset);
+  }
+
+  .r8-tabs__tab[aria-selected="true"],
+  .r8-tabs__tab--active {
+    @apply bg-r8-surface shadow-r8-pressed;
+    transform: translate(var(--r8-motion-press), var(--r8-motion-press));
+  }
+
+  .r8-tabs__panel {
+    @apply border-r8 border-r8-border bg-r8-surface px-r8-4 py-r8-4 shadow-r8;
+  }
+
+  .r8-tabs__panel[hidden] {
+    display: none;
+  }
+}

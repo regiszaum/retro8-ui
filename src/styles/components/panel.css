@@ -1,0 +1,29 @@
+@layer components {
+  .r8-panel {
+    @apply border-r8 border-r8-border bg-r8-surface text-r8-ink shadow-r8;
+  }
+
+  .r8-panel--muted {
+    @apply bg-r8-surface-2;
+  }
+
+  .r8-panel__header {
+    @apply border-b-r8-sm border-r8-border bg-r8-surface-2 px-r8-4 py-r8-3;
+  }
+
+  .r8-panel__title {
+    @apply font-display text-r8-sm uppercase tracking-r8 text-r8-ink;
+  }
+
+  .r8-panel__meta {
+    @apply mt-r8-2 text-r8-xs text-r8-ink-muted;
+  }
+
+  .r8-panel__body {
+    @apply px-r8-4 py-r8-4;
+  }
+
+  .r8-panel__footer {
+    @apply border-t-r8-sm border-r8-border bg-r8-surface-3 px-r8-4 py-r8-3;
+  }
+}

@@ -1,0 +1,34 @@
+@layer utilities {
+  .r8-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--r8-space-4);
+  }
+
+  .r8-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--r8-space-3);
+  }
+
+  .r8-cluster {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--r8-space-3);
+  }
+
+  .r8-grid {
+    display: grid;
+    gap: var(--r8-space-4);
+  }
+
+  .r8-focus-ring:focus-visible {
+    outline: var(--r8-focus-width) solid var(--r8-color-focus);
+    outline-offset: var(--r8-focus-offset);
+  }
+
+  .r8-sr-only {
+    @apply sr-only;
+  }
+}

@@ -1,0 +1,24 @@
+@layer components {
+  .r8-divider {
+    border: 0;
+    border-top: var(--r8-border-thin) solid var(--r8-color-border);
+    box-shadow: 0 2px 0 0 rgba(255, 247, 220, 0.7);
+    margin: var(--r8-space-5) 0;
+  }
+
+  .r8-divider--vertical {
+    display: inline-block;
+    width: 0;
+    min-height: 1.75rem;
+    margin: 0 var(--r8-space-4);
+    vertical-align: middle;
+    border-top: 0;
+    border-left: var(--r8-border-thin) solid var(--r8-color-border);
+    box-shadow: 2px 0 0 0 rgba(255, 247, 220, 0.7);
+  }
+
+  .r8-divider__label {
+    @apply inline-flex bg-r8-surface px-r8-2 font-display text-r8-xs uppercase tracking-r8 text-r8-ink-muted;
+    transform: translateY(-0.7rem);
+  }
+}

@@ -1,0 +1,65 @@
+@layer components {
+  .r8-field {
+    @apply flex flex-col gap-r8-2;
+  }
+
+  .r8-field--inline {
+    @apply grid gap-r8-2;
+    grid-template-columns: minmax(8rem, auto) minmax(0, 1fr);
+    align-items: center;
+  }
+
+  .r8-label {
+    @apply font-display text-r8-xs uppercase tracking-r8 text-r8-ink;
+  }
+
+  .r8-help {
+    @apply text-r8-xs text-r8-ink-muted;
+  }
+
+  .r8-input {
+    @apply w-full border-r8 border-r8-border bg-white px-r8-3 py-r8-3 font-body text-r8-sm leading-relaxed text-r8-ink shadow-r8-inset;
+    min-height: 3rem;
+  }
+
+  .r8-input::placeholder {
+    color: var(--r8-color-ink-muted);
+    opacity: 1;
+  }
+
+  .r8-input:focus-visible {
+    background-color: var(--r8-color-surface-raised);
+    outline: var(--r8-focus-width) solid var(--r8-color-focus);
+    outline-offset: var(--r8-focus-offset);
+  }
+
+  .r8-input:disabled {
+    background-color: var(--r8-color-disabled-bg);
+    color: var(--r8-color-ink-muted);
+    cursor: not-allowed;
+  }
+
+  .r8-input[aria-invalid="true"],
+  .r8-input--invalid {
+    border-color: var(--r8-color-danger);
+    box-shadow: inset 0 0 0 var(--r8-border-thin) rgba(255, 89, 100, 0.18);
+  }
+
+  :where(textarea.r8-input) {
+    min-height: 7rem;
+    resize: vertical;
+  }
+
+  :where(select.r8-input) {
+    appearance: none;
+    background-image:
+      linear-gradient(45deg, transparent 50%, var(--r8-color-border) 50%),
+      linear-gradient(135deg, var(--r8-color-border) 50%, transparent 50%);
+    background-position:
+      calc(100% - 1.05rem) calc(50% - 2px),
+      calc(100% - 0.65rem) calc(50% - 2px);
+    background-repeat: no-repeat;
+    background-size: 8px 8px, 8px 8px;
+    padding-right: 2.5rem;
+  }
+}

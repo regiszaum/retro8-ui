@@ -1,0 +1,62 @@
+@layer base {
+  :root {
+    --r8-color-bg: #16213e;
+    --r8-color-surface: #f7f1d1;
+    --r8-color-surface-muted: #ddd2a7;
+    --r8-color-surface-raised: #fff7dc;
+    --r8-color-ink: #241f31;
+    --r8-color-ink-muted: #5c566e;
+    --r8-color-border: #241f31;
+    --r8-color-accent: #3dc2ff;
+    --r8-color-accent-strong: #0f7bff;
+    --r8-color-success: #62c370;
+    --r8-color-warning: #f4a259;
+    --r8-color-danger: #ff5964;
+    --r8-color-info: #5bc0be;
+    --r8-color-focus: #ffe066;
+    --r8-color-disabled: #8c8798;
+    --r8-color-disabled-bg: #cfc6a8;
+    --r8-dialog-backdrop: rgba(22, 33, 62, 0.78);
+
+    --r8-space-1: 0.125rem;
+    --r8-space-2: 0.25rem;
+    --r8-space-3: 0.5rem;
+    --r8-space-4: 0.75rem;
+    --r8-space-5: 1rem;
+    --r8-space-6: 1.25rem;
+    --r8-space-8: 1.75rem;
+    --r8-space-10: 2.5rem;
+    --r8-space-12: 3rem;
+
+    --r8-border-thin: 2px;
+    --r8-border-thick: 4px;
+    --r8-radius-sm: 2px;
+
+    --r8-shadow-sm: 2px 2px 0 0 var(--r8-color-border);
+    --r8-shadow-md: 4px 4px 0 0 var(--r8-color-border);
+    --r8-shadow-lg: 6px 6px 0 0 var(--r8-color-border);
+    --r8-shadow-pressed: 1px 1px 0 0 var(--r8-color-border);
+    --r8-shadow-inset: inset 0 0 0 var(--r8-border-thin) rgba(36, 31, 49, 0.14);
+
+    --r8-font-display: "Press Start 2P", "VT323", "Courier New", Courier, monospace;
+    --r8-font-body: "IBM Plex Mono", "Fira Mono", "Courier New", Courier, monospace;
+    --r8-font-size-xs: 0.6875rem;
+    --r8-font-size-sm: 0.8125rem;
+    --r8-font-size-base: 0.9375rem;
+    --r8-font-size-lg: 1.125rem;
+
+    --r8-focus-width: 3px;
+    --r8-focus-offset: 2px;
+    --r8-motion-step: 90ms;
+    --r8-motion-lift: -1px;
+    --r8-motion-press: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --r8-motion-step: 0ms;
+      --r8-motion-lift: 0px;
+      --r8-motion-press: 0px;
+    }
+  }
+}

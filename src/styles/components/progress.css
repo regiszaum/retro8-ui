@@ -1,0 +1,38 @@
+@layer components {
+  .r8-progress {
+    @apply flex flex-col gap-r8-2;
+  }
+
+  .r8-progress__label {
+    @apply flex items-center justify-between gap-r8-3 font-display text-r8-xs uppercase tracking-r8 text-r8-ink;
+  }
+
+  .r8-progress__track {
+    @apply overflow-hidden border-r8 border-r8-border bg-r8-surface-2;
+    min-height: 1.5rem;
+    box-shadow: var(--r8-shadow-inset);
+  }
+
+  .r8-progress__bar {
+    background-color: var(--r8-color-accent);
+    background-image: repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.22) 0 12px,
+      transparent 12px 24px
+    );
+    height: 100%;
+    width: var(--r8-progress-value, 0%);
+  }
+
+  .r8-progress--success .r8-progress__bar {
+    background-color: var(--r8-color-success);
+  }
+
+  .r8-progress--warning .r8-progress__bar {
+    background-color: var(--r8-color-warning);
+  }
+
+  .r8-progress--danger .r8-progress__bar {
+    background-color: var(--r8-color-danger);
+  }
+}
