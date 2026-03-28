@@ -33,6 +33,7 @@
     border: var(--r8-border-thick) solid var(--r8-color-border);
     bottom: var(--r8-space-4);
     box-shadow: var(--r8-shadow-md);
+    color: var(--r8-color-accent-contrast);
     cursor: pointer;
     display: inline-grid;
     font-family: var(--r8-font-display);
@@ -95,6 +96,7 @@
   .r8-dropdown__item.is-selected,
   .r8-dropdown__item[aria-selected="true"] {
     background: var(--r8-color-accent);
+    color: var(--r8-color-accent-contrast);
   }
 
   .r8-menu {
@@ -127,6 +129,7 @@
   .r8-menu__item.is-active,
   .r8-menu__submenu.is-open {
     background: var(--r8-color-accent);
+    color: var(--r8-color-accent-contrast);
   }
 
   .r8-page-header {
@@ -183,6 +186,16 @@
 
   .r8-step.is-active .r8-step__index {
     background: var(--r8-color-accent);
+    color: var(--r8-color-accent-contrast);
+  }
+
+  .r8-anchor__link:focus-visible,
+  .r8-backtop:focus-visible,
+  .r8-dropdown__item:focus-visible,
+  .r8-menu__item:focus-visible,
+  .r8-menu__submenu:focus-visible {
+    outline: var(--r8-focus-width) solid var(--r8-color-focus);
+    outline-offset: 2px;
   }
 
   .r8-step__body {

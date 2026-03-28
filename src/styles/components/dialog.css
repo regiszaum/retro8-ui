@@ -25,6 +25,6 @@
   }
 
   .r8-dialog--danger .r8-dialog__titlebar {
-    @apply bg-r8-danger text-white;
+    @apply bg-r8-danger text-r8-danger-contrast;
   }
 }

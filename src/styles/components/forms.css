@@ -72,6 +72,7 @@
   .r8-radio.is-checked .r8-radio__box,
   .r8-radio[aria-checked="true"] .r8-radio__box {
     background: var(--r8-color-accent);
+    color: var(--r8-color-accent-contrast);
   }
 
   .r8-checkbox.is-checked .r8-checkbox__box::after,
@@ -83,7 +84,7 @@
 
   .r8-radio.is-checked .r8-radio__box::after,
   .r8-radio[aria-checked="true"] .r8-radio__box::after {
-    background: var(--r8-color-border);
+    background: var(--r8-color-accent-contrast);
     border-radius: 999px;
     content: "";
     display: block;
@@ -178,11 +179,11 @@
 
   .r8-rate__item.is-active {
     background: var(--r8-color-warning);
-    color: var(--r8-color-border);
+    color: var(--r8-color-warning-contrast);
   }
 
   .r8-input-number {
-    background: white;
+    background: var(--r8-color-surface-3);
     border: var(--r8-border-thick) solid var(--r8-color-border);
     box-shadow: var(--r8-shadow-inset);
     display: grid;
@@ -202,6 +203,40 @@
     place-items: center;
   }
 
+  .r8-checkbox:focus-visible,
+  .r8-radio:focus-visible,
+  .r8-switch:focus-visible,
+  .r8-rate__item:focus-visible,
+  .r8-input-number__button:focus-visible,
+  .r8-input-number__input:focus-visible,
+  .r8-input-tag__input:focus-visible,
+  .r8-autocomplete__trigger:focus-visible,
+  .r8-cascader__trigger:focus-visible,
+  .r8-color-picker__trigger:focus-visible,
+  .r8-date-picker__trigger:focus-visible,
+  .r8-datetime-picker__trigger:focus-visible,
+  .r8-mention__trigger:focus-visible,
+  .r8-select__trigger:focus-visible,
+  .r8-virtual-select__trigger:focus-visible,
+  .r8-time-picker__trigger:focus-visible,
+  .r8-time-select__trigger:focus-visible,
+  .r8-tree-select__trigger:focus-visible,
+  .r8-autocomplete__option:focus-visible,
+  .r8-cascader__option:focus-visible,
+  .r8-mention__option:focus-visible,
+  .r8-select__option:focus-visible,
+  .r8-virtual-select__option:focus-visible,
+  .r8-time-select__option:focus-visible,
+  .r8-tree-select__node:focus-visible,
+  .r8-color-picker__swatch:focus-visible,
+  .r8-date-picker__day:focus-visible,
+  .r8-time-picker__slot:focus-visible,
+  .r8-transfer__item:focus-visible,
+  .r8-upload__dropzone:focus-visible {
+    outline: var(--r8-focus-width) solid var(--r8-color-focus);
+    outline-offset: 1px;
+  }
+
   .r8-input-number__input {
     background: transparent;
     border: 0;
@@ -213,7 +248,7 @@
 
   .r8-input-tag {
     align-items: center;
-    background: white;
+    background: var(--r8-color-surface-3);
     border: var(--r8-border-thick) solid var(--r8-color-border);
     box-shadow: var(--r8-shadow-inset);
     display: flex;
@@ -278,7 +313,7 @@
   .r8-time-select__trigger,
   .r8-tree-select__trigger {
     align-items: center;
-    background: white;
+    background: var(--r8-color-surface-3);
     border: var(--r8-border-thick) solid var(--r8-color-border);
     box-shadow: var(--r8-shadow-inset);
     cursor: pointer;
@@ -342,7 +377,7 @@
   .r8-tree-select__node.is-selected,
   .r8-tree-select__node[aria-selected="true"] {
     background: var(--r8-color-accent);
-    color: var(--r8-color-ink);
+    color: var(--r8-color-accent-contrast);
   }
 
   .r8-cascader__trail,
@@ -391,6 +426,7 @@
 
   .r8-date-picker__day.is-selected {
     background: var(--r8-color-accent);
+    color: var(--r8-color-accent-contrast);
   }
 
   .r8-time-picker__slot {
@@ -408,13 +444,14 @@
   .r8-time-picker__slot.is-selected,
   .r8-time-picker__slot[aria-selected="true"] {
     background: var(--r8-color-accent);
-    color: var(--r8-color-ink);
+    color: var(--r8-color-accent-contrast);
   }
 
   .r8-mention__token {
     align-items: center;
     background: var(--r8-color-info);
     border: var(--r8-border-thin) solid var(--r8-color-border);
+    color: var(--r8-color-info-contrast);
     display: inline-flex;
     font-family: var(--r8-font-display);
     font-size: var(--r8-font-size-xs);
@@ -456,7 +493,7 @@
 
   .r8-transfer__item.is-selected {
     background: var(--r8-color-accent);
-    color: var(--r8-color-ink);
+    color: var(--r8-color-accent-contrast);
   }
 
   .r8-transfer__actions {

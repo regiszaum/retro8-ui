@@ -1,6 +1,6 @@
 @layer components {
   .r8-link {
-    @apply inline-flex items-center gap-r8-2 font-display text-r8-xs uppercase tracking-r8 text-r8-accent no-underline transition-transform duration-75 ease-r8;
+    @apply inline-flex items-center gap-r8-2 font-display text-r8-xs uppercase tracking-r8 text-r8-primary no-underline transition-transform duration-75 ease-r8;
   }
 
   .r8-link:hover:not([aria-disabled="true"]) {
@@ -22,15 +22,27 @@
   }
 
   .r8-text--primary {
-    color: var(--r8-color-accent-strong);
+    color: var(--r8-color-primary-strong);
+  }
+
+  .r8-text--secondary {
+    color: var(--r8-color-secondary-strong);
+  }
+
+  .r8-text--tertiary {
+    color: var(--r8-color-tertiary-strong);
   }
 
   .r8-text--success {
-    color: var(--r8-color-success);
+    color: var(--r8-color-success-strong);
+  }
+
+  .r8-text--info {
+    color: var(--r8-color-info-strong);
   }
 
   .r8-text--danger {
-    color: var(--r8-color-danger);
+    color: var(--r8-color-danger-strong);
   }
 
   .r8-typography {
@@ -142,6 +154,7 @@
     background: var(--r8-color-accent);
     border: var(--r8-border-thick) solid var(--r8-color-border);
     box-shadow: var(--r8-shadow-sm);
+    color: var(--r8-color-accent-contrast);
     display: inline-grid;
     font-family: var(--r8-font-display);
     font-size: 1.25rem;

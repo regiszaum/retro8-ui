@@ -113,15 +113,35 @@ const basicComponents = [
       "Botao de acao com hover e active em pixel shift, ideal para CTAs e controles de interface.",
       "Action button with pixel-shift hover and active states, ideal for CTAs and interface controls.",
     ),
-    classes: ["r8-btn", "r8-btn--primary", "r8-btn--secondary", "r8-btn--danger", "r8-btn--ghost", "r8-btn--sm", "r8-btn--lg"],
+    classes: [
+      "r8-btn",
+      "r8-btn--primary",
+      "r8-btn--secondary",
+      "r8-btn--tertiary",
+      "r8-btn--success",
+      "r8-btn--info",
+      "r8-btn--danger",
+      "r8-btn--dark",
+      "r8-btn--light",
+      "r8-btn--ghost",
+      "r8-btn--sm",
+      "r8-btn--lg",
+    ],
     preview: `<div class="docs-demo__stack">
   <div class="r8-cluster">
     <button class="r8-btn" type="button">Default</button>
     <button class="r8-btn r8-btn--primary" type="button">Primary</button>
     <button class="r8-btn r8-btn--secondary" type="button">Secondary</button>
-    <button class="r8-btn r8-btn--danger" type="button">Danger</button>
+    <button class="r8-btn r8-btn--tertiary" type="button">Tertiary</button>
   </div>
   <div class="r8-cluster">
+    <button class="r8-btn r8-btn--success" type="button">Success</button>
+    <button class="r8-btn r8-btn--info" type="button">Info</button>
+    <button class="r8-btn r8-btn--danger" type="button">Danger</button>
+    <button class="r8-btn r8-btn--dark" type="button">Dark</button>
+  </div>
+  <div class="r8-cluster">
+    <button class="r8-btn r8-btn--light" type="button">Light</button>
     <button class="r8-btn r8-btn--ghost" type="button">Ghost</button>
     <button class="r8-btn r8-btn--sm" type="button">Small</button>
     <button class="r8-btn r8-btn--lg" type="button">Large</button>
@@ -155,24 +175,45 @@ const basicComponents = [
     classes: ["r8-color-grid", "r8-color-card", "r8-color-card__swatch", "r8-color-card__meta"],
     preview: `<div class="r8-color-grid">
   <div class="r8-color-card">
-    <div class="r8-color-card__swatch" style="background:#16213e;"></div>
+    <div class="r8-color-card__swatch" style="background:#0f172a;"></div>
     <div class="r8-color-card__meta">
-      <strong>Canvas</strong>
-      <span>#16213e</span>
+      <strong>Background</strong>
+      <span>#0f172a</span>
     </div>
   </div>
   <div class="r8-color-card">
-    <div class="r8-color-card__swatch" style="background:#3dc2ff;"></div>
+    <div class="r8-color-card__swatch" style="background:#2563eb;"></div>
     <div class="r8-color-card__meta">
-      <strong>Accent</strong>
-      <span>#3dc2ff</span>
+      <strong>Primary</strong>
+      <span>#2563eb</span>
     </div>
   </div>
   <div class="r8-color-card">
-    <div class="r8-color-card__swatch" style="background:#62c370;"></div>
+    <div class="r8-color-card__swatch" style="background:#64748b;"></div>
+    <div class="r8-color-card__meta">
+      <strong>Secondary</strong>
+      <span>#64748b</span>
+    </div>
+  </div>
+  <div class="r8-color-card">
+    <div class="r8-color-card__swatch" style="background:#16a34a;"></div>
     <div class="r8-color-card__meta">
       <strong>Success</strong>
-      <span>#62c370</span>
+      <span>#16a34a</span>
+    </div>
+  </div>
+  <div class="r8-color-card">
+    <div class="r8-color-card__swatch" style="background:#dc2626;"></div>
+    <div class="r8-color-card__meta">
+      <strong>Danger</strong>
+      <span>#dc2626</span>
+    </div>
+  </div>
+  <div class="r8-color-card">
+    <div class="r8-color-card__swatch" style="background:#7c3aed;"></div>
+    <div class="r8-color-card__meta">
+      <strong>Tertiary</strong>
+      <span>#7c3aed</span>
     </div>
   </div>
 </div>`,
@@ -265,12 +306,24 @@ const basicComponents = [
       "Texto de apoio com variantes semanticas para enfase, sucesso, perigo e estados suaves.",
       "Supporting text with semantic variants for emphasis, success, danger and muted states.",
     ),
-    classes: ["r8-text", "r8-text--muted", "r8-text--primary", "r8-text--success", "r8-text--danger"],
+    classes: [
+      "r8-text",
+      "r8-text--muted",
+      "r8-text--primary",
+      "r8-text--secondary",
+      "r8-text--tertiary",
+      "r8-text--success",
+      "r8-text--info",
+      "r8-text--danger",
+    ],
     preview: `<div class="docs-demo__stack">
   <p class="r8-text">Default body text for mission logs and dense UI labels.</p>
   <p class="r8-text r8-text--muted">Muted helper copy for secondary details.</p>
   <p class="r8-text r8-text--primary">Primary text to highlight key information.</p>
+  <p class="r8-text r8-text--secondary">Secondary text for supportive hierarchy.</p>
+  <p class="r8-text r8-text--tertiary">Tertiary text for premium or elevated states.</p>
   <p class="r8-text r8-text--success">Success text for positive states.</p>
+  <p class="r8-text r8-text--info">Info text for contextual guidance.</p>
   <p class="r8-text r8-text--danger">Danger text for critical states.</p>
 </div>`,
   },
@@ -454,12 +507,12 @@ const formComponents = [
     classes: ["r8-color-picker-panel", "r8-color-picker__swatches", "r8-color-picker__swatch"],
     preview: `<div class="r8-color-picker-panel">
   <div class="r8-color-picker__swatches">
-    <div class="r8-color-picker__swatch is-selected" data-r8-value="#3dc2ff" style="background:#3dc2ff;"></div>
-    <div class="r8-color-picker__swatch" data-r8-value="#62c370" style="background:#62c370;"></div>
-    <div class="r8-color-picker__swatch" data-r8-value="#ffe066" style="background:#ffe066;"></div>
-    <div class="r8-color-picker__swatch" data-r8-value="#ff5964" style="background:#ff5964;"></div>
-    <div class="r8-color-picker__swatch" data-r8-value="#16213e" style="background:#16213e;"></div>
-    <div class="r8-color-picker__swatch" data-r8-value="#f7f1d1" style="background:#f7f1d1;"></div>
+    <div class="r8-color-picker__swatch is-selected" data-r8-value="#2563eb" style="background:#2563eb;"></div>
+    <div class="r8-color-picker__swatch" data-r8-value="#64748b" style="background:#64748b;"></div>
+    <div class="r8-color-picker__swatch" data-r8-value="#7c3aed" style="background:#7c3aed;"></div>
+    <div class="r8-color-picker__swatch" data-r8-value="#16a34a" style="background:#16a34a;"></div>
+    <div class="r8-color-picker__swatch" data-r8-value="#0891b2" style="background:#0891b2;"></div>
+    <div class="r8-color-picker__swatch" data-r8-value="#dc2626" style="background:#dc2626;"></div>
   </div>
 </div>`,
   },
@@ -474,17 +527,17 @@ const formComponents = [
     classes: ["r8-color-picker", "r8-color-picker__trigger", "r8-color-picker__panel", "r8-color-picker__swatches", "r8-color-picker__swatch"],
     preview: `<div class="r8-color-picker">
   <div class="r8-color-picker__trigger">
-    <span>Accent color</span>
-    <span class="r8-badge r8-badge--primary" data-r8-choice-display>#3dc2ff</span>
+    <span>Primary color</span>
+    <span class="r8-badge r8-badge--primary" data-r8-choice-display>#2563eb</span>
   </div>
   <div class="r8-color-picker__panel">
     <div class="r8-color-picker__swatches">
-      <div class="r8-color-picker__swatch is-selected" data-r8-value="#3dc2ff" style="background:#3dc2ff;"></div>
-      <div class="r8-color-picker__swatch" data-r8-value="#62c370" style="background:#62c370;"></div>
-      <div class="r8-color-picker__swatch" data-r8-value="#ffe066" style="background:#ffe066;"></div>
-      <div class="r8-color-picker__swatch" data-r8-value="#ff5964" style="background:#ff5964;"></div>
-      <div class="r8-color-picker__swatch" data-r8-value="#243b55" style="background:#243b55;"></div>
-      <div class="r8-color-picker__swatch" data-r8-value="#f7f1d1" style="background:#f7f1d1;"></div>
+      <div class="r8-color-picker__swatch is-selected" data-r8-value="#2563eb" style="background:#2563eb;"></div>
+      <div class="r8-color-picker__swatch" data-r8-value="#64748b" style="background:#64748b;"></div>
+      <div class="r8-color-picker__swatch" data-r8-value="#7c3aed" style="background:#7c3aed;"></div>
+      <div class="r8-color-picker__swatch" data-r8-value="#16a34a" style="background:#16a34a;"></div>
+      <div class="r8-color-picker__swatch" data-r8-value="#0891b2" style="background:#0891b2;"></div>
+      <div class="r8-color-picker__swatch" data-r8-value="#dc2626" style="background:#dc2626;"></div>
     </div>
   </div>
 </div>`,
@@ -916,14 +969,29 @@ const dataComponents = [
       "Rotulo compacto para status, categorias, versoes e metadados curtos.",
       "Compact label for statuses, categories, versions and short metadata.",
     ),
-    classes: ["r8-badge", "r8-badge--primary", "r8-badge--success", "r8-badge--warning", "r8-badge--danger", "r8-badge--info"],
+    classes: [
+      "r8-badge",
+      "r8-badge--primary",
+      "r8-badge--secondary",
+      "r8-badge--tertiary",
+      "r8-badge--success",
+      "r8-badge--warning",
+      "r8-badge--danger",
+      "r8-badge--info",
+      "r8-badge--dark",
+      "r8-badge--light",
+    ],
     preview: `<div class="r8-cluster">
   <span class="r8-badge">default</span>
   <span class="r8-badge r8-badge--primary">new</span>
+  <span class="r8-badge r8-badge--secondary">beta</span>
+  <span class="r8-badge r8-badge--tertiary">pro</span>
   <span class="r8-badge r8-badge--success">online</span>
   <span class="r8-badge r8-badge--warning">queued</span>
   <span class="r8-badge r8-badge--danger">critical</span>
   <span class="r8-badge r8-badge--info">docs</span>
+  <span class="r8-badge r8-badge--dark">night</span>
+  <span class="r8-badge r8-badge--light">light</span>
 </div>`,
   },
   {

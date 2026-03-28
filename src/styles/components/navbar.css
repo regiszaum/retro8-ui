@@ -34,7 +34,7 @@
   }
 
   .r8-navbar__item[aria-current="page"] {
-    @apply bg-r8-accent text-r8-ink shadow-r8-sm;
+    @apply bg-r8-primary text-r8-primary-contrast shadow-r8-sm;
     border-color: var(--r8-color-border);
   }
 
@@ -54,7 +54,7 @@
 
   .r8-navbar--dark .r8-navbar__item:hover,
   .r8-navbar--dark .r8-navbar__item[aria-current="page"] {
-    background-color: var(--r8-color-accent-strong);
-    color: #fff;
+    background-color: var(--r8-color-primary-strong);
+    color: var(--r8-color-primary-contrast);
   }
 }

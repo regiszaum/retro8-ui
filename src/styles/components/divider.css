@@ -2,7 +2,7 @@
   .r8-divider {
     border: 0;
     border-top: var(--r8-border-thin) solid var(--r8-color-border);
-    box-shadow: 0 2px 0 0 rgba(255, 247, 220, 0.7);
+    box-shadow: 0 2px 0 0 color-mix(in srgb, var(--r8-color-surface-raised) 90%, transparent);
     margin: var(--r8-space-5) 0;
   }
 
@@ -14,7 +14,7 @@
     vertical-align: middle;
     border-top: 0;
     border-left: var(--r8-border-thin) solid var(--r8-color-border);
-    box-shadow: 2px 0 0 0 rgba(255, 247, 220, 0.7);
+    box-shadow: 2px 0 0 0 color-mix(in srgb, var(--r8-color-surface-raised) 90%, transparent);
   }
 
   .r8-divider__label {

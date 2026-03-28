@@ -41,7 +41,7 @@ watch(
 <template>
   <section class="docs-section docs-component-page">
     <div class="docs-breadcrumbs">
-      <NuxtLink class="r8-btn r8-btn--sm r8-btn--ghost" :to="buildDocsPath(locale, ['components'])">
+      <NuxtLink class="r8-btn r8-btn--sm r8-btn--secondary" :to="buildDocsPath(locale, ['components'])">
         {{ site.nav.backToCatalog }}
       </NuxtLink>
     </div>

@@ -4,22 +4,38 @@
   }
 
   .r8-badge--primary {
-    @apply bg-r8-accent;
+    @apply bg-r8-primary text-r8-primary-contrast;
+  }
+
+  .r8-badge--secondary {
+    @apply bg-r8-secondary text-r8-secondary-contrast;
+  }
+
+  .r8-badge--tertiary {
+    @apply bg-r8-tertiary text-r8-tertiary-contrast;
   }
 
   .r8-badge--success {
-    @apply bg-r8-success;
+    @apply bg-r8-success text-r8-success-contrast;
   }
 
   .r8-badge--warning {
-    @apply bg-r8-warning;
+    @apply bg-r8-warning text-r8-warning-contrast;
   }
 
   .r8-badge--danger {
-    @apply bg-r8-danger text-white;
+    @apply bg-r8-danger text-r8-danger-contrast;
   }
 
   .r8-badge--info {
-    @apply bg-r8-info;
+    @apply bg-r8-info text-r8-info-contrast;
+  }
+
+  .r8-badge--dark {
+    @apply bg-r8-dark text-r8-dark-contrast;
+  }
+
+  .r8-badge--light {
+    @apply bg-r8-light-strong text-r8-light-contrast;
   }
 }
