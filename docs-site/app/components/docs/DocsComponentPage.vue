@@ -8,19 +8,34 @@ const props = defineProps<{
   site: any;
 }>();
 
-const nativeDialog = ref<HTMLDialogElement | null>(null);
+type Retro8Runtime = {
+  init?: (root?: Document | HTMLElement) => unknown;
+};
+
+const previewSurface = ref<HTMLElement | null>(null);
 const neighbors = computed(() => getComponentNeighbors(props.component.id));
 
-function onPreviewClick(event: MouseEvent) {
-  const target = event.target;
-  if (!(target instanceof HTMLElement)) {
+function initPreviewRuntime() {
+  if (!import.meta.client || !previewSurface.value) {
     return;
   }
 
-  if (target.closest("[data-open-dialog-demo]")) {
-    nativeDialog.value?.showModal();
-  }
+  const runtime = (window as typeof window & { Retro8UI?: Retro8Runtime }).Retro8UI;
+  runtime?.init?.(previewSurface.value);
 }
+
+onMounted(async () => {
+  await nextTick();
+  initPreviewRuntime();
+});
+
+watch(
+  () => props.component.id,
+  async () => {
+    await nextTick();
+    initPreviewRuntime();
+  },
+);
 </script>
 
 <template>
@@ -43,7 +58,7 @@ function onPreviewClick(event: MouseEvent) {
           <span class="r8-window__title">{{ site.componentPage.previewLabel }}</span>
         </div>
         <div class="r8-window__body">
-          <div class="docs-preview__surface" @click="onPreviewClick" v-html="component.preview" />
+          <div ref="previewSurface" class="docs-preview__surface" v-html="component.preview" />
         </div>
         <div class="r8-window__statusbar">
           {{ site.componentPage.previewStatus }}
@@ -120,20 +135,5 @@ function onPreviewClick(event: MouseEvent) {
       </NuxtLink>
       <span v-else />
     </section>
-
-    <dialog ref="nativeDialog" class="r8-dialog" aria-labelledby="docs-dialog-demo-title">
-      <div class="r8-dialog__titlebar">
-        <h2 id="docs-dialog-demo-title" class="r8-dialog__title">{{ site.componentPage.dialogTitle }}</h2>
-      </div>
-      <div class="r8-dialog__body">{{ site.componentPage.dialogBody }}</div>
-      <div class="r8-dialog__footer">
-        <button class="r8-btn" type="button" @click="nativeDialog?.close()">
-          {{ site.componentPage.dialogClose }}
-        </button>
-        <button class="r8-btn r8-btn--primary" type="button">
-          {{ site.componentPage.dialogConfirm }}
-        </button>
-      </div>
-    </dialog>
   </section>
 </template>

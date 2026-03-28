@@ -1,16 +1,18 @@
 ---
-title: Catalogo de componentes
-description: Navegue por todos os componentes da v1 e abra a documentacao individual de cada um.
-kicker: Componentes
+title: Components catalog
+description: Navegue pelo catalog completo, agrupado por category e com route individual para cada component.
+kicker: Components
 ---
 
-Cada componente agora possui uma pagina propria dentro da docs.
+Cada component possui uma page propria dentro da docs.
 
-Isso melhora bastante a escalabilidade da biblioteca, porque cada rota pode crescer com:
+Agora o catalogo principal cobre os mesmos **81 componentes core** exibidos hoje no overview do Element Plus, alem de alguns extras nativos da `retro8-ui`.
+
+Essa estrutura melhora bastante a escalabilidade da biblioteca, porque cada rota pode crescer com:
 
 - exemplos adicionais
-- notas de acessibilidade
+- notas de accessibility
 - variantes futuras
 - changelog ou breaking changes
 
-Comece pelo catalogo abaixo e abra o componente que quiser explorar.
+Comece pelo grouped catalog abaixo e abra o component que quiser explorar.

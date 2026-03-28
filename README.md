@@ -1,6 +1,6 @@
 # retro8-ui
 
-`retro8-ui` e uma biblioteca de UI retro 8-bit feita com HTML + CSS, authorada com Tailwind CSS, mas distribuida como CSS compilado e classes semanticas. O foco da v1 e entregar uma base visual forte, reutilizavel e realmente framework-agnostic.
+`retro8-ui` e uma biblioteca de UI retro 8-bit feita com HTML + CSS, authorada com Tailwind CSS, mas distribuida como CSS compilado, runtime JS opcional e classes semanticas. O foco da v1 e entregar uma base visual forte, reutilizavel e realmente framework-agnostic.
 
 ## Objetivo
 
@@ -8,12 +8,12 @@
 - Permitir uso em HTML puro, Vue, Nuxt, React, Next, Astro, Laravel e afins
 - Evitar que o consumidor dependa de utility classes gigantes no markup
 - Manter a authoring experience em Tailwind, com tokens e camadas organizadas
-- Gerar CSS final pronto para importacao em `dist/retro8.css` e `dist/retro8.min.css`
+- Gerar assets finais prontos para importacao em `dist/retro8.css`, `dist/retro8.min.css`, `dist/retro8.js` e `dist/retro8.min.js`
 
 ## Caracteristicas
 
 - Sem dependencias de framework de UI
-- Sem runtime JavaScript obrigatorio
+- Runtime JavaScript opcional para components interativos
 - Preflight do Tailwind desativado para reduzir impacto global no projeto consumidor
 - Design tokens em CSS Custom Properties
 - Componentes organizados por arquivo e por responsabilidade
@@ -64,6 +64,8 @@ Gera:
 
 - `dist/retro8.css`
 - `dist/retro8.min.css`
+- `dist/retro8.js`
+- `dist/retro8.min.js`
 
 ```bash
 npm run dev
@@ -82,6 +84,8 @@ Gera:
 
 - `dist/retro8.css`
 - `dist/retro8.min.css`
+- `dist/retro8.js`
+- `dist/retro8.min.js`
 - `docs-site/.output/public`
 
 ```bash
@@ -112,6 +116,7 @@ Ao rodar `npm run dev`, o app em [`docs-site`](/home/regiszaum/Projects/tudonovo
 
 ```html
 <link rel="stylesheet" href="./node_modules/retro8-ui/dist/retro8.css" />
+<script src="./node_modules/retro8-ui/dist/retro8.js"></script>
 
 <button class="r8-btn r8-btn--primary">Start Game</button>
 ```
@@ -120,6 +125,7 @@ Ao rodar `npm run dev`, o app em [`docs-site`](/home/regiszaum/Projects/tudonovo
 
 ```js
 import "retro8-ui/retro8.css";
+import "retro8-ui/retro8.js";
 ```
 
 ```jsx
@@ -132,6 +138,7 @@ export function Example() {
 
 ```js
 import "retro8-ui/retro8.css";
+import "retro8-ui/retro8.js";
 ```
 
 ```vue
@@ -157,18 +164,12 @@ import "retro8-ui/retro8.css";
 
 Essa convencao deixa a API previsivel, facil de documentar e simples de expandir.
 
-## Componentes da v1
+## Catalogo atual
 
-- Button
-- Input
-- Panel / Card
-- Window
-- Badge
-- Dialog
-- Divider
-- Tabs visuais
-- Progress bar
-- Navbar retro simples
+- 81 componentes core alinhados ao overview atual do Element Plus
+- Grupos: Basic, Configuration, Form, Data, Navigation, Feedback e Others
+- Extras nativos da retro8-ui: Panel, Window e Navbar
+- Todos com classe semantica `r8-*`, preview na docs, rota individual e runtime opcional quando houver interacao
 
 ## Exemplo rapido
 
@@ -214,12 +215,13 @@ Todos os componentes consomem esses tokens, o que ajuda a manter consistencia vi
 - App da docs em Nuxt: [`docs-site`](/home/regiszaum/Projects/tudonovo/docs-site)
 - Shell principal da docs: [`docs-site/app/components/docs/DocsShell.vue`](/home/regiszaum/Projects/tudonovo/docs-site/app/components/docs/DocsShell.vue)
 - Conteudo markdown da docs: [`docs-site/content`](/home/regiszaum/Projects/tudonovo/docs-site/content)
-- Catalogo bilingue de componentes: [`docs-site/app/utils/docs-data.ts`](/home/regiszaum/Projects/tudonovo/docs-site/app/utils/docs-data.ts)
+- Catalogo compartilhado de componentes: [`docs-site/shared/component-catalog.ts`](/home/regiszaum/Projects/tudonovo/docs-site/shared/component-catalog.ts)
+- Dados localizados da docs: [`docs-site/app/utils/docs-data.ts`](/home/regiszaum/Projects/tudonovo/docs-site/app/utils/docs-data.ts)
 - Documentacao inicial: [`docs/index.md`](/home/regiszaum/Projects/tudonovo/docs/index.md)
 
 ## Rotas da docs
 
-As paginas da docs agora sao servidas por Nuxt com prerender estatico. O texto guia fica em [`docs-site/content`](/home/regiszaum/Projects/tudonovo/docs-site/content) e os metadados/component previews em [`docs-site/app/utils/docs-data.ts`](/home/regiszaum/Projects/tudonovo/docs-site/app/utils/docs-data.ts).
+As paginas da docs agora sao servidas por Nuxt com prerender estatico. O texto guia fica em [`docs-site/content`](/home/regiszaum/Projects/tudonovo/docs-site/content), o catalogo-base em [`docs-site/shared/component-catalog.ts`](/home/regiszaum/Projects/tudonovo/docs-site/shared/component-catalog.ts) e os dados localizados em [`docs-site/app/utils/docs-data.ts`](/home/regiszaum/Projects/tudonovo/docs-site/app/utils/docs-data.ts).
 
 - `/{locale}/`
 - `/{locale}/getting-started`
@@ -248,7 +250,7 @@ Como alternativa secundaria, a docs tambem referencia o HackerNoon Pixel Icon Li
 
 ## Decisoes arquiteturais
 
-- O produto principal e CSS compilado, nao componentes JavaScript.
+- O produto principal continua sendo CSS compilado, com um runtime JS opcional para behavior pronto.
 - Tailwind fica restrito a authoring, com `@layer` e `@apply`.
 - O build usa PostCSS + Tailwind + Autoprefixer + cssnano.
 - A documentacao publica roda em Nuxt, mas a library continua framework-agnostic e CSS-first.

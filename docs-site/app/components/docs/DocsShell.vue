@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { componentOrder, getComponentById, getSiteContent } from "~/utils/docs-data";
+import { getSiteContent } from "~/utils/docs-data";
 import { buildDocsPath } from "~/utils/docs-routing";
 
 const props = defineProps<{
@@ -17,20 +17,14 @@ const topLinks = computed(() => [
 ]);
 
 const guideLinks = computed(() => [
-  { id: "home", label: site.value.nav.sidebarGroups[0].items[0].label, to: buildDocsPath(props.locale) },
-  { id: "getting-started", label: site.value.nav.sidebarGroups[0].items[1].label, to: buildDocsPath(props.locale, ["getting-started"]) },
-  { id: "tokens", label: site.value.nav.sidebarGroups[0].items[2].label, to: buildDocsPath(props.locale, ["tokens"]) },
-  { id: "icons", label: site.value.nav.sidebarGroups[0].items[3].label, to: buildDocsPath(props.locale, ["icons"]) },
-  { id: "components", label: site.value.nav.sidebarGroups[0].items[4].label, to: buildDocsPath(props.locale, ["components"]) },
+  { id: "home", label: site.value.nav.homeLabel, to: buildDocsPath(props.locale) },
+  { id: "getting-started", label: site.value.nav.topLinks[0].label, to: buildDocsPath(props.locale, ["getting-started"]) },
+  { id: "components", label: site.value.nav.topLinks[1].label, to: buildDocsPath(props.locale, ["components"]) },
+  { id: "tokens", label: site.value.nav.topLinks[2].label, to: buildDocsPath(props.locale, ["tokens"]) },
+  { id: "icons", label: site.value.nav.topLinks[3].label, to: buildDocsPath(props.locale, ["icons"]) },
 ]);
 
-const componentLinks = computed(() =>
-  componentOrder.map((id) => ({
-    id,
-    label: getComponentById(props.locale, id)?.name ?? id,
-    to: buildDocsPath(props.locale, ["components", id]),
-  })),
-);
+const componentSections = computed(() => site.value.componentSections);
 
 function isActive(to: string) {
   return props.currentPath === to;
@@ -74,7 +68,7 @@ function isActive(to: string) {
 
           <div class="r8-panel__body docs-sidebar__body">
             <div class="docs-sidebar__group">
-              <p class="docs-sidebar__eyebrow">{{ site.nav.sidebarGroups[0].title }}</p>
+              <p class="docs-sidebar__eyebrow">{{ site.nav.guideTitle }}</p>
               <NuxtLink
                 v-for="link in guideLinks"
                 :key="link.id"
@@ -87,17 +81,20 @@ function isActive(to: string) {
               </NuxtLink>
             </div>
 
-            <div class="docs-sidebar__group">
-              <p class="docs-sidebar__eyebrow">{{ site.nav.sidebarGroups[1].title }}</p>
+            <div v-for="section in componentSections" :key="section.id" class="docs-sidebar__group">
+              <p class="docs-sidebar__eyebrow">
+                {{ section.title }}
+                <span class="docs-sidebar__count">{{ section.count }}</span>
+              </p>
               <NuxtLink
-                v-for="link in componentLinks"
-                :key="link.id"
+                v-for="component in section.components"
+                :key="component.id"
                 class="docs-sidebar__link"
-                :to="link.to"
-                :aria-current="isActive(link.to) ? 'page' : undefined"
+                :to="buildDocsPath(props.locale, ['components', component.id])"
+                :aria-current="isActive(buildDocsPath(props.locale, ['components', component.id])) ? 'page' : undefined"
               >
                 <span class="docs-sidebar__dot" aria-hidden="true" />
-                <span>{{ link.label }}</span>
+                <span>{{ component.name }}</span>
               </NuxtLink>
             </div>
           </div>

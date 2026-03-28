@@ -1,15 +1,20 @@
 @import "./base/tokens.css";
 @import "./base/reset.css";
+@import "./components/basic.css";
 @import "./components/button.css";
+@import "./components/forms.css";
 @import "./components/input.css";
+@import "./components/data.css";
 @import "./components/panel.css";
 @import "./components/window.css";
 @import "./components/badge.css";
 @import "./components/dialog.css";
+@import "./components/navigation.css";
 @import "./components/divider.css";
 @import "./components/tabs.css";
 @import "./components/progress.css";
 @import "./components/navbar.css";
+@import "./components/feedback.css";
 @import "./utilities/layout.css";
 
 @tailwind base;

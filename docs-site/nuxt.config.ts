@@ -1,6 +1,7 @@
+import { componentOrder } from "./shared/component-catalog";
+
 const docsLocales = ["pt-br", "en"];
 const guidePages = ["getting-started", "tokens", "icons", "components"];
-const componentPages = ["button", "input", "panel", "window", "badge", "dialog", "divider", "tabs", "progress", "navbar"];
 
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
@@ -35,7 +36,7 @@ export default defineNuxtConfig({
         ...docsLocales.flatMap((locale) => [
           `/${locale}`,
           ...guidePages.map((page) => `/${locale}/${page}`),
-          ...componentPages.map((component) => `/${locale}/components/${component}`),
+          ...componentOrder.map((component) => `/${locale}/components/${component}`),
         ]),
       ],
     },

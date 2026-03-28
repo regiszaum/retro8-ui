@@ -120,19 +120,6 @@ const componentPageStrings = computed(() => props.site.componentPage);
   </section>
 
   <section v-if="pageId === 'components'" class="docs-section">
-    <div class="docs-component-index">
-      <NuxtLink
-        v-for="component in site.home.components"
-        :key="component.id"
-        class="r8-panel docs-summary-card"
-        :to="`/${locale}/components/${component.id}`"
-      >
-        <div class="r8-panel__body">
-          <span class="docs-summary-card__kicker">{{ component.category }}</span>
-          <h2 class="docs-summary-card__title">{{ component.name }}</h2>
-          <p class="docs-summary-card__copy">{{ component.summary }}</p>
-        </div>
-      </NuxtLink>
-    </div>
+    <DocsComponentCatalog :locale="locale" :sections="site.home.componentSections" />
   </section>
 </template>

@@ -1,10 +1,10 @@
 ---
 title: Tokens
-description: Cores, espacamento, bordas, sombras e tipografia que sustentam a identidade retro da retro8-ui.
-kicker: Fundacao
+description: Cores, spacing, bordas, sombras e tipografia que sustentam a identidade retro da retro8-ui.
+kicker: Foundation
 ---
 
-Os tokens vivem em CSS Custom Properties, o que ajuda a manter consistencia entre componentes e deixa o sistema mais facil de evoluir.
+Os tokens vivem em CSS Custom Properties, o que ajuda a manter consistencia entre components e deixa o sistema mais facil de evoluir.
 
 Essa camada concentra:
 
@@ -14,4 +14,4 @@ Essa camada concentra:
 - tipografia
 - estados interativos
 
-Como a library e CSS-first, essa fundacao tambem facilita futuras variacoes de tema sem exigir wrappers de framework.
+Como a library e CSS-first, essa foundation tambem facilita futuras theme variations sem exigir wrappers de framework.
