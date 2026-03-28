@@ -440,16 +440,30 @@ const formComponents = [
       "Campo com trigger e lista de sugestoes para busca rapida e escolha guiada.",
       "Field with a trigger and suggestion list for quick search and guided selection.",
     ),
-    classes: ["r8-autocomplete", "r8-autocomplete__trigger", "r8-autocomplete__menu", "r8-autocomplete__option"],
+    classes: ["r8-autocomplete", "r8-autocomplete__trigger", "r8-autocomplete__input", "r8-autocomplete__menu", "r8-autocomplete__option"],
     preview: `<div class="r8-autocomplete">
   <div class="r8-autocomplete__trigger">
-    <span data-r8-choice-display>Search pilot...</span>
-    <span class="r8-badge">3</span>
+    <input
+      class="r8-autocomplete__input"
+      type="text"
+      placeholder="Search pilot..."
+      aria-label="Search pilot"
+    />
+    <span class="r8-badge" data-r8-autocomplete-count>4</span>
   </div>
   <div class="r8-autocomplete__menu">
-    <div class="r8-autocomplete__option">PIX-07</div>
-    <div class="r8-autocomplete__option">PIX-11</div>
-    <div class="r8-autocomplete__option">PIX-12</div>
+    <div class="r8-autocomplete__option" data-r8-search="pix-07 vanguard scout recon">
+      PIX-07 Vanguard
+    </div>
+    <div class="r8-autocomplete__option" data-r8-search="pix-11 sentinel support command">
+      PIX-11 Sentinel
+    </div>
+    <div class="r8-autocomplete__option" data-r8-search="pix-12 striker assault frontline">
+      PIX-12 Striker
+    </div>
+    <div class="r8-autocomplete__option" data-r8-search="pix-21 oracle analyst intel">
+      PIX-21 Oracle
+    </div>
   </div>
 </div>`,
   },

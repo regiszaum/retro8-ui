@@ -13,6 +13,7 @@
       trigger: ".r8-autocomplete__trigger",
       panel: ".r8-autocomplete__menu",
       option: ".r8-autocomplete__option",
+      kind: "autocomplete",
     },
     {
       root: ".r8-cascader",
@@ -140,6 +141,18 @@
     return Math.min(max, Math.max(min, value));
   }
 
+  function ensureId(element, prefix) {
+    if (!isElement(element)) {
+      return "";
+    }
+
+    if (!element.id) {
+      element.id = nextId(prefix);
+    }
+
+    return element.id;
+  }
+
   function getTextValue(element) {
     if (!isElement(element)) {
       return "";
@@ -180,6 +193,18 @@
     trigger.setAttribute("aria-expanded", expanded ? "true" : "false");
   }
 
+  function syncExpandedState(state, expanded) {
+    if (!state) {
+      return;
+    }
+
+    setExpanded(state.trigger, expanded);
+
+    if (state.input instanceof HTMLElement) {
+      state.input.setAttribute("aria-expanded", expanded ? "true" : "false");
+    }
+  }
+
   function setHidden(target, hidden) {
     if (!target) {
       return;
@@ -218,7 +243,7 @@
     }
 
     setHidden(state.panel, true);
-    setExpanded(state.trigger, false);
+    syncExpandedState(state, false);
     floatingStates.delete(container);
   }
 
@@ -229,7 +254,7 @@
     }
 
     setHidden(state.panel, false);
-    setExpanded(state.trigger, true);
+    syncExpandedState(state, true);
     floatingStates.add(container);
   }
 
@@ -249,12 +274,19 @@
 
   function updateChoiceDisplay(container, option, family) {
     const state = choiceStates.get(container);
-    if (!state?.trigger) {
+    if (!state?.trigger && !(state?.input instanceof HTMLInputElement)) {
       return;
     }
 
     const value = getTextValue(option);
     const display = getChoiceDisplay(state.trigger);
+
+    if (family.kind === "autocomplete") {
+      if (state.input instanceof HTMLInputElement && value) {
+        state.input.value = value;
+      }
+      return;
+    }
 
     if (family.kind === "color") {
       if (display) {
@@ -297,6 +329,29 @@
   function markChoiceSelection(container, option, family) {
     const state = choiceStates.get(container);
     if (!state?.options?.length) {
+      return;
+    }
+
+    if (family.kind === "autocomplete") {
+      state.options.forEach((item) => {
+        const isSelected = item === option;
+        item.classList.toggle("is-selected", isSelected);
+        item.classList.toggle("is-active", isSelected);
+        item.setAttribute("aria-selected", isSelected ? "true" : "false");
+      });
+
+      state.activeOption = option;
+      state.selectedOption = option;
+      updateChoiceDisplay(container, option, family);
+
+      if (state.input instanceof HTMLInputElement) {
+        state.input.setAttribute("aria-activedescendant", ensureId(option, "r8-autocomplete-option"));
+      }
+
+      if (family.closeOnSelect !== false && state.panel) {
+        closeFloating(container);
+      }
+
       return;
     }
 
@@ -365,6 +420,182 @@
     });
   }
 
+  function getVisibleOptions(state) {
+    return (state?.options || []).filter((item) => item instanceof HTMLElement && !item.hasAttribute("hidden"));
+  }
+
+  function syncAutocompleteCount(state) {
+    if (!state?.count) {
+      return;
+    }
+
+    const visibleCount = getVisibleOptions(state).length;
+    state.count.textContent = String(visibleCount);
+  }
+
+  function setAutocompleteActiveOption(state, option) {
+    if (!state?.options?.length) {
+      return;
+    }
+
+    state.options.forEach((item) => {
+      item.classList.toggle("is-active", item === option);
+    });
+
+    state.activeOption = option || null;
+
+    if (state.input instanceof HTMLInputElement) {
+      if (option) {
+        state.input.setAttribute("aria-activedescendant", ensureId(option, "r8-autocomplete-option"));
+      } else {
+        state.input.removeAttribute("aria-activedescendant");
+      }
+    }
+  }
+
+  function filterAutocompleteOptions(container) {
+    const state = choiceStates.get(container);
+    if (!state?.options?.length || !(state.input instanceof HTMLInputElement)) {
+      return;
+    }
+
+    const query = state.input.value.trim().toLowerCase();
+    state.options.forEach((option) => {
+      const searchValue = `${option.dataset.r8Search || ""} ${getTextValue(option)} ${(option.textContent || "").trim()}`.toLowerCase();
+      const shouldShow = !query || searchValue.includes(query);
+      if (shouldShow) {
+        option.removeAttribute("hidden");
+      } else {
+        option.setAttribute("hidden", "");
+      }
+    });
+
+    const visibleOptions = getVisibleOptions(state);
+    const nextActive =
+      visibleOptions.find((option) => option.classList.contains("is-selected")) ||
+      visibleOptions[0] ||
+      null;
+
+    setAutocompleteActiveOption(state, nextActive);
+    syncAutocompleteCount(state);
+  }
+
+  function initAutocomplete(container, family) {
+    const trigger = firstMatch(container, family.trigger);
+    const panel = firstMatch(container, family.panel);
+    const input = container.querySelector(".r8-autocomplete__input");
+    const count = trigger?.querySelector("[data-r8-autocomplete-count]") || trigger?.querySelector(".r8-badge") || null;
+    const options = toArray(container.querySelectorAll(family.option)).filter((item) => item instanceof HTMLElement);
+
+    if (!(trigger instanceof HTMLElement) || !(panel instanceof HTMLElement) || !(input instanceof HTMLInputElement)) {
+      return;
+    }
+
+    ensureId(panel, "r8-autocomplete-listbox");
+    panel.setAttribute("role", "listbox");
+
+    input.setAttribute("role", "combobox");
+    input.setAttribute("aria-autocomplete", "list");
+    input.setAttribute("aria-controls", panel.id);
+    input.setAttribute("aria-expanded", "false");
+    input.setAttribute("autocomplete", input.getAttribute("autocomplete") || "off");
+    input.setAttribute("spellcheck", input.getAttribute("spellcheck") || "false");
+
+    choiceStates.set(container, {
+      trigger,
+      panel,
+      options,
+      input,
+      count,
+      activeOption: null,
+      selectedOption: null,
+    });
+
+    setHidden(panel, true);
+    setExpanded(trigger, false);
+
+    trigger.addEventListener("click", () => {
+      input.focus();
+      openFloating(container);
+      filterAutocompleteOptions(container);
+    });
+
+    input.addEventListener("focus", () => {
+      openFloating(container);
+      filterAutocompleteOptions(container);
+    });
+
+    input.addEventListener("input", () => {
+      openFloating(container);
+      filterAutocompleteOptions(container);
+    });
+
+    input.addEventListener("keydown", (event) => {
+      const state = choiceStates.get(container);
+      if (!state) {
+        return;
+      }
+
+      const visibleOptions = getVisibleOptions(state);
+      const currentIndex = visibleOptions.indexOf(state.activeOption);
+
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        if (!isOpen(panel)) {
+          openFloating(container);
+          filterAutocompleteOptions(container);
+        }
+
+        const nextOption =
+          visibleOptions[currentIndex >= 0 ? clamp(currentIndex + 1, 0, visibleOptions.length - 1) : 0] || null;
+        setAutocompleteActiveOption(state, nextOption);
+        nextOption?.scrollIntoView({ block: "nearest" });
+        return;
+      }
+
+      if (event.key === "ArrowUp") {
+        event.preventDefault();
+        if (!isOpen(panel)) {
+          openFloating(container);
+          filterAutocompleteOptions(container);
+        }
+
+        const nextOption =
+          visibleOptions[currentIndex >= 0 ? clamp(currentIndex - 1, 0, visibleOptions.length - 1) : visibleOptions.length - 1] ||
+          null;
+        setAutocompleteActiveOption(state, nextOption);
+        nextOption?.scrollIntoView({ block: "nearest" });
+        return;
+      }
+
+      if (event.key === "Enter" && state.activeOption) {
+        event.preventDefault();
+        markChoiceSelection(container, state.activeOption, family);
+        return;
+      }
+
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeFloating(container);
+      }
+    });
+
+    options.forEach((option) => {
+      prepareActionLikeElement(option, "option");
+      ensureId(option, "r8-autocomplete-option");
+      option.setAttribute("aria-selected", option.classList.contains("is-selected") ? "true" : "false");
+      option.addEventListener("click", () => markChoiceSelection(container, option, family));
+      bindKeyboardActivation(option, () => markChoiceSelection(container, option, family));
+    });
+
+    const initialOption = options.find((option) => option.classList.contains("is-selected")) || null;
+    if (initialOption) {
+      markChoiceSelection(container, initialOption, family);
+    }
+
+    filterAutocompleteOptions(container);
+  }
+
   function initChoices(root) {
     choiceFamilies.forEach((family) => {
       toArray(root.querySelectorAll(family.root)).forEach((container) => {
@@ -373,6 +604,11 @@
         }
 
         container.dataset.r8ChoiceReady = "true";
+
+        if (family.kind === "autocomplete") {
+          initAutocomplete(container, family);
+          return;
+        }
 
         const trigger = family.trigger ? firstMatch(container, family.trigger) : null;
         const panel = firstMatch(container, family.panel);
