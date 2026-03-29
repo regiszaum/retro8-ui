@@ -198,15 +198,60 @@
     align-items: center;
     display: inline-flex;
     gap: var(--r8-space-2);
+    min-width: 0;
+    --r8-loading-accent: var(--r8-color-accent);
+    --r8-loading-track: var(--r8-color-surface-2);
+    --r8-loading-size: 0.9rem;
+    --r8-loading-speed: 0.8s;
+  }
+
+  .r8-loading--sm {
+    --r8-loading-size: 0.7rem;
+  }
+
+  .r8-loading--lg {
+    --r8-loading-size: 1.15rem;
+  }
+
+  .r8-loading__bars,
+  .r8-loading__dots,
+  .r8-loading__pixels {
+    align-items: center;
+    display: inline-flex;
+    flex: 0 0 auto;
+    gap: 0.25rem;
+  }
+
+  .r8-loading__bars {
+    align-items: end;
+    height: calc(var(--r8-loading-size) * 2.1);
+  }
+
+  .r8-loading__label {
+    color: var(--r8-color-ink-muted);
+    font-family: var(--r8-font-body);
+    font-size: var(--r8-font-size-xs);
+    line-height: 1.5;
   }
 
   .r8-loading__pixel {
     animation: r8-loading-blink 0.8s steps(2, end) infinite;
-    background: var(--r8-color-accent);
+    background: var(--r8-loading-accent);
     border: var(--r8-border-thin) solid var(--r8-color-border);
+    box-shadow: var(--r8-shadow-sm);
     display: block;
-    height: 0.9rem;
-    width: 0.9rem;
+    height: var(--r8-loading-size);
+    width: var(--r8-loading-size);
+  }
+
+  .r8-loading__dot {
+    animation: r8-loading-pop calc(var(--r8-loading-speed) * 1.1) steps(3, end) infinite;
+    background: var(--r8-loading-accent);
+    border: var(--r8-border-thin) solid var(--r8-color-border);
+    box-shadow: var(--r8-shadow-sm);
+    display: block;
+    height: calc(var(--r8-loading-size) * 0.75);
+    width: calc(var(--r8-loading-size) * 0.75);
   }
 
   .r8-loading__pixel:nth-child(2) {
@@ -215,6 +260,145 @@
 
   .r8-loading__pixel:nth-child(3) {
     animation-delay: 0.24s;
+  }
+
+  .r8-loading__dot:nth-child(2) {
+    animation-delay: 0.1s;
+  }
+
+  .r8-loading__dot:nth-child(3) {
+    animation-delay: 0.2s;
+  }
+
+  .r8-loading__dot:nth-child(4) {
+    animation-delay: 0.3s;
+  }
+
+  .r8-loading__track {
+    background: var(--r8-loading-track);
+    border: var(--r8-border-thick) solid var(--r8-color-border);
+    box-shadow: var(--r8-shadow-inset);
+    display: block;
+    flex: 0 0 auto;
+    height: calc(var(--r8-loading-size) * 1.45);
+    overflow: hidden;
+    position: relative;
+    width: calc(var(--r8-loading-size) * 11);
+  }
+
+  .r8-loading__fill {
+    animation: r8-loading-scan calc(var(--r8-loading-speed) * 1.5) steps(6, end) infinite;
+    background:
+      repeating-linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--r8-loading-accent) 88%, white 12%) 0 calc(var(--r8-loading-size) * 0.75),
+        var(--r8-loading-accent) calc(var(--r8-loading-size) * 0.75) calc(var(--r8-loading-size) * 1.5)
+      );
+    border-right: var(--r8-border-thin) solid var(--r8-color-border);
+    display: block;
+    height: 100%;
+    inset: 0 auto 0 0;
+    position: absolute;
+    width: 42%;
+  }
+
+  .r8-loading__bar {
+    animation: r8-loading-equalizer calc(var(--r8-loading-speed) * 1.2) steps(4, end) infinite;
+    background: var(--r8-loading-accent);
+    border: var(--r8-border-thin) solid var(--r8-color-border);
+    box-shadow: var(--r8-shadow-sm);
+    display: block;
+    min-height: calc(var(--r8-loading-size) * 0.7);
+    transform-origin: center bottom;
+    width: calc(var(--r8-loading-size) * 0.55);
+  }
+
+  .r8-loading__bar:nth-child(1) {
+    animation-delay: 0s;
+    height: 48%;
+  }
+
+  .r8-loading__bar:nth-child(2) {
+    animation-delay: 0.1s;
+    height: 76%;
+  }
+
+  .r8-loading__bar:nth-child(3) {
+    animation-delay: 0.2s;
+    height: 100%;
+  }
+
+  .r8-loading__bar:nth-child(4) {
+    animation-delay: 0.3s;
+    height: 62%;
+  }
+
+  .r8-loading__spinner {
+    display: grid;
+    flex: 0 0 auto;
+    gap: 2px;
+    grid-template-columns: repeat(3, calc(var(--r8-loading-size) * 0.85));
+    grid-template-rows: repeat(3, calc(var(--r8-loading-size) * 0.85));
+  }
+
+  .r8-loading__spinner-cell {
+    animation: r8-loading-spin calc(var(--r8-loading-speed) * 1.2) steps(2, end) infinite;
+    background: var(--r8-loading-accent);
+    border: var(--r8-border-thin) solid var(--r8-color-border);
+    box-shadow: var(--r8-shadow-sm);
+    display: block;
+    height: calc(var(--r8-loading-size) * 0.85);
+    opacity: 0.18;
+    transform: scale(0.88);
+    width: calc(var(--r8-loading-size) * 0.85);
+  }
+
+  .r8-loading__spinner-cell:nth-child(1) {
+    animation-delay: 0s;
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .r8-loading__spinner-cell:nth-child(2) {
+    animation-delay: 0.1s;
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .r8-loading__spinner-cell:nth-child(3) {
+    animation-delay: 0.2s;
+    grid-column: 3;
+    grid-row: 2;
+  }
+
+  .r8-loading__spinner-cell:nth-child(4) {
+    animation-delay: 0.3s;
+    grid-column: 3;
+    grid-row: 3;
+  }
+
+  .r8-loading__spinner-cell:nth-child(5) {
+    animation-delay: 0.4s;
+    grid-column: 2;
+    grid-row: 3;
+  }
+
+  .r8-loading__spinner-cell:nth-child(6) {
+    animation-delay: 0.5s;
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+  .r8-loading__spinner-cell:nth-child(7) {
+    animation-delay: 0.6s;
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .r8-loading__spinner-cell:nth-child(8) {
+    animation-delay: 0.7s;
+    grid-column: 1;
+    grid-row: 1;
   }
 
   @keyframes r8-loading-blink {
@@ -227,6 +411,79 @@
     50% {
       opacity: 1;
       transform: translateY(var(--r8-motion-lift));
+    }
+  }
+
+  @keyframes r8-loading-pop {
+    0%,
+    100% {
+      opacity: 0.28;
+      transform: translateY(0) scale(1);
+    }
+
+    50% {
+      opacity: 1;
+      transform: translateY(-1px) scale(1.1);
+    }
+  }
+
+  @keyframes r8-loading-scan {
+    0% {
+      transform: translateX(-120%);
+    }
+
+    50% {
+      transform: translateX(55%);
+    }
+
+    100% {
+      transform: translateX(170%);
+    }
+  }
+
+  @keyframes r8-loading-equalizer {
+    0%,
+    100% {
+      opacity: 0.35;
+      transform: scaleY(0.45);
+    }
+
+    50% {
+      opacity: 1;
+      transform: scaleY(1);
+    }
+  }
+
+  @keyframes r8-loading-spin {
+    0%,
+    100% {
+      opacity: 0.18;
+      transform: scale(0.88);
+    }
+
+    50% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .r8-loading__bar,
+    .r8-loading__dot,
+    .r8-loading__fill,
+    .r8-loading__pixel,
+    .r8-loading__spinner-cell {
+      animation: none;
+      transform: none;
+    }
+
+    .r8-loading__dot:nth-child(2n),
+    .r8-loading__spinner-cell:nth-child(2n) {
+      opacity: 0.65;
+    }
+
+    .r8-loading__bar:nth-child(2n) {
+      transform: scaleY(0.7);
     }
   }
 

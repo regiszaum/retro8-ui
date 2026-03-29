@@ -582,6 +582,21 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         ],
       });
       break;
+    case "loading":
+      mergeContract(contract, {
+        attributes: [
+          row("role", `"status"`, `"status"`, "Use no host para anunciar progresso assincrono sem interromper a leitura atual.", "Use on the host to announce asynchronous progress without interrupting current reading."),
+          row("aria-live", `"polite" | "off"`, `"polite"`, "Controla se updates do label visivel devem ser anunciados por assistive tech.", "Controls whether visible label updates should be announced by assistive tech."),
+          row("aria-label", "string", "recommended when there is no visible label", "Rotulo acessivel quando o Loading nao renderiza `r8-loading__label`.", "Accessible label when the Loading does not render `r8-loading__label`."),
+        ],
+        cssVariables: [
+          row("--r8-loading-accent", "color", "var(--r8-color-accent)", "Accent principal usado por pixels, dots, bars e spinner cells.", "Main accent used by pixels, dots, bars and spinner cells."),
+          row("--r8-loading-track", "color", "var(--r8-color-surface-2)", "Surface do track para variants com scan bar.", "Track surface for scan bar variants."),
+          row("--r8-loading-size", "length", "0.9rem", "Escala base compartilhada entre todos os subelements do Loading.", "Base scale shared across every Loading sub-element."),
+          row("--r8-loading-speed", "time", "0.8s", "Velocidade de animacao compartilhada pelos variants reutilizaveis.", "Animation speed shared by the reusable variants."),
+        ],
+      });
+      break;
     case "dialog":
       mergeContract(contract, {
         attributes: [

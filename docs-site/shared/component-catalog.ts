@@ -1861,16 +1861,222 @@ const feedbackComponents = [
     name: "Loading",
     group: "feedback",
     summary: l(
-      "Indicador de atividade com pixels piscando para carregamentos curtos.",
-      "Activity indicator with blinking pixels for short loading states.",
+      "Colecao de loaders retro para estados curtos, sincronizacao, scan e feedback visual persistente.",
+      "Retro loader collection for short waits, sync states, scan patterns and persistent visual feedback.",
     ),
-    classes: ["r8-loading", "r8-loading__pixel"],
-    preview: `<div class="r8-loading" aria-label="Loading">
-  <span class="r8-loading__pixel"></span>
-  <span class="r8-loading__pixel"></span>
-  <span class="r8-loading__pixel"></span>
-  <span class="r8-text r8-text--muted">Loading assets...</span>
+    classes: [
+      "r8-loading",
+      "r8-loading--dots",
+      "r8-loading--bar",
+      "r8-loading--equalizer",
+      "r8-loading--spinner",
+      "r8-loading--sm",
+      "r8-loading--lg",
+      "r8-loading__label",
+      "r8-loading__pixels",
+      "r8-loading__pixel",
+      "r8-loading__dots",
+      "r8-loading__dot",
+      "r8-loading__track",
+      "r8-loading__fill",
+      "r8-loading__bars",
+      "r8-loading__bar",
+      "r8-loading__spinner",
+      "r8-loading__spinner-cell",
+    ],
+    preview: `<div class="r8-grid" style="grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));">
+  <div class="r8-stack">
+    <span class="r8-badge">Pixels</span>
+    <div class="r8-loading" role="status" aria-live="polite">
+      <span class="r8-loading__pixels" aria-hidden="true">
+        <span class="r8-loading__pixel"></span>
+        <span class="r8-loading__pixel"></span>
+        <span class="r8-loading__pixel"></span>
+      </span>
+      <span class="r8-loading__label">Loading assets...</span>
+    </div>
+  </div>
+
+  <div class="r8-stack">
+    <span class="r8-badge">Dots</span>
+    <div class="r8-loading r8-loading--dots" role="status" aria-live="polite">
+      <span class="r8-loading__dots" aria-hidden="true">
+        <span class="r8-loading__dot"></span>
+        <span class="r8-loading__dot"></span>
+        <span class="r8-loading__dot"></span>
+        <span class="r8-loading__dot"></span>
+      </span>
+      <span class="r8-loading__label">Syncing save state...</span>
+    </div>
+  </div>
+
+  <div class="r8-stack">
+    <span class="r8-badge">Bar</span>
+    <div class="r8-loading r8-loading--bar" role="status" aria-live="polite">
+      <span class="r8-loading__track" aria-hidden="true">
+        <span class="r8-loading__fill"></span>
+      </span>
+      <span class="r8-loading__label">Compiling sprites...</span>
+    </div>
+  </div>
+
+  <div class="r8-stack">
+    <span class="r8-badge">Equalizer</span>
+    <div class="r8-loading r8-loading--equalizer" role="status" aria-live="polite">
+      <span class="r8-loading__bars" aria-hidden="true">
+        <span class="r8-loading__bar"></span>
+        <span class="r8-loading__bar"></span>
+        <span class="r8-loading__bar"></span>
+        <span class="r8-loading__bar"></span>
+      </span>
+      <span class="r8-loading__label">Streaming audio...</span>
+    </div>
+  </div>
+
+  <div class="r8-stack">
+    <span class="r8-badge">Spinner</span>
+    <div class="r8-loading r8-loading--spinner r8-loading--lg" role="status" aria-live="polite">
+      <span class="r8-loading__spinner" aria-hidden="true">
+        <span class="r8-loading__spinner-cell"></span>
+        <span class="r8-loading__spinner-cell"></span>
+        <span class="r8-loading__spinner-cell"></span>
+        <span class="r8-loading__spinner-cell"></span>
+        <span class="r8-loading__spinner-cell"></span>
+        <span class="r8-loading__spinner-cell"></span>
+        <span class="r8-loading__spinner-cell"></span>
+        <span class="r8-loading__spinner-cell"></span>
+      </span>
+      <span class="r8-loading__label">Matching nodes...</span>
+    </div>
+  </div>
 </div>`,
+    code: `<div class="r8-grid" style="grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));">
+  <div class="r8-stack">
+    <span class="r8-badge">Pixels</span>
+    <div class="r8-loading" role="status" aria-live="polite">
+      <span class="r8-loading__pixels" aria-hidden="true">
+        <span class="r8-loading__pixel"></span>
+        <span class="r8-loading__pixel"></span>
+        <span class="r8-loading__pixel"></span>
+      </span>
+      <span class="r8-loading__label">Loading assets...</span>
+    </div>
+  </div>
+
+  <div class="r8-stack">
+    <span class="r8-badge">Dots</span>
+    <div class="r8-loading r8-loading--dots" role="status" aria-live="polite">
+      <span class="r8-loading__dots" aria-hidden="true">
+        <span class="r8-loading__dot"></span>
+        <span class="r8-loading__dot"></span>
+        <span class="r8-loading__dot"></span>
+        <span class="r8-loading__dot"></span>
+      </span>
+      <span class="r8-loading__label">Syncing save state...</span>
+    </div>
+  </div>
+
+  <div class="r8-stack">
+    <span class="r8-badge">Bar</span>
+    <div class="r8-loading r8-loading--bar" role="status" aria-live="polite">
+      <span class="r8-loading__track" aria-hidden="true">
+        <span class="r8-loading__fill"></span>
+      </span>
+      <span class="r8-loading__label">Compiling sprites...</span>
+    </div>
+  </div>
+
+  <div class="r8-stack">
+    <span class="r8-badge">Equalizer</span>
+    <div class="r8-loading r8-loading--equalizer" role="status" aria-live="polite">
+      <span class="r8-loading__bars" aria-hidden="true">
+        <span class="r8-loading__bar"></span>
+        <span class="r8-loading__bar"></span>
+        <span class="r8-loading__bar"></span>
+        <span class="r8-loading__bar"></span>
+      </span>
+      <span class="r8-loading__label">Streaming audio...</span>
+    </div>
+  </div>
+
+  <div class="r8-stack">
+    <span class="r8-badge">Spinner</span>
+    <div class="r8-loading r8-loading--spinner r8-loading--lg" role="status" aria-live="polite">
+      <span class="r8-loading__spinner" aria-hidden="true">
+        <span class="r8-loading__spinner-cell"></span>
+        <span class="r8-loading__spinner-cell"></span>
+        <span class="r8-loading__spinner-cell"></span>
+        <span class="r8-loading__spinner-cell"></span>
+        <span class="r8-loading__spinner-cell"></span>
+        <span class="r8-loading__spinner-cell"></span>
+        <span class="r8-loading__spinner-cell"></span>
+        <span class="r8-loading__spinner-cell"></span>
+      </span>
+      <span class="r8-loading__label">Matching nodes...</span>
+    </div>
+  </div>
+</div>`,
+    anatomy: ll(
+      [
+        "Use `r8-loading` como shell base e escolha uma substructure visual por instancia.",
+        "Adicione `r8-loading__label` quando o loading precisar de copy visivel no layout.",
+        "Marque pixels, dots, bars, track/fill e spinner cells como `aria-hidden=\"true\"`.",
+      ],
+      [
+        "Use `r8-loading` as the base shell and choose one visual substructure per instance.",
+        "Add `r8-loading__label` when the loading state needs visible copy in the layout.",
+        "Mark pixels, dots, bars, track/fill and spinner cells with `aria-hidden=\"true\"`.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Use `role=\"status\"` e `aria-live=\"polite\"` quando o loading anunciar atualizacoes reais.",
+        "Prefira label visivel; se nao houver, forneca `aria-label` no host.",
+        "As animacoes respeitam `prefers-reduced-motion` e recuam para uma apresentacao estatica.",
+      ],
+      [
+        "Use `role=\"status\"` and `aria-live=\"polite\"` when the loading state announces real updates.",
+        "Prefer a visible label; if there is none, provide `aria-label` on the host.",
+        "Animations respect `prefers-reduced-motion` and fall back to a static presentation.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-loading--dots",
+        description: l(
+          "Variant com dots menores para sincronizacao curta e estados leves.",
+          "Variant with smaller dots for short sync states and lightweight waits.",
+        ),
+      },
+      {
+        name: "r8-loading--bar",
+        description: l(
+          "Variant com track e fill em scan loop, boa para compilacao e fetch continuo.",
+          "Variant with a track and looping scan fill, great for compile and continuous fetch states.",
+        ),
+      },
+      {
+        name: "r8-loading--equalizer",
+        description: l(
+          "Variant em bars verticais, ideal para audio, stream e monitoramento.",
+          "Vertical bar variant, ideal for audio, stream and monitoring states.",
+        ),
+      },
+      {
+        name: "r8-loading--spinner",
+        description: l(
+          "Variant com oito cells em rotacao step-based para estados mais longos.",
+          "Eight-cell step-based rotation variant for longer waits.",
+        ),
+      },
+      {
+        name: "r8-loading--sm / r8-loading--lg",
+        description: l(
+          "Size presets para encaixar o loading em toolbars, cards ou superficies maiores.",
+          "Size presets for fitting loaders into toolbars, cards or larger surfaces.",
+        ),
+      },
+    ],
   },
   {
     id: "message-box",
