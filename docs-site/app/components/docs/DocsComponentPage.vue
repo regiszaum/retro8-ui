@@ -188,7 +188,7 @@ watch(
     <section class="docs-pager">
       <NuxtLink
         v-if="neighbors.previous"
-        class="r8-btn r8-btn--ghost"
+        class="r8-btn r8-btn--secondary"
         :to="buildDocsPath(locale, ['components', neighbors.previous])"
       >
         {{ site.nav.previousComponent }}
