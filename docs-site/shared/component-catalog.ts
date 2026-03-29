@@ -113,20 +113,68 @@ const basicComponents = [
       "Botao de acao com hover e active em pixel shift, ideal para CTAs e controles de interface.",
       "Action button with pixel-shift hover and active states, ideal for CTAs and interface controls.",
     ),
-    classes: ["r8-btn", "r8-btn--primary", "r8-btn--secondary", "r8-btn--danger", "r8-btn--ghost", "r8-btn--sm", "r8-btn--lg"],
+    classes: [
+      "r8-btn",
+      "r8-btn--primary",
+      "r8-btn--secondary",
+      "r8-btn--tertiary",
+      "r8-btn--success",
+      "r8-btn--info",
+      "r8-btn--danger",
+      "r8-btn--dark",
+      "r8-btn--light",
+      "r8-btn--ghost",
+      "r8-btn--sm",
+      "r8-btn--lg",
+      "r8-btn--block",
+      "r8-btn__icon",
+      "r8-btn__spinner",
+      "is-loading",
+    ],
     preview: `<div class="docs-demo__stack">
   <div class="r8-cluster">
     <button class="r8-btn" type="button">Default</button>
     <button class="r8-btn r8-btn--primary" type="button">Primary</button>
     <button class="r8-btn r8-btn--secondary" type="button">Secondary</button>
-    <button class="r8-btn r8-btn--danger" type="button">Danger</button>
+    <button class="r8-btn r8-btn--tertiary" type="button">Tertiary</button>
   </div>
   <div class="r8-cluster">
+    <button class="r8-btn r8-btn--success" type="button">Success</button>
+    <button class="r8-btn r8-btn--info" type="button">Info</button>
+    <button class="r8-btn r8-btn--danger" type="button">Danger</button>
+    <button class="r8-btn r8-btn--dark" type="button">Dark</button>
+  </div>
+  <div class="r8-cluster">
+    <button class="r8-btn r8-btn--light" type="button">Light</button>
     <button class="r8-btn r8-btn--ghost" type="button">Ghost</button>
     <button class="r8-btn r8-btn--sm" type="button">Small</button>
     <button class="r8-btn r8-btn--lg" type="button">Large</button>
     <button class="r8-btn" type="button" disabled>Disabled</button>
   </div>
+  <div class="r8-cluster">
+    <button class="r8-btn" type="button" data-r8-variant="primary">Data variant</button>
+    <button class="r8-btn" type="button" data-r8-variant="danger" data-r8-size="lg">Boss alert</button>
+    <button class="r8-btn" type="button" data-r8-variant="secondary" data-r8-loading="true">Saving</button>
+  </div>
+  <button class="r8-btn" type="button" data-r8-variant="dark" data-r8-block="true">Full width action</button>
+</div>`,
+    code: `<div class="docs-demo__stack">
+  <div class="r8-cluster">
+    <button class="r8-btn r8-btn--primary" type="button">Primary</button>
+    <button class="r8-btn r8-btn--ghost" type="button">Ghost</button>
+    <button class="r8-btn r8-btn--sm" type="button">Small</button>
+    <button class="r8-btn r8-btn--lg" type="button">Large</button>
+  </div>
+
+  <div class="r8-cluster">
+    <button class="r8-btn" type="button" data-r8-variant="primary">Data variant</button>
+    <button class="r8-btn" type="button" data-r8-variant="danger" data-r8-size="lg">Boss alert</button>
+    <button class="r8-btn" type="button" data-r8-variant="secondary" data-r8-loading="true">Saving</button>
+  </div>
+
+  <button class="r8-btn" type="button" data-r8-variant="dark" data-r8-block="true">
+    Full width action
+  </button>
 </div>`,
   },
   {
@@ -155,24 +203,45 @@ const basicComponents = [
     classes: ["r8-color-grid", "r8-color-card", "r8-color-card__swatch", "r8-color-card__meta"],
     preview: `<div class="r8-color-grid">
   <div class="r8-color-card">
-    <div class="r8-color-card__swatch" style="background:#16213e;"></div>
+    <div class="r8-color-card__swatch" style="background:#0f172a;"></div>
     <div class="r8-color-card__meta">
-      <strong>Canvas</strong>
-      <span>#16213e</span>
+      <strong>Background</strong>
+      <span>#0f172a</span>
     </div>
   </div>
   <div class="r8-color-card">
-    <div class="r8-color-card__swatch" style="background:#3dc2ff;"></div>
+    <div class="r8-color-card__swatch" style="background:#2563eb;"></div>
     <div class="r8-color-card__meta">
-      <strong>Accent</strong>
-      <span>#3dc2ff</span>
+      <strong>Primary</strong>
+      <span>#2563eb</span>
     </div>
   </div>
   <div class="r8-color-card">
-    <div class="r8-color-card__swatch" style="background:#62c370;"></div>
+    <div class="r8-color-card__swatch" style="background:#64748b;"></div>
+    <div class="r8-color-card__meta">
+      <strong>Secondary</strong>
+      <span>#64748b</span>
+    </div>
+  </div>
+  <div class="r8-color-card">
+    <div class="r8-color-card__swatch" style="background:#16a34a;"></div>
     <div class="r8-color-card__meta">
       <strong>Success</strong>
-      <span>#62c370</span>
+      <span>#16a34a</span>
+    </div>
+  </div>
+  <div class="r8-color-card">
+    <div class="r8-color-card__swatch" style="background:#dc2626;"></div>
+    <div class="r8-color-card__meta">
+      <strong>Danger</strong>
+      <span>#dc2626</span>
+    </div>
+  </div>
+  <div class="r8-color-card">
+    <div class="r8-color-card__swatch" style="background:#7c3aed;"></div>
+    <div class="r8-color-card__meta">
+      <strong>Tertiary</strong>
+      <span>#7c3aed</span>
     </div>
   </div>
 </div>`,
@@ -265,12 +334,24 @@ const basicComponents = [
       "Texto de apoio com variantes semanticas para enfase, sucesso, perigo e estados suaves.",
       "Supporting text with semantic variants for emphasis, success, danger and muted states.",
     ),
-    classes: ["r8-text", "r8-text--muted", "r8-text--primary", "r8-text--success", "r8-text--danger"],
+    classes: [
+      "r8-text",
+      "r8-text--muted",
+      "r8-text--primary",
+      "r8-text--secondary",
+      "r8-text--tertiary",
+      "r8-text--success",
+      "r8-text--info",
+      "r8-text--danger",
+    ],
     preview: `<div class="docs-demo__stack">
   <p class="r8-text">Default body text for mission logs and dense UI labels.</p>
   <p class="r8-text r8-text--muted">Muted helper copy for secondary details.</p>
   <p class="r8-text r8-text--primary">Primary text to highlight key information.</p>
+  <p class="r8-text r8-text--secondary">Secondary text for supportive hierarchy.</p>
+  <p class="r8-text r8-text--tertiary">Tertiary text for premium or elevated states.</p>
   <p class="r8-text r8-text--success">Success text for positive states.</p>
+  <p class="r8-text r8-text--info">Info text for contextual guidance.</p>
   <p class="r8-text r8-text--danger">Danger text for critical states.</p>
 </div>`,
   },
@@ -327,10 +408,15 @@ const basicComponents = [
     ),
     classes: ["r8-splitter", "r8-splitter--vertical", "r8-splitter__pane", "r8-splitter__handle"],
     preview: `<div class="docs-demo__stack">
-  <div class="r8-splitter">
-    <div class="r8-splitter__pane">Pane A</div>
-    <div class="r8-splitter__handle" aria-hidden="true"></div>
-    <div class="r8-splitter__pane">Pane B</div>
+  <div class="r8-splitter" data-r8-splitter-position="42">
+    <div class="r8-splitter__pane">Navigator pane</div>
+    <div class="r8-splitter__handle" aria-label="Resize horizontal panes"></div>
+    <div class="r8-splitter__pane">Viewport pane</div>
+  </div>
+  <div class="r8-splitter r8-splitter--vertical" data-r8-splitter-position="58">
+    <div class="r8-splitter__pane">Inspector pane</div>
+    <div class="r8-splitter__handle" aria-label="Resize vertical panes"></div>
+    <div class="r8-splitter__pane">Console pane</div>
   </div>
 </div>`,
   },
@@ -361,18 +447,47 @@ const configurationComponents = [
     name: "Config Provider",
     group: "configuration",
     summary: l(
-      "Escopo visual local para trocar surface, contraste ou skin sem reescrever os componentes internos.",
-      "Local visual scope for swapping surface, contrast or skins without rewriting inner components.",
+      "Theme scope local para trocar tokens, contraste e skin apenas em uma parte da interface.",
+      "Local theme scope for swapping tokens, contrast and skins in only one part of the interface.",
     ),
-    classes: ["r8-config-provider", "r8-config-provider--night"],
+    classes: [
+      "r8-config-provider",
+      "r8-config-provider--night",
+      "r8-config-provider--terminal",
+      "r8-config-provider--danger",
+    ],
     preview: `<div class="docs-demo__stack">
   <section class="r8-config-provider">
-    <span class="r8-badge r8-badge--primary">Default skin</span>
-    <button class="r8-btn r8-btn--primary" type="button">Launch</button>
+    <span class="r8-badge r8-badge--primary">Default scope</span>
+    <input class="r8-input" type="text" value="Mission briefing" aria-label="Default scope input" />
+    <div class="r8-cluster">
+      <button class="r8-btn r8-btn--primary" type="button">Launch</button>
+      <button class="r8-btn r8-btn--secondary" type="button">Review</button>
+    </div>
   </section>
   <section class="r8-config-provider r8-config-provider--night">
     <span class="r8-badge">Night skin</span>
-    <button class="r8-btn" type="button">Open console</button>
+    <input class="r8-input" type="text" value="Night console" aria-label="Night scope input" />
+    <div class="r8-cluster">
+      <button class="r8-btn r8-btn--primary" type="button">Open console</button>
+      <button class="r8-btn" type="button">Ping</button>
+    </div>
+  </section>
+  <section class="r8-config-provider r8-config-provider--terminal">
+    <span class="r8-badge r8-badge--primary">Terminal skin</span>
+    <input class="r8-input" type="text" value="grep --color retro8" aria-label="Terminal scope input" />
+    <div class="r8-cluster">
+      <button class="r8-btn r8-btn--primary" type="button">Run</button>
+      <button class="r8-btn r8-btn--secondary" type="button">Inspect</button>
+    </div>
+  </section>
+  <section class="r8-config-provider r8-config-provider--danger">
+    <span class="r8-badge r8-badge--danger">Danger zone</span>
+    <input class="r8-input" type="text" value="Confirm shutdown" aria-label="Danger scope input" />
+    <div class="r8-cluster">
+      <button class="r8-btn r8-btn--danger" type="button">Shutdown</button>
+      <button class="r8-btn r8-btn--light" type="button">Cancel</button>
+    </div>
   </section>
 </div>`,
   },
@@ -387,16 +502,30 @@ const formComponents = [
       "Campo com trigger e lista de sugestoes para busca rapida e escolha guiada.",
       "Field with a trigger and suggestion list for quick search and guided selection.",
     ),
-    classes: ["r8-autocomplete", "r8-autocomplete__trigger", "r8-autocomplete__menu", "r8-autocomplete__option"],
+    classes: ["r8-autocomplete", "r8-autocomplete__trigger", "r8-autocomplete__input", "r8-autocomplete__menu", "r8-autocomplete__option"],
     preview: `<div class="r8-autocomplete">
   <div class="r8-autocomplete__trigger">
-    <span data-r8-choice-display>Search pilot...</span>
-    <span class="r8-badge">3</span>
+    <input
+      class="r8-autocomplete__input"
+      type="text"
+      placeholder="Search pilot..."
+      aria-label="Search pilot"
+    />
+    <span class="r8-badge" data-r8-autocomplete-count>4</span>
   </div>
   <div class="r8-autocomplete__menu">
-    <div class="r8-autocomplete__option">PIX-07</div>
-    <div class="r8-autocomplete__option">PIX-11</div>
-    <div class="r8-autocomplete__option">PIX-12</div>
+    <div class="r8-autocomplete__option" data-r8-search="pix-07 vanguard scout recon">
+      PIX-07 Vanguard
+    </div>
+    <div class="r8-autocomplete__option" data-r8-search="pix-11 sentinel support command">
+      PIX-11 Sentinel
+    </div>
+    <div class="r8-autocomplete__option" data-r8-search="pix-12 striker assault frontline">
+      PIX-12 Striker
+    </div>
+    <div class="r8-autocomplete__option" data-r8-search="pix-21 oracle analyst intel">
+      PIX-21 Oracle
+    </div>
   </div>
 </div>`,
   },
@@ -454,12 +583,12 @@ const formComponents = [
     classes: ["r8-color-picker-panel", "r8-color-picker__swatches", "r8-color-picker__swatch"],
     preview: `<div class="r8-color-picker-panel">
   <div class="r8-color-picker__swatches">
-    <div class="r8-color-picker__swatch is-selected" data-r8-value="#3dc2ff" style="background:#3dc2ff;"></div>
-    <div class="r8-color-picker__swatch" data-r8-value="#62c370" style="background:#62c370;"></div>
-    <div class="r8-color-picker__swatch" data-r8-value="#ffe066" style="background:#ffe066;"></div>
-    <div class="r8-color-picker__swatch" data-r8-value="#ff5964" style="background:#ff5964;"></div>
-    <div class="r8-color-picker__swatch" data-r8-value="#16213e" style="background:#16213e;"></div>
-    <div class="r8-color-picker__swatch" data-r8-value="#f7f1d1" style="background:#f7f1d1;"></div>
+    <div class="r8-color-picker__swatch is-selected" data-r8-value="#2563eb" style="background:#2563eb;"></div>
+    <div class="r8-color-picker__swatch" data-r8-value="#64748b" style="background:#64748b;"></div>
+    <div class="r8-color-picker__swatch" data-r8-value="#7c3aed" style="background:#7c3aed;"></div>
+    <div class="r8-color-picker__swatch" data-r8-value="#16a34a" style="background:#16a34a;"></div>
+    <div class="r8-color-picker__swatch" data-r8-value="#0891b2" style="background:#0891b2;"></div>
+    <div class="r8-color-picker__swatch" data-r8-value="#dc2626" style="background:#dc2626;"></div>
   </div>
 </div>`,
   },
@@ -474,17 +603,17 @@ const formComponents = [
     classes: ["r8-color-picker", "r8-color-picker__trigger", "r8-color-picker__panel", "r8-color-picker__swatches", "r8-color-picker__swatch"],
     preview: `<div class="r8-color-picker">
   <div class="r8-color-picker__trigger">
-    <span>Accent color</span>
-    <span class="r8-badge r8-badge--primary" data-r8-choice-display>#3dc2ff</span>
+    <span>Primary color</span>
+    <span class="r8-badge r8-badge--primary" data-r8-choice-display>#2563eb</span>
   </div>
   <div class="r8-color-picker__panel">
     <div class="r8-color-picker__swatches">
-      <div class="r8-color-picker__swatch is-selected" data-r8-value="#3dc2ff" style="background:#3dc2ff;"></div>
-      <div class="r8-color-picker__swatch" data-r8-value="#62c370" style="background:#62c370;"></div>
-      <div class="r8-color-picker__swatch" data-r8-value="#ffe066" style="background:#ffe066;"></div>
-      <div class="r8-color-picker__swatch" data-r8-value="#ff5964" style="background:#ff5964;"></div>
-      <div class="r8-color-picker__swatch" data-r8-value="#243b55" style="background:#243b55;"></div>
-      <div class="r8-color-picker__swatch" data-r8-value="#f7f1d1" style="background:#f7f1d1;"></div>
+      <div class="r8-color-picker__swatch is-selected" data-r8-value="#2563eb" style="background:#2563eb;"></div>
+      <div class="r8-color-picker__swatch" data-r8-value="#64748b" style="background:#64748b;"></div>
+      <div class="r8-color-picker__swatch" data-r8-value="#7c3aed" style="background:#7c3aed;"></div>
+      <div class="r8-color-picker__swatch" data-r8-value="#16a34a" style="background:#16a34a;"></div>
+      <div class="r8-color-picker__swatch" data-r8-value="#0891b2" style="background:#0891b2;"></div>
+      <div class="r8-color-picker__swatch" data-r8-value="#dc2626" style="background:#dc2626;"></div>
     </div>
   </div>
 </div>`,
@@ -916,14 +1045,29 @@ const dataComponents = [
       "Rotulo compacto para status, categorias, versoes e metadados curtos.",
       "Compact label for statuses, categories, versions and short metadata.",
     ),
-    classes: ["r8-badge", "r8-badge--primary", "r8-badge--success", "r8-badge--warning", "r8-badge--danger", "r8-badge--info"],
+    classes: [
+      "r8-badge",
+      "r8-badge--primary",
+      "r8-badge--secondary",
+      "r8-badge--tertiary",
+      "r8-badge--success",
+      "r8-badge--warning",
+      "r8-badge--danger",
+      "r8-badge--info",
+      "r8-badge--dark",
+      "r8-badge--light",
+    ],
     preview: `<div class="r8-cluster">
   <span class="r8-badge">default</span>
   <span class="r8-badge r8-badge--primary">new</span>
+  <span class="r8-badge r8-badge--secondary">beta</span>
+  <span class="r8-badge r8-badge--tertiary">pro</span>
   <span class="r8-badge r8-badge--success">online</span>
   <span class="r8-badge r8-badge--warning">queued</span>
   <span class="r8-badge r8-badge--danger">critical</span>
   <span class="r8-badge r8-badge--info">docs</span>
+  <span class="r8-badge r8-badge--dark">night</span>
+  <span class="r8-badge r8-badge--light">light</span>
 </div>`,
   },
   {
@@ -1106,12 +1250,12 @@ const dataComponents = [
     name: "Progress",
     group: "data",
     summary: l(
-      "Barra de progresso com fill retro listrado e valor controlado por custom property.",
-      "Progress bar with retro striped fill and a value controlled through a custom property.",
+      "Barra de progresso com fill retro listrado e valor controlado por custom property ou `data-r8-value`.",
+      "Progress bar with a retro striped fill and a value controlled through a custom property or `data-r8-value`.",
     ),
     classes: ["r8-progress", "r8-progress__label", "r8-progress__track", "r8-progress__bar", "--r8-progress-value", "r8-progress--success", "r8-progress--warning", "r8-progress--danger"],
     preview: `<div class="docs-demo__stack">
-  <div class="r8-progress" style="--r8-progress-value: 32%;">
+  <div class="r8-progress" data-r8-value="32">
     <div class="r8-progress__label">
       <span>Upload</span>
       <span>32%</span>
@@ -1120,7 +1264,7 @@ const dataComponents = [
       <div class="r8-progress__bar"></div>
     </div>
   </div>
-  <div class="r8-progress r8-progress--success" style="--r8-progress-value: 84%;">
+  <div class="r8-progress r8-progress--success" data-r8-value="84">
     <div class="r8-progress__label">
       <span>Shield sync</span>
       <span>84%</span>

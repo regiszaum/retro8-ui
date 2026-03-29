@@ -10,6 +10,12 @@ import {
   type CatalogApiEntry,
   type DocsLocale,
 } from "~~/shared/component-catalog";
+import {
+  getComponentContract,
+  type CatalogEventEntry,
+  type CatalogMethodEntry,
+  type CatalogTableEntry,
+} from "~~/shared/component-contracts";
 
 export const localeMeta = {
   "pt-br": {
@@ -29,12 +35,17 @@ const sharedTokenGroups = [
     key: "colors",
     type: "color",
     items: [
-      { labelKey: "canvas", token: "--r8-color-bg", value: "#16213e" },
-      { labelKey: "surface", token: "--r8-color-surface", value: "#f7f1d1" },
-      { labelKey: "accent", token: "--r8-color-accent", value: "#3dc2ff" },
-      { labelKey: "danger", token: "--r8-color-danger", value: "#ff5964" },
-      { labelKey: "success", token: "--r8-color-success", value: "#62c370" },
-      { labelKey: "focus", token: "--r8-color-focus", value: "#ffe066" },
+      { labelKey: "background", token: "--r8-color-bg", value: "#0f172a" },
+      { labelKey: "surface", token: "--r8-color-surface", value: "#f8fafc" },
+      { labelKey: "primary", token: "--r8-color-primary", value: "#2563eb" },
+      { labelKey: "secondary", token: "--r8-color-secondary", value: "#64748b" },
+      { labelKey: "tertiary", token: "--r8-color-tertiary", value: "#7c3aed" },
+      { labelKey: "success", token: "--r8-color-success", value: "#16a34a" },
+      { labelKey: "info", token: "--r8-color-info", value: "#0891b2" },
+      { labelKey: "danger", token: "--r8-color-danger", value: "#dc2626" },
+      { labelKey: "dark", token: "--r8-color-dark", value: "#1e293b" },
+      { labelKey: "light", token: "--r8-color-light", value: "#f8fafc" },
+      { labelKey: "focus", token: "--r8-color-focus", value: "#facc15" },
     ],
   },
   {
@@ -97,6 +108,13 @@ const localized = {
     },
     localeSwitcher: {
       label: "Language",
+    },
+    search: {
+      label: "Search components",
+      placeholder: "Search components...",
+      hint: "Use Arrow keys to navigate and Enter to open.",
+      empty: "No matching components found.",
+      close: "Esc",
     },
     home: {
       heroWindowTitle: "Retro catalog em escala real",
@@ -162,17 +180,22 @@ const localized = {
         "Cores, spacing, bordas, sombras, tipografia e interactive states vivem em CSS custom properties para manter consistencia e facilitar evolucao.",
       tokensKicker: "Foundation",
       tokensGroupTitles: {
-        colors: "Primary colors",
+        colors: "Semantic colors",
         spacing: "Spacing",
         borders: "Borders and shadows",
         typeAndMotion: "Typography and interaction",
       },
       tokenItemLabels: {
-        canvas: "Canvas",
+        background: "Background",
         surface: "Surface",
-        accent: "Accent",
+        primary: "Primary",
+        secondary: "Secondary",
+        tertiary: "Tertiary",
+        info: "Info",
         danger: "Danger",
         success: "Success",
+        dark: "Dark",
+        light: "Light",
         focus: "Focus",
         xs: "XS",
         sm: "SM",
@@ -234,8 +257,21 @@ const localized = {
       previewLabel: "Preview",
       previewStatus: "Live preview usando o CSS compilado e o runtime opcional da retro8-ui",
       apiTitle: "Semantic API",
+      attributesTitle: "Attributes",
+      dataAttributesTitle: "Data attributes",
+      cssVariablesTitle: "CSS variables",
+      methodsTitle: "Methods",
+      eventsTitle: "Events",
       anatomyTitle: "Anatomy",
       accessibilityTitle: "Accessibility",
+      tableColumns: {
+        name: "Name",
+        type: "Type",
+        defaultValue: "Default",
+        description: "Description",
+        signature: "Signature",
+        payload: "Payload",
+      },
       htmlTitleSuffix: "HTML",
       copyHint: "Copy o snippet e adapte ao seu projeto.",
       copyButton: "Copy HTML",
@@ -275,6 +311,13 @@ const localized = {
     },
     localeSwitcher: {
       label: "Language",
+    },
+    search: {
+      label: "Search components",
+      placeholder: "Search components...",
+      hint: "Use Arrow keys to navigate and Enter to open.",
+      empty: "No matching components found.",
+      close: "Esc",
     },
     home: {
       heroWindowTitle: "Retro catalog at full scale",
@@ -340,17 +383,22 @@ const localized = {
         "Color, spacing, borders, shadows, typography and interaction states live in custom properties so the system stays consistent and easy to evolve.",
       tokensKicker: "Foundation",
       tokensGroupTitles: {
-        colors: "Primary colors",
+        colors: "Semantic colors",
         spacing: "Spacing",
         borders: "Borders and shadows",
         typeAndMotion: "Typography and interaction",
       },
       tokenItemLabels: {
-        canvas: "Canvas",
+        background: "Background",
         surface: "Surface",
-        accent: "Accent",
+        primary: "Primary",
+        secondary: "Secondary",
+        tertiary: "Tertiary",
+        info: "Info",
         danger: "Danger",
         success: "Success",
+        dark: "Dark",
+        light: "Light",
         focus: "Focus",
         xs: "XS",
         sm: "SM",
@@ -412,8 +460,21 @@ const localized = {
       previewLabel: "Preview",
       previewStatus: "Live preview using the compiled retro8-ui CSS and optional runtime",
       apiTitle: "Semantic API",
+      attributesTitle: "Attributes",
+      dataAttributesTitle: "Data attributes",
+      cssVariablesTitle: "CSS variables",
+      methodsTitle: "Methods",
+      eventsTitle: "Events",
       anatomyTitle: "Anatomy",
       accessibilityTitle: "Accessibility",
+      tableColumns: {
+        name: "Name",
+        type: "Type",
+        defaultValue: "Default",
+        description: "Description",
+        signature: "Signature",
+        payload: "Payload",
+      },
       htmlTitleSuffix: "HTML",
       copyHint: "Copy the snippet and adapt it to your project.",
       copyButton: "Copy HTML",
@@ -463,7 +524,34 @@ function localizeApiEntry(entry: CatalogApiEntry, locale: DocsLocale) {
   };
 }
 
+function localizeTableEntry(entry: CatalogTableEntry, locale: DocsLocale) {
+  return {
+    name: entry.name,
+    type: entry.type,
+    defaultValue: entry.defaultValue,
+    description: entry.description[locale],
+  };
+}
+
+function localizeMethodEntry(entry: CatalogMethodEntry, locale: DocsLocale) {
+  return {
+    name: entry.name,
+    signature: entry.signature,
+    description: entry.description[locale],
+  };
+}
+
+function localizeEventEntry(entry: CatalogEventEntry, locale: DocsLocale) {
+  return {
+    name: entry.name,
+    payload: entry.payload,
+    description: entry.description[locale],
+  };
+}
+
 function createComponentPayload(locale: DocsLocale, component: CatalogEntry, groupTitle: string) {
+  const contract = getComponentContract(component);
+
   return {
     id: component.id,
     name: component.name,
@@ -479,6 +567,11 @@ function createComponentPayload(locale: DocsLocale, component: CatalogEntry, gro
           name,
           description: describeApiClass(name, component.name, locale),
         })),
+    attributes: contract.attributes.map((entry) => localizeTableEntry(entry, locale)),
+    dataAttributes: contract.dataAttributes.map((entry) => localizeTableEntry(entry, locale)),
+    cssVariables: contract.cssVariables.map((entry) => localizeTableEntry(entry, locale)),
+    methods: contract.methods.map((entry) => localizeMethodEntry(entry, locale)),
+    events: contract.events.map((entry) => localizeEventEntry(entry, locale)),
     anatomy: component.anatomy?.[locale] ?? defaultAnatomyByGroup[component.group][locale],
     accessibility: component.accessibility?.[locale] ?? defaultAccessibilityByGroup[component.group][locale],
   };
@@ -567,6 +660,7 @@ export function getSiteContent(locale = "pt-br") {
     nav: dictionary.nav,
     theme: dictionary.theme,
     localeSwitcher: dictionary.localeSwitcher,
+    search: dictionary.search,
     home: {
       ...dictionary.home,
       stats,

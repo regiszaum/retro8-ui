@@ -18,7 +18,7 @@
   }
 
   .r8-input {
-    @apply w-full border-r8 border-r8-border bg-white px-r8-3 py-r8-3 font-body text-r8-sm leading-relaxed text-r8-ink shadow-r8-inset;
+    @apply w-full border-r8 border-r8-border bg-r8-surface-3 px-r8-3 py-r8-3 font-body text-r8-sm leading-relaxed text-r8-ink shadow-r8-inset;
     min-height: 3rem;
   }
 
@@ -42,7 +42,7 @@
   .r8-input[aria-invalid="true"],
   .r8-input--invalid {
     border-color: var(--r8-color-danger);
-    box-shadow: inset 0 0 0 var(--r8-border-thin) rgba(255, 89, 100, 0.18);
+    box-shadow: inset 0 0 0 var(--r8-border-thin) rgba(220, 38, 38, 0.18);
   }
 
   :where(textarea.r8-input) {

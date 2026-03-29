@@ -1,22 +1,52 @@
 @layer base {
   :root {
-    --r8-color-bg: #16213e;
-    --r8-color-surface: #f7f1d1;
-    --r8-color-surface-muted: #ddd2a7;
-    --r8-color-surface-raised: #fff7dc;
-    --r8-color-ink: #241f31;
-    --r8-color-ink-muted: #5c566e;
-    --r8-color-border: #241f31;
-    --r8-color-accent: #3dc2ff;
-    --r8-color-accent-strong: #0f7bff;
-    --r8-color-success: #62c370;
-    --r8-color-warning: #f4a259;
-    --r8-color-danger: #ff5964;
-    --r8-color-info: #5bc0be;
-    --r8-color-focus: #ffe066;
-    --r8-color-disabled: #8c8798;
-    --r8-color-disabled-bg: #cfc6a8;
-    --r8-dialog-backdrop: rgba(22, 33, 62, 0.78);
+    --r8-color-bg: #0f172a;
+    --r8-color-surface: #f8fafc;
+    --r8-color-surface-2: #e2e8f0;
+    --r8-color-surface-3: #ffffff;
+    --r8-color-surface-muted: var(--r8-color-surface-2);
+    --r8-color-surface-raised: var(--r8-color-surface-3);
+    --r8-color-ink: #0f172a;
+    --r8-color-ink-muted: #475569;
+    --r8-color-border: #0f172a;
+
+    --r8-color-primary: #2563eb;
+    --r8-color-primary-strong: #1d4ed8;
+    --r8-color-primary-contrast: #ffffff;
+    --r8-color-secondary: #64748b;
+    --r8-color-secondary-strong: #475569;
+    --r8-color-secondary-contrast: #ffffff;
+    --r8-color-tertiary: #7c3aed;
+    --r8-color-tertiary-strong: #6d28d9;
+    --r8-color-tertiary-contrast: #ffffff;
+    --r8-color-success: #16a34a;
+    --r8-color-success-strong: #15803d;
+    --r8-color-success-contrast: #ffffff;
+    --r8-color-warning: #b45309;
+    --r8-color-warning-strong: #92400e;
+    --r8-color-warning-contrast: #ffffff;
+    --r8-color-danger: #dc2626;
+    --r8-color-danger-strong: #b91c1c;
+    --r8-color-danger-contrast: #ffffff;
+    --r8-color-info: #0891b2;
+    --r8-color-info-strong: #0e7490;
+    --r8-color-info-contrast: #ffffff;
+    --r8-color-dark: #1e293b;
+    --r8-color-dark-strong: #0f172a;
+    --r8-color-dark-contrast: #ffffff;
+    --r8-color-light: #f8fafc;
+    --r8-color-light-strong: #e2e8f0;
+    --r8-color-light-contrast: #0f172a;
+
+    /* Backward-compatible aliases for the original retro8-ui naming. */
+    --r8-color-accent: var(--r8-color-primary);
+    --r8-color-accent-strong: var(--r8-color-primary-strong);
+    --r8-color-accent-contrast: var(--r8-color-primary-contrast);
+
+    --r8-color-focus: #facc15;
+    --r8-color-disabled: #94a3b8;
+    --r8-color-disabled-bg: #cbd5e1;
+    --r8-dialog-backdrop: rgba(15, 23, 42, 0.78);
 
     --r8-space-1: 0.125rem;
     --r8-space-2: 0.25rem;
@@ -36,7 +66,7 @@
     --r8-shadow-md: 4px 4px 0 0 var(--r8-color-border);
     --r8-shadow-lg: 6px 6px 0 0 var(--r8-color-border);
     --r8-shadow-pressed: 1px 1px 0 0 var(--r8-color-border);
-    --r8-shadow-inset: inset 0 0 0 var(--r8-border-thin) rgba(36, 31, 49, 0.14);
+    --r8-shadow-inset: inset 0 0 0 var(--r8-border-thin) rgba(15, 23, 42, 0.14);
 
     --r8-font-display: "Press Start 2P", "VT323", "Courier New", Courier, monospace;
     --r8-font-body: "IBM Plex Mono", "Fira Mono", "Courier New", Courier, monospace;

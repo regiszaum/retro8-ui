@@ -28,10 +28,10 @@
   }
 
   .r8-window--danger .r8-window__titlebar {
-    @apply bg-r8-danger text-white;
+    @apply bg-r8-danger text-r8-danger-contrast;
   }
 
   .r8-window--success .r8-window__titlebar {
-    @apply bg-r8-success text-r8-ink;
+    @apply bg-r8-success text-r8-success-contrast;
   }
 }

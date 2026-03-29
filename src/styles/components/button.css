@@ -31,20 +31,41 @@
     transform: none;
   }
 
+  .r8-btn.is-loading {
+    cursor: progress;
+    pointer-events: none;
+  }
+
   .r8-btn--primary {
-    @apply bg-r8-accent text-r8-ink;
+    @apply bg-r8-primary text-r8-primary-contrast;
   }
 
   .r8-btn--secondary {
-    @apply bg-r8-surface-2 text-r8-ink;
+    @apply bg-r8-secondary text-r8-secondary-contrast;
+  }
+
+  .r8-btn--tertiary {
+    @apply bg-r8-tertiary text-r8-tertiary-contrast;
   }
 
   .r8-btn--success {
-    @apply bg-r8-success text-r8-ink;
+    @apply bg-r8-success text-r8-success-contrast;
+  }
+
+  .r8-btn--info {
+    @apply bg-r8-info text-r8-info-contrast;
   }
 
   .r8-btn--danger {
-    @apply bg-r8-danger text-white;
+    @apply bg-r8-danger text-r8-danger-contrast;
+  }
+
+  .r8-btn--dark {
+    @apply bg-r8-dark text-r8-dark-contrast;
+  }
+
+  .r8-btn--light {
+    @apply bg-r8-light-strong text-r8-light-contrast;
   }
 
   .r8-btn--ghost {
@@ -69,5 +90,16 @@
 
   .r8-btn__icon {
     @apply text-r8-base leading-none;
+  }
+
+  .r8-btn__spinner {
+    animation: r8-loading-blink 0.8s steps(2, end) infinite;
+    background: currentColor;
+    border: var(--r8-border-thin) solid var(--r8-color-border);
+    box-shadow: var(--r8-shadow-pressed);
+    display: inline-block;
+    flex: 0 0 auto;
+    height: 0.8rem;
+    width: 0.8rem;
   }
 }
