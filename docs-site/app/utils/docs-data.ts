@@ -83,7 +83,7 @@ const sharedTokenGroups = [
 const localized = {
   "pt-br": {
     meta: {
-      title: "retro8-ui Docs",
+      title: "Retro8 UI",
       description:
         "Documentacao bilingue da retro8-ui com catalog expandido, pages individuais por component e light/dark mode.",
     },
@@ -286,7 +286,7 @@ const localized = {
   },
   en: {
     meta: {
-      title: "retro8-ui Docs",
+      title: "Retro8 UI",
       description:
         "Bilingual retro8-ui documentation with an expanded catalog, per-component pages and light/dark mode.",
     },
