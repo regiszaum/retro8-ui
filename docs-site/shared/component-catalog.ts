@@ -1534,17 +1534,6 @@ const navigationComponents = [
 </nav>`,
   },
   {
-    id: "backtop",
-    name: "Backtop",
-    group: "navigation",
-    summary: l(
-      "Botao fixo para voltar ao topo em listas e docs longas.",
-      "Fixed button for jumping back to the top on long docs and lists.",
-    ),
-    classes: ["r8-backtop"],
-    preview: `<button class="r8-backtop" style="position: static; right: auto; bottom: auto;" type="button">TOP</button>`,
-  },
-  {
     id: "breadcrumb",
     name: "Breadcrumb",
     group: "navigation",

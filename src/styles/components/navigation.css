@@ -27,25 +27,6 @@
     content: ">";
   }
 
-  .r8-backtop {
-    align-items: center;
-    background: var(--r8-color-accent);
-    border: var(--r8-border-thick) solid var(--r8-color-border);
-    bottom: var(--r8-space-4);
-    box-shadow: var(--r8-shadow-md);
-    color: var(--r8-color-accent-contrast);
-    cursor: pointer;
-    display: inline-grid;
-    font-family: var(--r8-font-display);
-    font-size: var(--r8-font-size-xs);
-    height: 3rem;
-    place-items: center;
-    position: fixed;
-    right: var(--r8-space-4);
-    text-transform: uppercase;
-    width: 3rem;
-  }
-
   .r8-breadcrumb {
     align-items: center;
     display: flex;
@@ -190,7 +171,6 @@
   }
 
   .r8-anchor__link:focus-visible,
-  .r8-backtop:focus-visible,
   .r8-dropdown__item:focus-visible,
   .r8-menu__item:focus-visible,
   .r8-menu__submenu:focus-visible {

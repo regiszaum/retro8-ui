@@ -90,7 +90,6 @@ const runtimeKinds = new Set([
   "slider",
   "input-tag",
   "transfer",
-  "backtop",
   "progress",
   "alert",
 ]);
@@ -556,14 +555,6 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         methods: runtimeMethods,
         events: [
           event("r8:transfer-change", `{ direction, movedItems }`, "Emitido depois que itens selecionados mudam de panel.", "Emitted after selected items move between panels."),
-        ],
-      });
-      break;
-    case "backtop":
-      mergeContract(contract, {
-        methods: runtimeMethods,
-        events: [
-          event("r8:backtop", `{ top }`, "Emitido quando o runtime aciona o scroll para o topo.", "Emitted when the runtime triggers scroll back to top."),
         ],
       });
       break;

@@ -2484,22 +2484,6 @@
     });
   }
 
-  function initBacktops(root) {
-    toArray(root.querySelectorAll(".r8-backtop")).forEach((button) => {
-      if (!(button instanceof HTMLElement) || button.dataset.r8BacktopReady === "true") {
-        return;
-      }
-
-      button.dataset.r8BacktopReady = "true";
-      button.addEventListener("click", () => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-        emitComponentEvent(button, "backtop", {
-          top: 0,
-        });
-      });
-    });
-  }
-
   function resolveTarget(trigger) {
     const selector = trigger.getAttribute("data-r8-target");
     if (!selector) {
@@ -3033,7 +3017,6 @@
     initSliders(scope);
     initInputTags(scope);
     initTransfers(scope);
-    initBacktops(scope);
     initGenericToggles(scope);
     attachGlobalListeners();
 
