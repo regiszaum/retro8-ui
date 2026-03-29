@@ -77,8 +77,8 @@ export const componentGroups = [
     core: false,
     title: l("retro8 extras", "retro8 extras"),
     description: l(
-      "Componentes nativos da retro8-ui que vao alem da paridade com o catalogo do Element Plus.",
-      "retro8-ui native components that go beyond parity with the Element Plus catalog.",
+      "Componentes nativos da retro8-ui que complementam o catalogo principal com pecas proprias do sistema.",
+      "retro8-ui native components that extend the main catalog with system-specific pieces.",
     ),
   },
 ] as const;

@@ -184,7 +184,7 @@ You can use the bundled runtime or replace it with your own application logic if
 
 The current catalog includes:
 
-- 81 core components aligned with the current Element Plus overview coverage used as the reference for parity in this project;
+- 81 core components across the main catalog, plus retro8-ui-specific extras;
 - grouped categories across Basic, Configuration, Form, Data, Navigation, Feedback, and Others;
 - native `retro8-ui` extras such as `Panel`, `Window`, and `Navbar`.
 
