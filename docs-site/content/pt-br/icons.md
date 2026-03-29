@@ -9,3 +9,5 @@ A `retro8-ui` nao embute um icon package por padrao. Isso e intencional.
 O objetivo e manter a library focada em superficie visual, states e padroes HTML, enquanto icons ficam como uma escolha opcional do consumidor.
 
 Nesta pagina, a docs recomenda libraries externas que combinam bem com a estetica pixel art e com um fluxo framework-agnostic.
+
+A docs publica tambem usa os free cursor assets do Pixelarticons para `default`, `pointer`, `text`, `grab`, `wait`, `disabled` e resize states.

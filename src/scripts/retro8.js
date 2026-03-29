@@ -37,28 +37,6 @@
       kind: "color",
     },
     {
-      root: ".r8-date-picker-panel",
-      trigger: "",
-      panel: ".r8-date-picker-panel",
-      option: ".r8-date-picker__day",
-      closeOnSelect: false,
-      kind: "date",
-    },
-    {
-      root: ".r8-date-picker",
-      trigger: ".r8-date-picker__trigger",
-      panel: ".r8-date-picker__panel",
-      option: ".r8-date-picker__day",
-      kind: "date",
-    },
-    {
-      root: ".r8-datetime-picker",
-      trigger: ".r8-datetime-picker__trigger",
-      panel: ".r8-datetime-picker__panel",
-      option: ".r8-date-picker__day, .r8-time-picker__slot",
-      kind: "datetime",
-    },
-    {
       root: ".r8-mention",
       trigger: ".r8-mention__trigger",
       panel: ".r8-mention__menu",
@@ -108,14 +86,29 @@
 
   const choiceStates = new WeakMap();
   const splitterStates = new WeakMap();
+  const overlayTimers = new WeakMap();
   const floatingStates = new Set();
   const genericTargets = new Set();
   const observers = new WeakSet();
+  const drawerTransitionMs = 270;
+  const floatingOverlayGap = 12;
+  const floatingViewportPadding = 12;
+  const floatingPlacements = [
+    "top",
+    "top-start",
+    "top-end",
+    "bottom",
+    "bottom-start",
+    "bottom-end",
+    "left",
+    "right",
+  ];
   let uniqueId = 0;
   const buttonVariants = ["primary", "secondary", "tertiary", "success", "info", "danger", "dark", "light", "ghost"];
   const badgeVariants = ["primary", "secondary", "tertiary", "success", "warning", "danger", "info", "dark", "light"];
   const tagVariants = ["success", "info", "danger"];
   const alertVariants = ["success", "info", "danger"];
+  const alertPlacements = ["top-left", "bottom-left", "top-right", "bottom-right"];
   const progressVariants = ["success", "warning", "danger"];
   const windowVariants = ["success", "danger"];
   const navbarVariants = ["dark"];
@@ -159,6 +152,259 @@
     }
 
     return element.id;
+  }
+
+  function isValidDate(value) {
+    return value instanceof Date && !Number.isNaN(value.getTime());
+  }
+
+  function padNumber(value) {
+    return String(value).padStart(2, "0");
+  }
+
+  function normalizeLocale(value) {
+    if (typeof value !== "string" || !value.trim()) {
+      return "en-US";
+    }
+
+    if (value.includes("-")) {
+      const [language, region] = value.split("-");
+      if (language && region) {
+        return `${language.toLowerCase()}-${region.toUpperCase()}`;
+      }
+    }
+
+    return value;
+  }
+
+  function createCalendarDate(year, month, day) {
+    return new Date(year, month, day, 12, 0, 0, 0);
+  }
+
+  function createDateTime(date, timeValue = "00:00") {
+    if (!isValidDate(date)) {
+      return null;
+    }
+
+    const [hoursText, minutesText] = String(timeValue).split(":");
+    const hours = clamp(Number(hoursText) || 0, 0, 23);
+    const minutes = clamp(Number(minutesText) || 0, 0, 59);
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), hours, minutes, 0, 0);
+  }
+
+  function addCalendarDays(date, amount) {
+    if (!isValidDate(date)) {
+      return null;
+    }
+
+    return createCalendarDate(date.getFullYear(), date.getMonth(), date.getDate() + amount);
+  }
+
+  function addCalendarMonths(date, amount) {
+    if (!isValidDate(date)) {
+      return null;
+    }
+
+    return createCalendarDate(date.getFullYear(), date.getMonth() + amount, 1);
+  }
+
+  function startOfMonth(date) {
+    if (!isValidDate(date)) {
+      return null;
+    }
+
+    return createCalendarDate(date.getFullYear(), date.getMonth(), 1);
+  }
+
+  function startOfWeek(date, weekStart) {
+    if (!isValidDate(date)) {
+      return null;
+    }
+
+    const safeWeekStart = clamp(Number(weekStart) || 0, 0, 6);
+    const start = createCalendarDate(date.getFullYear(), date.getMonth(), date.getDate());
+    const diff = (start.getDay() - safeWeekStart + 7) % 7;
+    start.setDate(start.getDate() - diff);
+    return createCalendarDate(start.getFullYear(), start.getMonth(), start.getDate());
+  }
+
+  function toDateKey(date) {
+    if (!isValidDate(date)) {
+      return "";
+    }
+
+    return `${date.getFullYear()}-${padNumber(date.getMonth() + 1)}-${padNumber(date.getDate())}`;
+  }
+
+  function toMonthKey(date) {
+    if (!isValidDate(date)) {
+      return "";
+    }
+
+    return `${date.getFullYear()}-${padNumber(date.getMonth() + 1)}`;
+  }
+
+  function parseDateValue(value) {
+    if (typeof value !== "string" || !value.trim()) {
+      return null;
+    }
+
+    const match = value.trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (!match) {
+      return null;
+    }
+
+    const [, yearText, monthText, dayText] = match;
+    const year = Number(yearText);
+    const month = Number(monthText);
+    const day = Number(dayText);
+    const date = createCalendarDate(year, month - 1, day);
+    return toDateKey(date) === value.trim() ? date : null;
+  }
+
+  function parseMonthValue(value) {
+    if (typeof value !== "string" || !value.trim()) {
+      return null;
+    }
+
+    const match = value.trim().match(/^(\d{4})-(\d{2})$/);
+    if (!match) {
+      return null;
+    }
+
+    const [, yearText, monthText] = match;
+    const year = Number(yearText);
+    const month = Number(monthText);
+    const date = createCalendarDate(year, month - 1, 1);
+    return toMonthKey(date) === value.trim() ? date : null;
+  }
+
+  function parseDateTimeValue(value) {
+    if (typeof value !== "string" || !value.trim()) {
+      return null;
+    }
+
+    const match = value
+      .trim()
+      .match(/^(\d{4})-(\d{2})-(\d{2})(?:[T\s](\d{2}):(\d{2}))?$/);
+    if (!match) {
+      return null;
+    }
+
+    const [, yearText, monthText, dayText, hoursText = "00", minutesText = "00"] = match;
+    const year = Number(yearText);
+    const month = Number(monthText);
+    const day = Number(dayText);
+    const hours = Number(hoursText);
+    const minutes = Number(minutesText);
+    const date = new Date(year, month - 1, day, hours, minutes, 0, 0);
+
+    if (!isValidDate(date)) {
+      return null;
+    }
+
+    const normalizedDate = toDateKey(date);
+    const normalizedTime = `${padNumber(hours)}:${padNumber(minutes)}`;
+    return {
+      date: createCalendarDate(date.getFullYear(), date.getMonth(), date.getDate()),
+      time: normalizedTime,
+      hasTime: Boolean(match[4]),
+      timestamp: date.getTime(),
+      dateKey: normalizedDate,
+      raw: value.trim(),
+    };
+  }
+
+  function formatStorageValue(date) {
+    return toDateKey(date);
+  }
+
+  function formatDateTimeStorageValue(date, timeValue) {
+    const dateKey = formatStorageValue(date);
+    return dateKey ? `${dateKey}T${timeValue}` : "";
+  }
+
+  function isSameCalendarDay(left, right) {
+    return toDateKey(left) !== "" && toDateKey(left) === toDateKey(right);
+  }
+
+  function buildWeekdayLabels(locale, weekStart) {
+    const formatter = new Intl.DateTimeFormat(locale, { weekday: "short" });
+    const baseDate = createCalendarDate(2026, 2, 1);
+    const labels = [];
+
+    for (let offset = 0; offset < 7; offset += 1) {
+      const date = addCalendarDays(baseDate, (Number(weekStart) || 0) + offset);
+      labels.push(formatter.format(date || baseDate));
+    }
+
+    return labels;
+  }
+
+  function formatMonthTitle(date, locale) {
+    if (!isValidDate(date)) {
+      return "";
+    }
+
+    return new Intl.DateTimeFormat(locale, {
+      month: "long",
+      year: "numeric",
+    }).format(date);
+  }
+
+  function formatDateLabel(date, locale) {
+    if (!isValidDate(date)) {
+      return "";
+    }
+
+    return new Intl.DateTimeFormat(locale, {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    }).format(date);
+  }
+
+  function formatDateTimeLabel(date, timeValue, locale) {
+    const dateTime = createDateTime(date, timeValue);
+    if (!isValidDate(dateTime)) {
+      return formatDateLabel(date, locale);
+    }
+
+    return new Intl.DateTimeFormat(locale, {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(dateTime);
+  }
+
+  function roundTimeToStep(stepMinutes) {
+    const now = new Date();
+    const totalMinutes = now.getHours() * 60 + now.getMinutes();
+    const rounded = Math.round(totalMinutes / stepMinutes) * stepMinutes;
+    const hours = clamp(Math.floor((rounded % (24 * 60)) / 60), 0, 23);
+    const minutes = clamp(rounded % 60, 0, 59);
+    return `${padNumber(hours)}:${padNumber(minutes)}`;
+  }
+
+  function buildTimeSlots(stepMinutes) {
+    const safeStep = clamp(Number(stepMinutes) || 30, 5, 720);
+    const slots = [];
+
+    for (let minutes = 0; minutes < 24 * 60; minutes += safeStep) {
+      const hours = Math.floor(minutes / 60);
+      const remainder = minutes % 60;
+      slots.push(`${padNumber(hours)}:${padNumber(remainder)}`);
+    }
+
+    return slots;
+  }
+
+  function compareTimeValues(left, right) {
+    const [leftHours, leftMinutes] = String(left).split(":").map((chunk) => Number(chunk) || 0);
+    const [rightHours, rightMinutes] = String(right).split(":").map((chunk) => Number(chunk) || 0);
+    return leftHours * 60 + leftMinutes - (rightHours * 60 + rightMinutes);
   }
 
   function emitComponentEvent(target, name, detail = {}) {
@@ -293,6 +539,17 @@
         }
 
         syncVariantClasses(element, family.baseClass, family.variants, element.dataset.r8Variant || "");
+
+        if (family.selector === ".r8-alert" && typeof element.dataset.r8Placement === "string" && element.dataset.r8Placement.trim()) {
+          alertPlacements.forEach((placement) => {
+            element.classList.remove(`r8-alert--${placement}`);
+          });
+
+          const placement = element.dataset.r8Placement || "";
+          if (alertPlacements.includes(placement)) {
+            element.classList.add(`r8-alert--${placement}`);
+          }
+        }
       });
     });
   }
@@ -387,6 +644,7 @@
     }
 
     setHidden(state.panel, true);
+    state.panel.classList.remove("is-open");
     syncExpandedState(state, false);
     floatingStates.delete(container);
   }
@@ -398,6 +656,7 @@
     }
 
     setHidden(state.panel, false);
+    state.panel.classList.add("is-open");
     syncExpandedState(state, true);
     floatingStates.add(container);
   }
@@ -585,6 +844,10 @@
       return;
     }
 
+    if (element.tagName === "BUTTON" || element.tagName === "A") {
+      return;
+    }
+
     element.addEventListener("keydown", (event) => {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
@@ -699,7 +962,6 @@
     });
 
     input.addEventListener("input", () => {
-      openFloating(container);
       filterAutocompleteOptions(container);
     });
 
@@ -767,6 +1029,773 @@
     }
 
     filterAutocompleteOptions(container);
+  }
+
+  function getDatePickerMessages(locale) {
+    const isPortuguese = normalizeLocale(locale).toLowerCase().startsWith("pt");
+
+    if (isPortuguese) {
+      return {
+        previousMonth: "Mes anterior",
+        nextMonth: "Proximo mes",
+        today: "Hoje",
+        now: "Agora",
+        clear: "Clear",
+        calendar: "Calendario",
+        time: "Time",
+        empty: "Selecione uma data",
+        emptyDateTime: "Selecione data e time",
+      };
+    }
+
+    return {
+      previousMonth: "Previous month",
+      nextMonth: "Next month",
+      today: "Today",
+      now: "Now",
+      clear: "Clear",
+      calendar: "Calendar",
+      time: "Time",
+      empty: "Select a date",
+      emptyDateTime: "Select date and time",
+    };
+  }
+
+  function isDateDisabled(state, date) {
+    const dateKey = toDateKey(date);
+    if (!dateKey) {
+      return true;
+    }
+
+    if (state.minDateKey && dateKey < state.minDateKey) {
+      return true;
+    }
+
+    if (state.maxDateKey && dateKey > state.maxDateKey) {
+      return true;
+    }
+
+    return false;
+  }
+
+  function isTimeDisabled(state, timeValue) {
+    if (state.kind !== "datetime" || !state.valueDate) {
+      return false;
+    }
+
+    if (state.minConstraint?.hasTime && isSameCalendarDay(state.valueDate, state.minConstraint.date)) {
+      if (compareTimeValues(timeValue, state.minConstraint.time) < 0) {
+        return true;
+      }
+    }
+
+    if (state.maxConstraint?.hasTime && isSameCalendarDay(state.valueDate, state.maxConstraint.date)) {
+      if (compareTimeValues(timeValue, state.maxConstraint.time) > 0) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  function findNearestEnabledDate(state, preferredDate) {
+    if (isValidDate(preferredDate) && !isDateDisabled(state, preferredDate)) {
+      return createCalendarDate(preferredDate.getFullYear(), preferredDate.getMonth(), preferredDate.getDate());
+    }
+
+    const baseDate =
+      (isValidDate(preferredDate) && preferredDate) ||
+      state.valueDate ||
+      state.viewDate ||
+      createCalendarDate(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+
+    for (let offset = 1; offset <= 370; offset += 1) {
+      const forward = addCalendarDays(baseDate, offset);
+      if (isValidDate(forward) && !isDateDisabled(state, forward)) {
+        return forward;
+      }
+
+      const backward = addCalendarDays(baseDate, -offset);
+      if (isValidDate(backward) && !isDateDisabled(state, backward)) {
+        return backward;
+      }
+    }
+
+    return null;
+  }
+
+  function findBestTimeValue(state, preferredTime) {
+    const availableSlots = state.timeSlots.filter((slot) => !isTimeDisabled(state, slot));
+    if (!availableSlots.length) {
+      return "";
+    }
+
+    if (preferredTime && availableSlots.includes(preferredTime)) {
+      return preferredTime;
+    }
+
+    const safePreferred = preferredTime || roundTimeToStep(state.timeStep);
+    const nextSlot = availableSlots.find((slot) => compareTimeValues(slot, safePreferred) >= 0);
+    return nextSlot || availableSlots[availableSlots.length - 1];
+  }
+
+  function getDatePickerValue(state) {
+    if (!state.valueDate) {
+      return "";
+    }
+
+    if (state.kind === "datetime") {
+      return state.selectedTime ? formatDateTimeStorageValue(state.valueDate, state.selectedTime) : formatStorageValue(state.valueDate);
+    }
+
+    return formatStorageValue(state.valueDate);
+  }
+
+  function getDatePickerLabel(state) {
+    if (!state.valueDate) {
+      return state.placeholder;
+    }
+
+    if (state.kind === "datetime") {
+      return state.selectedTime ? formatDateTimeLabel(state.valueDate, state.selectedTime, state.locale) : formatDateLabel(state.valueDate, state.locale);
+    }
+
+    return formatDateLabel(state.valueDate, state.locale);
+  }
+
+  function syncDatePickerDisplay(state) {
+    if (!(state.display instanceof HTMLElement)) {
+      return;
+    }
+
+    const hasValue = isValidDate(state.valueDate);
+    state.display.textContent = getDatePickerLabel(state);
+    state.display.classList.toggle("is-placeholder", !hasValue);
+    state.display.setAttribute("data-r8-value", getDatePickerValue(state));
+  }
+
+  function emitDatePickerEvent(state, options = {}) {
+    if (options.silent === true) {
+      return;
+    }
+
+    const detail = {
+      kind: state.kind,
+      value: getDatePickerValue(state),
+      label: getDatePickerLabel(state),
+      date: state.valueDate ? formatStorageValue(state.valueDate) : "",
+      time: state.kind === "datetime" ? state.selectedTime || "" : "",
+      panel: state.panel,
+      trigger: state.trigger,
+    };
+
+    emitComponentEvent(state.container, state.kind === "datetime" ? "datetime-change" : "date-change", detail);
+    emitComponentEvent(state.container, "choice-change", detail);
+  }
+
+  function focusDateButton(state, date) {
+    if (!(state.panel instanceof HTMLElement)) {
+      return;
+    }
+
+    const dateKey = typeof date === "string" ? date : toDateKey(date);
+    const button = state.panel.querySelector(`.r8-date-picker__day[data-r8-date="${dateKey}"]`);
+    if (button instanceof HTMLElement && !button.hasAttribute("disabled")) {
+      button.focus();
+    }
+  }
+
+  function focusTimeButton(state, timeValue) {
+    if (!(state.panel instanceof HTMLElement)) {
+      return;
+    }
+
+    const button = state.panel.querySelector(`.r8-time-picker__slot[data-r8-time="${timeValue}"]`);
+    if (button instanceof HTMLElement && !button.hasAttribute("disabled")) {
+      button.focus();
+      button.scrollIntoView({ block: "nearest" });
+    }
+  }
+
+  function focusDatePickerEntry(state) {
+    if (state.kind === "datetime" && state.selectedTime) {
+      focusDateButton(state, state.valueDate || state.viewDate);
+      return;
+    }
+
+    focusDateButton(state, state.valueDate || findNearestEnabledDate(state, new Date()) || state.viewDate);
+  }
+
+  function ensureDateTimeDefaults(state) {
+    if (state.kind !== "datetime") {
+      return;
+    }
+
+    if (!state.valueDate) {
+      return;
+    }
+
+    const nextTime = findBestTimeValue(state, state.selectedTime || roundTimeToStep(state.timeStep));
+    state.selectedTime = nextTime;
+  }
+
+  function setDatePickerValue(state, nextDate, options = {}) {
+    const silent = options.silent === true;
+    const closeOnCommit = options.closeOnCommit !== false;
+
+    if (nextDate && isDateDisabled(state, nextDate)) {
+      return;
+    }
+
+    state.valueDate = nextDate
+      ? createCalendarDate(nextDate.getFullYear(), nextDate.getMonth(), nextDate.getDate())
+      : null;
+
+    if (state.valueDate) {
+      state.viewDate = startOfMonth(state.valueDate) || state.viewDate;
+    }
+
+    ensureDateTimeDefaults(state);
+    renderDatePicker(state);
+    syncDatePickerDisplay(state);
+    emitDatePickerEvent(state, { silent });
+
+    if (state.valueDate) {
+      if (state.kind === "date" && state.trigger && closeOnCommit) {
+        closeFloating(state.container);
+        state.trigger.focus();
+      } else if (state.kind === "datetime") {
+        focusDateButton(state, state.valueDate);
+      }
+    }
+  }
+
+  function setDateTimeValue(state, nextTime, options = {}) {
+    const silent = options.silent === true;
+    const closeOnCommit = options.closeOnCommit !== false;
+
+    if (state.kind !== "datetime") {
+      return;
+    }
+
+    if (!state.valueDate) {
+      state.valueDate = findNearestEnabledDate(state, new Date()) || state.viewDate;
+    }
+
+    if (!state.valueDate || isTimeDisabled(state, nextTime)) {
+      return;
+    }
+
+    state.selectedTime = nextTime;
+    renderDatePicker(state);
+    syncDatePickerDisplay(state);
+    emitDatePickerEvent(state, { silent });
+
+    if (state.trigger && closeOnCommit) {
+      closeFloating(state.container);
+      state.trigger.focus();
+    } else {
+      focusTimeButton(state, nextTime);
+    }
+  }
+
+  function clearDatePickerValue(state, options = {}) {
+    state.valueDate = null;
+    state.selectedTime = state.kind === "datetime" ? "" : state.selectedTime;
+    state.viewDate = startOfMonth(state.viewDate || createCalendarDate(new Date().getFullYear(), new Date().getMonth(), 1));
+    renderDatePicker(state);
+    syncDatePickerDisplay(state);
+    emitDatePickerEvent(state, options);
+  }
+
+  function selectToday(state, options = {}) {
+    const today = findNearestEnabledDate(
+      state,
+      createCalendarDate(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()),
+    );
+
+    if (!today) {
+      return;
+    }
+
+    state.viewDate = startOfMonth(today) || state.viewDate;
+
+    if (state.kind === "datetime") {
+      state.valueDate = today;
+      state.selectedTime = findBestTimeValue(state, roundTimeToStep(state.timeStep));
+      renderDatePicker(state);
+      syncDatePickerDisplay(state);
+      emitDatePickerEvent(state, options);
+      if (options.closeOnCommit !== false && state.trigger) {
+        closeFloating(state.container);
+        state.trigger.focus();
+      }
+      return;
+    }
+
+    setDatePickerValue(state, today, options);
+  }
+
+  function renderDatePicker(state) {
+    if (!(state.panel instanceof HTMLElement)) {
+      return;
+    }
+
+    const visibleMonth = startOfMonth(state.viewDate || state.valueDate || new Date()) || createCalendarDate(new Date().getFullYear(), new Date().getMonth(), 1);
+    state.viewDate = visibleMonth;
+
+    const calendar = document.createElement("div");
+    calendar.className = "r8-date-picker__calendar";
+
+    const header = document.createElement("div");
+    header.className = "r8-date-picker__header";
+
+    const previousButton = document.createElement("button");
+    previousButton.className = "r8-date-picker__nav";
+    previousButton.type = "button";
+    previousButton.setAttribute("data-r8-date-nav", "prev");
+    previousButton.setAttribute("aria-label", state.messages.previousMonth);
+    previousButton.textContent = "<";
+
+    const title = document.createElement("div");
+    title.className = "r8-date-picker__title";
+    title.setAttribute("aria-live", "polite");
+    title.textContent = formatMonthTitle(visibleMonth, state.locale);
+
+    const nextButton = document.createElement("button");
+    nextButton.className = "r8-date-picker__nav";
+    nextButton.type = "button";
+    nextButton.setAttribute("data-r8-date-nav", "next");
+    nextButton.setAttribute("aria-label", state.messages.nextMonth);
+    nextButton.textContent = ">";
+
+    header.append(previousButton, title, nextButton);
+    calendar.append(header);
+
+    const weekdays = document.createElement("div");
+    weekdays.className = "r8-date-picker__weekdays";
+    state.weekdayLabels.forEach((label) => {
+      const weekday = document.createElement("span");
+      weekday.className = "r8-date-picker__weekday";
+      weekday.textContent = label;
+      weekdays.append(weekday);
+    });
+    calendar.append(weekdays);
+
+    const grid = document.createElement("div");
+    grid.className = "r8-date-picker__grid";
+    grid.setAttribute("role", "grid");
+    grid.setAttribute("aria-label", `${state.messages.calendar} ${formatMonthTitle(visibleMonth, state.locale)}`);
+
+    const gridStart = startOfWeek(visibleMonth, state.weekStart) || visibleMonth;
+    const todayKey = toDateKey(new Date());
+
+    for (let index = 0; index < 42; index += 1) {
+      const dayDate = addCalendarDays(gridStart, index) || visibleMonth;
+      const dayButton = document.createElement("button");
+      const dateKey = toDateKey(dayDate);
+      const isCurrentMonth = dayDate.getMonth() === visibleMonth.getMonth();
+      const isSelected = isSameCalendarDay(dayDate, state.valueDate);
+      const isToday = dateKey === todayKey;
+      const disabled = isDateDisabled(state, dayDate);
+
+      dayButton.className = "r8-date-picker__day";
+      dayButton.type = "button";
+      dayButton.setAttribute("data-r8-date", dateKey);
+      dayButton.setAttribute("aria-label", formatDateLabel(dayDate, state.locale));
+      dayButton.setAttribute("aria-selected", isSelected ? "true" : "false");
+
+      if (!isCurrentMonth) {
+        dayButton.classList.add("is-other-month");
+      }
+
+      if (isSelected) {
+        dayButton.classList.add("is-selected");
+      }
+
+      if (isToday) {
+        dayButton.classList.add("is-today");
+        dayButton.setAttribute("aria-current", "date");
+      }
+
+      if (disabled) {
+        dayButton.classList.add("is-disabled");
+        dayButton.disabled = true;
+      }
+
+      const number = document.createElement("span");
+      number.className = "r8-date-picker__day-number";
+      number.textContent = padNumber(dayDate.getDate());
+      dayButton.append(number);
+      grid.append(dayButton);
+    }
+
+    calendar.append(grid);
+
+    if (state.kind === "datetime") {
+      const layout = document.createElement("div");
+      layout.className = "r8-datetime-picker__layout";
+      layout.append(calendar);
+
+      const timeColumn = document.createElement("div");
+      timeColumn.className = "r8-time-picker__column";
+
+      const timeHeading = document.createElement("div");
+      timeHeading.className = "r8-time-picker__heading";
+      timeHeading.textContent = state.messages.time;
+
+      const timeSlots = document.createElement("div");
+      timeSlots.className = "r8-time-picker__slots";
+      timeSlots.setAttribute("role", "listbox");
+      timeSlots.setAttribute("aria-label", state.messages.time);
+
+      state.timeSlots.forEach((slot) => {
+        const slotButton = document.createElement("button");
+        const disabled = isTimeDisabled(state, slot);
+        slotButton.className = "r8-time-picker__slot";
+        slotButton.type = "button";
+        slotButton.textContent = slot;
+        slotButton.setAttribute("data-r8-time", slot);
+        slotButton.setAttribute("aria-selected", state.selectedTime === slot ? "true" : "false");
+
+        if (state.selectedTime === slot) {
+          slotButton.classList.add("is-selected");
+        }
+
+        if (disabled) {
+          slotButton.classList.add("is-disabled");
+          slotButton.disabled = true;
+        }
+
+        timeSlots.append(slotButton);
+      });
+
+      timeColumn.append(timeHeading, timeSlots);
+      layout.append(timeColumn);
+      state.panel.replaceChildren(layout);
+    } else {
+      state.panel.replaceChildren(calendar);
+    }
+
+    const footer = document.createElement("div");
+    footer.className = "r8-date-picker__footer";
+
+    const summary = document.createElement("div");
+    summary.className = "r8-date-picker__summary";
+    summary.textContent = getDatePickerLabel(state);
+    summary.classList.toggle("is-placeholder", !state.valueDate);
+
+    const actions = document.createElement("div");
+    actions.className = "r8-date-picker__actions";
+
+    const primaryAction = document.createElement("button");
+    primaryAction.className = "r8-date-picker__action";
+    primaryAction.type = "button";
+    primaryAction.setAttribute("data-r8-action", state.kind === "datetime" ? "now" : "today");
+    primaryAction.textContent = state.kind === "datetime" ? state.messages.now : state.messages.today;
+
+    const clearAction = document.createElement("button");
+    clearAction.className = "r8-date-picker__action r8-date-picker__action--ghost";
+    clearAction.type = "button";
+    clearAction.setAttribute("data-r8-action", "clear");
+    clearAction.textContent = state.messages.clear;
+    clearAction.disabled = !state.valueDate;
+
+    const today = createCalendarDate(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+    primaryAction.disabled = state.kind === "datetime"
+      ? !findNearestEnabledDate(state, today)
+      : isDateDisabled(state, today);
+
+    actions.append(primaryAction, clearAction);
+    footer.append(summary, actions);
+    state.panel.append(footer);
+  }
+
+  function handleDatePickerDayKeydown(state, event, button) {
+    const currentDate = parseDateValue(button.dataset.r8Date || "");
+    if (!currentDate) {
+      return;
+    }
+
+    let nextDate = null;
+
+    if (event.key === "ArrowLeft") {
+      nextDate = addCalendarDays(currentDate, -1);
+    } else if (event.key === "ArrowRight") {
+      nextDate = addCalendarDays(currentDate, 1);
+    } else if (event.key === "ArrowUp") {
+      nextDate = addCalendarDays(currentDate, -7);
+    } else if (event.key === "ArrowDown") {
+      nextDate = addCalendarDays(currentDate, 7);
+    } else if (event.key === "Home") {
+      nextDate = addCalendarDays(currentDate, -((currentDate.getDay() - state.weekStart + 7) % 7));
+    } else if (event.key === "End") {
+      nextDate = addCalendarDays(currentDate, 6 - ((currentDate.getDay() - state.weekStart + 7) % 7));
+    } else if (event.key === "PageUp") {
+      nextDate = createCalendarDate(currentDate.getFullYear(), currentDate.getMonth() - 1, currentDate.getDate());
+    } else if (event.key === "PageDown") {
+      nextDate = createCalendarDate(currentDate.getFullYear(), currentDate.getMonth() + 1, currentDate.getDate());
+    } else if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      button.click();
+      return;
+    } else if (event.key === "Escape" && state.trigger) {
+      event.preventDefault();
+      closeFloating(state.container);
+      state.trigger.focus();
+      return;
+    } else {
+      return;
+    }
+
+    event.preventDefault();
+    const candidate = findNearestEnabledDate(state, nextDate);
+    if (!candidate) {
+      return;
+    }
+
+    const sameMonth = state.viewDate && candidate.getMonth() === state.viewDate.getMonth() && candidate.getFullYear() === state.viewDate.getFullYear();
+    if (!sameMonth) {
+      state.viewDate = startOfMonth(candidate) || state.viewDate;
+      renderDatePicker(state);
+    }
+
+    focusDateButton(state, candidate);
+  }
+
+  function handleTimeSlotKeydown(state, event, button) {
+    const slots = toArray(state.panel?.querySelectorAll(".r8-time-picker__slot")).filter(
+      (item) => item instanceof HTMLButtonElement && !item.disabled,
+    );
+    const currentIndex = slots.indexOf(button);
+    if (currentIndex < 0) {
+      return;
+    }
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      slots[clamp(currentIndex + 1, 0, slots.length - 1)]?.focus();
+      return;
+    }
+
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
+      slots[clamp(currentIndex - 1, 0, slots.length - 1)]?.focus();
+      return;
+    }
+
+    if (event.key === "Home") {
+      event.preventDefault();
+      slots[0]?.focus();
+      return;
+    }
+
+    if (event.key === "End") {
+      event.preventDefault();
+      slots[slots.length - 1]?.focus();
+      return;
+    }
+
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      button.click();
+      return;
+    }
+
+    if (event.key === "Escape" && state.trigger) {
+      event.preventDefault();
+      closeFloating(state.container);
+      state.trigger.focus();
+    }
+  }
+
+  function initDatePicker(container, options = {}) {
+    if (!(container instanceof HTMLElement) || container.dataset.r8DatePickerReady === "true") {
+      return;
+    }
+
+    container.dataset.r8DatePickerReady = "true";
+
+    const kind = options.kind || "date";
+    const trigger = options.triggerSelector ? firstMatch(container, options.triggerSelector) : null;
+    const panel = options.panelSelector ? firstMatch(container, options.panelSelector) : container;
+
+    if (!(panel instanceof HTMLElement)) {
+      return;
+    }
+
+    const locale =
+      normalizeLocale(container.dataset.r8Locale || document.documentElement.lang || navigator.language || "en-US");
+    const messages = getDatePickerMessages(locale);
+    const initialDateTime = parseDateTimeValue(container.dataset.r8Value || "");
+    const initialMonth = parseMonthValue(container.dataset.r8Month || "");
+    const minConstraint = parseDateTimeValue(container.dataset.r8Min || "");
+    const maxConstraint = parseDateTimeValue(container.dataset.r8Max || "");
+    const timeStep = clamp(Number(container.dataset.r8TimeStep || "30") || 30, 5, 720);
+    const viewDate =
+      startOfMonth(initialMonth || initialDateTime?.date || createCalendarDate(new Date().getFullYear(), new Date().getMonth(), 1)) ||
+      createCalendarDate(new Date().getFullYear(), new Date().getMonth(), 1);
+    const display = trigger ? getChoiceDisplay(trigger) : null;
+    const placeholder =
+      container.dataset.r8Placeholder ||
+      display?.textContent?.trim() ||
+      (kind === "datetime" ? messages.emptyDateTime : messages.empty);
+
+    if (trigger instanceof HTMLElement) {
+      prepareActionLikeElement(trigger);
+      trigger.setAttribute("aria-haspopup", "dialog");
+    }
+
+    ensureId(panel, kind === "datetime" ? "r8-datetime-picker-panel" : "r8-date-picker-panel");
+    if (trigger instanceof HTMLElement) {
+      trigger.setAttribute("aria-controls", panel.id);
+    }
+
+    panel.setAttribute("role", trigger ? "dialog" : "group");
+    panel.setAttribute("aria-label", kind === "datetime" ? messages.emptyDateTime : messages.calendar);
+
+    const state = {
+      container,
+      kind,
+      trigger,
+      panel,
+      display,
+      locale,
+      messages,
+      placeholder,
+      weekStart: clamp(Number(container.dataset.r8WeekStart || "0") || 0, 0, 6),
+      weekdayLabels: buildWeekdayLabels(locale, container.dataset.r8WeekStart || "0"),
+      timeStep,
+      timeSlots: buildTimeSlots(timeStep),
+      minConstraint,
+      maxConstraint,
+      minDateKey: minConstraint?.dateKey || "",
+      maxDateKey: maxConstraint?.dateKey || "",
+      valueDate: initialDateTime?.date || null,
+      selectedTime: kind === "datetime" ? (initialDateTime?.hasTime ? initialDateTime.time : "") : "",
+      viewDate,
+    };
+
+    if (trigger instanceof HTMLElement) {
+      choiceStates.set(container, { trigger, panel });
+      setHidden(panel, true);
+      setExpanded(trigger, false);
+
+      const togglePanel = () => {
+        if (isOpen(panel)) {
+          closeFloating(container);
+          return;
+        }
+
+        openFloating(container);
+        requestAnimationFrame(() => focusDatePickerEntry(state));
+      };
+
+      trigger.addEventListener("click", (event) => {
+        event.preventDefault();
+        togglePanel();
+      });
+
+      bindKeyboardActivation(trigger, (event) => {
+        event.preventDefault();
+        togglePanel();
+      });
+
+      trigger.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowDown") {
+          event.preventDefault();
+          openFloating(container);
+          requestAnimationFrame(() => focusDatePickerEntry(state));
+        }
+      });
+    } else {
+      setHidden(panel, false);
+    }
+
+    panel.addEventListener("click", (event) => {
+      if (!(event.target instanceof HTMLElement)) {
+        return;
+      }
+
+      const navButton = event.target.closest("[data-r8-date-nav]");
+      if (navButton instanceof HTMLButtonElement) {
+        const direction = navButton.dataset.r8DateNav === "prev" ? -1 : 1;
+        state.viewDate = addCalendarMonths(state.viewDate, direction) || state.viewDate;
+        renderDatePicker(state);
+        requestAnimationFrame(() => focusDateButton(state, state.valueDate || state.viewDate));
+        return;
+      }
+
+      const dayButton = event.target.closest(".r8-date-picker__day");
+      if (dayButton instanceof HTMLButtonElement && !dayButton.disabled) {
+        const nextDate = parseDateValue(dayButton.dataset.r8Date || "");
+        if (nextDate) {
+          setDatePickerValue(state, nextDate, { closeOnCommit: kind === "date" });
+        }
+        return;
+      }
+
+      const timeButton = event.target.closest(".r8-time-picker__slot");
+      if (timeButton instanceof HTMLButtonElement && !timeButton.disabled) {
+        setDateTimeValue(state, timeButton.dataset.r8Time || "", { closeOnCommit: true });
+        return;
+      }
+
+      const actionButton = event.target.closest("[data-r8-action]");
+      if (actionButton instanceof HTMLButtonElement) {
+        const action = actionButton.dataset.r8Action;
+        if (action === "clear") {
+          clearDatePickerValue(state);
+        } else if (action === "today" || action === "now") {
+          selectToday(state, { closeOnCommit: true });
+        }
+      }
+    });
+
+    panel.addEventListener("keydown", (event) => {
+      if (!(event.target instanceof HTMLElement)) {
+        return;
+      }
+
+      const dayButton = event.target.closest(".r8-date-picker__day");
+      if (dayButton instanceof HTMLButtonElement) {
+        handleDatePickerDayKeydown(state, event, dayButton);
+        return;
+      }
+
+      const timeButton = event.target.closest(".r8-time-picker__slot");
+      if (timeButton instanceof HTMLButtonElement) {
+        handleTimeSlotKeydown(state, event, timeButton);
+      }
+    });
+
+    ensureDateTimeDefaults(state);
+    renderDatePicker(state);
+    syncDatePickerDisplay(state);
+  }
+
+  function initDatePickers(root) {
+    toArray(root.querySelectorAll(".r8-date-picker-panel")).forEach((panel) => {
+      initDatePicker(panel, {
+        kind: "date",
+      });
+    });
+
+    toArray(root.querySelectorAll(".r8-date-picker")).forEach((container) => {
+      initDatePicker(container, {
+        kind: "date",
+        triggerSelector: ".r8-date-picker__trigger",
+        panelSelector: ".r8-date-picker__panel",
+      });
+    });
+
+    toArray(root.querySelectorAll(".r8-datetime-picker")).forEach((container) => {
+      initDatePicker(container, {
+        kind: "datetime",
+        triggerSelector: ".r8-datetime-picker__trigger",
+        panelSelector: ".r8-datetime-picker__panel",
+      });
+    });
   }
 
   function initChoices(root) {
@@ -1226,7 +2255,9 @@
       handle.addEventListener("pointerdown", (event) => {
         event.preventDefault();
         component.classList.add("is-resizing");
-        document.body.style.cursor = isVertical ? "row-resize" : "col-resize";
+        document.body.style.cursor = isVertical
+          ? "var(--r8-runtime-cursor-row-resize, row-resize)"
+          : "var(--r8-runtime-cursor-col-resize, col-resize)";
         handle.setPointerCapture?.(event.pointerId);
         setFromPointer(event.clientX, event.clientY);
         window.addEventListener("pointermove", onPointerMove);
@@ -1465,22 +2496,6 @@
     });
   }
 
-  function initBacktops(root) {
-    toArray(root.querySelectorAll(".r8-backtop")).forEach((button) => {
-      if (!(button instanceof HTMLElement) || button.dataset.r8BacktopReady === "true") {
-        return;
-      }
-
-      button.dataset.r8BacktopReady = "true";
-      button.addEventListener("click", () => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-        emitComponentEvent(button, "backtop", {
-          top: 0,
-        });
-      });
-    });
-  }
-
   function resolveTarget(trigger) {
     const selector = trigger.getAttribute("data-r8-target");
     if (!selector) {
@@ -1492,6 +2507,420 @@
     } catch {
       return null;
     }
+  }
+
+  function registerGenericTarget(trigger, target) {
+    if (!(trigger instanceof HTMLElement) || !(target instanceof HTMLElement)) {
+      return;
+    }
+
+    const hasEntry = toArray(genericTargets).some(
+      (entry) => entry.trigger === trigger && entry.target === target,
+    );
+
+    if (!hasEntry) {
+      genericTargets.add({ trigger, target });
+    }
+  }
+
+  function handleToggleTrigger(trigger) {
+    if (!(trigger instanceof HTMLElement)) {
+      return;
+    }
+
+    const target = resolveTarget(trigger);
+    if (!target) {
+      return;
+    }
+
+    prepareActionLikeElement(trigger);
+    registerGenericTarget(trigger, target);
+
+    if (isToastAlertTarget(target)) {
+      openTarget(target, trigger);
+      return;
+    }
+
+    if (isOpen(target)) {
+      closeTarget(target, trigger);
+      return;
+    }
+
+    openTarget(target, trigger);
+  }
+
+  function handleCloseAction(button) {
+    if (!(button instanceof HTMLElement)) {
+      return;
+    }
+
+    const targetSelector = button.getAttribute("data-r8-close");
+    const target =
+      (targetSelector && document.querySelector(targetSelector)) ||
+      button.closest("dialog") ||
+      button.closest(".r8-drawer") ||
+      button.closest(".r8-popover") ||
+      button.closest(".r8-tooltip") ||
+      button.closest(".r8-message-box") ||
+      button.closest(".r8-notification") ||
+      button.closest(".r8-alert");
+
+    closeTarget(target);
+  }
+
+  function handleDismissAction(button) {
+    if (!(button instanceof HTMLElement)) {
+      return;
+    }
+
+    const host = button.closest(".r8-alert, .r8-notification, .r8-message-box");
+    if (host instanceof HTMLElement) {
+      if (isToastAlertTarget(host)) {
+        closeTarget(host);
+      } else {
+        setHidden(host, true);
+      }
+
+      emitComponentEvent(host, "dismiss", {
+        target: host,
+      });
+    }
+  }
+
+  function getAlertPlacement(target) {
+    if (!(target instanceof HTMLElement) || !target.classList.contains("r8-alert")) {
+      return "";
+    }
+
+    const explicitPlacement = target.dataset.r8Placement || "";
+    if (alertPlacements.includes(explicitPlacement)) {
+      return explicitPlacement;
+    }
+
+    return (
+      alertPlacements.find((placement) => target.classList.contains(`r8-alert--${placement}`)) ||
+      ""
+    );
+  }
+
+  function isToastAlertTarget(target) {
+    return target instanceof HTMLElement && target.classList.contains("r8-alert") && Boolean(getAlertPlacement(target));
+  }
+
+  function getToastDuration(target) {
+    if (!(target instanceof HTMLElement)) {
+      return 0;
+    }
+
+    const rawValue = target.dataset.r8Duration || "";
+    if (!rawValue.trim()) {
+      return isToastAlertTarget(target) ? 4500 : 0;
+    }
+
+    const duration = Number(rawValue);
+    if (!Number.isFinite(duration) || duration < 0) {
+      return 0;
+    }
+
+    return duration;
+  }
+
+  function ensureToastStack(target) {
+    if (!(target instanceof HTMLElement)) {
+      return null;
+    }
+
+    const placement = getAlertPlacement(target);
+    if (!placement) {
+      return null;
+    }
+
+    const scope = target.closest("[data-r8-overlay-scope]") || document.body;
+    const selector = `.r8-toast-stack[data-r8-placement="${placement}"]`;
+    const existingStack = scope.querySelector(selector);
+    if (existingStack instanceof HTMLElement) {
+      return existingStack;
+    }
+
+    const stack = document.createElement("div");
+    stack.className = `r8-toast-stack r8-toast-stack--${placement}`;
+    stack.dataset.r8Placement = placement;
+    stack.setAttribute("aria-live", "polite");
+    stack.setAttribute("aria-atomic", "false");
+    scope.append(stack);
+    return stack;
+  }
+
+  function cleanupToastStack(target) {
+    const stack = target?.parentElement;
+    if (!(stack instanceof HTMLElement) || !stack.classList.contains("r8-toast-stack")) {
+      return;
+    }
+
+    if (stack.children.length === 0) {
+      stack.remove();
+    }
+  }
+
+  function clearOverlayTimer(target) {
+    const timer = overlayTimers.get(target);
+    if (typeof timer === "number") {
+      window.clearTimeout(timer);
+      overlayTimers.delete(target);
+    }
+  }
+
+  function isDrawerTarget(target) {
+    return target instanceof HTMLElement && target.classList.contains("r8-drawer");
+  }
+
+  function isPopoverTarget(target) {
+    return target instanceof HTMLElement && target.classList.contains("r8-popover");
+  }
+
+  function isTooltipTarget(target) {
+    return target instanceof HTMLElement && target.classList.contains("r8-tooltip");
+  }
+
+  function isFloatingOverlayTarget(target) {
+    return isPopoverTarget(target) || isTooltipTarget(target);
+  }
+
+  function normalizeFloatingPlacement(value, fallback) {
+    if (typeof value === "string" && floatingPlacements.includes(value)) {
+      return value;
+    }
+
+    return fallback;
+  }
+
+  function resolveFloatingPlacement(trigger, target) {
+    const fallback = isTooltipTarget(target) ? "top" : "bottom-start";
+    return normalizeFloatingPlacement(
+      target?.dataset?.r8Placement || trigger?.dataset?.r8Placement || "",
+      fallback,
+    );
+  }
+
+  function getPlacementParts(placement) {
+    const [side = "bottom", align = "center"] = String(placement || "bottom").split("-");
+    return {
+      side,
+      align,
+    };
+  }
+
+  function getOppositePlacement(placement) {
+    const { side, align } = getPlacementParts(placement);
+    const oppositeSide =
+      side === "top" ? "bottom" : side === "bottom" ? "top" : side === "left" ? "right" : "left";
+
+    return align && align !== "center" ? `${oppositeSide}-${align}` : oppositeSide;
+  }
+
+  function computeFloatingCoordinates(triggerRect, targetRect, placement) {
+    const { side, align } = getPlacementParts(placement);
+    const safeWidth = Math.max(targetRect.width, 1);
+    const safeHeight = Math.max(targetRect.height, 1);
+    let top = triggerRect.bottom + floatingOverlayGap;
+    let left = triggerRect.left;
+
+    if (side === "top") {
+      top = triggerRect.top - safeHeight - floatingOverlayGap;
+      if (align === "start") {
+        left = triggerRect.left;
+      } else if (align === "end") {
+        left = triggerRect.right - safeWidth;
+      } else {
+        left = triggerRect.left + triggerRect.width / 2 - safeWidth / 2;
+      }
+    } else if (side === "bottom") {
+      top = triggerRect.bottom + floatingOverlayGap;
+      if (align === "start") {
+        left = triggerRect.left;
+      } else if (align === "end") {
+        left = triggerRect.right - safeWidth;
+      } else {
+        left = triggerRect.left + triggerRect.width / 2 - safeWidth / 2;
+      }
+    } else if (side === "left") {
+      top = triggerRect.top + triggerRect.height / 2 - safeHeight / 2;
+      left = triggerRect.left - safeWidth - floatingOverlayGap;
+    } else if (side === "right") {
+      top = triggerRect.top + triggerRect.height / 2 - safeHeight / 2;
+      left = triggerRect.right + floatingOverlayGap;
+    }
+
+    return { top, left };
+  }
+
+  function fitsFloatingPlacement(triggerRect, targetRect, placement) {
+    const { side } = getPlacementParts(placement);
+    const coordinates = computeFloatingCoordinates(triggerRect, targetRect, placement);
+
+    if (side === "top") {
+      return coordinates.top >= floatingViewportPadding;
+    }
+
+    if (side === "bottom") {
+      return coordinates.top + targetRect.height <= window.innerHeight - floatingViewportPadding;
+    }
+
+    if (side === "left") {
+      return coordinates.left >= floatingViewportPadding;
+    }
+
+    return coordinates.left + targetRect.width <= window.innerWidth - floatingViewportPadding;
+  }
+
+  function clampFloatingCoordinates(triggerRect, targetRect, placement, coordinates) {
+    const { side } = getPlacementParts(placement);
+    const maxLeft = Math.max(floatingViewportPadding, window.innerWidth - targetRect.width - floatingViewportPadding);
+    const maxTop = Math.max(floatingViewportPadding, window.innerHeight - targetRect.height - floatingViewportPadding);
+
+    return {
+      left: clamp(coordinates.left, floatingViewportPadding, maxLeft),
+      top:
+        side === "left" || side === "right"
+          ? clamp(coordinates.top, floatingViewportPadding, maxTop)
+          : clamp(coordinates.top, floatingViewportPadding, maxTop),
+    };
+  }
+
+  function clearFloatingOverlayPosition(target) {
+    if (!(target instanceof HTMLElement)) {
+      return;
+    }
+
+    target.style.removeProperty("top");
+    target.style.removeProperty("left");
+    target.style.removeProperty("--r8-floating-arrow-left");
+    target.style.removeProperty("--r8-floating-arrow-top");
+    delete target.dataset.r8PlacementActive;
+  }
+
+  function positionFloatingOverlay(target, trigger) {
+    if (!(target instanceof HTMLElement) || !(trigger instanceof HTMLElement)) {
+      return;
+    }
+
+    const requestedPlacement = resolveFloatingPlacement(trigger, target);
+    const triggerRect = trigger.getBoundingClientRect();
+
+    target.style.visibility = "hidden";
+    target.style.top = "0px";
+    target.style.left = "0px";
+
+    const initialRect = target.getBoundingClientRect();
+    const fallbackPlacement = getOppositePlacement(requestedPlacement);
+    const placement = fitsFloatingPlacement(triggerRect, initialRect, requestedPlacement)
+      ? requestedPlacement
+      : fallbackPlacement;
+    const rawCoordinates = computeFloatingCoordinates(triggerRect, initialRect, placement);
+    const coordinates = clampFloatingCoordinates(triggerRect, initialRect, placement, rawCoordinates);
+
+    target.style.top = `${Math.round(coordinates.top)}px`;
+    target.style.left = `${Math.round(coordinates.left)}px`;
+    target.dataset.r8PlacementActive = placement;
+
+    if (placement.startsWith("top") || placement.startsWith("bottom")) {
+      const arrowLeft = clamp(
+        triggerRect.left + triggerRect.width / 2 - coordinates.left,
+        16,
+        Math.max(initialRect.width - 16, 16),
+      );
+      target.style.setProperty("--r8-floating-arrow-left", `${Math.round(arrowLeft)}px`);
+      target.style.removeProperty("--r8-floating-arrow-top");
+    } else {
+      const arrowTop = clamp(
+        triggerRect.top + triggerRect.height / 2 - coordinates.top,
+        16,
+        Math.max(initialRect.height - 16, 16),
+      );
+      target.style.setProperty("--r8-floating-arrow-top", `${Math.round(arrowTop)}px`);
+      target.style.removeProperty("--r8-floating-arrow-left");
+    }
+
+    target.style.removeProperty("visibility");
+  }
+
+  function syncFloatingOverlayPositions() {
+    genericTargets.forEach((entry) => {
+      if (!entry.trigger?.isConnected || !entry.target?.isConnected) {
+        return;
+      }
+
+      if (isFloatingOverlayTarget(entry.target) && isOpen(entry.target)) {
+        positionFloatingOverlay(entry.target, entry.trigger);
+      }
+    });
+  }
+
+  function collapseGenericTargetTriggers(target) {
+    genericTargets.forEach((entry) => {
+      if (entry.target === target) {
+        setExpanded(entry.trigger, false);
+      }
+    });
+  }
+
+  function syncDrawerBodyLock() {
+    if (!(document.body instanceof HTMLBodyElement)) {
+      return;
+    }
+
+    const hasOpenDrawer = toArray(document.querySelectorAll(".r8-drawer.is-open")).some(
+      (drawer) =>
+        drawer instanceof HTMLElement &&
+        !drawer.hasAttribute("hidden") &&
+        !drawer.closest("[data-r8-overlay-scope]"),
+    );
+
+    document.body.style.overflow = hasOpenDrawer ? "hidden" : "";
+    document.body.classList.toggle("r8-has-overlay", hasOpenDrawer);
+  }
+
+  function removeDrawerBackdrop(target) {
+    if (!(target instanceof HTMLElement)) {
+      return;
+    }
+
+    const targetId = ensureId(target, "r8-drawer");
+    toArray(document.querySelectorAll(`.r8-drawer-backdrop[data-r8-drawer-backdrop="${targetId}"]`)).forEach((backdrop) => {
+      backdrop.remove();
+    });
+    syncDrawerBodyLock();
+  }
+
+  function setDrawerBackdropOpen(target, open) {
+    if (!(target instanceof HTMLElement)) {
+      return;
+    }
+
+    const targetId = ensureId(target, "r8-drawer");
+    toArray(document.querySelectorAll(`.r8-drawer-backdrop[data-r8-drawer-backdrop="${targetId}"]`)).forEach((backdrop) => {
+      backdrop.classList.toggle("is-open", open);
+    });
+  }
+
+  function ensureDrawerBackdrop(target, trigger) {
+    if (!(target instanceof HTMLElement)) {
+      return;
+    }
+
+    const targetId = ensureId(target, "r8-drawer");
+    removeDrawerBackdrop(target);
+
+    const backdrop = document.createElement("div");
+    backdrop.className = "r8-drawer-backdrop";
+    backdrop.dataset.r8DrawerBackdrop = targetId;
+    backdrop.setAttribute("aria-hidden", "true");
+    backdrop.addEventListener("click", () => {
+      closeTarget(target, trigger);
+    });
+
+    const scope = target.closest("[data-r8-overlay-scope]") || document.body;
+    scope.append(backdrop);
   }
 
   function closeTarget(target, trigger = null) {
@@ -1510,16 +2939,54 @@
       return;
     }
 
+    if (isToastAlertTarget(target)) {
+      clearOverlayTimer(target);
+      target.classList.remove("is-open");
+      collapseGenericTargetTriggers(target);
+
+      const closeTimer = window.setTimeout(() => {
+        setHidden(target, true);
+        cleanupToastStack(target);
+        emitComponentEvent(target, "target-close", {
+          target,
+          trigger,
+        });
+      }, 140);
+
+      overlayTimers.set(target, closeTimer);
+      return;
+    }
+
+    if (isDrawerTarget(target)) {
+      clearOverlayTimer(target);
+      target.classList.remove("is-open");
+      setDrawerBackdropOpen(target, false);
+      collapseGenericTargetTriggers(target);
+
+      const closeTimer = window.setTimeout(() => {
+        setHidden(target, true);
+        removeDrawerBackdrop(target);
+        emitComponentEvent(target, "target-close", {
+          target,
+          trigger,
+        });
+      }, drawerTransitionMs);
+
+      overlayTimers.set(target, closeTimer);
+      return;
+    }
+
+    if (isFloatingOverlayTarget(target)) {
+      clearOverlayTimer(target);
+      clearFloatingOverlayPosition(target);
+    }
+
     setHidden(target, true);
     emitComponentEvent(target, "target-close", {
       target,
       trigger,
     });
-    genericTargets.forEach((entry) => {
-      if (entry.target === target) {
-        setExpanded(entry.trigger, false);
-      }
-    });
+    collapseGenericTargetTriggers(target);
   }
 
   function openTarget(target, trigger) {
@@ -1535,6 +3002,62 @@
           trigger,
         });
       }
+      return;
+    }
+
+    if (isToastAlertTarget(target)) {
+      clearOverlayTimer(target);
+      const stack = ensureToastStack(target);
+      if (stack instanceof HTMLElement && target.parentElement !== stack) {
+        stack.append(target);
+      }
+
+      setHidden(target, false);
+      setExpanded(trigger, true);
+      void target.offsetWidth;
+      target.classList.add("is-open");
+
+      const duration = getToastDuration(target);
+      if (duration > 0) {
+        const dismissTimer = window.setTimeout(() => {
+          closeTarget(target, trigger);
+        }, duration);
+        overlayTimers.set(target, dismissTimer);
+      }
+
+      emitComponentEvent(target, "target-open", {
+        target,
+        trigger,
+      });
+      return;
+    }
+
+    if (isDrawerTarget(target)) {
+      clearOverlayTimer(target);
+      ensureDrawerBackdrop(target, trigger);
+      setHidden(target, false);
+      setExpanded(trigger, true);
+      requestAnimationFrame(() => {
+        setDrawerBackdropOpen(target, true);
+        target.classList.add("is-open");
+        syncDrawerBodyLock();
+      });
+      emitComponentEvent(target, "target-open", {
+        target,
+        trigger,
+      });
+      return;
+    }
+
+    if (isFloatingOverlayTarget(target)) {
+      clearOverlayTimer(target);
+      setHidden(target, false);
+      setExpanded(trigger, true);
+      positionFloatingOverlay(target, trigger);
+      emitComponentEvent(target, "target-open", {
+        target,
+        trigger,
+      });
       return;
     }
 
@@ -1564,21 +3087,46 @@
       }
 
       setExpanded(trigger, false);
-      genericTargets.add({ trigger, target });
+      registerGenericTarget(trigger, target);
+      bindKeyboardActivation(trigger, () => handleToggleTrigger(trigger));
 
-      const toggle = () => {
-        if (isOpen(target)) {
-          closeTarget(target);
-        } else {
-          openTarget(target, trigger);
+      if (isTooltipTarget(target)) {
+        ensureId(target, "r8-tooltip");
+        trigger.setAttribute("aria-describedby", target.id);
+
+        if (trigger.dataset.r8TooltipReady !== "true") {
+          trigger.dataset.r8TooltipReady = "true";
+
+          trigger.addEventListener("pointerenter", () => {
+            clearOverlayTimer(target);
+            openTarget(target, trigger);
+          });
+
+          trigger.addEventListener("pointerleave", () => {
+            const closeTimer = window.setTimeout(() => {
+              closeTarget(target, trigger);
+            }, 40);
+            overlayTimers.set(target, closeTimer);
+          });
+
+          trigger.addEventListener("focus", () => {
+            clearOverlayTimer(target);
+            openTarget(target, trigger);
+          });
+
+          trigger.addEventListener("blur", () => {
+            closeTarget(target, trigger);
+          });
+
+          target.addEventListener("pointerenter", () => {
+            clearOverlayTimer(target);
+          });
+
+          target.addEventListener("pointerleave", () => {
+            closeTarget(target, trigger);
+          });
         }
-      };
-
-      trigger.addEventListener("click", (event) => {
-        event.preventDefault();
-        toggle();
-      });
-      bindKeyboardActivation(trigger, toggle);
+      }
     });
 
     toArray(root.querySelectorAll("[data-r8-close]")).forEach((button) => {
@@ -1587,22 +3135,8 @@
       }
 
       button.dataset.r8CloseReady = "true";
-      button.addEventListener("click", () => {
-        const targetSelector = button.getAttribute("data-r8-close");
-        const target =
-          (targetSelector && document.querySelector(targetSelector)) ||
-          button.closest("dialog") ||
-          button.closest(".r8-drawer") ||
-          button.closest(".r8-popover") ||
-          button.closest(".r8-popconfirm") ||
-          button.closest(".r8-tooltip") ||
-          button.closest(".r8-message") ||
-          button.closest(".r8-message-box") ||
-          button.closest(".r8-notification") ||
-          button.closest(".r8-alert");
-
-        closeTarget(target);
-      });
+      prepareActionLikeElement(button);
+      bindKeyboardActivation(button, () => handleCloseAction(button));
     });
 
     toArray(root.querySelectorAll("[data-r8-dismiss]")).forEach((button) => {
@@ -1611,15 +3145,8 @@
       }
 
       button.dataset.r8DismissReady = "true";
-      button.addEventListener("click", () => {
-        const host = button.closest(".r8-alert, .r8-message, .r8-notification, .r8-message-box");
-        if (host instanceof HTMLElement) {
-          setHidden(host, true);
-          emitComponentEvent(host, "dismiss", {
-            target: host,
-          });
-        }
-      });
+      prepareActionLikeElement(button);
+      bindKeyboardActivation(button, () => handleDismissAction(button));
     });
   }
 
@@ -1648,7 +3175,7 @@
         return;
       }
 
-      if (!entry.target || !isOpen(entry.target) || isDialog(entry.target)) {
+      if (!entry.target || !isOpen(entry.target) || isDialog(entry.target) || isToastAlertTarget(entry.target)) {
         return;
       }
 
@@ -1669,6 +3196,19 @@
 
     document.addEventListener("click", (event) => {
       if (event.target instanceof HTMLElement) {
+        const toggleTrigger = event.target.closest("[data-r8-toggle][data-r8-target]");
+        const closeButton = event.target.closest("[data-r8-close]");
+        const dismissButton = event.target.closest("[data-r8-dismiss]");
+
+        if (closeButton instanceof HTMLElement) {
+          handleCloseAction(closeButton);
+        } else if (dismissButton instanceof HTMLElement) {
+          handleDismissAction(dismissButton);
+        } else if (toggleTrigger instanceof HTMLElement) {
+          event.preventDefault();
+          handleToggleTrigger(toggleTrigger);
+        }
+
         closeAllFloating(event.target);
       }
     });
@@ -1685,6 +3225,18 @@
         }
       });
     });
+
+    window.addEventListener("resize", () => {
+      syncFloatingOverlayPositions();
+    });
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        syncFloatingOverlayPositions();
+      },
+      true,
+    );
   }
 
   function observe(root) {
@@ -1711,6 +3263,7 @@
     syncButtons(scope);
     syncVariantDrivenSurfaces(scope);
     syncProgressBars(scope);
+    initDatePickers(scope);
     initChoices(scope);
     initTabs(scope);
     initCollapse(scope);
@@ -1723,7 +3276,6 @@
     initSliders(scope);
     initInputTags(scope);
     initTransfers(scope);
-    initBacktops(scope);
     initGenericToggles(scope);
     attachGlobalListeners();
 

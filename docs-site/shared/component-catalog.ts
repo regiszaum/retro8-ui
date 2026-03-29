@@ -77,8 +77,8 @@ export const componentGroups = [
     core: false,
     title: l("retro8 extras", "retro8 extras"),
     description: l(
-      "Componentes nativos da retro8-ui que vao alem da paridade com o catalogo do Element Plus.",
-      "retro8-ui native components that go beyond parity with the Element Plus catalog.",
+      "Componentes nativos da retro8-ui que complementam o catalogo principal com pecas proprias do sistema.",
+      "retro8-ui native components that extend the main catalog with system-specific pieces.",
     ),
   },
 ] as const;
@@ -513,7 +513,7 @@ const formComponents = [
     />
     <span class="r8-badge" data-r8-autocomplete-count>4</span>
   </div>
-  <div class="r8-autocomplete__menu">
+  <div class="r8-autocomplete__menu" hidden>
     <div class="r8-autocomplete__option" data-r8-search="pix-07 vanguard scout recon">
       PIX-07 Vanguard
     </div>
@@ -626,18 +626,26 @@ const formComponents = [
       "Grade de calendario reutilizavel para composicoes inline ou paines persistentes.",
       "Reusable calendar grid for inline compositions or persistent panels.",
     ),
-    classes: ["r8-date-picker-panel", "r8-date-picker__grid", "r8-date-picker__day"],
-    preview: `<div class="r8-date-picker-panel">
-  <div class="r8-date-picker__grid">
-    <div class="r8-date-picker__day">01</div>
-    <div class="r8-date-picker__day">02</div>
-    <div class="r8-date-picker__day">03</div>
-    <div class="r8-date-picker__day">04</div>
-    <div class="r8-date-picker__day">05</div>
-    <div class="r8-date-picker__day">06</div>
-    <div class="r8-date-picker__day is-selected">07</div>
-  </div>
-</div>`,
+    classes: [
+      "r8-date-picker-panel",
+      "r8-date-picker__calendar",
+      "r8-date-picker__header",
+      "r8-date-picker__nav",
+      "r8-date-picker__title",
+      "r8-date-picker__weekdays",
+      "r8-date-picker__weekday",
+      "r8-date-picker__grid",
+      "r8-date-picker__day",
+      "r8-date-picker__footer",
+      "r8-date-picker__action",
+    ],
+    preview: `<div
+  class="r8-date-picker-panel"
+  data-r8-value="2026-03-28"
+  data-r8-month="2026-03"
+  data-r8-min="2026-03-05"
+  data-r8-max="2026-04-18"
+></div>`,
   },
   {
     id: "date-picker",
@@ -647,23 +655,29 @@ const formComponents = [
       "Campo de data com trigger e painel retro para agendas, filtros e programacao.",
       "Date field with a retro trigger and panel for schedules, filters and planning.",
     ),
-    classes: ["r8-date-picker", "r8-date-picker__trigger", "r8-date-picker__panel", "r8-date-picker__grid", "r8-date-picker__day"],
-    preview: `<div class="r8-date-picker">
-  <div class="r8-date-picker__trigger">
-    <span data-r8-choice-display>2026-03-28</span>
-    <span class="r8-badge">UTC</span>
-  </div>
-  <div class="r8-date-picker__panel">
-    <div class="r8-date-picker__grid">
-      <div class="r8-date-picker__day">24</div>
-      <div class="r8-date-picker__day">25</div>
-      <div class="r8-date-picker__day">26</div>
-      <div class="r8-date-picker__day">27</div>
-      <div class="r8-date-picker__day is-selected">28</div>
-      <div class="r8-date-picker__day">29</div>
-      <div class="r8-date-picker__day">30</div>
-    </div>
-  </div>
+    classes: [
+      "r8-date-picker",
+      "r8-date-picker__trigger",
+      "r8-date-picker__panel",
+      "r8-date-picker__calendar",
+      "r8-date-picker__header",
+      "r8-date-picker__grid",
+      "r8-date-picker__day",
+      "r8-date-picker__footer",
+    ],
+    preview: `<div
+  class="r8-date-picker"
+  data-r8-value="2026-03-28"
+  data-r8-month="2026-03"
+  data-r8-placeholder="Select launch date"
+  data-r8-min="2026-03-05"
+  data-r8-max="2026-04-18"
+>
+  <button class="r8-date-picker__trigger" type="button">
+    <span data-r8-choice-display>Select launch date</span>
+    <span class="r8-badge r8-badge--info">UTC-3</span>
+  </button>
+  <div class="r8-date-picker__panel"></div>
 </div>`,
   },
   {
@@ -674,24 +688,33 @@ const formComponents = [
       "Composicao de data e hora para eventos, logs e jobs com precisao temporal.",
       "Date and time composition for events, logs and jobs with time precision.",
     ),
-    classes: ["r8-datetime-picker", "r8-datetime-picker__trigger", "r8-datetime-picker__panel", "r8-date-picker__grid", "r8-time-picker__slots", "r8-time-picker__slot"],
-    preview: `<div class="r8-datetime-picker">
-  <div class="r8-datetime-picker__trigger">
-    <span data-r8-choice-display>2026-03-28 08:30</span>
-    <span class="r8-badge r8-badge--info">Local</span>
-  </div>
-  <div class="r8-datetime-picker__panel">
-    <div class="r8-date-picker__grid">
-      <div class="r8-date-picker__day">27</div>
-      <div class="r8-date-picker__day is-selected">28</div>
-      <div class="r8-date-picker__day">29</div>
-    </div>
-    <div class="r8-time-picker__slots">
-      <div class="r8-time-picker__slot">08:00</div>
-      <div class="r8-time-picker__slot is-selected">08:30</div>
-      <div class="r8-time-picker__slot">09:00</div>
-    </div>
-  </div>
+    classes: [
+      "r8-datetime-picker",
+      "r8-datetime-picker__trigger",
+      "r8-datetime-picker__panel",
+      "r8-datetime-picker__layout",
+      "r8-date-picker__calendar",
+      "r8-date-picker__grid",
+      "r8-date-picker__day",
+      "r8-time-picker__column",
+      "r8-time-picker__heading",
+      "r8-time-picker__slots",
+      "r8-time-picker__slot",
+    ],
+    preview: `<div
+  class="r8-datetime-picker"
+  data-r8-value="2026-03-28T08:30"
+  data-r8-month="2026-03"
+  data-r8-time-step="30"
+  data-r8-placeholder="Select maintenance window"
+  data-r8-min="2026-03-15T08:00"
+  data-r8-max="2026-04-18T22:00"
+>
+  <button class="r8-datetime-picker__trigger" type="button">
+    <span data-r8-choice-display>Select maintenance window</span>
+    <span class="r8-badge r8-badge--success">Local</span>
+  </button>
+  <div class="r8-datetime-picker__panel"></div>
 </div>`,
   },
   {
@@ -1276,21 +1299,6 @@ const dataComponents = [
 </div>`,
   },
   {
-    id: "result",
-    name: "Result",
-    group: "data",
-    summary: l(
-      "Estado final de sucesso, aviso ou falha para conclusoes de fluxo e paginas de retorno.",
-      "Final success, warning or failure state for flow endings and return pages.",
-    ),
-    classes: ["r8-result", "r8-result__icon", "r8-result__title"],
-    preview: `<div class="r8-result">
-  <div class="r8-result__icon">OK</div>
-  <div class="r8-result__title">Deploy complete</div>
-  <p class="r8-text r8-text--muted">All assets are live and responding.</p>
-</div>`,
-  },
-  {
     id: "skeleton",
     name: "Skeleton",
     group: "data",
@@ -1483,19 +1491,6 @@ const dataComponents = [
 
 const navigationComponents = [
   {
-    id: "affix",
-    name: "Affix",
-    group: "navigation",
-    summary: l(
-      "Wrapper sticky para fixar blocos uteis durante a rolagem, como filtros e acoes.",
-      "Sticky wrapper for pinning useful blocks during scroll, such as filters and actions.",
-    ),
-    classes: ["r8-affix"],
-    preview: `<div class="r8-affix">
-  <button class="r8-btn r8-btn--primary" type="button">Pinned action</button>
-</div>`,
-  },
-  {
     id: "anchor",
     name: "Anchor",
     group: "navigation",
@@ -1509,17 +1504,6 @@ const navigationComponents = [
   <a class="r8-anchor__link" href="#usage">Usage</a>
   <a class="r8-anchor__link" href="#api">API</a>
 </nav>`,
-  },
-  {
-    id: "backtop",
-    name: "Backtop",
-    group: "navigation",
-    summary: l(
-      "Botao fixo para voltar ao topo em listas e docs longas.",
-      "Fixed button for jumping back to the top on long docs and lists.",
-    ),
-    classes: ["r8-backtop"],
-    preview: `<button class="r8-backtop" style="position: static; right: auto; bottom: auto;" type="button">TOP</button>`,
   },
   {
     id: "breadcrumb",
@@ -1568,24 +1552,6 @@ const navigationComponents = [
   <li class="r8-menu__item">Tokens</li>
   <li class="r8-menu__submenu is-open">Components</li>
 </ul>`,
-  },
-  {
-    id: "page-header",
-    name: "Page Header",
-    group: "navigation",
-    summary: l(
-      "Cabecalho de pagina com titulo, contexto e area superior para acoes ou breadcrumb.",
-      "Page-level header with title, context and a top row for actions or breadcrumbs.",
-    ),
-    classes: ["r8-page-header", "r8-page-header__topline", "r8-page-header__title", "r8-page-header__content"],
-    preview: `<section class="r8-page-header">
-  <div class="r8-page-header__topline">
-    <span class="r8-badge">Docs</span>
-    <button class="r8-btn r8-btn--sm" type="button">Edit</button>
-  </div>
-  <strong class="r8-page-header__title">Component overview</strong>
-  <p class="r8-page-header__content">A grouped catalog of the full retro8-ui surface area.</p>
-</section>`,
   },
   {
     id: "steps",
@@ -1655,19 +1621,123 @@ const feedbackComponents = [
     name: "Alert",
     group: "feedback",
     summary: l(
-      "Faixa de aviso inline para estados importantes sem bloquear o fluxo da pagina.",
-      "Inline warning strip for important states without blocking page flow.",
+      "Alert semantico que tambem pode funcionar como toast posicionado para feedback importante.",
+      "Semantic alert that can also behave as a positioned toast for important feedback.",
     ),
-    classes: ["r8-alert", "r8-alert--success", "r8-alert--danger", "r8-alert__title"],
+    classes: [
+      "r8-alert",
+      "r8-alert--success",
+      "r8-alert--info",
+      "r8-alert--danger",
+      "r8-alert--top-left",
+      "r8-alert--bottom-left",
+      "r8-alert--top-right",
+      "r8-alert--bottom-right",
+      "r8-alert__title",
+      "r8-alert__actions",
+    ],
     preview: `<div class="docs-demo__stack">
-  <section class="r8-alert">
-    <strong class="r8-alert__title">Signal unstable</strong>
-    <p class="r8-text">Fallback channel engaged.</p>
-  </section>
-  <section class="r8-alert r8-alert--success">
-    <strong class="r8-alert__title">Sync complete</strong>
-    <p class="r8-text">All nodes acknowledged the update.</p>
-  </section>
+  <div class="docs-demo__actions">
+    <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#docs-alert-top-left">
+      Top left
+    </button>
+    <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#docs-alert-bottom-left">
+      Bottom left
+    </button>
+    <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#docs-alert-top-right">
+      Top right
+    </button>
+    <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#docs-alert-bottom-right">
+      Bottom right
+    </button>
+  </div>
+  <div class="docs-demo__stage" data-r8-overlay-scope>
+    <p class="docs-demo__stage-copy">
+      Click a button to spawn the alert inside this contained preview. The same position classes pin it to the viewport in real app layouts.
+    </p>
+
+    <section id="docs-alert-top-left" class="r8-alert r8-alert--info r8-alert--top-left" role="alert" aria-live="assertive" data-r8-duration="4500" hidden>
+      <strong class="r8-alert__title">Radar drift</strong>
+      <p class="r8-text">Signal integrity dropped below 82% on the left cluster.</p>
+      <div class="r8-alert__actions">
+        <button class="r8-btn r8-btn--sm r8-btn--dark" type="button" data-r8-close="#docs-alert-top-left">Dismiss</button>
+      </div>
+    </section>
+
+    <section id="docs-alert-bottom-left" class="r8-alert r8-alert--success r8-alert--bottom-left" role="status" aria-live="polite" data-r8-duration="4500" hidden>
+      <strong class="r8-alert__title">Build shipped</strong>
+      <p class="r8-text">The deploy completed and all four shards are synchronized.</p>
+      <div class="r8-alert__actions">
+        <button class="r8-btn r8-btn--sm r8-btn--dark" type="button" data-r8-close="#docs-alert-bottom-left">Close</button>
+      </div>
+    </section>
+
+    <section id="docs-alert-top-right" class="r8-alert r8-alert--danger r8-alert--top-right" role="alert" aria-live="assertive" data-r8-duration="4500" hidden>
+      <strong class="r8-alert__title">Boss alert</strong>
+      <p class="r8-text">The reactor core is overheating and needs immediate cooldown.</p>
+      <div class="r8-alert__actions">
+        <button class="r8-btn r8-btn--sm r8-btn--light" type="button" data-r8-close="#docs-alert-top-right">Dismiss</button>
+      </div>
+    </section>
+
+    <section id="docs-alert-bottom-right" class="r8-alert r8-alert--bottom-right" role="alert" aria-live="assertive" data-r8-duration="4500" hidden>
+      <strong class="r8-alert__title">Quest updated</strong>
+      <p class="r8-text">A new objective marker was added to the east corridor.</p>
+      <div class="r8-alert__actions">
+        <button class="r8-btn r8-btn--sm r8-btn--dark" type="button" data-r8-close="#docs-alert-bottom-right">Close</button>
+      </div>
+    </section>
+  </div>
+</div>`,
+    code: `<div class="r8-space r8-space--vertical">
+  <div class="r8-row">
+    <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#alert-top-left">
+      Top left
+    </button>
+    <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#alert-bottom-left">
+      Bottom left
+    </button>
+    <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#alert-top-right">
+      Top right
+    </button>
+    <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#alert-bottom-right">
+      Bottom right
+    </button>
+  </div>
+
+  <div data-r8-overlay-scope style="min-height: 18rem;">
+    <section id="alert-top-left" class="r8-alert r8-alert--info r8-alert--top-left" role="alert" aria-live="assertive" data-r8-duration="4500" hidden>
+      <strong class="r8-alert__title">Radar drift</strong>
+      <p class="r8-text">Signal integrity dropped below 82%.</p>
+      <div class="r8-alert__actions">
+        <button class="r8-btn r8-btn--sm r8-btn--dark" type="button" data-r8-close="#alert-top-left">Dismiss</button>
+      </div>
+    </section>
+
+    <section id="alert-bottom-left" class="r8-alert r8-alert--success r8-alert--bottom-left" role="status" aria-live="polite" data-r8-duration="4500" hidden>
+      <strong class="r8-alert__title">Build shipped</strong>
+      <p class="r8-text">All shards are synchronized.</p>
+      <div class="r8-alert__actions">
+        <button class="r8-btn r8-btn--sm r8-btn--dark" type="button" data-r8-close="#alert-bottom-left">Close</button>
+      </div>
+    </section>
+
+    <section id="alert-top-right" class="r8-alert r8-alert--danger r8-alert--top-right" role="alert" aria-live="assertive" data-r8-duration="4500" hidden>
+      <strong class="r8-alert__title">Boss alert</strong>
+      <p class="r8-text">The reactor core is overheating.</p>
+      <div class="r8-alert__actions">
+        <button class="r8-btn r8-btn--sm r8-btn--light" type="button" data-r8-close="#alert-top-right">Dismiss</button>
+      </div>
+    </section>
+
+    <section id="alert-bottom-right" class="r8-alert r8-alert--bottom-right" role="alert" aria-live="assertive" data-r8-duration="4500" hidden>
+      <strong class="r8-alert__title">Quest updated</strong>
+      <p class="r8-text">A new objective marker was added.</p>
+      <div class="r8-alert__actions">
+        <button class="r8-btn r8-btn--sm r8-btn--dark" type="button" data-r8-close="#alert-bottom-right">Close</button>
+      </div>
+    </section>
+  </div>
 </div>`,
   },
   {
@@ -1710,24 +1780,80 @@ const feedbackComponents = [
       "Painel lateral para filtros, settings e detalhes contextuais sem trocar de pagina.",
       "Side panel for filters, settings and contextual details without leaving the page.",
     ),
-    classes: ["r8-drawer", "r8-drawer--right", "r8-drawer__title"],
+    classes: ["r8-drawer", "r8-drawer--right", "r8-drawer--left", "r8-drawer__header", "r8-drawer__title", "r8-drawer__body", "r8-drawer__footer", "r8-drawer-backdrop"],
     preview: `<div class="docs-demo__stack">
+  <div class="docs-demo__actions">
+    <button
+      class="r8-btn r8-btn--primary"
+      type="button"
+      data-r8-toggle="drawer"
+      data-r8-target="#docs-drawer-preview"
+    >
+      Open drawer
+    </button>
+  </div>
+  <div class="docs-demo__stage" data-r8-overlay-scope>
+    <p class="docs-demo__stage-copy">
+      This preview uses the same runtime as the library package: backdrop, escape close, outside click, and button helpers are all active.
+    </p>
+    <aside id="docs-drawer-preview" class="r8-drawer r8-drawer--right" hidden>
+      <div class="r8-drawer__header">
+        <strong class="r8-drawer__title">Quick settings</strong>
+        <button class="r8-btn r8-btn--sm" type="button" data-r8-close="#docs-drawer-preview">Close</button>
+      </div>
+      <div class="r8-drawer__body">
+        <p class="r8-text">Tune the active color palette and HUD density.</p>
+        <label class="r8-checkbox is-checked">
+          <span class="r8-checkbox__box" aria-hidden="true"></span>
+          <span>Show minimap</span>
+        </label>
+        <label class="r8-checkbox">
+          <span class="r8-checkbox__box" aria-hidden="true"></span>
+          <span>Enable scanlines</span>
+        </label>
+      </div>
+      <div class="r8-drawer__footer">
+        <button class="r8-btn r8-btn--sm" type="button" data-r8-close="#docs-drawer-preview">Cancel</button>
+        <button class="r8-btn r8-btn--sm r8-btn--primary" type="button" data-r8-close="#docs-drawer-preview">Apply</button>
+      </div>
+    </aside>
+  </div>
+</div>`,
+    code: `<div class="r8-space r8-space--vertical">
   <button
     class="r8-btn r8-btn--primary"
     type="button"
     data-r8-toggle="drawer"
-    data-r8-target="#docs-drawer-preview"
+    data-r8-target="#settings-drawer"
   >
     Open drawer
   </button>
-  <aside id="docs-drawer-preview" class="r8-drawer r8-drawer--right" hidden>
-    <strong class="r8-drawer__title">Quick settings</strong>
-    <p class="r8-text">Tune the active color palette and HUD density.</p>
-    <div class="r8-row">
-      <button class="r8-btn r8-btn--sm" type="button" data-r8-close="#docs-drawer-preview">Close</button>
-      <button class="r8-btn r8-btn--sm r8-btn--primary" type="button" data-r8-close="#docs-drawer-preview">Apply</button>
-    </div>
-  </aside>
+
+  <div data-r8-overlay-scope style="min-height: 20rem;">
+    <aside id="settings-drawer" class="r8-drawer r8-drawer--right" hidden>
+      <div class="r8-drawer__header">
+        <strong class="r8-drawer__title">Quick settings</strong>
+        <button class="r8-btn r8-btn--sm" type="button" data-r8-close="#settings-drawer">Close</button>
+      </div>
+
+      <div class="r8-drawer__body">
+        <p class="r8-text">Tune palette and HUD density.</p>
+        <label class="r8-checkbox is-checked">
+          <span class="r8-checkbox__box" aria-hidden="true"></span>
+          <span>Show minimap</span>
+        </label>
+        <label class="r8-checkbox">
+          <span class="r8-checkbox__box" aria-hidden="true"></span>
+          <span>Enable scanlines</span>
+        </label>
+      </div>
+
+      <div class="r8-drawer__footer">
+        <button class="r8-btn r8-btn--sm" type="button" data-r8-close="#settings-drawer">Cancel</button>
+        <button class="r8-btn r8-btn--sm r8-btn--primary" type="button" data-r8-close="#settings-drawer">Apply</button>
+      </div>
+    </aside>
+  </div>
 </div>`,
   },
   {
@@ -1735,43 +1861,222 @@ const feedbackComponents = [
     name: "Loading",
     group: "feedback",
     summary: l(
-      "Indicador de atividade com pixels piscando para carregamentos curtos.",
-      "Activity indicator with blinking pixels for short loading states.",
+      "Colecao de loaders retro para estados curtos, sincronizacao, scan e feedback visual persistente.",
+      "Retro loader collection for short waits, sync states, scan patterns and persistent visual feedback.",
     ),
-    classes: ["r8-loading", "r8-loading__pixel"],
-    preview: `<div class="r8-loading" aria-label="Loading">
-  <span class="r8-loading__pixel"></span>
-  <span class="r8-loading__pixel"></span>
-  <span class="r8-loading__pixel"></span>
-  <span class="r8-text r8-text--muted">Loading assets...</span>
-</div>`,
-  },
-  {
-    id: "message",
-    name: "Message",
-    group: "feedback",
-    summary: l(
-      "Toast compacto para feedback rapido, curto e temporario.",
-      "Compact toast for quick, short-lived feedback.",
-    ),
-    classes: ["r8-message", "r8-message__title"],
-    preview: `<div class="docs-demo__stack">
-  <button
-    class="r8-btn r8-btn--secondary"
-    type="button"
-    data-r8-toggle="message"
-    data-r8-target="#docs-message-preview"
-  >
-    Show message
-  </button>
-  <section id="docs-message-preview" class="r8-message" hidden>
-    <strong class="r8-message__title">Saved</strong>
-    <p class="r8-text">retro8.css exported successfully.</p>
-    <div class="r8-row">
-      <button class="r8-btn r8-btn--sm" type="button" data-r8-dismiss>Dismiss</button>
+    classes: [
+      "r8-loading",
+      "r8-loading--dots",
+      "r8-loading--bar",
+      "r8-loading--equalizer",
+      "r8-loading--spinner",
+      "r8-loading--sm",
+      "r8-loading--lg",
+      "r8-loading__label",
+      "r8-loading__pixels",
+      "r8-loading__pixel",
+      "r8-loading__dots",
+      "r8-loading__dot",
+      "r8-loading__track",
+      "r8-loading__fill",
+      "r8-loading__bars",
+      "r8-loading__bar",
+      "r8-loading__spinner",
+      "r8-loading__spinner-cell",
+    ],
+    preview: `<div class="r8-grid" style="grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));">
+  <div class="r8-stack">
+    <span class="r8-badge">Pixels</span>
+    <div class="r8-loading" role="status" aria-live="polite">
+      <span class="r8-loading__pixels" aria-hidden="true">
+        <span class="r8-loading__pixel"></span>
+        <span class="r8-loading__pixel"></span>
+        <span class="r8-loading__pixel"></span>
+      </span>
+      <span class="r8-loading__label">Loading assets...</span>
     </div>
-  </section>
+  </div>
+
+  <div class="r8-stack">
+    <span class="r8-badge">Dots</span>
+    <div class="r8-loading r8-loading--dots" role="status" aria-live="polite">
+      <span class="r8-loading__dots" aria-hidden="true">
+        <span class="r8-loading__dot"></span>
+        <span class="r8-loading__dot"></span>
+        <span class="r8-loading__dot"></span>
+        <span class="r8-loading__dot"></span>
+      </span>
+      <span class="r8-loading__label">Syncing save state...</span>
+    </div>
+  </div>
+
+  <div class="r8-stack">
+    <span class="r8-badge">Bar</span>
+    <div class="r8-loading r8-loading--bar" role="status" aria-live="polite">
+      <span class="r8-loading__track" aria-hidden="true">
+        <span class="r8-loading__fill"></span>
+      </span>
+      <span class="r8-loading__label">Compiling sprites...</span>
+    </div>
+  </div>
+
+  <div class="r8-stack">
+    <span class="r8-badge">Equalizer</span>
+    <div class="r8-loading r8-loading--equalizer" role="status" aria-live="polite">
+      <span class="r8-loading__bars" aria-hidden="true">
+        <span class="r8-loading__bar"></span>
+        <span class="r8-loading__bar"></span>
+        <span class="r8-loading__bar"></span>
+        <span class="r8-loading__bar"></span>
+      </span>
+      <span class="r8-loading__label">Streaming audio...</span>
+    </div>
+  </div>
+
+  <div class="r8-stack">
+    <span class="r8-badge">Spinner</span>
+    <div class="r8-loading r8-loading--spinner r8-loading--lg" role="status" aria-live="polite">
+      <span class="r8-loading__spinner" aria-hidden="true">
+        <span class="r8-loading__spinner-cell"></span>
+        <span class="r8-loading__spinner-cell"></span>
+        <span class="r8-loading__spinner-cell"></span>
+        <span class="r8-loading__spinner-cell"></span>
+        <span class="r8-loading__spinner-cell"></span>
+        <span class="r8-loading__spinner-cell"></span>
+        <span class="r8-loading__spinner-cell"></span>
+        <span class="r8-loading__spinner-cell"></span>
+      </span>
+      <span class="r8-loading__label">Matching nodes...</span>
+    </div>
+  </div>
 </div>`,
+    code: `<div class="r8-grid" style="grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));">
+  <div class="r8-stack">
+    <span class="r8-badge">Pixels</span>
+    <div class="r8-loading" role="status" aria-live="polite">
+      <span class="r8-loading__pixels" aria-hidden="true">
+        <span class="r8-loading__pixel"></span>
+        <span class="r8-loading__pixel"></span>
+        <span class="r8-loading__pixel"></span>
+      </span>
+      <span class="r8-loading__label">Loading assets...</span>
+    </div>
+  </div>
+
+  <div class="r8-stack">
+    <span class="r8-badge">Dots</span>
+    <div class="r8-loading r8-loading--dots" role="status" aria-live="polite">
+      <span class="r8-loading__dots" aria-hidden="true">
+        <span class="r8-loading__dot"></span>
+        <span class="r8-loading__dot"></span>
+        <span class="r8-loading__dot"></span>
+        <span class="r8-loading__dot"></span>
+      </span>
+      <span class="r8-loading__label">Syncing save state...</span>
+    </div>
+  </div>
+
+  <div class="r8-stack">
+    <span class="r8-badge">Bar</span>
+    <div class="r8-loading r8-loading--bar" role="status" aria-live="polite">
+      <span class="r8-loading__track" aria-hidden="true">
+        <span class="r8-loading__fill"></span>
+      </span>
+      <span class="r8-loading__label">Compiling sprites...</span>
+    </div>
+  </div>
+
+  <div class="r8-stack">
+    <span class="r8-badge">Equalizer</span>
+    <div class="r8-loading r8-loading--equalizer" role="status" aria-live="polite">
+      <span class="r8-loading__bars" aria-hidden="true">
+        <span class="r8-loading__bar"></span>
+        <span class="r8-loading__bar"></span>
+        <span class="r8-loading__bar"></span>
+        <span class="r8-loading__bar"></span>
+      </span>
+      <span class="r8-loading__label">Streaming audio...</span>
+    </div>
+  </div>
+
+  <div class="r8-stack">
+    <span class="r8-badge">Spinner</span>
+    <div class="r8-loading r8-loading--spinner r8-loading--lg" role="status" aria-live="polite">
+      <span class="r8-loading__spinner" aria-hidden="true">
+        <span class="r8-loading__spinner-cell"></span>
+        <span class="r8-loading__spinner-cell"></span>
+        <span class="r8-loading__spinner-cell"></span>
+        <span class="r8-loading__spinner-cell"></span>
+        <span class="r8-loading__spinner-cell"></span>
+        <span class="r8-loading__spinner-cell"></span>
+        <span class="r8-loading__spinner-cell"></span>
+        <span class="r8-loading__spinner-cell"></span>
+      </span>
+      <span class="r8-loading__label">Matching nodes...</span>
+    </div>
+  </div>
+</div>`,
+    anatomy: ll(
+      [
+        "Use `r8-loading` como shell base e escolha uma substructure visual por instancia.",
+        "Adicione `r8-loading__label` quando o loading precisar de copy visivel no layout.",
+        "Marque pixels, dots, bars, track/fill e spinner cells como `aria-hidden=\"true\"`.",
+      ],
+      [
+        "Use `r8-loading` as the base shell and choose one visual substructure per instance.",
+        "Add `r8-loading__label` when the loading state needs visible copy in the layout.",
+        "Mark pixels, dots, bars, track/fill and spinner cells with `aria-hidden=\"true\"`.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Use `role=\"status\"` e `aria-live=\"polite\"` quando o loading anunciar atualizacoes reais.",
+        "Prefira label visivel; se nao houver, forneca `aria-label` no host.",
+        "As animacoes respeitam `prefers-reduced-motion` e recuam para uma apresentacao estatica.",
+      ],
+      [
+        "Use `role=\"status\"` and `aria-live=\"polite\"` when the loading state announces real updates.",
+        "Prefer a visible label; if there is none, provide `aria-label` on the host.",
+        "Animations respect `prefers-reduced-motion` and fall back to a static presentation.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-loading--dots",
+        description: l(
+          "Variant com dots menores para sincronizacao curta e estados leves.",
+          "Variant with smaller dots for short sync states and lightweight waits.",
+        ),
+      },
+      {
+        name: "r8-loading--bar",
+        description: l(
+          "Variant com track e fill em scan loop, boa para compilacao e fetch continuo.",
+          "Variant with a track and looping scan fill, great for compile and continuous fetch states.",
+        ),
+      },
+      {
+        name: "r8-loading--equalizer",
+        description: l(
+          "Variant em bars verticais, ideal para audio, stream e monitoramento.",
+          "Vertical bar variant, ideal for audio, stream and monitoring states.",
+        ),
+      },
+      {
+        name: "r8-loading--spinner",
+        description: l(
+          "Variant com oito cells em rotacao step-based para estados mais longos.",
+          "Eight-cell step-based rotation variant for longer waits.",
+        ),
+      },
+      {
+        name: "r8-loading--sm / r8-loading--lg",
+        description: l(
+          "Size presets para encaixar o loading em toolbars, cards ou superficies maiores.",
+          "Size presets for fitting loaders into toolbars, cards or larger surfaces.",
+        ),
+      },
+    ],
   },
   {
     id: "message-box",
@@ -1830,34 +2135,6 @@ const feedbackComponents = [
 </div>`,
   },
   {
-    id: "popconfirm",
-    name: "Popconfirm",
-    group: "feedback",
-    summary: l(
-      "Confirmacao pequena e ancorada, boa para acoes destrutivas perto do gatilho.",
-      "Small anchored confirmation, great for destructive actions near the trigger.",
-    ),
-    classes: ["r8-popconfirm", "r8-popconfirm__title", "r8-popconfirm__footer"],
-    preview: `<div class="docs-demo__stack">
-  <button
-    class="r8-btn r8-btn--danger"
-    type="button"
-    data-r8-toggle="popconfirm"
-    data-r8-target="#docs-popconfirm-preview"
-  >
-    Delete item
-  </button>
-  <section id="docs-popconfirm-preview" class="r8-popconfirm" hidden>
-    <strong class="r8-popconfirm__title">Delete item?</strong>
-    <p class="r8-text">This cannot be undone.</p>
-    <div class="r8-popconfirm__footer">
-      <button class="r8-btn r8-btn--sm" type="button" data-r8-close="#docs-popconfirm-preview">Cancel</button>
-      <button class="r8-btn r8-btn--sm r8-btn--danger" type="button" data-r8-close="#docs-popconfirm-preview">Delete</button>
-    </div>
-  </section>
-</div>`,
-  },
-  {
     id: "popover",
     name: "Popover",
     group: "feedback",
@@ -1872,10 +2149,11 @@ const feedbackComponents = [
     type="button"
     data-r8-toggle="popover"
     data-r8-target="#docs-popover-preview"
+    data-r8-placement="bottom-start"
   >
     Toggle popover
   </button>
-  <section id="docs-popover-preview" class="r8-popover" hidden>
+  <section id="docs-popover-preview" class="r8-popover" data-r8-placement="bottom-start" hidden>
     <strong class="r8-popover__title">Shortcut panel</strong>
     <p class="r8-text">Press G to open the grid overlay.</p>
   </section>
@@ -1896,10 +2174,11 @@ const feedbackComponents = [
     type="button"
     data-r8-toggle="tooltip"
     data-r8-target="#docs-tooltip-preview"
+    data-r8-placement="top"
   >
-    Show tooltip
+    Hover or focus
   </button>
-  <div id="docs-tooltip-preview" class="r8-tooltip" role="tooltip" hidden>
+  <div id="docs-tooltip-preview" class="r8-tooltip" data-r8-placement="top" role="tooltip" hidden>
     Hold Shift to toggle precision mode.
   </div>
 </div>`,

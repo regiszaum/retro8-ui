@@ -119,17 +119,17 @@ const localized = {
     home: {
       heroWindowTitle: "Retro catalog em escala real",
       heroKicker: "81 componentes core + extras retro8",
-      heroTitle: "A retro8-ui agora cobre o mesmo catalogo-base do Element Plus em linguagem 8-bit.",
+      heroTitle: "A retro8-ui agora entrega um catalogo amplo em linguagem visual 8-bit.",
       heroCopy:
-        "A library continua framework-agnostic e CSS-first, mas a docs agora escalam como um produto real: catalog agrupado, pages individuais, light/dark themes e cobertura total do conjunto core do Element Plus.",
+        "A library continua framework-agnostic e CSS-first, mas a docs agora escalam como um produto real: catalog agrupado, pages individuais, light/dark themes e uma fundacao ampla para evoluir o sistema.",
       heroPrimary: "Explore catalog",
       heroSecondary: "Open Quick start",
       heroStatus:
-        "Paridade de cobertura com o overview atual do Element Plus, mantendo CSS semantico e runtime opcional.",
+        "Cobertura ampla de components, mantendo CSS semantico e runtime opcional.",
       statsTitle: "Library coverage",
       overviewTitle: "Architecture decisions",
       overviewItems: [
-        "O catalogo principal acompanha os 81 componentes listados atualmente no overview do Element Plus.",
+        "O catalogo principal cobre 81 components core, alem de extras nativos da retro8-ui.",
         "A docs continua separada da library: Nuxt para a experiencia publica, CSS compilado para o produto final.",
         "Componentes com comportamento complexo agora podem usar o runtime JS opcional da retro8-ui ou o app host.",
       ],
@@ -238,7 +238,7 @@ const localized = {
       ],
       componentIndexTitle: "Full grouped catalog",
       componentIndexCopy:
-        "Cada component tem sua propria route. O catalog abaixo segue os groups do Element Plus e ainda preserva extras proprios da retro8-ui.",
+        "Cada component tem sua propria route. O catalog abaixo organiza a library por groups previsiveis e ainda preserva extras proprios da retro8-ui.",
       componentIndexKicker: "Components",
       footerPrimary:
         "A documentacao publica agora escala como um component site de verdade, com navegacao por group, locale e theme.",
@@ -246,7 +246,7 @@ const localized = {
         "A library continua focada em CSS compilado, runtime JS opcional e classes semanticas. Os extras de docs, i18n e recommended icons permanecem desacoplados.",
       stats: {
         coreLabel: "core components",
-        coreCopy: "espelhando a cobertura atual do overview do Element Plus",
+        coreCopy: "como base ampla para a primeira versao publica",
         docsLabel: "component pages",
         docsCopy: "incluindo extras nativos da retro8-ui",
         groupsLabel: "groups",
@@ -322,17 +322,17 @@ const localized = {
     home: {
       heroWindowTitle: "Retro catalog at full scale",
       heroKicker: "81 core components + retro8 extras",
-      heroTitle: "retro8-ui now covers the same base catalog size as Element Plus in an 8-bit visual language.",
+      heroTitle: "retro8-ui now ships a broad component catalog in an 8-bit visual language.",
       heroCopy:
-        "The library stays framework-agnostic and CSS-first, while the docs now scale like a real product: grouped catalog, dedicated pages, light/dark themes and full coverage of the Element Plus core set.",
+        "The library stays framework-agnostic and CSS-first, while the docs now scale like a real product: grouped catalog, dedicated pages, light/dark themes and a broad foundation for the design system to grow.",
       heroPrimary: "Explore catalog",
       heroSecondary: "See quick start",
       heroStatus:
-        "Coverage parity with the current Element Plus overview, while keeping semantic CSS and optional runtime behavior.",
+        "Broad component coverage, while keeping semantic CSS and optional runtime behavior.",
       statsTitle: "Library coverage",
       overviewTitle: "Architecture decisions",
       overviewItems: [
-        "The main catalog now follows the 81 components currently listed in the Element Plus overview.",
+        "The main catalog covers 81 core components, plus native retro8-ui extras.",
         "The docs stay separate from the library: Nuxt powers the public experience, compiled CSS remains the product.",
         "Behavior-heavy components can use the optional retro8-ui runtime or stay wired by the host app.",
       ],
@@ -441,7 +441,7 @@ const localized = {
       ],
       componentIndexTitle: "Full grouped catalog",
       componentIndexCopy:
-        "Every component has its own route. The catalog below follows the Element Plus groups while preserving retro8-ui native extras.",
+        "Every component has its own route. The catalog below organizes the library into predictable groups while preserving retro8-ui native extras.",
       componentIndexKicker: "Components",
       footerPrimary:
         "The public documentation now scales like a real component site, with grouped navigation, localization and theming.",
@@ -449,7 +449,7 @@ const localized = {
         "The library still focuses on compiled CSS, an optional JS runtime and semantic classes. Docs features, i18n and recommended icons remain decoupled.",
       stats: {
         coreLabel: "core components",
-        coreCopy: "matching the current Element Plus overview coverage",
+        coreCopy: "as a broad foundation for the first public release",
         docsLabel: "component pages",
         docsCopy: "including retro8-ui native extras",
         groupsLabel: "groups",

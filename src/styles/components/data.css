@@ -286,31 +286,6 @@
     color: var(--r8-color-accent-contrast);
   }
 
-  .r8-result {
-    display: grid;
-    gap: var(--r8-space-3);
-    justify-items: center;
-    text-align: center;
-  }
-
-  .r8-result__icon {
-    align-items: center;
-    background: var(--r8-color-success);
-    border: var(--r8-border-thick) solid var(--r8-color-border);
-    box-shadow: var(--r8-shadow-md);
-    color: var(--r8-color-success-contrast);
-    display: inline-grid;
-    height: 4rem;
-    place-items: center;
-    width: 4rem;
-  }
-
-  .r8-result__title {
-    font-family: var(--r8-font-display);
-    font-size: var(--r8-font-size-xs);
-    text-transform: uppercase;
-  }
-
   @keyframes r8-skeleton-shift {
     from {
       background-position: 0 0;
