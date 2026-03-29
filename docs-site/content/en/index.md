@@ -1,6 +1,6 @@
 ---
 title: retro8-ui
-description: Public retro8-ui documentation powered by Nuxt, with an expanded catalog, i18n, dedicated routes and an optional JS runtime.
+description: Public Retro8 UI documentation powered by Nuxt, with an expanded catalog, i18n, dedicated routes and an optional JS runtime.
 kicker: Overview
 ---
 

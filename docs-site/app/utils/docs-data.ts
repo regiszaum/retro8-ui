@@ -288,7 +288,7 @@ const localized = {
     meta: {
       title: "Retro8 UI",
       description:
-        "Bilingual retro8-ui documentation with an expanded catalog, per-component pages and light/dark mode.",
+        "Bilingual Retro8 UI documentation with an expanded catalog, per-component pages and light/dark mode.",
     },
     nav: {
       topLinks: [

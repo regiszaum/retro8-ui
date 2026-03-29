@@ -1,4 +1,4 @@
-# retro8-ui docs
+# Retro8 UI
 
 ## Visao geral
 

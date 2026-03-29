@@ -1,4 +1,4 @@
-# retro8-ui docs-site
+# Retro8 UI-site
 
 Aplicacao Nuxt responsavel pela documentacao publica da `retro8-ui`.
 
