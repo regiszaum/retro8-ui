@@ -36,7 +36,16 @@ function isActive(to: string) {
     <header class="docs-topbar">
       <nav class="r8-navbar r8-navbar--dark" aria-label="retro8-ui documentation navigation">
         <NuxtLink class="r8-navbar__brand" :to="buildDocsPath(locale)">
-          {{ site.meta.title }}
+          <span class="docs-brand">
+            <img
+              class="docs-brand__mark"
+              src="/brand/logo-ui.png"
+              alt=""
+              width="243"
+              height="204"
+            >
+            <span class="docs-brand__label">{{ site.meta.title }}</span>
+          </span>
         </NuxtLink>
 
         <ul class="r8-navbar__menu">

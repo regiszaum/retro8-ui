@@ -301,6 +301,28 @@ pre {
   color: var(--docs-topbar-text);
 }
 
+.docs-brand {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.docs-brand__mark {
+  display: block;
+  flex: 0 0 auto;
+  height: 2rem;
+  image-rendering: pixelated;
+  object-fit: contain;
+  width: auto;
+}
+
+.docs-brand__label {
+  display: inline-block;
+  line-height: 1;
+  white-space: nowrap;
+}
+
 .docs-topbar .r8-navbar--dark .r8-navbar__item:hover,
 .docs-topbar .r8-navbar--dark .r8-navbar__item[aria-current="page"] {
   background-color: var(--docs-toolbar-active-bg);
@@ -1286,5 +1308,13 @@ dialog.r8-dialog {
 
   .docs-pager {
     flex-direction: column;
+  }
+
+  .docs-brand__label {
+    display: none;
+  }
+
+  .docs-brand__mark {
+    height: 1.75rem;
   }
 }
