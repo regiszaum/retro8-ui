@@ -1,6 +1,17 @@
 :root,
 html[data-theme="dark"] {
   scroll-behavior: smooth;
+  --docs-cursor-default: url("/cursors/default-dark.png") 4 1, default;
+  --docs-cursor-pointer: url("/cursors/pointer-dark.png") 12 1, pointer;
+  --docs-cursor-text: url("/cursors/text.png") 16 16, text;
+  --docs-cursor-grab: url("/cursors/grab-dark.png") 8 8, grab;
+  --docs-cursor-grabbing: url("/cursors/grabbing-dark.png") 8 8, grabbing;
+  --docs-cursor-disabled: url("/cursors/not-allowed-dark.png") 16 16, not-allowed;
+  --docs-cursor-wait: url("/cursors/wait-dark.png") 16 16, wait;
+  --docs-cursor-col-resize: url("/cursors/col-resize.png") 16 16, col-resize;
+  --docs-cursor-row-resize: url("/cursors/row-resize.png") 16 16, row-resize;
+  --r8-runtime-cursor-col-resize: var(--docs-cursor-col-resize);
+  --r8-runtime-cursor-row-resize: var(--docs-cursor-row-resize);
   --docs-bg: #020617;
   --docs-grid-line: rgba(148, 163, 184, 0.08);
   --docs-text: #e2e8f0;
@@ -45,6 +56,17 @@ html {
 }
 
 html[data-theme="light"] {
+  --docs-cursor-default: url("/cursors/default.png") 4 1, default;
+  --docs-cursor-pointer: url("/cursors/pointer.png") 12 1, pointer;
+  --docs-cursor-text: url("/cursors/text.png") 16 16, text;
+  --docs-cursor-grab: url("/cursors/grab.png") 8 8, grab;
+  --docs-cursor-grabbing: url("/cursors/grabbing.png") 8 8, grabbing;
+  --docs-cursor-disabled: url("/cursors/not-allowed.png") 16 16, not-allowed;
+  --docs-cursor-wait: url("/cursors/wait.png") 16 16, wait;
+  --docs-cursor-col-resize: url("/cursors/col-resize.png") 16 16, col-resize;
+  --docs-cursor-row-resize: url("/cursors/row-resize.png") 16 16, row-resize;
+  --r8-runtime-cursor-col-resize: var(--docs-cursor-col-resize);
+  --r8-runtime-cursor-row-resize: var(--docs-cursor-row-resize);
   --docs-bg: #eff6ff;
   --docs-grid-line: rgba(15, 23, 42, 0.06);
   --docs-text: #0f172a;
@@ -88,6 +110,7 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   overflow-y: auto;
+  cursor: var(--docs-cursor-default);
   color: var(--docs-text);
   background:
     radial-gradient(circle at top left, var(--docs-accent-soft), transparent 24rem),
@@ -111,6 +134,77 @@ body::before {
 
 a {
   color: inherit;
+}
+
+a[href],
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+.docs-summary-card,
+.docs-sidebar__link,
+.docs-search__result,
+.r8-navbar__brand,
+.r8-navbar__item,
+.r8-btn:not(:disabled):not([aria-disabled="true"]),
+.r8-carousel__dot,
+.r8-tabs__tab,
+.r8-collapse__header,
+.r8-pagination__item,
+.r8-pagination__more,
+.r8-segmented__item,
+.r8-dropdown__item,
+.r8-radio,
+.r8-checkbox,
+.r8-switch,
+.r8-rate__item,
+.r8-transfer__item,
+.r8-tree__node,
+.r8-virtual-tree__node,
+.r8-input-number__button,
+[data-r8-toggle],
+[data-r8-close],
+[data-r8-dismiss] {
+  cursor: var(--docs-cursor-pointer);
+}
+
+input,
+textarea,
+select,
+[contenteditable="true"],
+.r8-input,
+.r8-autocomplete__input,
+.r8-input-number__input,
+.r8-input-tag__input {
+  cursor: var(--docs-cursor-text);
+}
+
+.r8-slider__track,
+.r8-slider__thumb {
+  cursor: var(--docs-cursor-grab);
+}
+
+.r8-slider__track:active,
+.r8-slider__thumb:active {
+  cursor: var(--docs-cursor-grabbing);
+}
+
+.r8-splitter__handle {
+  cursor: var(--docs-cursor-col-resize);
+}
+
+.r8-splitter--vertical .r8-splitter__handle {
+  cursor: var(--docs-cursor-row-resize);
+}
+
+:disabled,
+[disabled],
+[aria-disabled="true"],
+.is-disabled {
+  cursor: var(--docs-cursor-disabled) !important;
+}
+
+[aria-busy="true"],
+.is-loading {
+  cursor: var(--docs-cursor-wait) !important;
 }
 
 code,

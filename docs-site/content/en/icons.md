@@ -9,3 +9,5 @@ kicker: Ecosystem
 The goal is to keep the library focused on visual surfaces, states and HTML patterns, while iconography stays an optional choice for the consumer.
 
 On this page, the docs recommends external libraries that fit a pixel-art aesthetic and a framework-agnostic workflow.
+
+The public docs also uses Pixelarticons free cursor assets for `default`, `pointer`, `text`, `grab`, `wait`, `disabled` and resize states.

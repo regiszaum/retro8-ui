@@ -1226,7 +1226,9 @@
       handle.addEventListener("pointerdown", (event) => {
         event.preventDefault();
         component.classList.add("is-resizing");
-        document.body.style.cursor = isVertical ? "row-resize" : "col-resize";
+        document.body.style.cursor = isVertical
+          ? "var(--r8-runtime-cursor-row-resize, row-resize)"
+          : "var(--r8-runtime-cursor-col-resize, col-resize)";
         handle.setPointerCapture?.(event.pointerId);
         setFromPointer(event.clientX, event.clientY);
         window.addEventListener("pointermove", onPointerMove);
