@@ -2548,9 +2548,7 @@
       button.closest("dialog") ||
       button.closest(".r8-drawer") ||
       button.closest(".r8-popover") ||
-      button.closest(".r8-popconfirm") ||
       button.closest(".r8-tooltip") ||
-      button.closest(".r8-message") ||
       button.closest(".r8-message-box") ||
       button.closest(".r8-notification") ||
       button.closest(".r8-alert");
@@ -2563,7 +2561,7 @@
       return;
     }
 
-    const host = button.closest(".r8-alert, .r8-message, .r8-notification, .r8-message-box");
+    const host = button.closest(".r8-alert, .r8-notification, .r8-message-box");
     if (host instanceof HTMLElement) {
       if (isToastAlertTarget(host)) {
         closeTarget(host);

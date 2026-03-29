@@ -1879,28 +1879,6 @@
     background: var(--r8-color-accent);
     color: var(--r8-color-accent-contrast);
   }
-.r8-result {
-    display: grid;
-    gap: var(--r8-space-3);
-    justify-items: center;
-    text-align: center;
-  }
-.r8-result__icon {
-    align-items: center;
-    background: var(--r8-color-success);
-    border: var(--r8-border-thick) solid var(--r8-color-border);
-    box-shadow: var(--r8-shadow-md);
-    color: var(--r8-color-success-contrast);
-    display: inline-grid;
-    height: 4rem;
-    place-items: center;
-    width: 4rem;
-  }
-.r8-result__title {
-    font-family: var(--r8-font-display);
-    font-size: var(--r8-font-size-xs);
-    text-transform: uppercase;
-  }
 @keyframes r8-skeleton-shift {
     from {
       background-position: 0 0;
@@ -2725,12 +2703,10 @@ dialog.r8-dialog::backdrop {
     position: relative;
   }
 .r8-alert,
-  .r8-message,
   .r8-notification,
   .r8-popover,
   .r8-tooltip,
-  .r8-message-box,
-  .r8-popconfirm {
+  .r8-message-box {
     border: var(--r8-border-thick) solid var(--r8-color-border);
     box-shadow: var(--r8-shadow-md);
     display: grid;
@@ -2755,11 +2731,9 @@ dialog.r8-dialog::backdrop {
     color: var(--r8-color-danger-contrast);
   }
 .r8-alert__title,
-  .r8-message__title,
   .r8-notification__title,
   .r8-popover__title,
   .r8-message-box__title,
-  .r8-popconfirm__title,
   .r8-drawer__title {
     font-family: var(--r8-font-display);
     font-size: var(--r8-font-size-xs);
@@ -2920,16 +2894,11 @@ dialog.r8-dialog::backdrop {
       transform: translateY(var(--r8-motion-lift));
     }
   }
-.r8-message {
-    background: var(--r8-color-surface);
-    max-width: 18rem;
-  }
 .r8-notification {
     background: var(--r8-color-surface);
     max-width: 20rem;
   }
-.r8-message-box,
-  .r8-popconfirm {
+.r8-message-box {
     background: var(--r8-color-surface);
     max-width: 22rem;
   }
@@ -2956,8 +2925,7 @@ dialog.r8-dialog::backdrop {
 .r8-tooltip::after {
     border-top-color: var(--r8-color-dark);
   }
-.r8-popconfirm__footer,
-  .r8-message-box__footer,
+.r8-message-box__footer,
   .r8-notification__footer {
     display: flex;
     flex-wrap: wrap;

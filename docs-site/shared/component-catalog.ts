@@ -1299,21 +1299,6 @@ const dataComponents = [
 </div>`,
   },
   {
-    id: "result",
-    name: "Result",
-    group: "data",
-    summary: l(
-      "Estado final de sucesso, aviso ou falha para conclusoes de fluxo e paginas de retorno.",
-      "Final success, warning or failure state for flow endings and return pages.",
-    ),
-    classes: ["r8-result", "r8-result__icon", "r8-result__title"],
-    preview: `<div class="r8-result">
-  <div class="r8-result__icon">OK</div>
-  <div class="r8-result__title">Deploy complete</div>
-  <p class="r8-text r8-text--muted">All assets are live and responding.</p>
-</div>`,
-  },
-  {
     id: "skeleton",
     name: "Skeleton",
     group: "data",
@@ -1919,33 +1904,6 @@ const feedbackComponents = [
 </div>`,
   },
   {
-    id: "message",
-    name: "Message",
-    group: "feedback",
-    summary: l(
-      "Toast compacto para feedback rapido, curto e temporario.",
-      "Compact toast for quick, short-lived feedback.",
-    ),
-    classes: ["r8-message", "r8-message__title"],
-    preview: `<div class="docs-demo__stack">
-  <button
-    class="r8-btn r8-btn--secondary"
-    type="button"
-    data-r8-toggle="message"
-    data-r8-target="#docs-message-preview"
-  >
-    Show message
-  </button>
-  <section id="docs-message-preview" class="r8-message" hidden>
-    <strong class="r8-message__title">Saved</strong>
-    <p class="r8-text">retro8.css exported successfully.</p>
-    <div class="r8-row">
-      <button class="r8-btn r8-btn--sm" type="button" data-r8-dismiss>Dismiss</button>
-    </div>
-  </section>
-</div>`,
-  },
-  {
     id: "message-box",
     name: "Message Box",
     group: "feedback",
@@ -1997,34 +1955,6 @@ const feedbackComponents = [
     <div class="r8-notification__footer">
       <button class="r8-btn r8-btn--sm" type="button" data-r8-close="#docs-notification-preview">Dismiss</button>
       <button class="r8-btn r8-btn--sm r8-btn--primary" type="button">Read notes</button>
-    </div>
-  </section>
-</div>`,
-  },
-  {
-    id: "popconfirm",
-    name: "Popconfirm",
-    group: "feedback",
-    summary: l(
-      "Confirmacao pequena e ancorada, boa para acoes destrutivas perto do gatilho.",
-      "Small anchored confirmation, great for destructive actions near the trigger.",
-    ),
-    classes: ["r8-popconfirm", "r8-popconfirm__title", "r8-popconfirm__footer"],
-    preview: `<div class="docs-demo__stack">
-  <button
-    class="r8-btn r8-btn--danger"
-    type="button"
-    data-r8-toggle="popconfirm"
-    data-r8-target="#docs-popconfirm-preview"
-  >
-    Delete item
-  </button>
-  <section id="docs-popconfirm-preview" class="r8-popconfirm" hidden>
-    <strong class="r8-popconfirm__title">Delete item?</strong>
-    <p class="r8-text">This cannot be undone.</p>
-    <div class="r8-popconfirm__footer">
-      <button class="r8-btn r8-btn--sm" type="button" data-r8-close="#docs-popconfirm-preview">Cancel</button>
-      <button class="r8-btn r8-btn--sm r8-btn--danger" type="button" data-r8-close="#docs-popconfirm-preview">Delete</button>
     </div>
   </section>
 </div>`,

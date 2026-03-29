@@ -5,12 +5,10 @@
   }
 
   .r8-alert,
-  .r8-message,
   .r8-notification,
   .r8-popover,
   .r8-tooltip,
-  .r8-message-box,
-  .r8-popconfirm {
+  .r8-message-box {
     border: var(--r8-border-thick) solid var(--r8-color-border);
     box-shadow: var(--r8-shadow-md);
     display: grid;
@@ -40,11 +38,9 @@
   }
 
   .r8-alert__title,
-  .r8-message__title,
   .r8-notification__title,
   .r8-popover__title,
   .r8-message-box__title,
-  .r8-popconfirm__title,
   .r8-drawer__title {
     font-family: var(--r8-font-display);
     font-size: var(--r8-font-size-xs);
@@ -234,18 +230,12 @@
     }
   }
 
-  .r8-message {
-    background: var(--r8-color-surface);
-    max-width: 18rem;
-  }
-
   .r8-notification {
     background: var(--r8-color-surface);
     max-width: 20rem;
   }
 
-  .r8-message-box,
-  .r8-popconfirm {
+  .r8-message-box {
     background: var(--r8-color-surface);
     max-width: 22rem;
   }
@@ -277,7 +267,6 @@
     border-top-color: var(--r8-color-dark);
   }
 
-  .r8-popconfirm__footer,
   .r8-message-box__footer,
   .r8-notification__footer {
     display: flex;

@@ -69,7 +69,7 @@ const choiceKinds = new Set([
   "tree-select",
   "dropdown",
 ]);
-const overlayKinds = new Set(["dialog", "drawer", "message", "message-box", "notification", "popover", "popconfirm", "tooltip"]);
+const overlayKinds = new Set(["dialog", "drawer", "message-box", "notification", "popover", "tooltip"]);
 const binaryKinds = new Set(["checkbox", "radio", "switch"]);
 const runtimeKinds = new Set([
   "button",
@@ -601,11 +601,9 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
       });
       break;
     case "drawer":
-    case "message":
     case "message-box":
     case "notification":
     case "popover":
-    case "popconfirm":
     case "tooltip":
       mergeContract(contract, {
         dataAttributes: [
