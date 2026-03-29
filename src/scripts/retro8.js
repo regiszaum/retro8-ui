@@ -646,6 +646,10 @@
     setHidden(state.panel, true);
     state.panel.classList.remove("is-open");
     syncExpandedState(state, false);
+    if (state.options?.length) {
+      state.options.forEach((item) => item.classList.remove("is-active"));
+    }
+    state.activeOption = state.selectedOption || null;
     floatingStates.delete(container);
   }
 
@@ -658,6 +662,14 @@
     setHidden(state.panel, false);
     state.panel.classList.add("is-open");
     syncExpandedState(state, true);
+    syncChoiceStateFromDom(state);
+
+    const nextActive = getPreferredChoiceOption(state);
+    if (nextActive) {
+      setChoiceActiveOption(state, nextActive);
+      nextActive.scrollIntoView({ block: "nearest" });
+    }
+
     floatingStates.add(container);
   }
 
@@ -726,6 +738,204 @@
 
     if (display && value) {
       display.textContent = value;
+    }
+  }
+
+  function syncChoiceStateFromDom(state) {
+    if (!state?.options?.length) {
+      return;
+    }
+
+    state.selectedOption = state.options.find((item) => item.classList.contains("is-selected")) || null;
+  }
+
+  function setChoiceActiveOption(state, option) {
+    if (!state?.options?.length) {
+      return;
+    }
+
+    state.options.forEach((item) => {
+      const isActive = item === option;
+      item.classList.toggle("is-active", isActive && !item.classList.contains("is-selected"));
+
+      if (isActive) {
+        item.setAttribute("data-r8-active", "true");
+      } else {
+        item.removeAttribute("data-r8-active");
+      }
+    });
+
+    state.activeOption = option || null;
+  }
+
+  function getPreferredChoiceOption(state, direction = "start") {
+    if (!state?.options?.length) {
+      return null;
+    }
+
+    syncChoiceStateFromDom(state);
+
+    const visibleOptions = getVisibleOptions(state);
+    if (!visibleOptions.length) {
+      return null;
+    }
+
+    if (state.selectedOption && visibleOptions.includes(state.selectedOption)) {
+      return state.selectedOption;
+    }
+
+    return direction === "end" ? visibleOptions[visibleOptions.length - 1] || null : visibleOptions[0] || null;
+  }
+
+  function moveChoiceActiveOption(state, direction) {
+    const visibleOptions = getVisibleOptions(state);
+    if (!visibleOptions.length) {
+      return null;
+    }
+
+    const currentOption =
+      (state.activeOption && visibleOptions.includes(state.activeOption) && state.activeOption) ||
+      getPreferredChoiceOption(state, direction < 0 ? "end" : "start");
+
+    const currentIndex = visibleOptions.indexOf(currentOption);
+    const fallbackIndex = direction < 0 ? visibleOptions.length - 1 : 0;
+    const nextIndex =
+      currentIndex >= 0 ? clamp(currentIndex + direction, 0, visibleOptions.length - 1) : fallbackIndex;
+    const nextOption = visibleOptions[nextIndex] || null;
+
+    setChoiceActiveOption(state, nextOption);
+    nextOption?.scrollIntoView({ block: "nearest" });
+    return nextOption;
+  }
+
+  function handleChoiceTriggerKeydown(container, family, event) {
+    const state = choiceStates.get(container);
+    if (!state?.panel) {
+      return;
+    }
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      if (!isOpen(state.panel)) {
+        openFloating(container);
+      } else {
+        moveChoiceActiveOption(state, 1);
+      }
+      return;
+    }
+
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
+      if (!isOpen(state.panel)) {
+        openFloating(container);
+        const preferred = getPreferredChoiceOption(state, "end");
+        if (preferred) {
+          setChoiceActiveOption(state, preferred);
+          preferred.scrollIntoView({ block: "nearest" });
+        }
+      } else {
+        moveChoiceActiveOption(state, -1);
+      }
+      return;
+    }
+
+    if (event.key === "Home" || event.key === "PageUp") {
+      event.preventDefault();
+      if (!isOpen(state.panel)) {
+        openFloating(container);
+      }
+      const firstOption = getVisibleOptions(state)[0] || null;
+      if (firstOption) {
+        setChoiceActiveOption(state, firstOption);
+        firstOption.scrollIntoView({ block: "nearest" });
+      }
+      return;
+    }
+
+    if (event.key === "End" || event.key === "PageDown") {
+      event.preventDefault();
+      if (!isOpen(state.panel)) {
+        openFloating(container);
+      }
+      const visibleOptions = getVisibleOptions(state);
+      const lastOption = visibleOptions[visibleOptions.length - 1] || null;
+      if (lastOption) {
+        setChoiceActiveOption(state, lastOption);
+        lastOption.scrollIntoView({ block: "nearest" });
+      }
+      return;
+    }
+
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      if (!isOpen(state.panel)) {
+        openFloating(container);
+        return;
+      }
+
+      if (state.activeOption) {
+        markChoiceSelection(container, state.activeOption, family);
+      }
+      return;
+    }
+
+    if (event.key === "Escape" && isOpen(state.panel)) {
+      event.preventDefault();
+      closeFloating(container);
+    }
+  }
+
+  function handleChoiceOptionKeydown(container, option, family, event) {
+    const state = choiceStates.get(container);
+    if (!state) {
+      return;
+    }
+
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      markChoiceSelection(container, option, family);
+      return;
+    }
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      moveChoiceActiveOption(state, 1)?.focus({ preventScroll: true });
+      return;
+    }
+
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
+      moveChoiceActiveOption(state, -1)?.focus({ preventScroll: true });
+      return;
+    }
+
+    if (event.key === "Home" || event.key === "PageUp") {
+      event.preventDefault();
+      const firstOption = getVisibleOptions(state)[0] || null;
+      if (firstOption) {
+        setChoiceActiveOption(state, firstOption);
+        firstOption.focus({ preventScroll: true });
+        firstOption.scrollIntoView({ block: "nearest" });
+      }
+      return;
+    }
+
+    if (event.key === "End" || event.key === "PageDown") {
+      event.preventDefault();
+      const visibleOptions = getVisibleOptions(state);
+      const lastOption = visibleOptions[visibleOptions.length - 1] || null;
+      if (lastOption) {
+        setChoiceActiveOption(state, lastOption);
+        lastOption.focus({ preventScroll: true });
+        lastOption.scrollIntoView({ block: "nearest" });
+      }
+      return;
+    }
+
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeFloating(container);
+      state.trigger?.focus({ preventScroll: true });
     }
   }
 
@@ -806,14 +1016,20 @@
     }
 
     state.options.forEach((item) => {
-      item.classList.toggle("is-selected", item === option);
-      item.setAttribute("aria-selected", item === option ? "true" : "false");
+      const isSelected = item === option;
+      item.classList.toggle("is-selected", isSelected);
+      item.classList.toggle("is-active", false);
+      item.setAttribute("aria-selected", isSelected ? "true" : "false");
     });
 
+    state.selectedOption = option;
+    state.activeOption = option;
     updateChoiceDisplay(container, option, family);
+    container.dataset.r8Value = getTextValue(option);
 
     if (family.closeOnSelect !== false && state.panel && state.trigger) {
       closeFloating(container);
+      state.trigger.focus({ preventScroll: true });
     }
 
     if (!silent) {
@@ -1816,14 +2032,18 @@
         const panel = firstMatch(container, family.panel);
         const options = toArray(container.querySelectorAll(family.option)).filter((item) => item instanceof HTMLElement);
 
-        choiceStates.set(container, { trigger, panel, options });
+        choiceStates.set(container, { trigger, panel, options, activeOption: null, selectedOption: null });
 
         if (trigger) {
           prepareActionLikeElement(trigger);
           setExpanded(trigger, false);
 
           if (panel) {
+            ensureId(panel, "r8-choice-panel");
             setHidden(panel, true);
+            panel.setAttribute("role", family.kind === "dropdown" ? "menu" : "listbox");
+            trigger.setAttribute("aria-controls", panel.id);
+            trigger.setAttribute("aria-haspopup", family.kind === "dropdown" ? "menu" : "listbox");
           }
 
           trigger.addEventListener("click", (event) => {
@@ -1831,17 +2051,24 @@
             toggleFloating(container);
           });
 
-          bindKeyboardActivation(trigger, (event) => {
-            event.preventDefault();
-            toggleFloating(container);
+          trigger.addEventListener("keydown", (event) => {
+            handleChoiceTriggerKeydown(container, family, event);
           });
         }
 
         options.forEach((option) => {
-          prepareActionLikeElement(option, "option");
+          prepareActionLikeElement(option, family.kind === "dropdown" ? "menuitem" : "option");
+          ensureId(option, "r8-choice-option");
+          option.setAttribute("role", family.kind === "dropdown" ? "menuitem" : "option");
           option.setAttribute("aria-selected", option.classList.contains("is-selected") ? "true" : "false");
+          option.addEventListener("pointerenter", () => {
+            const state = choiceStates.get(container);
+            if (state) {
+              setChoiceActiveOption(state, option);
+            }
+          });
           option.addEventListener("click", () => markChoiceSelection(container, option, family));
-          bindKeyboardActivation(option, () => markChoiceSelection(container, option, family));
+          option.addEventListener("keydown", (event) => handleChoiceOptionKeydown(container, option, family, event));
         });
 
         if (family.kind === "datetime") {

@@ -541,7 +541,7 @@ const formComponents = [
     preview: `<div class="r8-cascader">
   <div class="r8-cascader__trigger">
     <span data-r8-choice-display>World / Sector / Base</span>
-    <span>&gt;</span>
+    <span class="r8-choice__caret" aria-hidden="true">&gt;</span>
   </div>
   <div class="r8-cascader__panel">
     <div class="r8-cascader__trail">
@@ -865,14 +865,26 @@ const formComponents = [
     ),
     classes: ["r8-select", "r8-select__trigger", "r8-select__menu", "r8-select__option"],
     preview: `<div class="r8-select">
-  <div class="r8-select__trigger">
+  <button class="r8-select__trigger" type="button">
     <span data-r8-choice-display>Explorer</span>
-    <span>&gt;</span>
+    <span class="r8-choice__caret" aria-hidden="true">&gt;</span>
+  </button>
+  <div class="r8-select__menu" hidden>
+    <button class="r8-select__option" type="button" data-r8-value="engineer">Engineer</button>
+    <button class="r8-select__option" type="button" data-r8-value="medic">Medic</button>
+    <button class="r8-select__option is-selected" type="button" data-r8-value="explorer">Explorer</button>
   </div>
-  <div class="r8-select__menu">
-    <div class="r8-select__option">Engineer</div>
-    <div class="r8-select__option">Medic</div>
-    <div class="r8-select__option is-selected">Explorer</div>
+</div>`,
+    code: `<div class="r8-select">
+  <button class="r8-select__trigger" type="button">
+    <span data-r8-choice-display>Explorer</span>
+    <span class="r8-choice__caret" aria-hidden="true">&gt;</span>
+  </button>
+
+  <div class="r8-select__menu" hidden>
+    <button class="r8-select__option" type="button" data-r8-value="engineer">Engineer</button>
+    <button class="r8-select__option" type="button" data-r8-value="medic">Medic</button>
+    <button class="r8-select__option is-selected" type="button" data-r8-value="explorer">Explorer</button>
   </div>
 </div>`,
   },
@@ -969,7 +981,7 @@ const formComponents = [
     preview: `<div class="r8-time-select">
   <div class="r8-time-select__trigger">
     <span data-r8-choice-display>08:30</span>
-    <span>&gt;</span>
+    <span class="r8-choice__caret" aria-hidden="true">&gt;</span>
   </div>
   <div class="r8-time-select__menu">
     <div class="r8-time-select__option">08:00</div>

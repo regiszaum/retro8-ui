@@ -15,12 +15,12 @@ export function normalizeSlug(value: string | string[] | undefined) {
 }
 
 export function buildDocsPath(locale: string, segments: string[] = []) {
-  const safeLocale = isDocsLocale(locale) ? locale : "pt-br";
+  const safeLocale = isDocsLocale(locale) ? locale : "en";
   return `/${safeLocale}${segments.length ? `/${segments.join("/")}` : ""}`;
 }
 
 export function swapLocaleInPath(path: string, targetLocale: string) {
-  const safeLocale = isDocsLocale(targetLocale) ? targetLocale : "pt-br";
+  const safeLocale = isDocsLocale(targetLocale) ? targetLocale : "en";
   const parts = path.split("/").filter(Boolean);
 
   if (!parts.length) {

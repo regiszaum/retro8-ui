@@ -1,6 +1,6 @@
 import { componentOrder } from "./shared/component-catalog";
 
-const docsLocales = ["pt-br", "en"];
+const docsLocales = ["en", "pt-br"];
 const guidePages = ["getting-started", "tokens", "icons", "components"];
 
 export default defineNuxtConfig({
@@ -34,7 +34,7 @@ export default defineNuxtConfig({
     },
   },
   routeRules: {
-    "/": { redirect: "/pt-br" },
+    "/": { redirect: "/en" },
   },
   nitro: {
     prerender: {

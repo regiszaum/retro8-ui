@@ -673,6 +673,58 @@ pre {
   background: var(--docs-toolbar-bg);
 }
 
+.docs-toolbar__group--locale {
+  align-items: center;
+  padding: 0.12rem;
+}
+
+.docs-locale-select {
+  min-width: 5rem;
+}
+
+.docs-locale-select .r8-select__trigger {
+  background: transparent;
+  border: 2px solid transparent;
+  box-shadow: none;
+  color: var(--docs-topbar-text);
+  font-family: "Press Start 2P", "Courier New", Courier, monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  min-height: 2rem;
+  padding: 0.35rem 0.65rem;
+  text-transform: uppercase;
+}
+
+.docs-locale-select .r8-select__trigger:hover,
+.docs-locale-select .r8-select__trigger:focus-visible,
+.docs-locale-select .r8-select__trigger[aria-expanded="true"] {
+  border-color: color-mix(in srgb, var(--docs-topbar-text) 18%, transparent);
+  outline: none;
+  transform: translate(-1px, -1px);
+}
+
+.docs-locale-select .r8-select__menu {
+  background: var(--docs-panel-surface);
+  left: auto;
+  margin-top: 0;
+  min-width: 100%;
+  right: 0;
+  top: calc(100% + 0.35rem);
+}
+
+.docs-locale-select .r8-select__option {
+  font-family: "Press Start 2P", "Courier New", Courier, monospace;
+  font-size: 0.58rem;
+  min-height: 2rem;
+  padding: 0.35rem 0.55rem;
+  text-transform: uppercase;
+}
+
+.docs-locale-select__caret {
+  flex: 0 0 auto;
+  font-size: 0.7em;
+}
+
 .docs-toolbar__button {
   display: inline-flex;
   align-items: center;

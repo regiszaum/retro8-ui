@@ -18,15 +18,15 @@ import {
 } from "~~/shared/component-contracts";
 
 export const localeMeta = {
-  "pt-br": {
-    id: "pt-br",
-    htmlLang: "pt-BR",
-    label: "PT-BR",
-  },
   en: {
     id: "en",
     htmlLang: "en",
     label: "EN",
+  },
+  "pt-br": {
+    id: "pt-br",
+    htmlLang: "pt-BR",
+    label: "PT-BR",
   },
 } as const;
 
@@ -600,8 +600,8 @@ function buildComponentSections(locale: DocsLocale) {
     .filter(Boolean);
 }
 
-export function getSiteContent(locale = "pt-br") {
-  const safeLocale = isDocsLocale(locale) ? locale : "pt-br";
+export function getSiteContent(locale = "en") {
+  const safeLocale = isDocsLocale(locale) ? locale : "en";
   const dictionary = localized[safeLocale];
   const componentSections = buildComponentSections(safeLocale);
   const components = componentSections.flatMap((section) => section.components);

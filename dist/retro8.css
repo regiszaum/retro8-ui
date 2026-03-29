@@ -1096,6 +1096,12 @@
     display: grid;
     gap: var(--r8-space-2);
   }
+.r8-select,
+  .r8-virtual-select,
+  .r8-time-select,
+  .r8-tree-select {
+    position: relative;
+  }
 .r8-autocomplete__trigger,
   .r8-cascader__trigger,
   .r8-color-picker__trigger,
@@ -1121,6 +1127,27 @@
   }
 .r8-autocomplete__trigger {
     cursor: text;
+  }
+.r8-choice__caret {
+    display: inline-flex;
+    flex: 0 0 auto;
+    font-family: var(--r8-font-display);
+    font-size: 0.9em;
+    line-height: 1;
+    transform: rotate(90deg);
+    transform-origin: center;
+    transition: transform 140ms steps(2, end);
+  }
+.r8-cascader__trigger[aria-expanded="true"] .r8-choice__caret,
+  .r8-color-picker__trigger[aria-expanded="true"] .r8-choice__caret,
+  .r8-date-picker__trigger[aria-expanded="true"] .r8-choice__caret,
+  .r8-datetime-picker__trigger[aria-expanded="true"] .r8-choice__caret,
+  .r8-mention__trigger[aria-expanded="true"] .r8-choice__caret,
+  .r8-select__trigger[aria-expanded="true"] .r8-choice__caret,
+  .r8-time-picker__trigger[aria-expanded="true"] .r8-choice__caret,
+  .r8-time-select__trigger[aria-expanded="true"] .r8-choice__caret,
+  .r8-tree-select__trigger[aria-expanded="true"] .r8-choice__caret {
+    transform: rotate(-90deg);
   }
 .r8-autocomplete__trigger:focus-within {
     outline: var(--r8-focus-width) solid var(--r8-color-focus);
@@ -1167,10 +1194,32 @@
     overflow-y: auto;
     padding: var(--r8-space-3);
   }
+.r8-select__menu,
+  .r8-virtual-select__menu,
+  .r8-time-select__menu,
+  .r8-tree-select__panel {
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: calc(100% + var(--r8-space-2));
+    z-index: 40;
+  }
 .r8-autocomplete__menu:not(.is-open) {
     display: none;
   }
 .r8-autocomplete__menu.is-open {
+    display: grid;
+  }
+.r8-select__menu:not(.is-open),
+  .r8-virtual-select__menu:not(.is-open),
+  .r8-time-select__menu:not(.is-open),
+  .r8-tree-select__panel:not(.is-open) {
+    display: none;
+  }
+.r8-select__menu.is-open,
+  .r8-virtual-select__menu.is-open,
+  .r8-time-select__menu.is-open,
+  .r8-tree-select__panel.is-open {
     display: grid;
   }
 .r8-autocomplete__option,
@@ -1208,11 +1257,22 @@
     background: var(--r8-color-accent);
     color: var(--r8-color-accent-contrast);
   }
+.r8-select__option.is-active:not(.is-selected),
+  .r8-virtual-select__option.is-active:not(.is-selected),
+  .r8-time-select__option.is-active:not(.is-selected),
+  .r8-tree-select__node.is-active:not(.is-selected) {
+    background: var(--r8-color-surface-2);
+  }
 .r8-cascader__trail,
   .r8-time-picker__slots,
   .r8-tree-select__tree {
     display: grid;
     gap: var(--r8-space-2);
+  }
+@media (prefers-reduced-motion: reduce) {
+    .r8-choice__caret {
+      transition: none;
+    }
   }
 .r8-color-picker__swatches {
     display: grid;
