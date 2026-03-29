@@ -1956,10 +1956,11 @@ const feedbackComponents = [
     type="button"
     data-r8-toggle="popover"
     data-r8-target="#docs-popover-preview"
+    data-r8-placement="bottom-start"
   >
     Toggle popover
   </button>
-  <section id="docs-popover-preview" class="r8-popover" hidden>
+  <section id="docs-popover-preview" class="r8-popover" data-r8-placement="bottom-start" hidden>
     <strong class="r8-popover__title">Shortcut panel</strong>
     <p class="r8-text">Press G to open the grid overlay.</p>
   </section>
@@ -1980,10 +1981,11 @@ const feedbackComponents = [
     type="button"
     data-r8-toggle="tooltip"
     data-r8-target="#docs-tooltip-preview"
+    data-r8-placement="top"
   >
-    Show tooltip
+    Hover or focus
   </button>
-  <div id="docs-tooltip-preview" class="r8-tooltip" role="tooltip" hidden>
+  <div id="docs-tooltip-preview" class="r8-tooltip" data-r8-placement="top" role="tooltip" hidden>
     Hold Shift to toggle precision mode.
   </div>
 </div>`,

@@ -91,6 +91,18 @@
   const genericTargets = new Set();
   const observers = new WeakSet();
   const drawerTransitionMs = 270;
+  const floatingOverlayGap = 12;
+  const floatingViewportPadding = 12;
+  const floatingPlacements = [
+    "top",
+    "top-start",
+    "top-end",
+    "bottom",
+    "bottom-start",
+    "bottom-end",
+    "left",
+    "right",
+  ];
   let uniqueId = 0;
   const buttonVariants = ["primary", "secondary", "tertiary", "success", "info", "danger", "dark", "light", "ghost"];
   const badgeVariants = ["primary", "secondary", "tertiary", "success", "warning", "danger", "info", "dark", "light"];
@@ -2662,6 +2674,188 @@
     return target instanceof HTMLElement && target.classList.contains("r8-drawer");
   }
 
+  function isPopoverTarget(target) {
+    return target instanceof HTMLElement && target.classList.contains("r8-popover");
+  }
+
+  function isTooltipTarget(target) {
+    return target instanceof HTMLElement && target.classList.contains("r8-tooltip");
+  }
+
+  function isFloatingOverlayTarget(target) {
+    return isPopoverTarget(target) || isTooltipTarget(target);
+  }
+
+  function normalizeFloatingPlacement(value, fallback) {
+    if (typeof value === "string" && floatingPlacements.includes(value)) {
+      return value;
+    }
+
+    return fallback;
+  }
+
+  function resolveFloatingPlacement(trigger, target) {
+    const fallback = isTooltipTarget(target) ? "top" : "bottom-start";
+    return normalizeFloatingPlacement(
+      target?.dataset?.r8Placement || trigger?.dataset?.r8Placement || "",
+      fallback,
+    );
+  }
+
+  function getPlacementParts(placement) {
+    const [side = "bottom", align = "center"] = String(placement || "bottom").split("-");
+    return {
+      side,
+      align,
+    };
+  }
+
+  function getOppositePlacement(placement) {
+    const { side, align } = getPlacementParts(placement);
+    const oppositeSide =
+      side === "top" ? "bottom" : side === "bottom" ? "top" : side === "left" ? "right" : "left";
+
+    return align && align !== "center" ? `${oppositeSide}-${align}` : oppositeSide;
+  }
+
+  function computeFloatingCoordinates(triggerRect, targetRect, placement) {
+    const { side, align } = getPlacementParts(placement);
+    const safeWidth = Math.max(targetRect.width, 1);
+    const safeHeight = Math.max(targetRect.height, 1);
+    let top = triggerRect.bottom + floatingOverlayGap;
+    let left = triggerRect.left;
+
+    if (side === "top") {
+      top = triggerRect.top - safeHeight - floatingOverlayGap;
+      if (align === "start") {
+        left = triggerRect.left;
+      } else if (align === "end") {
+        left = triggerRect.right - safeWidth;
+      } else {
+        left = triggerRect.left + triggerRect.width / 2 - safeWidth / 2;
+      }
+    } else if (side === "bottom") {
+      top = triggerRect.bottom + floatingOverlayGap;
+      if (align === "start") {
+        left = triggerRect.left;
+      } else if (align === "end") {
+        left = triggerRect.right - safeWidth;
+      } else {
+        left = triggerRect.left + triggerRect.width / 2 - safeWidth / 2;
+      }
+    } else if (side === "left") {
+      top = triggerRect.top + triggerRect.height / 2 - safeHeight / 2;
+      left = triggerRect.left - safeWidth - floatingOverlayGap;
+    } else if (side === "right") {
+      top = triggerRect.top + triggerRect.height / 2 - safeHeight / 2;
+      left = triggerRect.right + floatingOverlayGap;
+    }
+
+    return { top, left };
+  }
+
+  function fitsFloatingPlacement(triggerRect, targetRect, placement) {
+    const { side } = getPlacementParts(placement);
+    const coordinates = computeFloatingCoordinates(triggerRect, targetRect, placement);
+
+    if (side === "top") {
+      return coordinates.top >= floatingViewportPadding;
+    }
+
+    if (side === "bottom") {
+      return coordinates.top + targetRect.height <= window.innerHeight - floatingViewportPadding;
+    }
+
+    if (side === "left") {
+      return coordinates.left >= floatingViewportPadding;
+    }
+
+    return coordinates.left + targetRect.width <= window.innerWidth - floatingViewportPadding;
+  }
+
+  function clampFloatingCoordinates(triggerRect, targetRect, placement, coordinates) {
+    const { side } = getPlacementParts(placement);
+    const maxLeft = Math.max(floatingViewportPadding, window.innerWidth - targetRect.width - floatingViewportPadding);
+    const maxTop = Math.max(floatingViewportPadding, window.innerHeight - targetRect.height - floatingViewportPadding);
+
+    return {
+      left: clamp(coordinates.left, floatingViewportPadding, maxLeft),
+      top:
+        side === "left" || side === "right"
+          ? clamp(coordinates.top, floatingViewportPadding, maxTop)
+          : clamp(coordinates.top, floatingViewportPadding, maxTop),
+    };
+  }
+
+  function clearFloatingOverlayPosition(target) {
+    if (!(target instanceof HTMLElement)) {
+      return;
+    }
+
+    target.style.removeProperty("top");
+    target.style.removeProperty("left");
+    target.style.removeProperty("--r8-floating-arrow-left");
+    target.style.removeProperty("--r8-floating-arrow-top");
+    delete target.dataset.r8PlacementActive;
+  }
+
+  function positionFloatingOverlay(target, trigger) {
+    if (!(target instanceof HTMLElement) || !(trigger instanceof HTMLElement)) {
+      return;
+    }
+
+    const requestedPlacement = resolveFloatingPlacement(trigger, target);
+    const triggerRect = trigger.getBoundingClientRect();
+
+    target.style.visibility = "hidden";
+    target.style.top = "0px";
+    target.style.left = "0px";
+
+    const initialRect = target.getBoundingClientRect();
+    const fallbackPlacement = getOppositePlacement(requestedPlacement);
+    const placement = fitsFloatingPlacement(triggerRect, initialRect, requestedPlacement)
+      ? requestedPlacement
+      : fallbackPlacement;
+    const rawCoordinates = computeFloatingCoordinates(triggerRect, initialRect, placement);
+    const coordinates = clampFloatingCoordinates(triggerRect, initialRect, placement, rawCoordinates);
+
+    target.style.top = `${Math.round(coordinates.top)}px`;
+    target.style.left = `${Math.round(coordinates.left)}px`;
+    target.dataset.r8PlacementActive = placement;
+
+    if (placement.startsWith("top") || placement.startsWith("bottom")) {
+      const arrowLeft = clamp(
+        triggerRect.left + triggerRect.width / 2 - coordinates.left,
+        16,
+        Math.max(initialRect.width - 16, 16),
+      );
+      target.style.setProperty("--r8-floating-arrow-left", `${Math.round(arrowLeft)}px`);
+      target.style.removeProperty("--r8-floating-arrow-top");
+    } else {
+      const arrowTop = clamp(
+        triggerRect.top + triggerRect.height / 2 - coordinates.top,
+        16,
+        Math.max(initialRect.height - 16, 16),
+      );
+      target.style.setProperty("--r8-floating-arrow-top", `${Math.round(arrowTop)}px`);
+      target.style.removeProperty("--r8-floating-arrow-left");
+    }
+
+    target.style.removeProperty("visibility");
+  }
+
+  function syncFloatingOverlayPositions() {
+    genericTargets.forEach((entry) => {
+      if (!entry.trigger?.isConnected || !entry.target?.isConnected) {
+        return;
+      }
+
+      if (isFloatingOverlayTarget(entry.target) && isOpen(entry.target)) {
+        positionFloatingOverlay(entry.target, entry.trigger);
+      }
+    });
+  }
+
   function collapseGenericTargetTriggers(target) {
     genericTargets.forEach((entry) => {
       if (entry.target === target) {
@@ -2782,6 +2976,11 @@
       return;
     }
 
+    if (isFloatingOverlayTarget(target)) {
+      clearOverlayTimer(target);
+      clearFloatingOverlayPosition(target);
+    }
+
     setHidden(target, true);
     emitComponentEvent(target, "target-close", {
       target,
@@ -2850,6 +3049,18 @@
       return;
     }
 
+    if (isFloatingOverlayTarget(target)) {
+      clearOverlayTimer(target);
+      setHidden(target, false);
+      setExpanded(trigger, true);
+      positionFloatingOverlay(target, trigger);
+      emitComponentEvent(target, "target-open", {
+        target,
+        trigger,
+      });
+      return;
+    }
+
     setHidden(target, false);
     setExpanded(trigger, true);
     emitComponentEvent(target, "target-open", {
@@ -2878,6 +3089,44 @@
       setExpanded(trigger, false);
       registerGenericTarget(trigger, target);
       bindKeyboardActivation(trigger, () => handleToggleTrigger(trigger));
+
+      if (isTooltipTarget(target)) {
+        ensureId(target, "r8-tooltip");
+        trigger.setAttribute("aria-describedby", target.id);
+
+        if (trigger.dataset.r8TooltipReady !== "true") {
+          trigger.dataset.r8TooltipReady = "true";
+
+          trigger.addEventListener("pointerenter", () => {
+            clearOverlayTimer(target);
+            openTarget(target, trigger);
+          });
+
+          trigger.addEventListener("pointerleave", () => {
+            const closeTimer = window.setTimeout(() => {
+              closeTarget(target, trigger);
+            }, 40);
+            overlayTimers.set(target, closeTimer);
+          });
+
+          trigger.addEventListener("focus", () => {
+            clearOverlayTimer(target);
+            openTarget(target, trigger);
+          });
+
+          trigger.addEventListener("blur", () => {
+            closeTarget(target, trigger);
+          });
+
+          target.addEventListener("pointerenter", () => {
+            clearOverlayTimer(target);
+          });
+
+          target.addEventListener("pointerleave", () => {
+            closeTarget(target, trigger);
+          });
+        }
+      }
     });
 
     toArray(root.querySelectorAll("[data-r8-close]")).forEach((button) => {
@@ -2976,6 +3225,18 @@
         }
       });
     });
+
+    window.addEventListener("resize", () => {
+      syncFloatingOverlayPositions();
+    });
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        syncFloatingOverlayPositions();
+      },
+      true,
+    );
   }
 
   function observe(root) {

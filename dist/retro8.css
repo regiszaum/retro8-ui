@@ -2882,16 +2882,22 @@ dialog.r8-dialog::backdrop {
 .r8-popover,
   .r8-tooltip {
     background: var(--r8-color-surface);
-    position: relative;
+    inset: auto auto auto auto;
+    margin: 0;
+    max-width: min(20rem, calc(100vw - 1rem));
+    pointer-events: auto;
+    position: fixed;
+    z-index: 74;
   }
 .r8-popover::after,
   .r8-tooltip::after {
     border: 8px solid transparent;
-    border-top-color: var(--r8-color-border);
     content: "";
-    left: var(--r8-space-4);
+    left: var(--r8-floating-arrow-left, var(--r8-space-4));
+    pointer-events: none;
     position: absolute;
     top: 100%;
+    transform: translateX(-50%);
   }
 .r8-tooltip {
     background: var(--r8-color-dark);
@@ -2899,8 +2905,60 @@ dialog.r8-dialog::backdrop {
     max-width: 14rem;
     padding: var(--r8-space-3);
   }
+.r8-popover::after {
+    border-top-color: var(--r8-color-surface);
+  }
 .r8-tooltip::after {
     border-top-color: var(--r8-color-dark);
+  }
+.r8-popover[data-r8-placement-active^="bottom"]::after,
+  .r8-tooltip[data-r8-placement-active^="bottom"]::after {
+    border-bottom-color: currentColor;
+    border-left-color: transparent;
+    border-right-color: transparent;
+    border-top-color: transparent;
+    bottom: 100%;
+    top: auto;
+    transform: translateX(-50%);
+  }
+.r8-popover[data-r8-placement-active^="bottom"]::after {
+    border-bottom-color: var(--r8-color-surface);
+  }
+.r8-tooltip[data-r8-placement-active^="bottom"]::after {
+    border-bottom-color: var(--r8-color-dark);
+  }
+.r8-popover[data-r8-placement-active="left"]::after,
+  .r8-tooltip[data-r8-placement-active="left"]::after {
+    border-bottom-color: transparent;
+    border-left-color: currentColor;
+    border-right-color: transparent;
+    border-top-color: transparent;
+    left: 100%;
+    top: var(--r8-floating-arrow-top, 50%);
+    transform: translateY(-50%);
+  }
+.r8-popover[data-r8-placement-active="left"]::after {
+    border-left-color: var(--r8-color-surface);
+  }
+.r8-tooltip[data-r8-placement-active="left"]::after {
+    border-left-color: var(--r8-color-dark);
+  }
+.r8-popover[data-r8-placement-active="right"]::after,
+  .r8-tooltip[data-r8-placement-active="right"]::after {
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+    border-right-color: currentColor;
+    border-top-color: transparent;
+    left: auto;
+    right: 100%;
+    top: var(--r8-floating-arrow-top, 50%);
+    transform: translateY(-50%);
+  }
+.r8-popover[data-r8-placement-active="right"]::after {
+    border-right-color: var(--r8-color-surface);
+  }
+.r8-tooltip[data-r8-placement-active="right"]::after {
+    border-right-color: var(--r8-color-dark);
   }
 .r8-message-box__footer,
   .r8-notification__footer {
@@ -3204,6 +3262,10 @@ dialog.r8-dialog::backdrop {
 }
 .outline {
     outline-style: solid;
+}
+.blur {
+    --tw-blur: blur(8px);
+    filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 .filter {
     filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);

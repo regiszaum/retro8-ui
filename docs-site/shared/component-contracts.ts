@@ -600,11 +600,25 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         ],
       });
       break;
+    case "popover":
+    case "tooltip":
+      mergeContract(contract, {
+        dataAttributes: [
+          row("data-r8-toggle", `"true"`, `"true"`, `Trigger declarativo usado para abrir ${component.name}.`, `Declarative trigger used to open ${component.name}.`),
+          row("data-r8-target", "CSS selector", "required", `Target controlado por ${component.name}.`, `Target controlled by ${component.name}.`),
+          row("data-r8-close", "CSS selector | empty", "nearest host", `Fecha ${component.name} pelo helper do runtime.`, `Closes ${component.name} through the runtime helper.`),
+          row("data-r8-placement", `"top" | "top-start" | "top-end" | "bottom" | "bottom-start" | "bottom-end" | "left" | "right"`, component.name === "Tooltip" ? `"top"` : `"bottom-start"`, "Define o posicionamento flutuante relativo ao trigger.", "Defines the floating placement relative to the trigger."),
+        ],
+        methods: runtimeMethods,
+        events: [
+          event("r8:target-open", `{ target, trigger }`, `Emitido quando ${component.name} abre pelo helper declarativo.`, `Emitted when ${component.name} opens through the declarative helper.`),
+          event("r8:target-close", `{ target, trigger }`, `Emitido quando ${component.name} fecha pelo helper declarativo.`, `Emitted when ${component.name} closes through the declarative helper.`),
+        ],
+      });
+      break;
     case "drawer":
     case "message-box":
     case "notification":
-    case "popover":
-    case "tooltip":
       mergeContract(contract, {
         dataAttributes: [
           row("data-r8-toggle", `"true"`, `"true"`, `Trigger declarativo para abrir ${component.name}.`, `Declarative trigger used to open ${component.name}.`),
