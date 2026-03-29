@@ -513,7 +513,7 @@ const formComponents = [
     />
     <span class="r8-badge" data-r8-autocomplete-count>4</span>
   </div>
-  <div class="r8-autocomplete__menu">
+  <div class="r8-autocomplete__menu" hidden>
     <div class="r8-autocomplete__option" data-r8-search="pix-07 vanguard scout recon">
       PIX-07 Vanguard
     </div>
@@ -1678,19 +1678,123 @@ const feedbackComponents = [
     name: "Alert",
     group: "feedback",
     summary: l(
-      "Faixa de aviso inline para estados importantes sem bloquear o fluxo da pagina.",
-      "Inline warning strip for important states without blocking page flow.",
+      "Alert semantico que tambem pode funcionar como toast posicionado para feedback importante.",
+      "Semantic alert that can also behave as a positioned toast for important feedback.",
     ),
-    classes: ["r8-alert", "r8-alert--success", "r8-alert--danger", "r8-alert__title"],
+    classes: [
+      "r8-alert",
+      "r8-alert--success",
+      "r8-alert--info",
+      "r8-alert--danger",
+      "r8-alert--top-left",
+      "r8-alert--bottom-left",
+      "r8-alert--top-right",
+      "r8-alert--bottom-right",
+      "r8-alert__title",
+      "r8-alert__actions",
+    ],
     preview: `<div class="docs-demo__stack">
-  <section class="r8-alert">
-    <strong class="r8-alert__title">Signal unstable</strong>
-    <p class="r8-text">Fallback channel engaged.</p>
-  </section>
-  <section class="r8-alert r8-alert--success">
-    <strong class="r8-alert__title">Sync complete</strong>
-    <p class="r8-text">All nodes acknowledged the update.</p>
-  </section>
+  <div class="docs-demo__actions">
+    <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#docs-alert-top-left">
+      Top left
+    </button>
+    <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#docs-alert-bottom-left">
+      Bottom left
+    </button>
+    <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#docs-alert-top-right">
+      Top right
+    </button>
+    <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#docs-alert-bottom-right">
+      Bottom right
+    </button>
+  </div>
+  <div class="docs-demo__stage" data-r8-overlay-scope>
+    <p class="docs-demo__stage-copy">
+      Click a button to spawn the alert inside this contained preview. The same position classes pin it to the viewport in real app layouts.
+    </p>
+
+    <section id="docs-alert-top-left" class="r8-alert r8-alert--info r8-alert--top-left" role="alert" aria-live="assertive" data-r8-duration="4500" hidden>
+      <strong class="r8-alert__title">Radar drift</strong>
+      <p class="r8-text">Signal integrity dropped below 82% on the left cluster.</p>
+      <div class="r8-alert__actions">
+        <button class="r8-btn r8-btn--sm r8-btn--dark" type="button" data-r8-close="#docs-alert-top-left">Dismiss</button>
+      </div>
+    </section>
+
+    <section id="docs-alert-bottom-left" class="r8-alert r8-alert--success r8-alert--bottom-left" role="status" aria-live="polite" data-r8-duration="4500" hidden>
+      <strong class="r8-alert__title">Build shipped</strong>
+      <p class="r8-text">The deploy completed and all four shards are synchronized.</p>
+      <div class="r8-alert__actions">
+        <button class="r8-btn r8-btn--sm r8-btn--dark" type="button" data-r8-close="#docs-alert-bottom-left">Close</button>
+      </div>
+    </section>
+
+    <section id="docs-alert-top-right" class="r8-alert r8-alert--danger r8-alert--top-right" role="alert" aria-live="assertive" data-r8-duration="4500" hidden>
+      <strong class="r8-alert__title">Boss alert</strong>
+      <p class="r8-text">The reactor core is overheating and needs immediate cooldown.</p>
+      <div class="r8-alert__actions">
+        <button class="r8-btn r8-btn--sm r8-btn--light" type="button" data-r8-close="#docs-alert-top-right">Dismiss</button>
+      </div>
+    </section>
+
+    <section id="docs-alert-bottom-right" class="r8-alert r8-alert--bottom-right" role="alert" aria-live="assertive" data-r8-duration="4500" hidden>
+      <strong class="r8-alert__title">Quest updated</strong>
+      <p class="r8-text">A new objective marker was added to the east corridor.</p>
+      <div class="r8-alert__actions">
+        <button class="r8-btn r8-btn--sm r8-btn--dark" type="button" data-r8-close="#docs-alert-bottom-right">Close</button>
+      </div>
+    </section>
+  </div>
+</div>`,
+    code: `<div class="r8-space r8-space--vertical">
+  <div class="r8-row">
+    <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#alert-top-left">
+      Top left
+    </button>
+    <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#alert-bottom-left">
+      Bottom left
+    </button>
+    <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#alert-top-right">
+      Top right
+    </button>
+    <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#alert-bottom-right">
+      Bottom right
+    </button>
+  </div>
+
+  <div data-r8-overlay-scope style="min-height: 18rem;">
+    <section id="alert-top-left" class="r8-alert r8-alert--info r8-alert--top-left" role="alert" aria-live="assertive" data-r8-duration="4500" hidden>
+      <strong class="r8-alert__title">Radar drift</strong>
+      <p class="r8-text">Signal integrity dropped below 82%.</p>
+      <div class="r8-alert__actions">
+        <button class="r8-btn r8-btn--sm r8-btn--dark" type="button" data-r8-close="#alert-top-left">Dismiss</button>
+      </div>
+    </section>
+
+    <section id="alert-bottom-left" class="r8-alert r8-alert--success r8-alert--bottom-left" role="status" aria-live="polite" data-r8-duration="4500" hidden>
+      <strong class="r8-alert__title">Build shipped</strong>
+      <p class="r8-text">All shards are synchronized.</p>
+      <div class="r8-alert__actions">
+        <button class="r8-btn r8-btn--sm r8-btn--dark" type="button" data-r8-close="#alert-bottom-left">Close</button>
+      </div>
+    </section>
+
+    <section id="alert-top-right" class="r8-alert r8-alert--danger r8-alert--top-right" role="alert" aria-live="assertive" data-r8-duration="4500" hidden>
+      <strong class="r8-alert__title">Boss alert</strong>
+      <p class="r8-text">The reactor core is overheating.</p>
+      <div class="r8-alert__actions">
+        <button class="r8-btn r8-btn--sm r8-btn--light" type="button" data-r8-close="#alert-top-right">Dismiss</button>
+      </div>
+    </section>
+
+    <section id="alert-bottom-right" class="r8-alert r8-alert--bottom-right" role="alert" aria-live="assertive" data-r8-duration="4500" hidden>
+      <strong class="r8-alert__title">Quest updated</strong>
+      <p class="r8-text">A new objective marker was added.</p>
+      <div class="r8-alert__actions">
+        <button class="r8-btn r8-btn--sm r8-btn--dark" type="button" data-r8-close="#alert-bottom-right">Close</button>
+      </div>
+    </section>
+  </div>
 </div>`,
   },
   {
@@ -1733,24 +1837,80 @@ const feedbackComponents = [
       "Painel lateral para filtros, settings e detalhes contextuais sem trocar de pagina.",
       "Side panel for filters, settings and contextual details without leaving the page.",
     ),
-    classes: ["r8-drawer", "r8-drawer--right", "r8-drawer__title"],
+    classes: ["r8-drawer", "r8-drawer--right", "r8-drawer--left", "r8-drawer__header", "r8-drawer__title", "r8-drawer__body", "r8-drawer__footer", "r8-drawer-backdrop"],
     preview: `<div class="docs-demo__stack">
+  <div class="docs-demo__actions">
+    <button
+      class="r8-btn r8-btn--primary"
+      type="button"
+      data-r8-toggle="drawer"
+      data-r8-target="#docs-drawer-preview"
+    >
+      Open drawer
+    </button>
+  </div>
+  <div class="docs-demo__stage" data-r8-overlay-scope>
+    <p class="docs-demo__stage-copy">
+      This preview uses the same runtime as the library package: backdrop, escape close, outside click, and button helpers are all active.
+    </p>
+    <aside id="docs-drawer-preview" class="r8-drawer r8-drawer--right" hidden>
+      <div class="r8-drawer__header">
+        <strong class="r8-drawer__title">Quick settings</strong>
+        <button class="r8-btn r8-btn--sm" type="button" data-r8-close="#docs-drawer-preview">Close</button>
+      </div>
+      <div class="r8-drawer__body">
+        <p class="r8-text">Tune the active color palette and HUD density.</p>
+        <label class="r8-checkbox is-checked">
+          <span class="r8-checkbox__box" aria-hidden="true"></span>
+          <span>Show minimap</span>
+        </label>
+        <label class="r8-checkbox">
+          <span class="r8-checkbox__box" aria-hidden="true"></span>
+          <span>Enable scanlines</span>
+        </label>
+      </div>
+      <div class="r8-drawer__footer">
+        <button class="r8-btn r8-btn--sm" type="button" data-r8-close="#docs-drawer-preview">Cancel</button>
+        <button class="r8-btn r8-btn--sm r8-btn--primary" type="button" data-r8-close="#docs-drawer-preview">Apply</button>
+      </div>
+    </aside>
+  </div>
+</div>`,
+    code: `<div class="r8-space r8-space--vertical">
   <button
     class="r8-btn r8-btn--primary"
     type="button"
     data-r8-toggle="drawer"
-    data-r8-target="#docs-drawer-preview"
+    data-r8-target="#settings-drawer"
   >
     Open drawer
   </button>
-  <aside id="docs-drawer-preview" class="r8-drawer r8-drawer--right" hidden>
-    <strong class="r8-drawer__title">Quick settings</strong>
-    <p class="r8-text">Tune the active color palette and HUD density.</p>
-    <div class="r8-row">
-      <button class="r8-btn r8-btn--sm" type="button" data-r8-close="#docs-drawer-preview">Close</button>
-      <button class="r8-btn r8-btn--sm r8-btn--primary" type="button" data-r8-close="#docs-drawer-preview">Apply</button>
-    </div>
-  </aside>
+
+  <div data-r8-overlay-scope style="min-height: 20rem;">
+    <aside id="settings-drawer" class="r8-drawer r8-drawer--right" hidden>
+      <div class="r8-drawer__header">
+        <strong class="r8-drawer__title">Quick settings</strong>
+        <button class="r8-btn r8-btn--sm" type="button" data-r8-close="#settings-drawer">Close</button>
+      </div>
+
+      <div class="r8-drawer__body">
+        <p class="r8-text">Tune palette and HUD density.</p>
+        <label class="r8-checkbox is-checked">
+          <span class="r8-checkbox__box" aria-hidden="true"></span>
+          <span>Show minimap</span>
+        </label>
+        <label class="r8-checkbox">
+          <span class="r8-checkbox__box" aria-hidden="true"></span>
+          <span>Enable scanlines</span>
+        </label>
+      </div>
+
+      <div class="r8-drawer__footer">
+        <button class="r8-btn r8-btn--sm" type="button" data-r8-close="#settings-drawer">Cancel</button>
+        <button class="r8-btn r8-btn--sm r8-btn--primary" type="button" data-r8-close="#settings-drawer">Apply</button>
+      </div>
+    </aside>
+  </div>
 </div>`,
   },
   {

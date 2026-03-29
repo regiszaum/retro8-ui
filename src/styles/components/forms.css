@@ -376,6 +376,14 @@
     padding: var(--r8-space-3);
   }
 
+  .r8-autocomplete__menu:not(.is-open) {
+    display: none;
+  }
+
+  .r8-autocomplete__menu.is-open {
+    display: grid;
+  }
+
   .r8-autocomplete__option,
   .r8-cascader__option,
   .r8-mention__option,

@@ -576,10 +576,18 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         dataAttributes: [
           row("data-r8-dismiss", `"true" | "false"`, `"false"`, "Liga o dismiss helper quando houver Button interno com esse atributo.", "Enables the dismiss helper when an inner button carries this attribute."),
           row("data-r8-variant", `"success" | "info" | "danger"`, "none", "Aplica a tone sem concatenar modifier classes no host app.", "Applies the tone without concatenating modifier classes in the host app."),
+          row("data-r8-placement", `"top-left" | "bottom-left" | "top-right" | "bottom-right"`, "none", "Quando presente no Alert, ativa o comportamento de toast posicionado no canto informado.", "When present on the Alert, enables toast behavior positioned in the chosen corner."),
+          row("data-r8-duration", "number", `"4500" for positioned toasts`, "Controla por quantos milissegundos o toast fica visivel antes de fechar automaticamente. Use `0` para manter aberto.", "Controls how many milliseconds the toast stays visible before closing automatically. Use `0` to keep it open."),
+          row("data-r8-toggle", `"true"`, `"true"`, "No trigger, abre o Alert/overlay declarativamente.", "On the trigger, opens the Alert overlay declaratively."),
+          row("data-r8-target", "CSS selector", "required on trigger", "Aponta para o Alert controlado pelo helper declarativo.", "Points to the Alert controlled by the declarative helper."),
+          row("data-r8-close", "CSS selector | empty", "nearest host", "Fecha o Alert informado ou o host mais proximo.", "Closes the provided Alert or the nearest host."),
+          row("data-r8-overlay-scope", "marker", "none", "Opcional no wrapper quando voce quiser conter alerts posicionados dentro de uma area especifica.", "Optional on a wrapper when you want to contain positioned alerts inside a specific region."),
         ],
         methods: runtimeMethods,
         events: [
           event("r8:dismiss", `{ target }`, "Emitido quando o Alert e fechado pelo helper declarativo.", "Emitted when the Alert is closed by the declarative helper."),
+          event("r8:target-open", `{ target, trigger }`, "Emitido quando o Alert abre pelo helper declarativo.", "Emitted when the Alert opens through the declarative helper."),
+          event("r8:target-close", `{ target, trigger }`, "Emitido quando o Alert fecha pelo helper declarativo.", "Emitted when the Alert closes through the declarative helper."),
         ],
       });
       break;
@@ -620,6 +628,14 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
           event("r8:target-close", `{ target, trigger }`, `Emitido quando ${component.name} fecha pelo helper declarativo.`, `Emitted when ${component.name} closes through the declarative helper.`),
         ],
       });
+
+      if (component.id === "drawer") {
+        mergeContract(contract, {
+          dataAttributes: [
+            row("data-r8-overlay-scope", "marker", "none", "Opcional no wrapper para conter drawer e backdrop dentro de uma area local de preview ou app shell.", "Optional on a wrapper to contain the drawer and backdrop inside a local preview area or app shell."),
+          ],
+        });
+      }
       break;
     case "config-provider":
       mergeContract(contract, {

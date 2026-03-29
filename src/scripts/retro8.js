@@ -86,14 +86,17 @@
 
   const choiceStates = new WeakMap();
   const splitterStates = new WeakMap();
+  const overlayTimers = new WeakMap();
   const floatingStates = new Set();
   const genericTargets = new Set();
   const observers = new WeakSet();
+  const drawerTransitionMs = 270;
   let uniqueId = 0;
   const buttonVariants = ["primary", "secondary", "tertiary", "success", "info", "danger", "dark", "light", "ghost"];
   const badgeVariants = ["primary", "secondary", "tertiary", "success", "warning", "danger", "info", "dark", "light"];
   const tagVariants = ["success", "info", "danger"];
   const alertVariants = ["success", "info", "danger"];
+  const alertPlacements = ["top-left", "bottom-left", "top-right", "bottom-right"];
   const progressVariants = ["success", "warning", "danger"];
   const windowVariants = ["success", "danger"];
   const navbarVariants = ["dark"];
@@ -524,6 +527,17 @@
         }
 
         syncVariantClasses(element, family.baseClass, family.variants, element.dataset.r8Variant || "");
+
+        if (family.selector === ".r8-alert" && typeof element.dataset.r8Placement === "string" && element.dataset.r8Placement.trim()) {
+          alertPlacements.forEach((placement) => {
+            element.classList.remove(`r8-alert--${placement}`);
+          });
+
+          const placement = element.dataset.r8Placement || "";
+          if (alertPlacements.includes(placement)) {
+            element.classList.add(`r8-alert--${placement}`);
+          }
+        }
       });
     });
   }
@@ -618,6 +632,7 @@
     }
 
     setHidden(state.panel, true);
+    state.panel.classList.remove("is-open");
     syncExpandedState(state, false);
     floatingStates.delete(container);
   }
@@ -629,6 +644,7 @@
     }
 
     setHidden(state.panel, false);
+    state.panel.classList.add("is-open");
     syncExpandedState(state, true);
     floatingStates.add(container);
   }
@@ -816,6 +832,10 @@
       return;
     }
 
+    if (element.tagName === "BUTTON" || element.tagName === "A") {
+      return;
+    }
+
     element.addEventListener("keydown", (event) => {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
@@ -930,7 +950,6 @@
     });
 
     input.addEventListener("input", () => {
-      openFloating(container);
       filterAutocompleteOptions(container);
     });
 
@@ -2494,6 +2513,240 @@
     }
   }
 
+  function registerGenericTarget(trigger, target) {
+    if (!(trigger instanceof HTMLElement) || !(target instanceof HTMLElement)) {
+      return;
+    }
+
+    const hasEntry = toArray(genericTargets).some(
+      (entry) => entry.trigger === trigger && entry.target === target,
+    );
+
+    if (!hasEntry) {
+      genericTargets.add({ trigger, target });
+    }
+  }
+
+  function handleToggleTrigger(trigger) {
+    if (!(trigger instanceof HTMLElement)) {
+      return;
+    }
+
+    const target = resolveTarget(trigger);
+    if (!target) {
+      return;
+    }
+
+    prepareActionLikeElement(trigger);
+    registerGenericTarget(trigger, target);
+
+    if (isToastAlertTarget(target)) {
+      openTarget(target, trigger);
+      return;
+    }
+
+    if (isOpen(target)) {
+      closeTarget(target, trigger);
+      return;
+    }
+
+    openTarget(target, trigger);
+  }
+
+  function handleCloseAction(button) {
+    if (!(button instanceof HTMLElement)) {
+      return;
+    }
+
+    const targetSelector = button.getAttribute("data-r8-close");
+    const target =
+      (targetSelector && document.querySelector(targetSelector)) ||
+      button.closest("dialog") ||
+      button.closest(".r8-drawer") ||
+      button.closest(".r8-popover") ||
+      button.closest(".r8-popconfirm") ||
+      button.closest(".r8-tooltip") ||
+      button.closest(".r8-message") ||
+      button.closest(".r8-message-box") ||
+      button.closest(".r8-notification") ||
+      button.closest(".r8-alert");
+
+    closeTarget(target);
+  }
+
+  function handleDismissAction(button) {
+    if (!(button instanceof HTMLElement)) {
+      return;
+    }
+
+    const host = button.closest(".r8-alert, .r8-message, .r8-notification, .r8-message-box");
+    if (host instanceof HTMLElement) {
+      if (isToastAlertTarget(host)) {
+        closeTarget(host);
+      } else {
+        setHidden(host, true);
+      }
+
+      emitComponentEvent(host, "dismiss", {
+        target: host,
+      });
+    }
+  }
+
+  function getAlertPlacement(target) {
+    if (!(target instanceof HTMLElement) || !target.classList.contains("r8-alert")) {
+      return "";
+    }
+
+    const explicitPlacement = target.dataset.r8Placement || "";
+    if (alertPlacements.includes(explicitPlacement)) {
+      return explicitPlacement;
+    }
+
+    return (
+      alertPlacements.find((placement) => target.classList.contains(`r8-alert--${placement}`)) ||
+      ""
+    );
+  }
+
+  function isToastAlertTarget(target) {
+    return target instanceof HTMLElement && target.classList.contains("r8-alert") && Boolean(getAlertPlacement(target));
+  }
+
+  function getToastDuration(target) {
+    if (!(target instanceof HTMLElement)) {
+      return 0;
+    }
+
+    const rawValue = target.dataset.r8Duration || "";
+    if (!rawValue.trim()) {
+      return isToastAlertTarget(target) ? 4500 : 0;
+    }
+
+    const duration = Number(rawValue);
+    if (!Number.isFinite(duration) || duration < 0) {
+      return 0;
+    }
+
+    return duration;
+  }
+
+  function ensureToastStack(target) {
+    if (!(target instanceof HTMLElement)) {
+      return null;
+    }
+
+    const placement = getAlertPlacement(target);
+    if (!placement) {
+      return null;
+    }
+
+    const scope = target.closest("[data-r8-overlay-scope]") || document.body;
+    const selector = `.r8-toast-stack[data-r8-placement="${placement}"]`;
+    const existingStack = scope.querySelector(selector);
+    if (existingStack instanceof HTMLElement) {
+      return existingStack;
+    }
+
+    const stack = document.createElement("div");
+    stack.className = `r8-toast-stack r8-toast-stack--${placement}`;
+    stack.dataset.r8Placement = placement;
+    stack.setAttribute("aria-live", "polite");
+    stack.setAttribute("aria-atomic", "false");
+    scope.append(stack);
+    return stack;
+  }
+
+  function cleanupToastStack(target) {
+    const stack = target?.parentElement;
+    if (!(stack instanceof HTMLElement) || !stack.classList.contains("r8-toast-stack")) {
+      return;
+    }
+
+    if (stack.children.length === 0) {
+      stack.remove();
+    }
+  }
+
+  function clearOverlayTimer(target) {
+    const timer = overlayTimers.get(target);
+    if (typeof timer === "number") {
+      window.clearTimeout(timer);
+      overlayTimers.delete(target);
+    }
+  }
+
+  function isDrawerTarget(target) {
+    return target instanceof HTMLElement && target.classList.contains("r8-drawer");
+  }
+
+  function collapseGenericTargetTriggers(target) {
+    genericTargets.forEach((entry) => {
+      if (entry.target === target) {
+        setExpanded(entry.trigger, false);
+      }
+    });
+  }
+
+  function syncDrawerBodyLock() {
+    if (!(document.body instanceof HTMLBodyElement)) {
+      return;
+    }
+
+    const hasOpenDrawer = toArray(document.querySelectorAll(".r8-drawer.is-open")).some(
+      (drawer) =>
+        drawer instanceof HTMLElement &&
+        !drawer.hasAttribute("hidden") &&
+        !drawer.closest("[data-r8-overlay-scope]"),
+    );
+
+    document.body.style.overflow = hasOpenDrawer ? "hidden" : "";
+    document.body.classList.toggle("r8-has-overlay", hasOpenDrawer);
+  }
+
+  function removeDrawerBackdrop(target) {
+    if (!(target instanceof HTMLElement)) {
+      return;
+    }
+
+    const targetId = ensureId(target, "r8-drawer");
+    toArray(document.querySelectorAll(`.r8-drawer-backdrop[data-r8-drawer-backdrop="${targetId}"]`)).forEach((backdrop) => {
+      backdrop.remove();
+    });
+    syncDrawerBodyLock();
+  }
+
+  function setDrawerBackdropOpen(target, open) {
+    if (!(target instanceof HTMLElement)) {
+      return;
+    }
+
+    const targetId = ensureId(target, "r8-drawer");
+    toArray(document.querySelectorAll(`.r8-drawer-backdrop[data-r8-drawer-backdrop="${targetId}"]`)).forEach((backdrop) => {
+      backdrop.classList.toggle("is-open", open);
+    });
+  }
+
+  function ensureDrawerBackdrop(target, trigger) {
+    if (!(target instanceof HTMLElement)) {
+      return;
+    }
+
+    const targetId = ensureId(target, "r8-drawer");
+    removeDrawerBackdrop(target);
+
+    const backdrop = document.createElement("div");
+    backdrop.className = "r8-drawer-backdrop";
+    backdrop.dataset.r8DrawerBackdrop = targetId;
+    backdrop.setAttribute("aria-hidden", "true");
+    backdrop.addEventListener("click", () => {
+      closeTarget(target, trigger);
+    });
+
+    const scope = target.closest("[data-r8-overlay-scope]") || document.body;
+    scope.append(backdrop);
+  }
+
   function closeTarget(target, trigger = null) {
     if (!target) {
       return;
@@ -2510,16 +2763,49 @@
       return;
     }
 
+    if (isToastAlertTarget(target)) {
+      clearOverlayTimer(target);
+      target.classList.remove("is-open");
+      collapseGenericTargetTriggers(target);
+
+      const closeTimer = window.setTimeout(() => {
+        setHidden(target, true);
+        cleanupToastStack(target);
+        emitComponentEvent(target, "target-close", {
+          target,
+          trigger,
+        });
+      }, 140);
+
+      overlayTimers.set(target, closeTimer);
+      return;
+    }
+
+    if (isDrawerTarget(target)) {
+      clearOverlayTimer(target);
+      target.classList.remove("is-open");
+      setDrawerBackdropOpen(target, false);
+      collapseGenericTargetTriggers(target);
+
+      const closeTimer = window.setTimeout(() => {
+        setHidden(target, true);
+        removeDrawerBackdrop(target);
+        emitComponentEvent(target, "target-close", {
+          target,
+          trigger,
+        });
+      }, drawerTransitionMs);
+
+      overlayTimers.set(target, closeTimer);
+      return;
+    }
+
     setHidden(target, true);
     emitComponentEvent(target, "target-close", {
       target,
       trigger,
     });
-    genericTargets.forEach((entry) => {
-      if (entry.target === target) {
-        setExpanded(entry.trigger, false);
-      }
-    });
+    collapseGenericTargetTriggers(target);
   }
 
   function openTarget(target, trigger) {
@@ -2535,6 +2821,50 @@
           trigger,
         });
       }
+      return;
+    }
+
+    if (isToastAlertTarget(target)) {
+      clearOverlayTimer(target);
+      const stack = ensureToastStack(target);
+      if (stack instanceof HTMLElement && target.parentElement !== stack) {
+        stack.append(target);
+      }
+
+      setHidden(target, false);
+      setExpanded(trigger, true);
+      void target.offsetWidth;
+      target.classList.add("is-open");
+
+      const duration = getToastDuration(target);
+      if (duration > 0) {
+        const dismissTimer = window.setTimeout(() => {
+          closeTarget(target, trigger);
+        }, duration);
+        overlayTimers.set(target, dismissTimer);
+      }
+
+      emitComponentEvent(target, "target-open", {
+        target,
+        trigger,
+      });
+      return;
+    }
+
+    if (isDrawerTarget(target)) {
+      clearOverlayTimer(target);
+      ensureDrawerBackdrop(target, trigger);
+      setHidden(target, false);
+      setExpanded(trigger, true);
+      requestAnimationFrame(() => {
+        setDrawerBackdropOpen(target, true);
+        target.classList.add("is-open");
+        syncDrawerBodyLock();
+      });
+      emitComponentEvent(target, "target-open", {
+        target,
+        trigger,
+      });
       return;
     }
 
@@ -2564,21 +2894,8 @@
       }
 
       setExpanded(trigger, false);
-      genericTargets.add({ trigger, target });
-
-      const toggle = () => {
-        if (isOpen(target)) {
-          closeTarget(target);
-        } else {
-          openTarget(target, trigger);
-        }
-      };
-
-      trigger.addEventListener("click", (event) => {
-        event.preventDefault();
-        toggle();
-      });
-      bindKeyboardActivation(trigger, toggle);
+      registerGenericTarget(trigger, target);
+      bindKeyboardActivation(trigger, () => handleToggleTrigger(trigger));
     });
 
     toArray(root.querySelectorAll("[data-r8-close]")).forEach((button) => {
@@ -2587,22 +2904,8 @@
       }
 
       button.dataset.r8CloseReady = "true";
-      button.addEventListener("click", () => {
-        const targetSelector = button.getAttribute("data-r8-close");
-        const target =
-          (targetSelector && document.querySelector(targetSelector)) ||
-          button.closest("dialog") ||
-          button.closest(".r8-drawer") ||
-          button.closest(".r8-popover") ||
-          button.closest(".r8-popconfirm") ||
-          button.closest(".r8-tooltip") ||
-          button.closest(".r8-message") ||
-          button.closest(".r8-message-box") ||
-          button.closest(".r8-notification") ||
-          button.closest(".r8-alert");
-
-        closeTarget(target);
-      });
+      prepareActionLikeElement(button);
+      bindKeyboardActivation(button, () => handleCloseAction(button));
     });
 
     toArray(root.querySelectorAll("[data-r8-dismiss]")).forEach((button) => {
@@ -2611,15 +2914,8 @@
       }
 
       button.dataset.r8DismissReady = "true";
-      button.addEventListener("click", () => {
-        const host = button.closest(".r8-alert, .r8-message, .r8-notification, .r8-message-box");
-        if (host instanceof HTMLElement) {
-          setHidden(host, true);
-          emitComponentEvent(host, "dismiss", {
-            target: host,
-          });
-        }
-      });
+      prepareActionLikeElement(button);
+      bindKeyboardActivation(button, () => handleDismissAction(button));
     });
   }
 
@@ -2648,7 +2944,7 @@
         return;
       }
 
-      if (!entry.target || !isOpen(entry.target) || isDialog(entry.target)) {
+      if (!entry.target || !isOpen(entry.target) || isDialog(entry.target) || isToastAlertTarget(entry.target)) {
         return;
       }
 
@@ -2669,6 +2965,19 @@
 
     document.addEventListener("click", (event) => {
       if (event.target instanceof HTMLElement) {
+        const toggleTrigger = event.target.closest("[data-r8-toggle][data-r8-target]");
+        const closeButton = event.target.closest("[data-r8-close]");
+        const dismissButton = event.target.closest("[data-r8-dismiss]");
+
+        if (closeButton instanceof HTMLElement) {
+          handleCloseAction(closeButton);
+        } else if (dismissButton instanceof HTMLElement) {
+          handleDismissAction(dismissButton);
+        } else if (toggleTrigger instanceof HTMLElement) {
+          event.preventDefault();
+          handleToggleTrigger(toggleTrigger);
+        }
+
         closeAllFloating(event.target);
       }
     });

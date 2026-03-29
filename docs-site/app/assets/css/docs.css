@@ -954,6 +954,29 @@ pre {
   gap: 1rem;
 }
 
+.docs-demo__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.docs-demo__stage {
+  position: relative;
+  min-height: 20rem;
+  padding: 1rem;
+  overflow: hidden;
+  border: 2px dashed var(--docs-panel-border-soft);
+  background: color-mix(in srgb, var(--docs-preview-bg) 84%, var(--docs-panel-bg) 16%);
+}
+
+.docs-demo__stage-copy {
+  margin: 0;
+  max-width: 28rem;
+  color: var(--docs-panel-muted);
+  line-height: 1.7;
+  font-size: 0.875rem;
+}
+
 .docs-component__contracts {
   display: grid;
   gap: 1rem;
@@ -1157,9 +1180,10 @@ dialog.r8-dialog {
   margin: 1rem 0;
   padding: 1rem;
   overflow: auto;
-  border: 2px solid var(--docs-code-border);
-  background: var(--docs-code-bg);
-  color: var(--docs-code-text);
+  border: 2px solid var(--docs-inline-code-border);
+  background: color-mix(in srgb, var(--docs-panel-surface) 82%, var(--docs-code-bg) 18%);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--docs-panel-border) 72%, transparent);
+  color: var(--docs-panel-text);
   line-height: 1.65;
   font-size: 0.875rem;
 }
