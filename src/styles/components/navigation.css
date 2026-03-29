@@ -113,33 +113,6 @@
     color: var(--r8-color-accent-contrast);
   }
 
-  .r8-page-header {
-    border: var(--r8-border-thick) solid var(--r8-color-border);
-    box-shadow: var(--r8-shadow-md);
-    display: grid;
-    gap: var(--r8-space-3);
-    padding: var(--r8-space-4);
-  }
-
-  .r8-page-header__topline {
-    align-items: center;
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--r8-space-3);
-  }
-
-  .r8-page-header__title {
-    font-family: var(--r8-font-display);
-    font-size: var(--r8-font-size-sm);
-    text-transform: uppercase;
-  }
-
-  .r8-page-header__content {
-    color: var(--r8-color-ink-muted);
-    font-family: var(--r8-font-body);
-    font-size: var(--r8-font-size-sm);
-  }
-
   .r8-steps {
     display: grid;
     gap: var(--r8-space-3);

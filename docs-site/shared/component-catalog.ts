@@ -1567,24 +1567,6 @@ const navigationComponents = [
 </ul>`,
   },
   {
-    id: "page-header",
-    name: "Page Header",
-    group: "navigation",
-    summary: l(
-      "Cabecalho de pagina com titulo, contexto e area superior para acoes ou breadcrumb.",
-      "Page-level header with title, context and a top row for actions or breadcrumbs.",
-    ),
-    classes: ["r8-page-header", "r8-page-header__topline", "r8-page-header__title", "r8-page-header__content"],
-    preview: `<section class="r8-page-header">
-  <div class="r8-page-header__topline">
-    <span class="r8-badge">Docs</span>
-    <button class="r8-btn r8-btn--sm" type="button">Edit</button>
-  </div>
-  <strong class="r8-page-header__title">Component overview</strong>
-  <p class="r8-page-header__content">A grouped catalog of the full retro8-ui surface area.</p>
-</section>`,
-  },
-  {
     id: "steps",
     name: "Steps",
     group: "navigation",
