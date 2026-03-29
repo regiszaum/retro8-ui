@@ -626,18 +626,26 @@ const formComponents = [
       "Grade de calendario reutilizavel para composicoes inline ou paines persistentes.",
       "Reusable calendar grid for inline compositions or persistent panels.",
     ),
-    classes: ["r8-date-picker-panel", "r8-date-picker__grid", "r8-date-picker__day"],
-    preview: `<div class="r8-date-picker-panel">
-  <div class="r8-date-picker__grid">
-    <div class="r8-date-picker__day">01</div>
-    <div class="r8-date-picker__day">02</div>
-    <div class="r8-date-picker__day">03</div>
-    <div class="r8-date-picker__day">04</div>
-    <div class="r8-date-picker__day">05</div>
-    <div class="r8-date-picker__day">06</div>
-    <div class="r8-date-picker__day is-selected">07</div>
-  </div>
-</div>`,
+    classes: [
+      "r8-date-picker-panel",
+      "r8-date-picker__calendar",
+      "r8-date-picker__header",
+      "r8-date-picker__nav",
+      "r8-date-picker__title",
+      "r8-date-picker__weekdays",
+      "r8-date-picker__weekday",
+      "r8-date-picker__grid",
+      "r8-date-picker__day",
+      "r8-date-picker__footer",
+      "r8-date-picker__action",
+    ],
+    preview: `<div
+  class="r8-date-picker-panel"
+  data-r8-value="2026-03-28"
+  data-r8-month="2026-03"
+  data-r8-min="2026-03-05"
+  data-r8-max="2026-04-18"
+></div>`,
   },
   {
     id: "date-picker",
@@ -647,23 +655,29 @@ const formComponents = [
       "Campo de data com trigger e painel retro para agendas, filtros e programacao.",
       "Date field with a retro trigger and panel for schedules, filters and planning.",
     ),
-    classes: ["r8-date-picker", "r8-date-picker__trigger", "r8-date-picker__panel", "r8-date-picker__grid", "r8-date-picker__day"],
-    preview: `<div class="r8-date-picker">
-  <div class="r8-date-picker__trigger">
-    <span data-r8-choice-display>2026-03-28</span>
-    <span class="r8-badge">UTC</span>
-  </div>
-  <div class="r8-date-picker__panel">
-    <div class="r8-date-picker__grid">
-      <div class="r8-date-picker__day">24</div>
-      <div class="r8-date-picker__day">25</div>
-      <div class="r8-date-picker__day">26</div>
-      <div class="r8-date-picker__day">27</div>
-      <div class="r8-date-picker__day is-selected">28</div>
-      <div class="r8-date-picker__day">29</div>
-      <div class="r8-date-picker__day">30</div>
-    </div>
-  </div>
+    classes: [
+      "r8-date-picker",
+      "r8-date-picker__trigger",
+      "r8-date-picker__panel",
+      "r8-date-picker__calendar",
+      "r8-date-picker__header",
+      "r8-date-picker__grid",
+      "r8-date-picker__day",
+      "r8-date-picker__footer",
+    ],
+    preview: `<div
+  class="r8-date-picker"
+  data-r8-value="2026-03-28"
+  data-r8-month="2026-03"
+  data-r8-placeholder="Select launch date"
+  data-r8-min="2026-03-05"
+  data-r8-max="2026-04-18"
+>
+  <button class="r8-date-picker__trigger" type="button">
+    <span data-r8-choice-display>Select launch date</span>
+    <span class="r8-badge r8-badge--info">UTC-3</span>
+  </button>
+  <div class="r8-date-picker__panel"></div>
 </div>`,
   },
   {
@@ -674,24 +688,33 @@ const formComponents = [
       "Composicao de data e hora para eventos, logs e jobs com precisao temporal.",
       "Date and time composition for events, logs and jobs with time precision.",
     ),
-    classes: ["r8-datetime-picker", "r8-datetime-picker__trigger", "r8-datetime-picker__panel", "r8-date-picker__grid", "r8-time-picker__slots", "r8-time-picker__slot"],
-    preview: `<div class="r8-datetime-picker">
-  <div class="r8-datetime-picker__trigger">
-    <span data-r8-choice-display>2026-03-28 08:30</span>
-    <span class="r8-badge r8-badge--info">Local</span>
-  </div>
-  <div class="r8-datetime-picker__panel">
-    <div class="r8-date-picker__grid">
-      <div class="r8-date-picker__day">27</div>
-      <div class="r8-date-picker__day is-selected">28</div>
-      <div class="r8-date-picker__day">29</div>
-    </div>
-    <div class="r8-time-picker__slots">
-      <div class="r8-time-picker__slot">08:00</div>
-      <div class="r8-time-picker__slot is-selected">08:30</div>
-      <div class="r8-time-picker__slot">09:00</div>
-    </div>
-  </div>
+    classes: [
+      "r8-datetime-picker",
+      "r8-datetime-picker__trigger",
+      "r8-datetime-picker__panel",
+      "r8-datetime-picker__layout",
+      "r8-date-picker__calendar",
+      "r8-date-picker__grid",
+      "r8-date-picker__day",
+      "r8-time-picker__column",
+      "r8-time-picker__heading",
+      "r8-time-picker__slots",
+      "r8-time-picker__slot",
+    ],
+    preview: `<div
+  class="r8-datetime-picker"
+  data-r8-value="2026-03-28T08:30"
+  data-r8-month="2026-03"
+  data-r8-time-step="30"
+  data-r8-placeholder="Select maintenance window"
+  data-r8-min="2026-03-15T08:00"
+  data-r8-max="2026-04-18T22:00"
+>
+  <button class="r8-datetime-picker__trigger" type="button">
+    <span data-r8-choice-display>Select maintenance window</span>
+    <span class="r8-badge r8-badge--success">Local</span>
+  </button>
+  <div class="r8-datetime-picker__panel"></div>
 </div>`,
   },
   {
