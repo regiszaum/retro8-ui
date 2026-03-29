@@ -380,10 +380,15 @@ const basicComponents = [
     ),
     classes: ["r8-splitter", "r8-splitter--vertical", "r8-splitter__pane", "r8-splitter__handle"],
     preview: `<div class="docs-demo__stack">
-  <div class="r8-splitter">
-    <div class="r8-splitter__pane">Pane A</div>
-    <div class="r8-splitter__handle" aria-hidden="true"></div>
-    <div class="r8-splitter__pane">Pane B</div>
+  <div class="r8-splitter" data-r8-splitter-position="42">
+    <div class="r8-splitter__pane">Navigator pane</div>
+    <div class="r8-splitter__handle" aria-label="Resize horizontal panes"></div>
+    <div class="r8-splitter__pane">Viewport pane</div>
+  </div>
+  <div class="r8-splitter r8-splitter--vertical" data-r8-splitter-position="58">
+    <div class="r8-splitter__pane">Inspector pane</div>
+    <div class="r8-splitter__handle" aria-label="Resize vertical panes"></div>
+    <div class="r8-splitter__pane">Console pane</div>
   </div>
 </div>`,
   },
@@ -414,18 +419,47 @@ const configurationComponents = [
     name: "Config Provider",
     group: "configuration",
     summary: l(
-      "Escopo visual local para trocar surface, contraste ou skin sem reescrever os componentes internos.",
-      "Local visual scope for swapping surface, contrast or skins without rewriting inner components.",
+      "Theme scope local para trocar tokens, contraste e skin apenas em uma parte da interface.",
+      "Local theme scope for swapping tokens, contrast and skins in only one part of the interface.",
     ),
-    classes: ["r8-config-provider", "r8-config-provider--night"],
+    classes: [
+      "r8-config-provider",
+      "r8-config-provider--night",
+      "r8-config-provider--terminal",
+      "r8-config-provider--danger",
+    ],
     preview: `<div class="docs-demo__stack">
   <section class="r8-config-provider">
-    <span class="r8-badge r8-badge--primary">Default skin</span>
-    <button class="r8-btn r8-btn--primary" type="button">Launch</button>
+    <span class="r8-badge r8-badge--primary">Default scope</span>
+    <input class="r8-input" type="text" value="Mission briefing" aria-label="Default scope input" />
+    <div class="r8-cluster">
+      <button class="r8-btn r8-btn--primary" type="button">Launch</button>
+      <button class="r8-btn r8-btn--secondary" type="button">Review</button>
+    </div>
   </section>
   <section class="r8-config-provider r8-config-provider--night">
     <span class="r8-badge">Night skin</span>
-    <button class="r8-btn" type="button">Open console</button>
+    <input class="r8-input" type="text" value="Night console" aria-label="Night scope input" />
+    <div class="r8-cluster">
+      <button class="r8-btn r8-btn--primary" type="button">Open console</button>
+      <button class="r8-btn" type="button">Ping</button>
+    </div>
+  </section>
+  <section class="r8-config-provider r8-config-provider--terminal">
+    <span class="r8-badge r8-badge--primary">Terminal skin</span>
+    <input class="r8-input" type="text" value="grep --color retro8" aria-label="Terminal scope input" />
+    <div class="r8-cluster">
+      <button class="r8-btn r8-btn--primary" type="button">Run</button>
+      <button class="r8-btn r8-btn--secondary" type="button">Inspect</button>
+    </div>
+  </section>
+  <section class="r8-config-provider r8-config-provider--danger">
+    <span class="r8-badge r8-badge--danger">Danger zone</span>
+    <input class="r8-input" type="text" value="Confirm shutdown" aria-label="Danger scope input" />
+    <div class="r8-cluster">
+      <button class="r8-btn r8-btn--danger" type="button">Shutdown</button>
+      <button class="r8-btn r8-btn--light" type="button">Cancel</button>
+    </div>
   </section>
 </div>`,
   },

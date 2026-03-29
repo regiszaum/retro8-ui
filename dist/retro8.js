@@ -107,6 +107,7 @@
   ];
 
   const choiceStates = new WeakMap();
+  const splitterStates = new WeakMap();
   const floatingStates = new Set();
   const genericTargets = new Set();
   const observers = new WeakSet();
@@ -917,6 +918,137 @@
     });
   }
 
+  function updateSplitter(component, nextValue) {
+    const state = splitterStates.get(component);
+    if (!state?.handle) {
+      return;
+    }
+
+    const value = clamp(Number(nextValue) || 50, state.min, state.max);
+    component.style.setProperty("--r8-splitter-position", `${value}%`);
+    component.dataset.r8SplitterPosition = String(value);
+    state.handle.setAttribute("aria-valuenow", String(Math.round(value)));
+  }
+
+  function initSplitters(root) {
+    toArray(root.querySelectorAll(".r8-splitter")).forEach((component) => {
+      if (!(component instanceof HTMLElement) || component.dataset.r8SplitterReady === "true") {
+        return;
+      }
+
+      component.dataset.r8SplitterReady = "true";
+
+      const panes = toArray(component.querySelectorAll(".r8-splitter__pane")).filter((item) => item instanceof HTMLElement);
+      const handle = component.querySelector(".r8-splitter__handle");
+      if (!(handle instanceof HTMLElement) || panes.length < 2) {
+        return;
+      }
+
+      const isVertical = component.classList.contains("r8-splitter--vertical");
+      const min = clamp(Number(component.dataset.r8SplitterMin || "20") || 20, 5, 95);
+      const max = clamp(Number(component.dataset.r8SplitterMax || "80") || 80, min + 1, 95);
+      const initialValue = clamp(Number(component.dataset.r8SplitterPosition || "50") || 50, min, max);
+
+      panes.forEach((pane, index) => ensureId(pane, `r8-splitter-pane-${index + 1}`));
+
+      prepareActionLikeElement(handle, "separator");
+      handle.setAttribute("role", "separator");
+      handle.setAttribute("aria-orientation", isVertical ? "horizontal" : "vertical");
+      handle.setAttribute("aria-controls", panes.map((pane) => pane.id).join(" "));
+      handle.setAttribute("aria-valuemin", String(min));
+      handle.setAttribute("aria-valuemax", String(max));
+      handle.setAttribute("aria-label", handle.getAttribute("aria-label") || "Resize panes");
+
+      splitterStates.set(component, {
+        handle,
+        panes,
+        isVertical,
+        min,
+        max,
+      });
+
+      updateSplitter(component, initialValue);
+
+      const setFromPointer = (clientX, clientY) => {
+        const rect = component.getBoundingClientRect();
+        const ratio = isVertical
+          ? rect.height === 0
+            ? 0
+            : (clientY - rect.top) / rect.height
+          : rect.width === 0
+            ? 0
+            : (clientX - rect.left) / rect.width;
+
+        updateSplitter(component, Math.round(clamp(ratio, 0, 1) * 100));
+      };
+
+      const onPointerMove = (event) => {
+        if (!("clientX" in event) || !("clientY" in event)) {
+          return;
+        }
+
+        setFromPointer(event.clientX, event.clientY);
+      };
+
+      const onPointerUp = () => {
+        component.classList.remove("is-resizing");
+        document.body.style.cursor = "";
+        window.removeEventListener("pointermove", onPointerMove);
+        window.removeEventListener("pointerup", onPointerUp);
+      };
+
+      handle.addEventListener("pointerdown", (event) => {
+        event.preventDefault();
+        component.classList.add("is-resizing");
+        document.body.style.cursor = isVertical ? "row-resize" : "col-resize";
+        handle.setPointerCapture?.(event.pointerId);
+        setFromPointer(event.clientX, event.clientY);
+        window.addEventListener("pointermove", onPointerMove);
+        window.addEventListener("pointerup", onPointerUp);
+      });
+
+      handle.addEventListener("keydown", (event) => {
+        const step = event.shiftKey ? 10 : 5;
+        const current = Number(component.dataset.r8SplitterPosition || initialValue);
+
+        if (!isVertical && event.key === "ArrowLeft") {
+          event.preventDefault();
+          updateSplitter(component, current - step);
+          return;
+        }
+
+        if (!isVertical && event.key === "ArrowRight") {
+          event.preventDefault();
+          updateSplitter(component, current + step);
+          return;
+        }
+
+        if (isVertical && event.key === "ArrowUp") {
+          event.preventDefault();
+          updateSplitter(component, current - step);
+          return;
+        }
+
+        if (isVertical && event.key === "ArrowDown") {
+          event.preventDefault();
+          updateSplitter(component, current + step);
+          return;
+        }
+
+        if (event.key === "Home") {
+          event.preventDefault();
+          updateSplitter(component, min);
+          return;
+        }
+
+        if (event.key === "End") {
+          event.preventDefault();
+          updateSplitter(component, max);
+        }
+      });
+    });
+  }
+
   function updateSlider(component, nextValue) {
     const value = clamp(Number(nextValue) || 0, 0, 100);
     component.style.setProperty("--r8-progress-value", `${value}%`);
@@ -1287,6 +1419,7 @@
     initBinaryControls(scope);
     initRates(scope);
     initSegmentedAndPagination(scope);
+    initSplitters(scope);
     initSliders(scope);
     initInputTags(scope);
     initTransfers(scope);
