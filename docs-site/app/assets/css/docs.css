@@ -860,6 +860,12 @@ pre {
   gap: 1rem;
 }
 
+.docs-component__contracts {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
 .docs-preview__surface {
   display: grid;
   gap: 1rem;
@@ -909,6 +915,56 @@ pre {
   background: transparent;
   padding: 0;
   border: 0;
+}
+
+.docs-api-table__body {
+  padding: 0;
+}
+
+.docs-api-table__viewport {
+  overflow-x: auto;
+}
+
+.docs-api-table__table {
+  width: 100%;
+  min-width: 42rem;
+  border-collapse: collapse;
+}
+
+.docs-api-table__table th,
+.docs-api-table__table td {
+  padding: 0.9rem 1rem;
+  border-bottom: 2px solid var(--docs-panel-border-soft);
+  vertical-align: top;
+  text-align: left;
+}
+
+.docs-api-table__table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--docs-panel-surface-muted);
+  color: var(--docs-panel-text);
+  font-family: "Press Start 2P", "Courier New", Courier, monospace;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.docs-api-table__table td {
+  color: var(--docs-panel-text);
+  line-height: 1.65;
+  background: var(--docs-panel-surface);
+}
+
+.docs-api-table__table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.docs-api-table__table td code {
+  display: inline-block;
+  max-width: 26rem;
+  overflow-wrap: anywhere;
 }
 
 .docs-pager {
@@ -1096,6 +1152,10 @@ dialog.r8-dialog {
   .docs-component-index,
   .docs-root__grid {
     grid-template-columns: 1fr;
+  }
+
+  .docs-api-table__table {
+    min-width: 34rem;
   }
 
   .docs-token-list__item {

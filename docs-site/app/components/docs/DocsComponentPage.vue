@@ -14,6 +14,65 @@ type Retro8Runtime = {
 
 const previewSurface = ref<HTMLElement | null>(null);
 const neighbors = computed(() => getComponentNeighbors(props.component.id));
+const componentTables = computed(() => {
+  const columns = props.site.componentPage.tableColumns;
+
+  return [
+    {
+      key: "attributes",
+      title: props.site.componentPage.attributesTitle,
+      rows: props.component.attributes,
+      columns: [
+        { key: "name", label: columns.name, code: true },
+        { key: "type", label: columns.type, code: true },
+        { key: "defaultValue", label: columns.defaultValue, code: true },
+        { key: "description", label: columns.description },
+      ],
+    },
+    {
+      key: "dataAttributes",
+      title: props.site.componentPage.dataAttributesTitle,
+      rows: props.component.dataAttributes,
+      columns: [
+        { key: "name", label: columns.name, code: true },
+        { key: "type", label: columns.type, code: true },
+        { key: "defaultValue", label: columns.defaultValue, code: true },
+        { key: "description", label: columns.description },
+      ],
+    },
+    {
+      key: "cssVariables",
+      title: props.site.componentPage.cssVariablesTitle,
+      rows: props.component.cssVariables,
+      columns: [
+        { key: "name", label: columns.name, code: true },
+        { key: "type", label: columns.type, code: true },
+        { key: "defaultValue", label: columns.defaultValue, code: true },
+        { key: "description", label: columns.description },
+      ],
+    },
+    {
+      key: "methods",
+      title: props.site.componentPage.methodsTitle,
+      rows: props.component.methods,
+      columns: [
+        { key: "name", label: columns.name, code: true },
+        { key: "signature", label: columns.signature, code: true },
+        { key: "description", label: columns.description },
+      ],
+    },
+    {
+      key: "events",
+      title: props.site.componentPage.eventsTitle,
+      rows: props.component.events,
+      columns: [
+        { key: "name", label: columns.name, code: true },
+        { key: "payload", label: columns.payload, code: true },
+        { key: "description", label: columns.description },
+      ],
+    },
+  ].filter((section) => Array.isArray(section.rows) && section.rows.length > 0);
+});
 
 function initPreviewRuntime() {
   if (!import.meta.client || !previewSurface.value) {
@@ -115,6 +174,16 @@ watch(
       :copied-label="site.componentPage.copySuccess"
       :unavailable-label="site.componentPage.copyUnavailable"
     />
+
+    <section v-if="componentTables.length" class="docs-component__contracts">
+      <DocsApiTable
+        v-for="section in componentTables"
+        :key="section.key"
+        :title="section.title"
+        :rows="section.rows"
+        :columns="section.columns"
+      />
+    </section>
 
     <section class="docs-pager">
       <NuxtLink

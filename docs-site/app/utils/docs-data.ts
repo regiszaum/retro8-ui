@@ -10,6 +10,12 @@ import {
   type CatalogApiEntry,
   type DocsLocale,
 } from "~~/shared/component-catalog";
+import {
+  getComponentContract,
+  type CatalogEventEntry,
+  type CatalogMethodEntry,
+  type CatalogTableEntry,
+} from "~~/shared/component-contracts";
 
 export const localeMeta = {
   "pt-br": {
@@ -251,8 +257,21 @@ const localized = {
       previewLabel: "Preview",
       previewStatus: "Live preview usando o CSS compilado e o runtime opcional da retro8-ui",
       apiTitle: "Semantic API",
+      attributesTitle: "Attributes",
+      dataAttributesTitle: "Data attributes",
+      cssVariablesTitle: "CSS variables",
+      methodsTitle: "Methods",
+      eventsTitle: "Events",
       anatomyTitle: "Anatomy",
       accessibilityTitle: "Accessibility",
+      tableColumns: {
+        name: "Name",
+        type: "Type",
+        defaultValue: "Default",
+        description: "Description",
+        signature: "Signature",
+        payload: "Payload",
+      },
       htmlTitleSuffix: "HTML",
       copyHint: "Copy o snippet e adapte ao seu projeto.",
       copyButton: "Copy HTML",
@@ -441,8 +460,21 @@ const localized = {
       previewLabel: "Preview",
       previewStatus: "Live preview using the compiled retro8-ui CSS and optional runtime",
       apiTitle: "Semantic API",
+      attributesTitle: "Attributes",
+      dataAttributesTitle: "Data attributes",
+      cssVariablesTitle: "CSS variables",
+      methodsTitle: "Methods",
+      eventsTitle: "Events",
       anatomyTitle: "Anatomy",
       accessibilityTitle: "Accessibility",
+      tableColumns: {
+        name: "Name",
+        type: "Type",
+        defaultValue: "Default",
+        description: "Description",
+        signature: "Signature",
+        payload: "Payload",
+      },
       htmlTitleSuffix: "HTML",
       copyHint: "Copy the snippet and adapt it to your project.",
       copyButton: "Copy HTML",
@@ -492,7 +524,34 @@ function localizeApiEntry(entry: CatalogApiEntry, locale: DocsLocale) {
   };
 }
 
+function localizeTableEntry(entry: CatalogTableEntry, locale: DocsLocale) {
+  return {
+    name: entry.name,
+    type: entry.type,
+    defaultValue: entry.defaultValue,
+    description: entry.description[locale],
+  };
+}
+
+function localizeMethodEntry(entry: CatalogMethodEntry, locale: DocsLocale) {
+  return {
+    name: entry.name,
+    signature: entry.signature,
+    description: entry.description[locale],
+  };
+}
+
+function localizeEventEntry(entry: CatalogEventEntry, locale: DocsLocale) {
+  return {
+    name: entry.name,
+    payload: entry.payload,
+    description: entry.description[locale],
+  };
+}
+
 function createComponentPayload(locale: DocsLocale, component: CatalogEntry, groupTitle: string) {
+  const contract = getComponentContract(component);
+
   return {
     id: component.id,
     name: component.name,
@@ -508,6 +567,11 @@ function createComponentPayload(locale: DocsLocale, component: CatalogEntry, gro
           name,
           description: describeApiClass(name, component.name, locale),
         })),
+    attributes: contract.attributes.map((entry) => localizeTableEntry(entry, locale)),
+    dataAttributes: contract.dataAttributes.map((entry) => localizeTableEntry(entry, locale)),
+    cssVariables: contract.cssVariables.map((entry) => localizeTableEntry(entry, locale)),
+    methods: contract.methods.map((entry) => localizeMethodEntry(entry, locale)),
+    events: contract.events.map((entry) => localizeEventEntry(entry, locale)),
     anatomy: component.anatomy?.[locale] ?? defaultAnatomyByGroup[component.group][locale],
     accessibility: component.accessibility?.[locale] ?? defaultAccessibilityByGroup[component.group][locale],
   };

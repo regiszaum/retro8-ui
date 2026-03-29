@@ -748,6 +748,10 @@
     opacity: 0.92;
     transform: none;
   }
+.r8-btn.is-loading {
+    cursor: progress;
+    pointer-events: none;
+  }
 .r8-btn--primary {
     background-color: var(--r8-color-primary);
     color: var(--r8-color-primary-contrast);
@@ -810,6 +814,16 @@
     font-size: var(--r8-font-size-base);
     line-height: 1;
 }
+.r8-btn__spinner {
+    animation: r8-loading-blink 0.8s steps(2, end) infinite;
+    background: currentColor;
+    border: var(--r8-border-thin) solid var(--r8-color-border);
+    box-shadow: var(--r8-shadow-pressed);
+    display: inline-block;
+    flex: 0 0 auto;
+    height: 0.8rem;
+    width: 0.8rem;
+  }
 .r8-form {
     display: grid;
     gap: var(--r8-space-4);
@@ -2701,6 +2715,9 @@ dialog.r8-dialog::backdrop {
 }
 .inline-flex {
     display: inline-flex;
+}
+.table {
+    display: table;
 }
 .grid {
     display: grid;

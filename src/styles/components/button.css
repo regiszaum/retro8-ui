@@ -31,6 +31,11 @@
     transform: none;
   }
 
+  .r8-btn.is-loading {
+    cursor: progress;
+    pointer-events: none;
+  }
+
   .r8-btn--primary {
     @apply bg-r8-primary text-r8-primary-contrast;
   }
@@ -85,5 +90,16 @@
 
   .r8-btn__icon {
     @apply text-r8-base leading-none;
+  }
+
+  .r8-btn__spinner {
+    animation: r8-loading-blink 0.8s steps(2, end) infinite;
+    background: currentColor;
+    border: var(--r8-border-thin) solid var(--r8-color-border);
+    box-shadow: var(--r8-shadow-pressed);
+    display: inline-block;
+    flex: 0 0 auto;
+    height: 0.8rem;
+    width: 0.8rem;
   }
 }

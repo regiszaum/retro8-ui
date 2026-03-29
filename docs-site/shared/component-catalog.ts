@@ -126,6 +126,10 @@ const basicComponents = [
       "r8-btn--ghost",
       "r8-btn--sm",
       "r8-btn--lg",
+      "r8-btn--block",
+      "r8-btn__icon",
+      "r8-btn__spinner",
+      "is-loading",
     ],
     preview: `<div class="docs-demo__stack">
   <div class="r8-cluster">
@@ -147,6 +151,30 @@ const basicComponents = [
     <button class="r8-btn r8-btn--lg" type="button">Large</button>
     <button class="r8-btn" type="button" disabled>Disabled</button>
   </div>
+  <div class="r8-cluster">
+    <button class="r8-btn" type="button" data-r8-variant="primary">Data variant</button>
+    <button class="r8-btn" type="button" data-r8-variant="danger" data-r8-size="lg">Boss alert</button>
+    <button class="r8-btn" type="button" data-r8-variant="secondary" data-r8-loading="true">Saving</button>
+  </div>
+  <button class="r8-btn" type="button" data-r8-variant="dark" data-r8-block="true">Full width action</button>
+</div>`,
+    code: `<div class="docs-demo__stack">
+  <div class="r8-cluster">
+    <button class="r8-btn r8-btn--primary" type="button">Primary</button>
+    <button class="r8-btn r8-btn--ghost" type="button">Ghost</button>
+    <button class="r8-btn r8-btn--sm" type="button">Small</button>
+    <button class="r8-btn r8-btn--lg" type="button">Large</button>
+  </div>
+
+  <div class="r8-cluster">
+    <button class="r8-btn" type="button" data-r8-variant="primary">Data variant</button>
+    <button class="r8-btn" type="button" data-r8-variant="danger" data-r8-size="lg">Boss alert</button>
+    <button class="r8-btn" type="button" data-r8-variant="secondary" data-r8-loading="true">Saving</button>
+  </div>
+
+  <button class="r8-btn" type="button" data-r8-variant="dark" data-r8-block="true">
+    Full width action
+  </button>
 </div>`,
   },
   {
@@ -1222,12 +1250,12 @@ const dataComponents = [
     name: "Progress",
     group: "data",
     summary: l(
-      "Barra de progresso com fill retro listrado e valor controlado por custom property.",
-      "Progress bar with retro striped fill and a value controlled through a custom property.",
+      "Barra de progresso com fill retro listrado e valor controlado por custom property ou `data-r8-value`.",
+      "Progress bar with a retro striped fill and a value controlled through a custom property or `data-r8-value`.",
     ),
     classes: ["r8-progress", "r8-progress__label", "r8-progress__track", "r8-progress__bar", "--r8-progress-value", "r8-progress--success", "r8-progress--warning", "r8-progress--danger"],
     preview: `<div class="docs-demo__stack">
-  <div class="r8-progress" style="--r8-progress-value: 32%;">
+  <div class="r8-progress" data-r8-value="32">
     <div class="r8-progress__label">
       <span>Upload</span>
       <span>32%</span>
@@ -1236,7 +1264,7 @@ const dataComponents = [
       <div class="r8-progress__bar"></div>
     </div>
   </div>
-  <div class="r8-progress r8-progress--success" style="--r8-progress-value: 84%;">
+  <div class="r8-progress r8-progress--success" data-r8-value="84">
     <div class="r8-progress__label">
       <span>Shield sync</span>
       <span>84%</span>
