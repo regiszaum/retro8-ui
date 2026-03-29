@@ -2300,10 +2300,6 @@ dialog.r8-dialog::backdrop {
     background-color: var(--r8-color-danger);
     color: var(--r8-color-danger-contrast);
 }
-.r8-affix {
-    position: sticky;
-    top: var(--r8-space-3);
-  }
 .r8-anchor {
     border: var(--r8-border-thick) solid var(--r8-color-border);
     box-shadow: var(--r8-shadow-md);
@@ -3026,9 +3022,6 @@ dialog.r8-dialog::backdrop {
 }
 .relative {
     position: relative;
-}
-.sticky {
-    position: sticky;
 }
 .isolate {
     isolation: isolate;

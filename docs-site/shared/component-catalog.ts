@@ -1491,19 +1491,6 @@ const dataComponents = [
 
 const navigationComponents = [
   {
-    id: "affix",
-    name: "Affix",
-    group: "navigation",
-    summary: l(
-      "Wrapper sticky para fixar blocos uteis durante a rolagem, como filtros e acoes.",
-      "Sticky wrapper for pinning useful blocks during scroll, such as filters and actions.",
-    ),
-    classes: ["r8-affix"],
-    preview: `<div class="r8-affix">
-  <button class="r8-btn r8-btn--primary" type="button">Pinned action</button>
-</div>`,
-  },
-  {
     id: "anchor",
     name: "Anchor",
     group: "navigation",
