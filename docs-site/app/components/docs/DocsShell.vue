@@ -88,7 +88,7 @@ function isActive(to: string) {
             </a>
           </div>
           <DocsLocaleSwitch :locale="locale" :label="site.localeSwitcher.label" />
-          <DocsThemeToggle
+          <DocsThemeSwitch
             :label="site.theme.label"
             :light-label="site.theme.light"
             :dark-label="site.theme.dark"

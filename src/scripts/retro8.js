@@ -2290,7 +2290,7 @@
   }
 
   function initBinaryControls(root) {
-    toArray(root.querySelectorAll(".r8-checkbox, .r8-radio, .r8-switch")).forEach((control) => {
+    toArray(root.querySelectorAll(".r8-checkbox, .r8-radio, .r8-switch, .r8-theme-switch")).forEach((control) => {
       if (!(control instanceof HTMLElement) || control.dataset.r8BinaryReady === "true") {
         return;
       }
@@ -2298,11 +2298,13 @@
       control.dataset.r8BinaryReady = "true";
       const kind = control.classList.contains("r8-radio")
         ? "radio"
-        : control.classList.contains("r8-switch")
+        : control.classList.contains("r8-theme-switch")
+          ? "theme-switch"
+          : control.classList.contains("r8-switch")
           ? "switch"
           : "checkbox";
 
-      prepareActionLikeElement(control, kind === "switch" ? "switch" : kind);
+      prepareActionLikeElement(control, kind === "switch" || kind === "theme-switch" ? "switch" : kind);
       setBinaryState(control, control.classList.contains("is-checked") || control.getAttribute("aria-checked") === "true");
 
       const toggle = () => {

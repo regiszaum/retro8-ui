@@ -70,7 +70,7 @@ const choiceKinds = new Set([
   "dropdown",
 ]);
 const overlayKinds = new Set(["dialog", "drawer", "message-box", "notification", "popover", "tooltip"]);
-const binaryKinds = new Set(["checkbox", "radio", "switch"]);
+const binaryKinds = new Set(["checkbox", "radio", "switch", "theme-switch"]);
 const runtimeKinds = new Set([
   "button",
   ...choiceKinds,
@@ -293,8 +293,8 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         event(
           "r8:binary-change",
           `{ checked, kind }`,
-          "Emitido quando checkbox, radio ou switch muda de state.",
-          "Emitted when a checkbox, radio or switch changes state.",
+          "Emitido quando checkbox, radio, switch ou theme switch muda de state.",
+          "Emitted when a checkbox, radio, switch or theme switch changes state.",
         ),
       ],
     });
@@ -666,6 +666,14 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
           row("--r8-color-primary", "color", "theme default", "Accent principal para Buttons, badges e controls no scope.", "Primary accent for Buttons, badges and controls inside the scope."),
           row("--r8-shadow-md", "shadow", "theme default", "Shadow principal usada pelas surfaces dentro do scope.", "Main shadow used by surfaces inside the scope."),
           row("--r8-dialog-backdrop", "color", "theme default", "Backdrop reaplicado para overlays renderizados dentro do scope.", "Backdrop reapplied to overlays rendered inside the scope."),
+        ],
+      });
+      break;
+    case "theme-switch":
+      mergeContract(contract, {
+        attributes: [
+          row("role", `"switch"`, `"switch"`, "Role acessivel para indicar alternancia binaria entre themes.", "Accessible role that indicates binary switching between themes."),
+          row("aria-label", "string", "recommended", "Nome acessivel do control, por exemplo `Toggle theme`.", "Accessible name for the control, for example `Toggle theme`."),
         ],
       });
       break;

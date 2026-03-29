@@ -947,6 +947,25 @@ const formComponents = [
 </div>`,
   },
   {
+    id: "theme-switch",
+    name: "Theme Switch",
+    group: "form",
+    summary: l(
+      "Toggle de theme com icones pixelados de sol e lua para alternar light e dark mode.",
+      "Theme toggle with pixelated sun and moon icons for switching between light and dark mode.",
+    ),
+    classes: [
+      "r8-theme-switch",
+      "r8-theme-switch__glyph",
+    ],
+    preview: `<button class="r8-theme-switch is-checked" type="button" role="switch" aria-checked="true" aria-label="Toggle theme">
+  <span class="r8-theme-switch__glyph" aria-hidden="true"></span>
+</button>`,
+    code: `<button class="r8-theme-switch" type="button" role="switch" aria-checked="false" aria-label="Toggle theme">
+  <span class="r8-theme-switch__glyph" aria-hidden="true"></span>
+</button>`,
+  },
+  {
     id: "time-picker",
     name: "Time Picker",
     group: "form",
