@@ -537,20 +537,170 @@ const formComponents = [
       "Selecao hierarquica para arvore de categorias, areas ou taxonomias em varias etapas.",
       "Hierarchical selection for category trees, areas or taxonomies across multiple steps.",
     ),
-    classes: ["r8-cascader", "r8-cascader__trigger", "r8-cascader__panel", "r8-cascader__trail", "r8-cascader__option"],
-    preview: `<div class="r8-cascader">
-  <div class="r8-cascader__trigger">
-    <span data-r8-choice-display>World / Sector / Base</span>
-    <span class="r8-choice__caret" aria-hidden="true">&gt;</span>
+    classes: [
+      "r8-cascader",
+      "r8-cascader__trigger",
+      "r8-cascader__panel",
+      "r8-cascader__toolbar",
+      "r8-cascader__input",
+      "r8-cascader__clear",
+      "r8-cascader__menus",
+      "r8-cascader__menu",
+      "r8-cascader__option",
+      "r8-cascader__tree",
+      "r8-cascader__node",
+      "r8-cascader__children",
+    ],
+    preview: `<div class="docs-demo__stack">
+  <div class="r8-cascader" data-r8-filterable="true" data-r8-clearable="true" data-r8-placeholder="Select outpost">
+    <button class="r8-cascader__trigger" type="button" aria-label="Select outpost">
+      <span data-r8-choice-display>Select outpost</span>
+      <span class="r8-choice__caret" aria-hidden="true">&gt;</span>
+    </button>
+    <div class="r8-cascader__panel" hidden>
+      <div class="r8-cascader__toolbar">
+        <input class="r8-cascader__input" type="text" placeholder="Filter routes..." aria-label="Filter routes" />
+        <button class="r8-cascader__clear r8-btn r8-btn--sm r8-btn--secondary" type="button">Clear</button>
+      </div>
+      <div class="r8-cascader__menus"></div>
+      <div class="r8-cascader__tree" hidden>
+        <div class="r8-cascader__node" data-r8-label="Solaris" data-r8-value="solaris" data-r8-search="system core capital">
+          <div class="r8-cascader__children">
+            <div class="r8-cascader__node" data-r8-label="Alpha Rim" data-r8-value="alpha-rim">
+              <div class="r8-cascader__children">
+                <div class="r8-cascader__node" data-r8-label="Dock 01" data-r8-value="dock-01"></div>
+                <div class="r8-cascader__node" data-r8-label="Dock 02" data-r8-value="dock-02"></div>
+              </div>
+            </div>
+            <div class="r8-cascader__node" data-r8-label="Gamma Gate" data-r8-value="gamma-gate">
+              <div class="r8-cascader__children">
+                <div class="r8-cascader__node" data-r8-label="Hangar 09" data-r8-value="hangar-09" data-r8-selected="true"></div>
+                <div class="r8-cascader__node" data-r8-label="Hangar 11" data-r8-value="hangar-11"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="r8-cascader__node" data-r8-label="Nebula Reach" data-r8-value="nebula-reach" data-r8-search="expedition frontier">
+          <div class="r8-cascader__children">
+            <div class="r8-cascader__node" data-r8-label="Beacon Array" data-r8-value="beacon-array">
+              <div class="r8-cascader__children">
+                <div class="r8-cascader__node" data-r8-label="Node A" data-r8-value="node-a"></div>
+                <div class="r8-cascader__node" data-r8-label="Node B" data-r8-value="node-b"></div>
+              </div>
+            </div>
+            <div class="r8-cascader__node" data-r8-label="Shadow Wharf" data-r8-value="shadow-wharf" data-r8-disabled="true">
+              <div class="r8-cascader__children">
+                <div class="r8-cascader__node" data-r8-label="Pier 03" data-r8-value="pier-03"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="r8-cascader__panel">
-    <div class="r8-cascader__trail">
-      <div class="r8-cascader__option">World 01</div>
-      <div class="r8-cascader__option">Sector 04</div>
-      <div class="r8-cascader__option">Base Delta</div>
+
+  <div class="r8-cascader" data-r8-expand-trigger="hover" data-r8-check-strictly="true" data-r8-placeholder="Hover or select any level">
+    <button class="r8-cascader__trigger" type="button" aria-label="Hover or select any level">
+      <span data-r8-choice-display>Hover or select any level</span>
+      <span class="r8-choice__caret" aria-hidden="true">&gt;</span>
+    </button>
+    <div class="r8-cascader__panel" hidden>
+      <div class="r8-cascader__menus"></div>
+      <div class="r8-cascader__tree" hidden>
+        <div class="r8-cascader__node" data-r8-label="Terran Union" data-r8-value="terran-union">
+          <div class="r8-cascader__children">
+            <div class="r8-cascader__node" data-r8-label="Command" data-r8-value="command">
+              <div class="r8-cascader__children">
+                <div class="r8-cascader__node" data-r8-label="Tower East" data-r8-value="tower-east"></div>
+              </div>
+            </div>
+            <div class="r8-cascader__node" data-r8-label="Research" data-r8-value="research"></div>
+          </div>
+        </div>
+        <div class="r8-cascader__node" data-r8-label="Outer Colonies" data-r8-value="outer-colonies">
+          <div class="r8-cascader__children">
+            <div class="r8-cascader__node" data-r8-label="Atlas Hub" data-r8-value="atlas-hub"></div>
+            <div class="r8-cascader__node" data-r8-label="Drift Labs" data-r8-value="drift-labs"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>`,
+    code: `<div class="r8-cascader" data-r8-filterable="true" data-r8-clearable="true" data-r8-placeholder="Select outpost">
+  <button class="r8-cascader__trigger" type="button" aria-label="Select outpost">
+    <span data-r8-choice-display>Select outpost</span>
+    <span class="r8-choice__caret" aria-hidden="true">&gt;</span>
+  </button>
+
+  <div class="r8-cascader__panel" hidden>
+    <div class="r8-cascader__toolbar">
+      <input class="r8-cascader__input" type="text" placeholder="Filter routes..." aria-label="Filter routes" />
+      <button class="r8-cascader__clear r8-btn r8-btn--sm r8-btn--secondary" type="button">Clear</button>
+    </div>
+
+    <div class="r8-cascader__menus"></div>
+
+    <div class="r8-cascader__tree" hidden>
+      <div class="r8-cascader__node" data-r8-label="Solaris" data-r8-value="solaris">
+        <div class="r8-cascader__children">
+          <div class="r8-cascader__node" data-r8-label="Alpha Rim" data-r8-value="alpha-rim">
+            <div class="r8-cascader__children">
+              <div class="r8-cascader__node" data-r8-label="Dock 01" data-r8-value="dock-01"></div>
+              <div class="r8-cascader__node" data-r8-label="Dock 02" data-r8-value="dock-02"></div>
+            </div>
+          </div>
+          <div class="r8-cascader__node" data-r8-label="Gamma Gate" data-r8-value="gamma-gate">
+            <div class="r8-cascader__children">
+              <div class="r8-cascader__node" data-r8-label="Hangar 09" data-r8-value="hangar-09" data-r8-selected="true"></div>
+              <div class="r8-cascader__node" data-r8-label="Hangar 11" data-r8-value="hangar-11"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>`,
+    anatomy: ll(
+      [
+        "`r8-cascader` e o root shell e recebe os flags de comportamento via `data-r8-*`.",
+        "`r8-cascader__trigger` abre o floating panel e expoe o caminho selecionado.",
+        "`r8-cascader__panel` abriga toolbar, generated menus e a source tree oculta.",
+        "`r8-cascader__node` e `r8-cascader__children` definem a hierarquia declarativa.",
+      ],
+      [
+        "`r8-cascader` is the root shell and receives `data-r8-*` behavior flags.",
+        "`r8-cascader__trigger` opens the floating panel and exposes the selected path.",
+        "`r8-cascader__panel` contains toolbar, generated menus and the hidden source tree.",
+        "`r8-cascader__node` and `r8-cascader__children` define the declarative hierarchy.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Use `aria-label` no trigger quando o label visivel nao for descritivo o bastante.",
+        "Marque disabled branches com `data-r8-disabled=\"true\"` para preservar keyboard semantics.",
+        "Mantenha instances pesquisaveis com `r8-cascader__input` devidamente rotulado.",
+      ],
+      [
+        "Use `aria-label` on the trigger when the visible label is not descriptive enough.",
+        "Mark disabled branches with `data-r8-disabled=\"true\"` to preserve keyboard semantics.",
+        "Keep searchable instances with a labeled `r8-cascader__input` for screen-reader clarity.",
+      ],
+    ),
+    api: [
+      {
+        name: "data-r8-expand-trigger",
+        description: l("Switches expansion between click and hover.", "Switches expansion between click and hover."),
+      },
+      {
+        name: "data-r8-check-strictly",
+        description: l("Allows selecting parent nodes instead of leaves only.", "Allows selecting parent nodes instead of leaves only."),
+      },
+      {
+        name: "r8:cascader-change",
+        description: l("Emits the final value, labels and full path after selection.", "Emits the final value, labels and full path after selection."),
+      },
+    ],
   },
   {
     id: "checkbox",
@@ -1487,35 +1637,6 @@ const dataComponents = [
   <div class="r8-virtual-tree__node">root / chunk 12</div>
   <div class="r8-virtual-tree__node r8-virtual-tree__node--child">node / 438</div>
   <div class="r8-virtual-tree__node r8-virtual-tree__node--child">node / 439</div>
-</div>`,
-  },
-  {
-    id: "statistic",
-    name: "Statistic",
-    group: "data",
-    summary: l(
-      "Bloco numerico para KPI, metricas e counters com alto contraste.",
-      "Numeric block for KPIs, metrics and counters with high contrast.",
-    ),
-    classes: ["r8-statistic", "r8-statistic__label", "r8-statistic__value"],
-    preview: `<div class="r8-statistic">
-  <span class="r8-statistic__label">Active users</span>
-  <strong class="r8-statistic__value">1,284</strong>
-</div>`,
-  },
-  {
-    id: "segmented",
-    name: "Segmented",
-    group: "data",
-    summary: l(
-      "Alternador visual entre modos proximos, filtros rapidos e view presets.",
-      "Visual switcher between nearby modes, quick filters and view presets.",
-    ),
-    classes: ["r8-segmented", "r8-segmented__item"],
-    preview: `<div class="r8-segmented">
-  <button class="r8-segmented__item is-active" type="button">Day</button>
-  <button class="r8-segmented__item" type="button">Week</button>
-  <button class="r8-segmented__item" type="button">Month</button>
 </div>`,
   },
 ] satisfies CatalogEntry[];

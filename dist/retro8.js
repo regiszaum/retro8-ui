@@ -20,6 +20,7 @@
       trigger: ".r8-cascader__trigger",
       panel: ".r8-cascader__panel",
       option: ".r8-cascader__option",
+      kind: "cascader",
     },
     {
       root: ".r8-color-picker-panel",
@@ -643,6 +644,10 @@
       return;
     }
 
+    if (state.kind === "cascader") {
+      resetCascaderQuery(state);
+    }
+
     setHidden(state.panel, true);
     state.panel.classList.remove("is-open");
     syncExpandedState(state, false);
@@ -1245,6 +1250,763 @@
     }
 
     filterAutocompleteOptions(container);
+  }
+
+  function getDirectChildren(parent, selector) {
+    if (!isElement(parent)) {
+      return [];
+    }
+
+    return toArray(parent.children).filter((child) => child instanceof HTMLElement && child.matches(selector));
+  }
+
+  function getCascaderNodeLabel(source) {
+    if (!(source instanceof HTMLElement)) {
+      return "";
+    }
+
+    if (typeof source.dataset.r8Label === "string" && source.dataset.r8Label.trim()) {
+      return source.dataset.r8Label.trim();
+    }
+
+    const explicitLabel = source.getAttribute("aria-label");
+    if (explicitLabel?.trim()) {
+      return explicitLabel.trim();
+    }
+
+    const explicitValue = source.dataset.r8Value;
+    return explicitValue?.trim() ? explicitValue.trim() : "";
+  }
+
+  function buildCascaderTree(source, parent = null, bucket = []) {
+    const label = getCascaderNodeLabel(source);
+    const node = {
+      id: ensureId(source, "r8-cascader-node"),
+      label: label || source.dataset.r8Value || "Item",
+      value: source.dataset.r8Value?.trim() || label || "item",
+      search: source.dataset.r8Search?.trim() || "",
+      disabled:
+        source.classList.contains("is-disabled") ||
+        source.getAttribute("aria-disabled") === "true" ||
+        matchesTrue(source.dataset.r8Disabled),
+      parent,
+      source,
+      children: [],
+    };
+
+    bucket.push(node);
+
+    const childHost = getDirectChildren(source, ".r8-cascader__children")[0] || null;
+    const childElements = childHost instanceof HTMLElement
+      ? getDirectChildren(childHost, ".r8-cascader__node")
+      : getDirectChildren(source, ".r8-cascader__node");
+
+    node.children = childElements.map((child) => buildCascaderTree(child, node, bucket));
+    return node;
+  }
+
+  function getCascaderNodePath(node) {
+    const path = [];
+    let current = node || null;
+
+    while (current) {
+      path.unshift(current);
+      current = current.parent || null;
+    }
+
+    return path;
+  }
+
+  function getCascaderNodeLabels(node) {
+    return getCascaderNodePath(node).map((item) => item.label);
+  }
+
+  function getCascaderNodeValues(node) {
+    return getCascaderNodePath(node).map((item) => item.value);
+  }
+
+  function formatCascaderPath(state, node) {
+    return getCascaderNodeLabels(node).join(state.separator);
+  }
+
+  function findCascaderNode(state, matcher) {
+    if (!state?.allNodes?.length || typeof matcher !== "function") {
+      return null;
+    }
+
+    return state.allNodes.find((node) => matcher(node)) || null;
+  }
+
+  function syncCascaderDisplay(state) {
+    if (!state?.display) {
+      return;
+    }
+
+    const hasValue = Boolean(state.selectedNode);
+    state.display.textContent = hasValue ? formatCascaderPath(state, state.selectedNode) : state.placeholder;
+    state.display.classList.toggle("is-placeholder", !hasValue);
+    state.container.dataset.r8Value = hasValue ? state.selectedNode.value : "";
+    state.container.dataset.r8Path = hasValue ? getCascaderNodeValues(state.selectedNode).join("/") : "";
+  }
+
+  function resetCascaderQuery(state) {
+    if (!state) {
+      return;
+    }
+
+    state.query = "";
+    if (state.input instanceof HTMLInputElement) {
+      state.input.value = "";
+    }
+
+    if (state.menus instanceof HTMLElement) {
+      renderCascader(state);
+      bindCascaderOptionEvents(state);
+    }
+  }
+
+  function syncCascaderClearButton(state) {
+    if (!(state?.clearButton instanceof HTMLElement)) {
+      return;
+    }
+
+    const shouldShow = Boolean(state.clearable && (state.selectedNode || state.query));
+    state.clearButton.hidden = !shouldShow;
+    state.clearButton.disabled = !shouldShow;
+  }
+
+  function createCascaderOptionElement(state, node, depth, label) {
+    const option = document.createElement("button");
+    option.type = "button";
+    option.className = "r8-cascader__option";
+    option.dataset.r8NodeId = node.id;
+    option.dataset.r8Depth = String(depth);
+    option.setAttribute("role", "option");
+    option.setAttribute("aria-selected", state.selectedNode === node ? "true" : "false");
+    option.disabled = node.disabled;
+
+    if (node.disabled) {
+      option.classList.add("is-disabled");
+      option.setAttribute("aria-disabled", "true");
+    }
+
+    if (node.children.length) {
+      option.classList.add("is-branch");
+      option.setAttribute("aria-haspopup", "listbox");
+    }
+
+    if (state.selectedNode === node) {
+      option.classList.add("is-selected");
+    }
+
+    if (state.activePath[depth] === node) {
+      option.classList.add("is-expanded");
+    }
+
+    const labelNode = document.createElement("span");
+    labelNode.className = "r8-cascader__option-label";
+    labelNode.textContent = label;
+    option.append(labelNode);
+
+    if (node.children.length) {
+      const caret = document.createElement("span");
+      caret.className = "r8-cascader__option-caret";
+      caret.setAttribute("aria-hidden", "true");
+      caret.textContent = ">";
+      option.append(caret);
+    }
+
+    return option;
+  }
+
+  function getCascaderFilterResults(state) {
+    const query = state.query.trim().toLowerCase();
+    if (!query) {
+      return [];
+    }
+
+    const searchableNodes = state.checkStrictly
+      ? state.allNodes
+      : state.allNodes.filter((node) => node.children.length === 0);
+
+    return searchableNodes.filter((node) => {
+      const haystack = [
+        node.label,
+        node.value,
+        node.search,
+        getCascaderNodeLabels(node).join(" "),
+        getCascaderNodeValues(node).join(" "),
+      ]
+        .join(" ")
+        .toLowerCase();
+
+      return haystack.includes(query);
+    });
+  }
+
+  function renderCascader(state) {
+    if (!state?.menus || !state.panel) {
+      return;
+    }
+
+    state.menus.innerHTML = "";
+    const optionElements = [];
+    const optionMap = new Map();
+    let selectedOption = null;
+
+    const appendMenu = (nodes, depth, resultFormatter = null) => {
+      if (!nodes.length) {
+        return;
+      }
+
+      const menu = document.createElement("div");
+      menu.className = "r8-cascader__menu";
+      menu.dataset.r8Depth = String(depth);
+      menu.setAttribute("role", "listbox");
+
+      nodes.forEach((node) => {
+        const option = createCascaderOptionElement(
+          state,
+          node,
+          depth,
+          typeof resultFormatter === "function" ? resultFormatter(node) : node.label,
+        );
+        if (state.selectedNode === node) {
+          selectedOption = option;
+        }
+        optionElements.push(option);
+        optionMap.set(node.id, option);
+        menu.append(option);
+      });
+
+      state.menus.append(menu);
+    };
+
+    const filteredResults = getCascaderFilterResults(state);
+    state.panel.classList.toggle("is-filtering", filteredResults.length > 0);
+
+    if (filteredResults.length > 0) {
+      appendMenu(filteredResults, 0, (node) => formatCascaderPath(state, node));
+    } else {
+      const activePath = state.activePath.length
+        ? state.activePath
+        : state.selectedNode
+          ? getCascaderNodePath(state.selectedNode)
+          : [];
+
+      let siblings = state.tree;
+      let depth = 0;
+
+      while (siblings.length) {
+        appendMenu(siblings, depth);
+        const expandedNode = activePath[depth];
+        if (!expandedNode || !siblings.includes(expandedNode) || !expandedNode.children.length) {
+          break;
+        }
+
+        siblings = expandedNode.children;
+        depth += 1;
+      }
+    }
+
+    if (!optionElements.length) {
+      const empty = document.createElement("div");
+      empty.className = "r8-cascader__empty";
+      empty.textContent = state.emptyLabel;
+      state.menus.append(empty);
+    }
+
+    state.options = optionElements;
+    state.optionMap = optionMap;
+    state.selectedOption = selectedOption;
+    state.activeOption =
+      (state.activeNode && optionMap.get(state.activeNode.id)) ||
+      selectedOption ||
+      optionElements.find((item) => !item.disabled) ||
+      null;
+
+    setChoiceActiveOption(state, state.activeOption);
+    syncCascaderClearButton(state);
+    syncCascaderDisplay(state);
+  }
+
+  function focusCascaderNode(state, node) {
+    const option = state?.optionMap?.get(node?.id);
+    if (option instanceof HTMLElement) {
+      option.focus({ preventScroll: true });
+      option.scrollIntoView({ block: "nearest" });
+    }
+  }
+
+  function focusCascaderFirstOption(state) {
+    if (!state?.options?.length) {
+      return;
+    }
+
+    const target = state.options.find((option) => !option.disabled) || state.options[0];
+    if (target instanceof HTMLElement) {
+      setChoiceActiveOption(state, target);
+      target.focus({ preventScroll: true });
+      target.scrollIntoView({ block: "nearest" });
+    }
+  }
+
+  function setCascaderExpandedNode(state, node) {
+    if (!state || !node) {
+      return;
+    }
+
+    state.activeNode = node;
+    state.activePath = getCascaderNodePath(node);
+    renderCascader(state);
+    bindCascaderOptionEvents(state);
+  }
+
+  function emitCascaderChange(state, node) {
+    if (!state?.container) {
+      return;
+    }
+
+    const labels = getCascaderNodeLabels(node);
+    const values = getCascaderNodeValues(node);
+    const detail = {
+      kind: "cascader",
+      node: node?.source || null,
+      option: node?.source || null,
+      label: formatCascaderPath(state, node),
+      value: node?.value || "",
+      labels,
+      values,
+      path: values,
+      text: formatCascaderPath(state, node),
+    };
+
+    emitComponentEvent(state.container, "choice-change", detail);
+    emitComponentEvent(state.container, "cascader-change", detail);
+  }
+
+  function clearCascaderSelection(state, options = {}) {
+    if (!state) {
+      return;
+    }
+
+    const silent = options.silent === true;
+    state.selectedNode = null;
+    state.activeNode = null;
+    state.activePath = [];
+    resetCascaderQuery(state);
+    renderCascader(state);
+    bindCascaderOptionEvents(state);
+
+    if (!silent) {
+      const detail = {
+        kind: "cascader",
+        node: null,
+        option: null,
+        label: "",
+        value: "",
+        labels: [],
+        values: [],
+        path: [],
+        text: "",
+      };
+      emitComponentEvent(state.container, "choice-change", detail);
+      emitComponentEvent(state.container, "cascader-change", detail);
+    }
+  }
+
+  function commitCascaderSelection(state, node, options = {}) {
+    if (!state || !node || node.disabled) {
+      return;
+    }
+
+    const silent = options.silent === true;
+    state.selectedNode = node;
+    state.activeNode = node;
+    state.activePath = getCascaderNodePath(node);
+    resetCascaderQuery(state);
+    renderCascader(state);
+    bindCascaderOptionEvents(state);
+
+    if (state.panel && state.container) {
+      closeFloating(state.container);
+      state.trigger?.focus({ preventScroll: true });
+    }
+
+    if (!silent) {
+      emitCascaderChange(state, node);
+    }
+  }
+
+  function handleCascaderOptionAction(state, node, options = {}) {
+    if (!state || !node || node.disabled) {
+      return;
+    }
+
+    const interaction = options.interaction || "click";
+    const isBranch = node.children.length > 0;
+
+    if (isBranch && !state.checkStrictly) {
+      setCascaderExpandedNode(state, node);
+      return;
+    }
+
+    if (isBranch && state.checkStrictly && interaction === "hover") {
+      setCascaderExpandedNode(state, node);
+      return;
+    }
+
+    commitCascaderSelection(state, node);
+  }
+
+  function getCascaderOptionSiblings(option) {
+    const menu = option?.closest(".r8-cascader__menu");
+    if (!(menu instanceof HTMLElement)) {
+      return [];
+    }
+
+    return toArray(menu.querySelectorAll(".r8-cascader__option")).filter((item) => item instanceof HTMLElement);
+  }
+
+  function moveCascaderOptionFocus(state, option, direction) {
+    const siblings = getCascaderOptionSiblings(option).filter((item) => !item.disabled);
+    if (!siblings.length) {
+      return;
+    }
+
+    const currentIndex = siblings.indexOf(option);
+    const fallbackIndex = direction < 0 ? siblings.length - 1 : 0;
+    const nextIndex = currentIndex >= 0
+      ? clamp(currentIndex + direction, 0, siblings.length - 1)
+      : fallbackIndex;
+    const nextOption = siblings[nextIndex] || null;
+    if (!nextOption) {
+      return;
+    }
+
+    setChoiceActiveOption(state, nextOption);
+    nextOption.focus({ preventScroll: true });
+    nextOption.scrollIntoView({ block: "nearest" });
+  }
+
+  function handleCascaderOptionKeydown(state, option, event) {
+    if (!state || !(option instanceof HTMLElement)) {
+      return;
+    }
+
+    const node = state.nodeIndex?.get(option.dataset.r8NodeId || "");
+    if (!node) {
+      return;
+    }
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      moveCascaderOptionFocus(state, option, 1);
+      return;
+    }
+
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
+      moveCascaderOptionFocus(state, option, -1);
+      return;
+    }
+
+    if (event.key === "Home") {
+      event.preventDefault();
+      const siblings = getCascaderOptionSiblings(option).filter((item) => !item.disabled);
+      const firstOption = siblings[0];
+      if (firstOption) {
+        setChoiceActiveOption(state, firstOption);
+        firstOption.focus({ preventScroll: true });
+      }
+      return;
+    }
+
+    if (event.key === "End") {
+      event.preventDefault();
+      const siblings = getCascaderOptionSiblings(option).filter((item) => !item.disabled);
+      const lastOption = siblings[siblings.length - 1];
+      if (lastOption) {
+        setChoiceActiveOption(state, lastOption);
+        lastOption.focus({ preventScroll: true });
+      }
+      return;
+    }
+
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      if (node.children.length) {
+        setCascaderExpandedNode(state, node);
+        requestAnimationFrame(() => {
+          focusCascaderNode(state, node.children.find((child) => !child.disabled) || node.children[0]);
+        });
+      }
+      return;
+    }
+
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      if (node.parent) {
+        setCascaderExpandedNode(state, node.parent);
+        requestAnimationFrame(() => {
+          focusCascaderNode(state, node.parent);
+        });
+      }
+      return;
+    }
+
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      handleCascaderOptionAction(state, node, {
+        interaction: node.children.length && !state.checkStrictly ? "keyboard-expand" : "keyboard-select",
+      });
+      if (node.children.length && !state.checkStrictly) {
+        requestAnimationFrame(() => {
+          focusCascaderNode(state, node.children.find((child) => !child.disabled) || node.children[0]);
+        });
+      }
+      return;
+    }
+
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeFloating(state.container);
+      state.trigger?.focus({ preventScroll: true });
+    }
+  }
+
+  function bindCascaderOptionEvents(state) {
+    state.options.forEach((option) => {
+      if (option.dataset.r8Bound === "true") {
+        return;
+      }
+
+      option.dataset.r8Bound = "true";
+      const node = state.nodeIndex.get(option.dataset.r8NodeId || "");
+      if (!node) {
+        return;
+      }
+
+      option.addEventListener("pointerenter", () => {
+        setChoiceActiveOption(state, option);
+
+        if (state.query || state.expandTrigger !== "hover" || !node.children.length) {
+          return;
+        }
+
+        handleCascaderOptionAction(state, node, { interaction: "hover" });
+      });
+
+      option.addEventListener("click", () => {
+        handleCascaderOptionAction(state, node, { interaction: "click" });
+      });
+
+      option.addEventListener("keydown", (event) => {
+        handleCascaderOptionKeydown(state, option, event);
+      });
+    });
+  }
+
+  function initCascader(container, family) {
+    const trigger = firstMatch(container, family.trigger);
+    const panel = firstMatch(container, family.panel);
+
+    if (!(container instanceof HTMLElement) || !(trigger instanceof HTMLElement) || !(panel instanceof HTMLElement)) {
+      return;
+    }
+
+    const sourceTree = panel.querySelector(".r8-cascader__tree") || container.querySelector(".r8-cascader__tree");
+    if (!(sourceTree instanceof HTMLElement)) {
+      return;
+    }
+
+    const menus =
+      panel.querySelector(".r8-cascader__menus") ||
+      (() => {
+        const nextMenus = document.createElement("div");
+        nextMenus.className = "r8-cascader__menus";
+        panel.append(nextMenus);
+        return nextMenus;
+      })();
+
+    let toolbar = panel.querySelector(".r8-cascader__toolbar");
+    let input = panel.querySelector(".r8-cascader__input");
+    let clearButton = panel.querySelector(".r8-cascader__clear");
+
+    const filterable = matchesTrue(container.dataset.r8Filterable) || input instanceof HTMLInputElement;
+    const clearable = matchesTrue(container.dataset.r8Clearable) || clearButton instanceof HTMLElement;
+
+    if ((filterable || clearable) && !(toolbar instanceof HTMLElement)) {
+      toolbar = document.createElement("div");
+      toolbar.className = "r8-cascader__toolbar";
+      panel.prepend(toolbar);
+    }
+
+    if (filterable && !(input instanceof HTMLInputElement)) {
+      input = document.createElement("input");
+      input.className = "r8-cascader__input";
+      input.type = "text";
+      input.placeholder = container.dataset.r8FilterPlaceholder || "Filter options...";
+      input.setAttribute("aria-label", input.placeholder);
+      toolbar?.prepend(input);
+    }
+
+    if (clearable && !(clearButton instanceof HTMLElement)) {
+      clearButton = document.createElement("button");
+      clearButton.type = "button";
+      clearButton.className = "r8-cascader__clear r8-btn r8-btn--sm r8-btn--secondary";
+      clearButton.textContent = "Clear";
+      toolbar?.append(clearButton);
+    }
+
+    const allNodes = [];
+    const tree = getDirectChildren(sourceTree, ".r8-cascader__node").map((node) => buildCascaderTree(node, null, allNodes));
+    const display = getChoiceDisplay(trigger);
+    const placeholder = container.dataset.r8Placeholder || display?.textContent?.trim() || "Select path";
+    const selectedSource = findCascaderNode(
+      { allNodes },
+      (node) =>
+        node.source.classList.contains("is-selected") ||
+        node.source.getAttribute("aria-selected") === "true" ||
+        matchesTrue(node.source.dataset.r8Selected),
+    );
+    const initialValue = container.dataset.r8Value?.trim() || "";
+    const initialNode =
+      selectedSource ||
+      findCascaderNode(
+        { allNodes },
+        (node) => node.value === initialValue || getCascaderNodeValues(node).join("/") === initialValue,
+      );
+
+    sourceTree.hidden = true;
+    panel.classList.add("r8-cascader__panel--floating");
+    ensureId(panel, "r8-cascader-panel");
+    prepareActionLikeElement(trigger);
+    trigger.setAttribute("aria-controls", panel.id);
+    trigger.setAttribute("aria-haspopup", "dialog");
+    setExpanded(trigger, false);
+    setHidden(panel, true);
+
+    const state = {
+      kind: "cascader",
+      container,
+      trigger,
+      panel,
+      menus,
+      input: input instanceof HTMLInputElement ? input : null,
+      clearButton: clearButton instanceof HTMLElement ? clearButton : null,
+      display,
+      placeholder,
+      emptyLabel: container.dataset.r8EmptyLabel || "No matching routes",
+      separator: container.dataset.r8Separator || " / ",
+      expandTrigger: container.dataset.r8ExpandTrigger === "hover" ? "hover" : "click",
+      filterable,
+      clearable,
+      checkStrictly: matchesTrue(container.dataset.r8CheckStrictly),
+      tree,
+      allNodes,
+      nodeIndex: new Map(allNodes.map((node) => [node.id, node])),
+      options: [],
+      optionMap: new Map(),
+      activeOption: null,
+      selectedOption: null,
+      activeNode: initialNode || null,
+      selectedNode: initialNode || null,
+      activePath: initialNode ? getCascaderNodePath(initialNode) : [],
+      query: "",
+    };
+
+    choiceStates.set(container, state);
+    renderCascader(state);
+    bindCascaderOptionEvents(state);
+
+    const toggle = () => {
+      if (isOpen(panel)) {
+        closeFloating(container);
+        return;
+      }
+
+      renderCascader(state);
+      bindCascaderOptionEvents(state);
+      openFloating(container);
+      requestAnimationFrame(() => {
+        if (state.input instanceof HTMLInputElement) {
+          state.input.focus({ preventScroll: true });
+        } else {
+          focusCascaderFirstOption(state);
+        }
+      });
+    };
+
+    trigger.addEventListener("click", (event) => {
+      event.preventDefault();
+      toggle();
+    });
+
+    trigger.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowDown" || event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        if (!isOpen(panel)) {
+          toggle();
+          return;
+        }
+
+        focusCascaderFirstOption(state);
+        return;
+      }
+
+      if (event.key === "Escape" && isOpen(panel)) {
+        event.preventDefault();
+        closeFloating(container);
+      }
+    });
+
+    if (state.input instanceof HTMLInputElement) {
+      state.input.setAttribute("autocomplete", state.input.getAttribute("autocomplete") || "off");
+      state.input.setAttribute("spellcheck", state.input.getAttribute("spellcheck") || "false");
+
+      state.input.addEventListener("input", () => {
+        state.query = state.input.value.trim();
+        renderCascader(state);
+        bindCascaderOptionEvents(state);
+      });
+
+      state.input.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowDown") {
+          event.preventDefault();
+          focusCascaderFirstOption(state);
+          return;
+        }
+
+        if (event.key === "Enter" && state.options.length === 1) {
+          event.preventDefault();
+          const onlyOption = state.options[0];
+          const node = state.nodeIndex.get(onlyOption?.dataset.r8NodeId || "");
+          if (node) {
+            commitCascaderSelection(state, node);
+          }
+          return;
+        }
+
+        if (event.key === "Escape") {
+          event.preventDefault();
+          closeFloating(container);
+          trigger.focus({ preventScroll: true });
+        }
+      });
+    }
+
+    if (state.clearButton instanceof HTMLElement) {
+      state.clearButton.addEventListener("click", (event) => {
+        event.preventDefault();
+        clearCascaderSelection(state);
+        if (isOpen(panel) && state.input instanceof HTMLInputElement) {
+          state.input.focus({ preventScroll: true });
+        } else {
+          trigger.focus({ preventScroll: true });
+        }
+      });
+    }
   }
 
   function getDatePickerMessages(locale) {
@@ -2028,6 +2790,11 @@
           return;
         }
 
+        if (family.kind === "cascader") {
+          initCascader(container, family);
+          return;
+        }
+
         const trigger = family.trigger ? firstMatch(container, family.trigger) : null;
         const panel = firstMatch(container, family.panel);
         const options = toArray(container.querySelectorAll(family.option)).filter((item) => item instanceof HTMLElement);
@@ -2358,37 +3125,32 @@
     });
   }
 
-  function initSegmentedAndPagination(root) {
-    [
-      { root: ".r8-segmented", item: ".r8-segmented__item", activeClass: "is-active" },
-      { root: ".r8-pagination", item: ".r8-pagination__item", activeClass: "is-active" },
-    ].forEach((group) => {
-      toArray(root.querySelectorAll(group.root)).forEach((component) => {
-        if (!(component instanceof HTMLElement) || component.dataset.r8SegmentedReady === "true") {
-          return;
-        }
+  function initPagination(root) {
+    toArray(root.querySelectorAll(".r8-pagination")).forEach((component) => {
+      if (!(component instanceof HTMLElement) || component.dataset.r8PaginationReady === "true") {
+        return;
+      }
 
-        component.dataset.r8SegmentedReady = "true";
-        const items = toArray(component.querySelectorAll(group.item)).filter((item) => item instanceof HTMLElement);
+      component.dataset.r8PaginationReady = "true";
+      const items = toArray(component.querySelectorAll(".r8-pagination__item")).filter((item) => item instanceof HTMLElement);
 
-        function activate(target) {
-          items.forEach((item) => {
-            const isActive = item === target;
-            item.classList.toggle(group.activeClass, isActive);
-            item.setAttribute("aria-current", isActive ? "true" : "false");
-          });
-
-          emitComponentEvent(component, group.root === ".r8-pagination" ? "pagination-change" : "segmented-change", {
-            item: target,
-            index: items.indexOf(target),
-          });
-        }
-
+      function activate(target) {
         items.forEach((item) => {
-          prepareActionLikeElement(item);
-          item.addEventListener("click", () => activate(item));
-          bindKeyboardActivation(item, () => activate(item));
+          const isActive = item === target;
+          item.classList.toggle("is-active", isActive);
+          item.setAttribute("aria-current", isActive ? "true" : "false");
         });
+
+        emitComponentEvent(component, "pagination-change", {
+          item: target,
+          index: items.indexOf(target),
+        });
+      }
+
+      items.forEach((item) => {
+        prepareActionLikeElement(item);
+        item.addEventListener("click", () => activate(item));
+        bindKeyboardActivation(item, () => activate(item));
       });
     });
   }
@@ -2537,10 +3299,21 @@
 
   function updateSlider(component, nextValue, options = {}) {
     const silent = options.silent === true;
-    const value = clamp(Number(nextValue) || 0, 0, 100);
+    const parsedValue =
+      typeof nextValue === "string"
+        ? parseFloat(nextValue)
+        : Number(nextValue);
+    const value = clamp(Number.isFinite(parsedValue) ? parsedValue : 0, 0, 100);
     component.style.setProperty("--r8-progress-value", `${value}%`);
     component.dataset.r8Value = String(value);
     component.setAttribute("aria-valuenow", String(value));
+    component.setAttribute("aria-valuetext", `${value}%`);
+
+    const track = component.querySelector(".r8-slider__track");
+    if (track instanceof HTMLElement) {
+      track.setAttribute("aria-valuenow", String(value));
+      track.setAttribute("aria-valuetext", `${value}%`);
+    }
 
     const output = component.querySelector("[data-r8-slider-output]") || component.querySelector(".r8-text");
     if (output instanceof HTMLElement) {
@@ -2593,9 +3366,19 @@
       }
 
       prepareActionLikeElement(track, "slider");
+      component.setAttribute("role", component.getAttribute("role") || "group");
       component.setAttribute("aria-valuemin", "0");
       component.setAttribute("aria-valuemax", "100");
-      updateSlider(component, component.dataset.r8Value || component.style.getPropertyValue("--r8-progress-value"), { silent: true });
+      track.setAttribute("aria-valuemin", "0");
+      track.setAttribute("aria-valuemax", "100");
+      track.setAttribute("aria-orientation", "horizontal");
+      updateSlider(
+        component,
+        component.dataset.r8Value ||
+          track.getAttribute("aria-valuenow") ||
+          component.style.getPropertyValue("--r8-progress-value"),
+        { silent: true },
+      );
 
       const setFromPointer = (clientX) => {
         const rect = track.getBoundingClientRect();
@@ -2615,9 +3398,49 @@
       };
 
       track.addEventListener("pointerdown", (event) => {
+        track.focus();
         setFromPointer(event.clientX);
         window.addEventListener("pointermove", onPointerMove);
         window.addEventListener("pointerup", onPointerUp);
+      });
+
+      track.addEventListener("keydown", (event) => {
+        const currentValue = Number(component.dataset.r8Value || "0") || 0;
+
+        if (event.key === "ArrowLeft" || event.key === "ArrowDown") {
+          event.preventDefault();
+          updateSlider(component, currentValue - 5);
+          return;
+        }
+
+        if (event.key === "ArrowRight" || event.key === "ArrowUp") {
+          event.preventDefault();
+          updateSlider(component, currentValue + 5);
+          return;
+        }
+
+        if (event.key === "PageDown") {
+          event.preventDefault();
+          updateSlider(component, currentValue - 10);
+          return;
+        }
+
+        if (event.key === "PageUp") {
+          event.preventDefault();
+          updateSlider(component, currentValue + 10);
+          return;
+        }
+
+        if (event.key === "Home") {
+          event.preventDefault();
+          updateSlider(component, 0);
+          return;
+        }
+
+        if (event.key === "End") {
+          event.preventDefault();
+          updateSlider(component, 100);
+        }
       });
 
       bindKeyboardActivation(track, () => {
@@ -3500,7 +4323,7 @@
     initInputNumbers(scope);
     initBinaryControls(scope);
     initRates(scope);
-    initSegmentedAndPagination(scope);
+    initPagination(scope);
     initSplitters(scope);
     initSliders(scope);
     initInputTags(scope);

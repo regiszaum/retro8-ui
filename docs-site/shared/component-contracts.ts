@@ -84,7 +84,6 @@ const runtimeKinds = new Set([
   "carousel",
   "input-number",
   "rate",
-  "segmented",
   "pagination",
   "splitter",
   "slider",
@@ -319,6 +318,34 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         methods: runtimeMethods,
       });
       break;
+    case "cascader":
+      mergeContract(contract, {
+        attributes: [
+          row("type", `"button"`, `"button"`, "Use `type=\"button\"` no trigger para evitar submits acidentais.", "Use `type=\"button\"` on the trigger to avoid accidental submits."),
+          row("aria-expanded", "boolean", "false", "Sincronizado pelo runtime quando o Cascader panel abre ou fecha.", "Synchronized by the runtime when the Cascader panel opens or closes."),
+          row("aria-controls", "string", "generated", "Conecta o trigger ao floating panel controlado pelo Cascader.", "Connects the trigger to the floating panel controlled by the Cascader."),
+          row("hidden", "boolean", "managed by runtime", "O panel usa `hidden` para abrir e fechar sem wrapper de framework.", "The panel uses `hidden` to open and close without a framework wrapper."),
+        ],
+        dataAttributes: [
+          row("data-r8-placeholder", "string", `"Select path"`, "Texto inicial exibido no trigger antes da primeira escolha.", "Initial text shown in the trigger before the first selection."),
+          row("data-r8-expand-trigger", `"click" | "hover"`, `"click"`, "Define se branches abrem por click ou hover.", "Defines whether branches expand on click or hover."),
+          row("data-r8-check-strictly", `"true" | "false"`, `"false"`, "Permite selecionar parent nodes, nao apenas leaf nodes.", "Allows selecting parent nodes, not only leaf nodes."),
+          row("data-r8-filterable", `"true" | "false"`, `"false"`, "Ativa o filtro textual do panel usando `r8-cascader__input`.", "Enables panel text filtering using `r8-cascader__input`."),
+          row("data-r8-clearable", `"true" | "false"`, `"false"`, "Exibe `r8-cascader__clear` para limpar a escolha atual.", "Shows `r8-cascader__clear` to clear the current selection."),
+          row("data-r8-separator", "string", `" / "`, "Separador usado para compor o label final do caminho.", "Separator used to compose the final path label."),
+          row("data-r8-empty-label", "string", `"No matching routes"`, "Mensagem exibida quando o filtro nao encontra resultados.", "Message shown when the filter finds no results."),
+          row("data-r8-label", "string", "required on `r8-cascader__node`", "Label semantico de cada node da arvore declarativa.", "Semantic label for each node inside the declarative tree."),
+          row("data-r8-disabled", `"true" | "false"`, `"false"`, "Desativa um branch ou leaf node sem remover do fluxo visual.", "Disables a branch or leaf node without removing it from the visual flow."),
+          row("data-r8-selected", `"true" | "false"`, `"false"`, "Marca o node inicial selecionado ao montar o Cascader.", "Marks the initial selected node when the Cascader boots."),
+          row("data-r8-search", "string", "none", "Texto extra indexado pelo filtro do runtime.", "Extra text indexed by the runtime filter."),
+        ],
+        methods: runtimeMethods,
+        events: [
+          event("r8:cascader-change", `{ value, label, labels, values, path, node, option, text }`, "Emitido quando o Cascader confirma uma selecao.", "Emitted when the Cascader commits a selection."),
+          event("r8:choice-change", `{ kind, value, label, labels, values, path, node, option, text }`, "Evento generico tambem emitido para manter compatibilidade com o choice runtime.", "Generic event also emitted to preserve compatibility with the choice runtime."),
+        ],
+      });
+      break;
     case "date-picker-panel":
     case "date-picker":
       mergeContract(contract, {
@@ -525,17 +552,6 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         methods: runtimeMethods,
         events: [
           event("r8:pagination-change", `{ item, index }`, "Emitido quando a page ativa muda.", "Emitted when the active page changes."),
-        ],
-      });
-      break;
-    case "segmented":
-      mergeContract(contract, {
-        attributes: [
-          row("aria-current", "boolean", "false", "Marca o item ativo do Segmented control.", "Marks the active item in the Segmented control."),
-        ],
-        methods: runtimeMethods,
-        events: [
-          event("r8:segmented-change", `{ item, index }`, "Emitido quando a escolha ativa muda.", "Emitted when the active choice changes."),
         ],
       });
       break;
