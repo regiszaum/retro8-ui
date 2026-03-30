@@ -378,27 +378,6 @@ const basicComponents = [
 </div>`,
   },
   {
-    id: "space",
-    name: "Space",
-    group: "basic",
-    summary: l(
-      "Agrupador leve para espaciar itens inline ou em coluna sem escrever utilitarios no HTML consumidor.",
-      "Lightweight wrapper for spacing inline or vertical items without exposing utility-heavy markup.",
-    ),
-    classes: ["r8-space", "r8-space--vertical", "r8-space--lg"],
-    preview: `<div class="docs-demo__stack">
-  <div class="r8-space">
-    <span class="r8-badge">Alpha</span>
-    <span class="r8-badge r8-badge--primary">Beta</span>
-    <span class="r8-badge r8-badge--success">Gamma</span>
-  </div>
-  <div class="r8-space r8-space--vertical r8-space--lg">
-    <span class="r8-badge">Vertical</span>
-    <span class="r8-badge r8-badge--warning">Large gap</span>
-  </div>
-</div>`,
-  },
-  {
     id: "splitter",
     name: "Splitter",
     group: "basic",
@@ -711,7 +690,7 @@ const formComponents = [
       "Binary control for multiple selections with a retro box and immediate visual feedback.",
     ),
     classes: ["r8-checkbox", "r8-checkbox__box"],
-    preview: `<div class="r8-space r8-space--vertical">
+    preview: `<div class="r8-stack">
   <label class="r8-checkbox is-checked">
     <span class="r8-checkbox__box" aria-hidden="true"></span>
     <span>Enable scanlines</span>
@@ -977,7 +956,7 @@ const formComponents = [
       "Single-choice control with a pixelated circle and a clear active state.",
     ),
     classes: ["r8-radio", "r8-radio__box"],
-    preview: `<div class="r8-space r8-space--vertical">
+    preview: `<div class="r8-stack">
   <label class="r8-radio is-checked">
     <span class="r8-radio__box" aria-hidden="true"></span>
     <span>Online mode</span>
@@ -1085,7 +1064,7 @@ const formComponents = [
       "Compact on/off toggle with a colored track and a highlighted thumb.",
     ),
     classes: ["r8-switch", "r8-switch__track", "r8-switch__thumb"],
-    preview: `<div class="r8-space r8-space--vertical">
+    preview: `<div class="r8-stack">
   <label class="r8-switch is-checked">
     <span class="r8-switch__track"><span class="r8-switch__thumb"></span></span>
     <span>Power enabled</span>
@@ -1841,7 +1820,7 @@ const feedbackComponents = [
     </section>
   </div>
 </div>`,
-    code: `<div class="r8-space r8-space--vertical">
+    code: `<div class="r8-stack">
   <div class="r8-row">
     <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#alert-top-left">
       Top left
@@ -1971,7 +1950,7 @@ const feedbackComponents = [
     </aside>
   </div>
 </div>`,
-    code: `<div class="r8-space r8-space--vertical">
+    code: `<div class="r8-stack">
   <button
     class="r8-btn r8-btn--primary"
     type="button"

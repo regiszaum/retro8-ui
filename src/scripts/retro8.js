@@ -3049,7 +3049,6 @@
     const scope =
       control.closest("[data-r8-radio-group]") ||
       control.parentElement ||
-      control.closest(".r8-space") ||
       control.closest(".r8-form") ||
       document.body;
 
