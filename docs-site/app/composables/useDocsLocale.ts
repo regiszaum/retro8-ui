@@ -12,12 +12,12 @@ export function useDocsLocale() {
     }
 
     const [firstSegment] = route.path.split("/").filter(Boolean);
-    return firstSegment && isDocsLocale(firstSegment) ? firstSegment : "pt-br";
+    return firstSegment && isDocsLocale(firstSegment) ? firstSegment : "en";
   });
 
   useHead(() => ({
     htmlAttrs: {
-      lang: localeMeta[locale.value]?.htmlLang ?? "pt-BR",
+      lang: localeMeta[locale.value]?.htmlLang ?? "en",
     },
   }));
 

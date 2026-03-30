@@ -444,57 +444,13 @@
     margin-left: var(--r8-space-5);
   }
 
-  .r8-statistic {
-    border: var(--r8-border-thick) solid var(--r8-color-border);
-    box-shadow: var(--r8-shadow-md);
-    display: grid;
-    gap: var(--r8-space-2);
-    justify-items: start;
-    padding: var(--r8-space-4);
-  }
-
-  .r8-statistic__label {
-    font-family: var(--r8-font-display);
-    font-size: var(--r8-font-size-xs);
-    text-transform: uppercase;
-  }
-
-  .r8-statistic__value {
-    font-family: var(--r8-font-display);
-    font-size: 1.4rem;
-    line-height: 1;
-  }
-
-  .r8-segmented {
-    display: inline-flex;
-    flex-wrap: wrap;
-    gap: var(--r8-space-2);
-  }
-
-  .r8-segmented__item {
-    background: var(--r8-color-surface-2);
-    border: var(--r8-border-thin) solid var(--r8-color-border);
-    box-shadow: var(--r8-shadow-sm);
-    cursor: pointer;
-    font-family: var(--r8-font-display);
-    font-size: var(--r8-font-size-xs);
-    padding: var(--r8-space-2) var(--r8-space-3);
-    text-transform: uppercase;
-  }
-
-  .r8-segmented__item.is-active {
-    background: var(--r8-color-accent);
-    color: var(--r8-color-accent-contrast);
-  }
-
   .r8-calendar__day:focus-visible,
   .r8-carousel__dot:focus-visible,
   .r8-collapse__header:focus-visible,
   .r8-pagination__item:focus-visible,
   .r8-pagination__more:focus-visible,
   .r8-tree__node:focus-visible,
-  .r8-virtual-tree__node:focus-visible,
-  .r8-segmented__item:focus-visible {
+  .r8-virtual-tree__node:focus-visible {
     outline: var(--r8-focus-width) solid var(--r8-color-focus);
     outline-offset: 1px;
   }

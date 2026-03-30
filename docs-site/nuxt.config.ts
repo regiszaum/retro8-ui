@@ -1,6 +1,6 @@
 import { componentOrder } from "./shared/component-catalog";
 
-const docsLocales = ["pt-br", "en"];
+const docsLocales = ["en", "pt-br"];
 const guidePages = ["getting-started", "tokens", "icons", "components"];
 
 export default defineNuxtConfig({
@@ -21,12 +21,20 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
-      titleTemplate: "%s · retro8-ui docs",
-      meta: [{ name: "viewport", content: "width=device-width, initial-scale=1" }],
+      titleTemplate: "%s · Retro8 UI",
+      meta: [
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
+        { name: "theme-color", content: "#0f172a" },
+      ],
+      link: [
+        { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
+        { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon/favicon-32x32.png" },
+        { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon/favicon-16x16.png" },
+      ],
     },
   },
   routeRules: {
-    "/": { redirect: "/pt-br" },
+    "/": { redirect: "/en" },
   },
   nitro: {
     prerender: {

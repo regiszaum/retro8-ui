@@ -31,6 +31,8 @@ html[data-theme="dark"] {
   --docs-toolbar-border: rgba(148, 163, 184, 0.42);
   --docs-toolbar-active-bg: #2563eb;
   --docs-toolbar-active-text: #ffffff;
+  --docs-toolbar-height: 2.5rem;
+  --docs-toolbar-inner-height: calc(var(--docs-toolbar-height) - 4px);
   --docs-focus: #facc15;
   --docs-focus-soft: rgba(250, 204, 21, 0.12);
   --docs-accent: #2563eb;
@@ -45,9 +47,13 @@ html[data-theme="dark"] {
   --docs-link: #1d4ed8;
   --docs-link-hover: #1e40af;
   --docs-preview-bg:
-    linear-gradient(180deg, rgba(37, 99, 235, 0.08), rgba(8, 145, 178, 0.06)),
-    #ffffff;
-  --docs-preview-text: #0f172a;
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--r8-color-primary) 10%, transparent),
+      color-mix(in srgb, var(--r8-color-surface-2) 84%, var(--r8-color-bg) 16%)
+    ),
+    var(--r8-color-bg);
+  --docs-preview-text: var(--r8-color-ink);
 }
 
 html {
@@ -86,6 +92,8 @@ html[data-theme="light"] {
   --docs-toolbar-border: rgba(15, 23, 42, 0.14);
   --docs-toolbar-active-bg: #2563eb;
   --docs-toolbar-active-text: #ffffff;
+  --docs-toolbar-height: 2.5rem;
+  --docs-toolbar-inner-height: calc(var(--docs-toolbar-height) - 4px);
   --docs-focus: #facc15;
   --docs-focus-soft: rgba(250, 204, 21, 0.1);
   --docs-accent: #2563eb;
@@ -100,9 +108,13 @@ html[data-theme="light"] {
   --docs-link: #1d4ed8;
   --docs-link-hover: #1e40af;
   --docs-preview-bg:
-    linear-gradient(180deg, rgba(37, 99, 235, 0.08), rgba(226, 232, 240, 0.82)),
-    #ffffff;
-  --docs-preview-text: #0f172a;
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--r8-color-primary) 8%, transparent),
+      color-mix(in srgb, var(--r8-color-surface-2) 82%, white 18%)
+    ),
+    var(--r8-color-surface);
+  --docs-preview-text: var(--r8-color-ink);
 }
 
 body {
@@ -150,7 +162,6 @@ button:not(:disabled),
 .r8-collapse__header,
 .r8-pagination__item,
 .r8-pagination__more,
-.r8-segmented__item,
 .r8-dropdown__item,
 .r8-radio,
 .r8-checkbox,
@@ -301,6 +312,28 @@ pre {
   color: var(--docs-topbar-text);
 }
 
+.docs-brand {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.docs-brand__mark {
+  display: block;
+  flex: 0 0 auto;
+  height: 2rem;
+  image-rendering: pixelated;
+  object-fit: contain;
+  width: auto;
+}
+
+.docs-brand__label {
+  display: inline-block;
+  line-height: 1;
+  white-space: nowrap;
+}
+
 .docs-topbar .r8-navbar--dark .r8-navbar__item:hover,
 .docs-topbar .r8-navbar--dark .r8-navbar__item[aria-current="page"] {
   background-color: var(--docs-toolbar-active-bg);
@@ -414,7 +447,7 @@ pre {
   justify-content: space-between;
   gap: 0.75rem;
   min-width: min(22rem, calc(100vw - 10rem));
-  min-height: 2.5rem;
+  min-height: var(--docs-toolbar-height);
   padding: 0.45rem 0.7rem 0.45rem 0.85rem;
   border: 2px solid var(--docs-toolbar-border);
   background: var(--docs-toolbar-bg);
@@ -644,18 +677,113 @@ pre {
 
 .docs-toolbar__group {
   display: inline-flex;
+  align-items: center;
   flex-wrap: wrap;
   gap: 0.25rem;
-  padding: 0.2rem;
+  min-height: var(--docs-toolbar-height);
+  padding: 0;
   border: 2px solid var(--docs-toolbar-border);
   background: var(--docs-toolbar-bg);
+}
+
+.docs-toolbar__group--locale {
+  gap: 0;
+}
+
+.docs-toolbar__group--theme {
+  gap: 0;
+}
+
+.docs-locale-select {
+  height: 100%;
+  min-width: 5rem;
+}
+
+.docs-locale-select .r8-select__trigger {
+  background: transparent;
+  border: 2px solid transparent;
+  box-shadow: none;
+  color: var(--docs-topbar-text);
+  font-family: "Press Start 2P", "Courier New", Courier, monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  min-height: var(--docs-toolbar-inner-height);
+  padding: 0.35rem 0.65rem;
+  text-transform: uppercase;
+}
+
+.docs-locale-select .r8-select__trigger:hover,
+.docs-locale-select .r8-select__trigger:focus-visible,
+.docs-locale-select .r8-select__trigger[aria-expanded="true"] {
+  border-color: color-mix(in srgb, var(--docs-topbar-text) 18%, transparent);
+  outline: none;
+  transform: translate(-1px, -1px);
+}
+
+.docs-locale-select .r8-select__menu {
+  background: var(--r8-color-surface);
+  border-color: var(--r8-color-border);
+  box-shadow: var(--r8-shadow-md);
+  color: var(--r8-color-ink);
+  left: auto;
+  margin-top: 0;
+  min-width: 100%;
+  right: 0;
+  top: calc(100% + 0.35rem);
+}
+
+.docs-locale-select .r8-select__option {
+  color: var(--r8-color-ink);
+  font-family: "Press Start 2P", "Courier New", Courier, monospace;
+  font-size: 0.58rem;
+  min-height: 2rem;
+  padding: 0.35rem 0.55rem;
+  text-transform: uppercase;
+}
+
+.docs-locale-select__caret {
+  flex: 0 0 auto;
+  font-size: 0.7em;
+}
+
+.docs-theme-switch {
+  background: transparent;
+  box-shadow: none;
+  border-color: transparent;
+  color: #facc15;
+  min-height: var(--docs-toolbar-inner-height);
+  min-width: var(--docs-toolbar-inner-height);
+}
+
+.docs-theme-switch:hover,
+.docs-theme-switch:focus-visible {
+  border-color: color-mix(in srgb, var(--docs-topbar-text) 18%, transparent);
+  transform: translate(-1px, -1px);
+}
+
+.docs-theme-switch:focus-visible {
+  outline: 3px solid var(--docs-focus);
+  outline-offset: 2px;
+}
+
+.docs-theme-switch .r8-theme-switch__glyph {
+  height: 1rem;
+  width: 1rem;
+}
+
+.docs-theme-switch.is-checked,
+.docs-theme-switch[aria-checked="true"] {
+  background: var(--docs-toolbar-active-bg);
+  border-color: var(--docs-panel-border);
+  box-shadow: 2px 2px 0 0 var(--docs-panel-shadow);
+  color: var(--docs-toolbar-active-text);
 }
 
 .docs-toolbar__button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 2rem;
+  min-height: var(--docs-toolbar-inner-height);
   padding: 0.35rem 0.65rem;
   border: 2px solid transparent;
   background: transparent;
@@ -1106,11 +1234,11 @@ pre {
 }
 
 dialog#docs-dialog-demo {
-  color: var(--docs-panel-text);
+  color: var(--r8-color-ink);
 }
 
 dialog.r8-dialog {
-  color: var(--docs-panel-text);
+  color: var(--r8-color-ink);
 }
 
 .docs-prose {
@@ -1286,5 +1414,13 @@ dialog.r8-dialog {
 
   .docs-pager {
     flex-direction: column;
+  }
+
+  .docs-brand__label {
+    display: none;
+  }
+
+  .docs-brand__mark {
+    height: 1.75rem;
   }
 }
