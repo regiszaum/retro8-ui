@@ -13,6 +13,8 @@ Retro 8-bit UI library authored with Tailwind CSS and shipped as framework-agnos
 
 The goal is to provide a strong visual foundation for plain HTML, React, Next.js, Vue, Nuxt, Astro, Laravel, and similar stacks, while keeping the consumer markup short, readable, and predictable.
 
+You do not need Tailwind CSS in the consuming project. Tailwind is used only to author the library source before the final CSS is compiled.
+
 ## Why retro8-ui
 
 - Framework-agnostic by design.
@@ -42,6 +44,19 @@ For local development inside this repository:
 npm install
 ```
 
+## Do I Need Tailwind?
+
+No. Tailwind CSS is not required in the project that consumes `retro8-ui`.
+
+- If you are using the library, import the compiled assets and write semantic `r8-*` classes.
+- If you are contributing to the library itself, Tailwind is part of the internal authoring and build workflow.
+- If your application already uses Tailwind, that is fine, but `retro8-ui` does not depend on it at runtime.
+
+Consumer projects only need these distributable files:
+
+- `retro8.css` or `retro8.min.css`
+- `retro8.js` or `retro8.min.js` for interactive components
+
 ## Package Outputs
 
 The build produces four distributable assets:
@@ -54,6 +69,13 @@ The build produces four distributable assets:
 Use the CSS files for styling. Add the JavaScript runtime only if you want ready-to-use interactive behavior.
 
 ## Quick Start
+
+The standard consumer flow is:
+
+1. install the package
+2. import the compiled CSS
+3. import the optional JS runtime when behavior is needed
+4. write semantic HTML with `r8-*` classes
 
 ### Plain HTML
 
@@ -80,6 +102,10 @@ If your project does not need runtime behavior, import only the stylesheet:
 ```js
 import "retro8-ui/retro8.css";
 ```
+
+### Tailwind in the host app
+
+If your app already uses Tailwind, you can keep using it for layout or application-specific styling. `retro8-ui` still works the same way: import the compiled bundle and use the semantic component classes.
 
 ## Usage by Stack
 
