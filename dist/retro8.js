@@ -108,8 +108,7 @@
   const buttonVariants = ["primary", "secondary", "tertiary", "success", "info", "danger", "dark", "light", "ghost"];
   const badgeVariants = ["primary", "secondary", "tertiary", "success", "warning", "danger", "info", "dark", "light"];
   const tagVariants = ["success", "info", "danger"];
-  const alertVariants = ["success", "info", "danger"];
-  const alertPlacements = ["top-left", "bottom-left", "top-right", "bottom-right"];
+  const alertVariants = ["primary", "secondary", "tertiary", "success", "warning", "danger", "info", "dark", "light"];
   const progressVariants = ["success", "warning", "danger"];
   const windowVariants = ["success", "danger"];
   const navbarVariants = ["dark"];
@@ -540,17 +539,6 @@
         }
 
         syncVariantClasses(element, family.baseClass, family.variants, element.dataset.r8Variant || "");
-
-        if (family.selector === ".r8-alert" && typeof element.dataset.r8Placement === "string" && element.dataset.r8Placement.trim()) {
-          alertPlacements.forEach((placement) => {
-            element.classList.remove(`r8-alert--${placement}`);
-          });
-
-          const placement = element.dataset.r8Placement || "";
-          if (alertPlacements.includes(placement)) {
-            element.classList.add(`r8-alert--${placement}`);
-          }
-        }
       });
     });
   }
@@ -3587,11 +3575,6 @@
     prepareActionLikeElement(trigger);
     registerGenericTarget(trigger, target);
 
-    if (isToastAlertTarget(target)) {
-      openTarget(target, trigger);
-      return;
-    }
-
     if (isOpen(target)) {
       closeTarget(target, trigger);
       return;
@@ -3626,90 +3609,10 @@
 
     const host = button.closest(".r8-alert, .r8-notification, .r8-message-box");
     if (host instanceof HTMLElement) {
-      if (isToastAlertTarget(host)) {
-        closeTarget(host);
-      } else {
-        setHidden(host, true);
-      }
-
+      closeTarget(host);
       emitComponentEvent(host, "dismiss", {
         target: host,
       });
-    }
-  }
-
-  function getAlertPlacement(target) {
-    if (!(target instanceof HTMLElement) || !target.classList.contains("r8-alert")) {
-      return "";
-    }
-
-    const explicitPlacement = target.dataset.r8Placement || "";
-    if (alertPlacements.includes(explicitPlacement)) {
-      return explicitPlacement;
-    }
-
-    return (
-      alertPlacements.find((placement) => target.classList.contains(`r8-alert--${placement}`)) ||
-      ""
-    );
-  }
-
-  function isToastAlertTarget(target) {
-    return target instanceof HTMLElement && target.classList.contains("r8-alert") && Boolean(getAlertPlacement(target));
-  }
-
-  function getToastDuration(target) {
-    if (!(target instanceof HTMLElement)) {
-      return 0;
-    }
-
-    const rawValue = target.dataset.r8Duration || "";
-    if (!rawValue.trim()) {
-      return isToastAlertTarget(target) ? 4500 : 0;
-    }
-
-    const duration = Number(rawValue);
-    if (!Number.isFinite(duration) || duration < 0) {
-      return 0;
-    }
-
-    return duration;
-  }
-
-  function ensureToastStack(target) {
-    if (!(target instanceof HTMLElement)) {
-      return null;
-    }
-
-    const placement = getAlertPlacement(target);
-    if (!placement) {
-      return null;
-    }
-
-    const scope = target.closest("[data-r8-overlay-scope]") || document.body;
-    const selector = `.r8-toast-stack[data-r8-placement="${placement}"]`;
-    const existingStack = scope.querySelector(selector);
-    if (existingStack instanceof HTMLElement) {
-      return existingStack;
-    }
-
-    const stack = document.createElement("div");
-    stack.className = `r8-toast-stack r8-toast-stack--${placement}`;
-    stack.dataset.r8Placement = placement;
-    stack.setAttribute("aria-live", "polite");
-    stack.setAttribute("aria-atomic", "false");
-    scope.append(stack);
-    return stack;
-  }
-
-  function cleanupToastStack(target) {
-    const stack = target?.parentElement;
-    if (!(stack instanceof HTMLElement) || !stack.classList.contains("r8-toast-stack")) {
-      return;
-    }
-
-    if (stack.children.length === 0) {
-      stack.remove();
     }
   }
 
@@ -3723,6 +3626,10 @@
 
   function isDrawerTarget(target) {
     return target instanceof HTMLElement && target.classList.contains("r8-drawer");
+  }
+
+  function isAlertTarget(target) {
+    return target instanceof HTMLElement && target.classList.contains("r8-alert");
   }
 
   function isPopoverTarget(target) {
@@ -3990,24 +3897,6 @@
       return;
     }
 
-    if (isToastAlertTarget(target)) {
-      clearOverlayTimer(target);
-      target.classList.remove("is-open");
-      collapseGenericTargetTriggers(target);
-
-      const closeTimer = window.setTimeout(() => {
-        setHidden(target, true);
-        cleanupToastStack(target);
-        emitComponentEvent(target, "target-close", {
-          target,
-          trigger,
-        });
-      }, 140);
-
-      overlayTimers.set(target, closeTimer);
-      return;
-    }
-
     if (isDrawerTarget(target)) {
       clearOverlayTimer(target);
       target.classList.remove("is-open");
@@ -4053,33 +3942,6 @@
           trigger,
         });
       }
-      return;
-    }
-
-    if (isToastAlertTarget(target)) {
-      clearOverlayTimer(target);
-      const stack = ensureToastStack(target);
-      if (stack instanceof HTMLElement && target.parentElement !== stack) {
-        stack.append(target);
-      }
-
-      setHidden(target, false);
-      setExpanded(trigger, true);
-      void target.offsetWidth;
-      target.classList.add("is-open");
-
-      const duration = getToastDuration(target);
-      if (duration > 0) {
-        const dismissTimer = window.setTimeout(() => {
-          closeTarget(target, trigger);
-        }, duration);
-        overlayTimers.set(target, dismissTimer);
-      }
-
-      emitComponentEvent(target, "target-open", {
-        target,
-        trigger,
-      });
       return;
     }
 
@@ -4226,7 +4088,7 @@
         return;
       }
 
-      if (!entry.target || !isOpen(entry.target) || isDialog(entry.target) || isToastAlertTarget(entry.target)) {
+      if (!entry.target || !isOpen(entry.target) || isDialog(entry.target) || isAlertTarget(entry.target)) {
         return;
       }
 
@@ -4271,7 +4133,7 @@
 
       floatingStates.forEach((container) => closeFloating(container));
       genericTargets.forEach((entry) => {
-        if (isOpen(entry.target)) {
+        if (isOpen(entry.target) && !isAlertTarget(entry.target)) {
           closeTarget(entry.target);
         }
       });

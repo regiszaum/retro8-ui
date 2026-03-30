@@ -1752,123 +1752,113 @@ const feedbackComponents = [
     name: "Alert",
     group: "feedback",
     summary: l(
-      "Alert semantico que tambem pode funcionar como toast posicionado para feedback importante.",
-      "Semantic alert that can also behave as a positioned toast for important feedback.",
+      "Feedback contextual inline para status, warnings e dismissible callouts com a mesma intencao de um alert classico.",
+      "Inline contextual feedback surface for status messages, warnings and dismissible callouts with the same intent as a classic alert.",
     ),
     classes: [
       "r8-alert",
+      "r8-alert--primary",
+      "r8-alert--secondary",
+      "r8-alert--tertiary",
       "r8-alert--success",
+      "r8-alert--warning",
       "r8-alert--info",
       "r8-alert--danger",
-      "r8-alert--top-left",
-      "r8-alert--bottom-left",
-      "r8-alert--top-right",
-      "r8-alert--bottom-right",
+      "r8-alert--dark",
+      "r8-alert--light",
+      "r8-alert--dismissible",
+      "r8-alert__content",
       "r8-alert__title",
+      "r8-alert__heading",
+      "r8-alert__body",
+      "r8-alert__link",
+      "r8-alert__close",
       "r8-alert__actions",
     ],
     preview: `<div class="docs-demo__stack">
-  <div class="docs-demo__actions">
-    <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#docs-alert-top-left">
-      Top left
-    </button>
-    <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#docs-alert-bottom-left">
-      Bottom left
-    </button>
-    <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#docs-alert-top-right">
-      Top right
-    </button>
-    <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#docs-alert-bottom-right">
-      Bottom right
-    </button>
-  </div>
-  <div class="docs-demo__stage" data-r8-overlay-scope>
-    <p class="docs-demo__stage-copy">
-      Click a button to spawn the alert inside this contained preview. The same position classes pin it to the viewport in real app layouts.
-    </p>
+  <section class="r8-alert r8-alert--primary" role="alert">
+    <div class="r8-alert__content">
+      <strong class="r8-alert__title">Primary alert</strong>
+      <p class="r8-text">System boots with the default mission profile and synced controls.</p>
+    </div>
+  </section>
 
-    <section id="docs-alert-top-left" class="r8-alert r8-alert--info r8-alert--top-left" role="alert" aria-live="assertive" data-r8-duration="4500" hidden>
-      <strong class="r8-alert__title">Radar drift</strong>
-      <p class="r8-text">Signal integrity dropped below 82% on the left cluster.</p>
-      <div class="r8-alert__actions">
-        <button class="r8-btn r8-btn--sm r8-btn--dark" type="button" data-r8-close="#docs-alert-top-left">Dismiss</button>
-      </div>
-    </section>
+  <section class="r8-alert r8-alert--success" role="status" aria-live="polite">
+    <div class="r8-alert__content">
+      <strong class="r8-alert__title">Success alert</strong>
+      <p class="r8-text">
+        Deployment finished cleanly.
+        <a class="r8-alert__link" href="#">Read release notes</a>
+      </p>
+    </div>
+  </section>
 
-    <section id="docs-alert-bottom-left" class="r8-alert r8-alert--success r8-alert--bottom-left" role="status" aria-live="polite" data-r8-duration="4500" hidden>
-      <strong class="r8-alert__title">Build shipped</strong>
-      <p class="r8-text">The deploy completed and all four shards are synchronized.</p>
-      <div class="r8-alert__actions">
-        <button class="r8-btn r8-btn--sm r8-btn--dark" type="button" data-r8-close="#docs-alert-bottom-left">Close</button>
-      </div>
-    </section>
+  <section class="r8-alert r8-alert--warning r8-alert--dismissible" id="docs-alert-live" role="alert" hidden>
+    <div class="r8-alert__content">
+      <strong class="r8-alert__title">Live alert</strong>
+      <p class="r8-text">Nice, you triggered this alert message from the preview action.</p>
+    </div>
+    <button class="r8-alert__close" type="button" data-r8-dismiss="true" aria-label="Dismiss alert">x</button>
+  </section>
 
-    <section id="docs-alert-top-right" class="r8-alert r8-alert--danger r8-alert--top-right" role="alert" aria-live="assertive" data-r8-duration="4500" hidden>
-      <strong class="r8-alert__title">Boss alert</strong>
-      <p class="r8-text">The reactor core is overheating and needs immediate cooldown.</p>
-      <div class="r8-alert__actions">
-        <button class="r8-btn r8-btn--sm r8-btn--light" type="button" data-r8-close="#docs-alert-top-right">Dismiss</button>
-      </div>
-    </section>
+  <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#docs-alert-live">
+    Show dismissible alert
+  </button>
 
-    <section id="docs-alert-bottom-right" class="r8-alert r8-alert--bottom-right" role="alert" aria-live="assertive" data-r8-duration="4500" hidden>
-      <strong class="r8-alert__title">Quest updated</strong>
-      <p class="r8-text">A new objective marker was added to the east corridor.</p>
-      <div class="r8-alert__actions">
-        <button class="r8-btn r8-btn--sm r8-btn--dark" type="button" data-r8-close="#docs-alert-bottom-right">Close</button>
+  <section class="r8-alert r8-alert--danger" role="alert">
+    <div class="r8-alert__content">
+      <h3 class="r8-alert__heading">System offline</h3>
+      <div class="r8-alert__body">
+        <p class="r8-text">Backup power is running on a reduced grid while the main core cools down.</p>
+        <hr />
+        <p class="r8-text">Use the maintenance tunnel and keep all squad traffic on channel 03.</p>
       </div>
-    </section>
-  </div>
+    </div>
+  </section>
+
+  <section class="r8-alert r8-alert--dark" role="alert">
+    <div class="r8-alert__content">
+      <strong class="r8-alert__title">Dark alert</strong>
+      <div class="r8-alert__actions">
+        <button class="r8-btn r8-btn--sm r8-btn--light" type="button">Review</button>
+        <button class="r8-btn r8-btn--sm" type="button">Later</button>
+      </div>
+    </div>
+  </section>
 </div>`,
     code: `<div class="r8-stack">
-  <div class="r8-row">
-    <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#alert-top-left">
-      Top left
-    </button>
-    <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#alert-bottom-left">
-      Bottom left
-    </button>
-    <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#alert-top-right">
-      Top right
-    </button>
-    <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#alert-bottom-right">
-      Bottom right
-    </button>
-  </div>
+  <section class="r8-alert r8-alert--success" role="status" aria-live="polite">
+    <div class="r8-alert__content">
+      <strong class="r8-alert__title">Success alert</strong>
+      <p class="r8-text">
+        Deployment finished cleanly.
+        <a class="r8-alert__link" href="#">Read release notes</a>
+      </p>
+    </div>
+  </section>
 
-  <div data-r8-overlay-scope style="min-height: 18rem;">
-    <section id="alert-top-left" class="r8-alert r8-alert--info r8-alert--top-left" role="alert" aria-live="assertive" data-r8-duration="4500" hidden>
-      <strong class="r8-alert__title">Radar drift</strong>
-      <p class="r8-text">Signal integrity dropped below 82%.</p>
-      <div class="r8-alert__actions">
-        <button class="r8-btn r8-btn--sm r8-btn--dark" type="button" data-r8-close="#alert-top-left">Dismiss</button>
+  <section class="r8-alert r8-alert--danger" role="alert">
+    <div class="r8-alert__content">
+      <h3 class="r8-alert__heading">System offline</h3>
+      <div class="r8-alert__body">
+        <p class="r8-text">Backup power is running on a reduced grid.</p>
+        <hr />
+        <p class="r8-text">Use the maintenance tunnel and keep traffic on channel 03.</p>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section id="alert-bottom-left" class="r8-alert r8-alert--success r8-alert--bottom-left" role="status" aria-live="polite" data-r8-duration="4500" hidden>
-      <strong class="r8-alert__title">Build shipped</strong>
-      <p class="r8-text">All shards are synchronized.</p>
-      <div class="r8-alert__actions">
-        <button class="r8-btn r8-btn--sm r8-btn--dark" type="button" data-r8-close="#alert-bottom-left">Close</button>
-      </div>
-    </section>
+  <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#inline-alert">
+    Show dismissible alert
+  </button>
 
-    <section id="alert-top-right" class="r8-alert r8-alert--danger r8-alert--top-right" role="alert" aria-live="assertive" data-r8-duration="4500" hidden>
-      <strong class="r8-alert__title">Boss alert</strong>
-      <p class="r8-text">The reactor core is overheating.</p>
-      <div class="r8-alert__actions">
-        <button class="r8-btn r8-btn--sm r8-btn--light" type="button" data-r8-close="#alert-top-right">Dismiss</button>
-      </div>
-    </section>
-
-    <section id="alert-bottom-right" class="r8-alert r8-alert--bottom-right" role="alert" aria-live="assertive" data-r8-duration="4500" hidden>
-      <strong class="r8-alert__title">Quest updated</strong>
-      <p class="r8-text">A new objective marker was added.</p>
-      <div class="r8-alert__actions">
-        <button class="r8-btn r8-btn--sm r8-btn--dark" type="button" data-r8-close="#alert-bottom-right">Close</button>
-      </div>
-    </section>
-  </div>
+  <section id="inline-alert" class="r8-alert r8-alert--warning r8-alert--dismissible" role="alert" hidden>
+    <div class="r8-alert__content">
+      <strong class="r8-alert__title">Live alert</strong>
+      <p class="r8-text">Nice, you triggered this alert message.</p>
+    </div>
+    <button class="r8-alert__close" type="button" data-r8-dismiss="true" aria-label="Dismiss alert">x</button>
+  </section>
 </div>`,
   },
   {

@@ -577,18 +577,16 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
     case "alert":
       mergeContract(contract, {
         attributes: [
-          row("role", `"alert" | "status"`, `"alert"`, "Role recomendada para anunciar feedback immediato.", "Recommended role for announcing immediate feedback."),
-          row("aria-live", `"assertive" | "polite"`, `"assertive"`, "Controla como assistive tech anuncia o Alert.", "Controls how assistive tech announces the Alert."),
+          row("role", `"alert" | "status"`, `"alert"`, "Role recomendada para anunciar feedback inline de forma contextual.", "Recommended role for announcing inline contextual feedback."),
+          row("aria-live", `"assertive" | "polite"`, `"assertive"`, "Controla como assistive tech anuncia o Alert quando ele muda dinamicamente.", "Controls how assistive tech announces the Alert when it changes dynamically."),
+          row("hidden", "boolean", "false", "Opcional para examples dismissible ou live alerts controlados pelo runtime.", "Optional for dismissible examples or live alerts controlled by the runtime."),
         ],
         dataAttributes: [
-          row("data-r8-dismiss", `"true" | "false"`, `"false"`, "Liga o dismiss helper quando houver Button interno com esse atributo.", "Enables the dismiss helper when an inner button carries this attribute."),
-          row("data-r8-variant", `"success" | "info" | "danger"`, "none", "Aplica a tone sem concatenar modifier classes no host app.", "Applies the tone without concatenating modifier classes in the host app."),
-          row("data-r8-placement", `"top-left" | "bottom-left" | "top-right" | "bottom-right"`, "none", "Quando presente no Alert, ativa o comportamento de toast posicionado no canto informado.", "When present on the Alert, enables toast behavior positioned in the chosen corner."),
-          row("data-r8-duration", "number", `"4500" for positioned toasts`, "Controla por quantos milissegundos o toast fica visivel antes de fechar automaticamente. Use `0` para manter aberto.", "Controls how many milliseconds the toast stays visible before closing automatically. Use `0` to keep it open."),
-          row("data-r8-toggle", `"true"`, `"true"`, "No trigger, abre o Alert/overlay declarativamente.", "On the trigger, opens the Alert overlay declaratively."),
+          row("data-r8-dismiss", `"true" | "false"`, `"false"`, "No close button interno, aciona o dismiss helper e sincroniza o estado do Alert.", "On an inner close button, triggers the dismiss helper and keeps the Alert state in sync."),
+          row("data-r8-variant", `"primary" | "secondary" | "tertiary" | "success" | "warning" | "danger" | "info" | "dark" | "light"`, "none", "Aplica a semantic tone sem concatenar modifier classes no host app.", "Applies a semantic tone without concatenating modifier classes in the host app."),
+          row("data-r8-toggle", `"true"`, `"true"`, "No trigger, revela ou recolhe um Alert hidden para live examples e inline callouts.", "On a trigger, reveals or hides a hidden Alert for live examples and inline callouts."),
           row("data-r8-target", "CSS selector", "required on trigger", "Aponta para o Alert controlado pelo helper declarativo.", "Points to the Alert controlled by the declarative helper."),
-          row("data-r8-close", "CSS selector | empty", "nearest host", "Fecha o Alert informado ou o host mais proximo.", "Closes the provided Alert or the nearest host."),
-          row("data-r8-overlay-scope", "marker", "none", "Opcional no wrapper quando voce quiser conter alerts posicionados dentro de uma area especifica.", "Optional on a wrapper when you want to contain positioned alerts inside a specific region."),
+          row("data-r8-close", "CSS selector | empty", "nearest host", "Fecha o Alert informado ou o host mais proximo pelo helper de runtime.", "Closes the provided Alert or the nearest host through the runtime helper."),
         ],
         methods: runtimeMethods,
         events: [

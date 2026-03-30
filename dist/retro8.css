@@ -2936,21 +2936,84 @@ dialog.r8-dialog::backdrop {
     padding: var(--r8-space-4);
   }
 .r8-alert {
-    background: var(--r8-color-warning);
-    color: var(--r8-color-warning-contrast);
+    --r8-alert-background: var(--r8-color-light);
+    --r8-alert-foreground: var(--r8-color-light-contrast);
+    --r8-alert-accent: var(--r8-color-dark);
+    align-items: start;
+    background: var(--r8-alert-background);
+    border-left-color: var(--r8-alert-accent);
+    border-left-width: calc(var(--r8-border-thick) * 2);
+    color: var(--r8-alert-foreground);
+    grid-template-columns: minmax(0, 1fr);
     position: relative;
   }
+.r8-alert--dismissible {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+.r8-alert--primary {
+    --r8-alert-background: var(--r8-color-primary);
+    --r8-alert-foreground: var(--r8-color-primary-contrast);
+    --r8-alert-accent: var(--r8-color-primary-strong);
+  }
+.r8-alert--secondary {
+    --r8-alert-background: var(--r8-color-secondary);
+    --r8-alert-foreground: var(--r8-color-secondary-contrast);
+    --r8-alert-accent: var(--r8-color-secondary-strong);
+  }
+.r8-alert--tertiary {
+    --r8-alert-background: var(--r8-color-tertiary);
+    --r8-alert-foreground: var(--r8-color-tertiary-contrast);
+    --r8-alert-accent: var(--r8-color-tertiary-strong);
+  }
 .r8-alert--success {
-    background: var(--r8-color-success);
-    color: var(--r8-color-success-contrast);
+    --r8-alert-background: var(--r8-color-success);
+    --r8-alert-foreground: var(--r8-color-success-contrast);
+    --r8-alert-accent: var(--r8-color-success-strong);
+  }
+.r8-alert--warning {
+    --r8-alert-background: var(--r8-color-warning);
+    --r8-alert-foreground: var(--r8-color-warning-contrast);
+    --r8-alert-accent: var(--r8-color-warning-strong);
   }
 .r8-alert--info {
-    background: var(--r8-color-info);
-    color: var(--r8-color-info-contrast);
+    --r8-alert-background: var(--r8-color-info);
+    --r8-alert-foreground: var(--r8-color-info-contrast);
+    --r8-alert-accent: var(--r8-color-info-strong);
   }
 .r8-alert--danger {
-    background: var(--r8-color-danger);
-    color: var(--r8-color-danger-contrast);
+    --r8-alert-background: var(--r8-color-danger);
+    --r8-alert-foreground: var(--r8-color-danger-contrast);
+    --r8-alert-accent: var(--r8-color-danger-strong);
+  }
+.r8-alert--dark {
+    --r8-alert-background: var(--r8-color-dark);
+    --r8-alert-foreground: var(--r8-color-dark-contrast);
+    --r8-alert-accent: var(--r8-color-light);
+  }
+.r8-alert--light {
+    --r8-alert-background: var(--r8-color-light);
+    --r8-alert-foreground: var(--r8-color-light-contrast);
+    --r8-alert-accent: var(--r8-color-dark);
+  }
+.r8-alert__content,
+  .r8-alert__body {
+    display: grid;
+    gap: var(--r8-space-2);
+    min-width: 0;
+  }
+.r8-alert__body > :where(p, ul, ol, li) {
+    color: inherit;
+    margin: 0;
+  }
+.r8-alert :where(.r8-text, .r8-text--muted, .r8-text--primary, .r8-text--secondary, .r8-text--tertiary, .r8-text--success, .r8-text--info, .r8-text--danger) {
+    color: inherit;
+  }
+.r8-alert__heading {
+    font-family: var(--r8-font-display);
+    font-size: var(--r8-font-size-sm);
+    line-height: 1.3;
+    margin: 0;
+    text-transform: uppercase;
   }
 .r8-alert__title,
   .r8-notification__title,
@@ -2961,6 +3024,49 @@ dialog.r8-dialog::backdrop {
     font-size: var(--r8-font-size-xs);
     text-transform: uppercase;
   }
+.r8-alert__link {
+    color: inherit;
+    font-family: var(--r8-font-display);
+    font-size: var(--r8-font-size-xs);
+    text-decoration: underline;
+    text-decoration-thickness: 0.12rem;
+    text-underline-offset: 0.15rem;
+    text-transform: uppercase;
+  }
+.r8-alert__link:hover {
+    text-decoration-thickness: 0.18rem;
+  }
+.r8-alert__link:focus-visible,
+  .r8-alert__close:focus-visible {
+    outline: var(--r8-focus-width) solid var(--r8-color-focus);
+    outline-offset: var(--r8-focus-offset);
+  }
+.r8-alert__close {
+    align-self: start;
+    background: transparent;
+    border: var(--r8-border-thick) solid currentColor;
+    box-shadow: var(--r8-shadow-sm);
+    color: inherit;
+    cursor: pointer;
+    display: inline-grid;
+    font-family: var(--r8-font-display);
+    font-size: var(--r8-font-size-xs);
+    height: 1.875rem;
+    line-height: 1;
+    place-items: center;
+    text-transform: uppercase;
+    transition: transform calc(var(--r8-motion-step) * 1) steps(2, end);
+    width: 1.875rem;
+  }
+.r8-alert__close:hover {
+    transform: translate(var(--r8-motion-lift), var(--r8-motion-lift));
+  }
+.r8-alert hr {
+    border: 0;
+    border-top: var(--r8-border-thin) solid currentColor;
+    margin: 0;
+    opacity: 0.45;
+  }
 .r8-alert__actions,
   .r8-drawer__header,
   .r8-drawer__footer {
@@ -2968,49 +3074,11 @@ dialog.r8-dialog::backdrop {
     flex-wrap: wrap;
     gap: var(--r8-space-2);
   }
-.r8-alert__actions,
-  .r8-drawer__footer {
+.r8-alert__actions {
+    justify-content: flex-start;
+  }
+.r8-drawer__footer {
     justify-content: flex-end;
-  }
-.r8-alert.is-open {
-    opacity: 1;
-    transform: translateY(0);
-  }
-.r8-alert--top-left,
-  .r8-alert--bottom-left,
-  .r8-alert--top-right,
-  .r8-alert--bottom-right {
-    width: min(22rem, calc(100vw - 2rem));
-  }
-.r8-toast-stack {
-    display: grid;
-    gap: var(--r8-space-3);
-    max-width: min(22rem, calc(100vw - 2rem));
-    pointer-events: none;
-    position: fixed;
-    z-index: 58;
-  }
-.r8-toast-stack > .r8-alert {
-    pointer-events: auto;
-  }
-.r8-toast-stack--top-left,
-  .r8-toast-stack--bottom-left {
-    left: 1rem;
-  }
-.r8-toast-stack--top-right,
-  .r8-toast-stack--bottom-right {
-    right: 1rem;
-  }
-.r8-toast-stack--top-left,
-  .r8-toast-stack--top-right {
-    top: 1rem;
-  }
-.r8-toast-stack--bottom-left,
-  .r8-toast-stack--bottom-right {
-    bottom: 1rem;
-  }
-[data-r8-overlay-scope] .r8-toast-stack {
-    position: absolute;
   }
 .r8-drawer-backdrop {
     background: var(--r8-dialog-backdrop);
@@ -3438,15 +3506,12 @@ dialog.r8-dialog::backdrop {
     gap: var(--r8-space-2);
   }
 @media (max-width: 48rem) {
-    .r8-alert--top-left,
-    .r8-alert--bottom-left,
-    .r8-alert--top-right,
-    .r8-alert--bottom-right,
-    .r8-toast-stack {
-      left: 0.75rem;
-      right: 0.75rem;
-      width: auto;
-      max-width: none;
+    .r8-alert--dismissible {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .r8-alert__close {
+      justify-self: end;
     }
 
     .r8-drawer {
