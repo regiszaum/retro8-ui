@@ -1,6 +1,6 @@
 ---
 title: Retro8 UI
-description: Documentacao publica da retro8-ui em Nuxt, com catalog expandido, i18n e routes dedicadas.
+description: Documentacao da Retro8 UI com catalogo amplo de componentes, navegacao por categorias e suporte a tema claro e escuro.
 kicker: Overview
 ---
 
