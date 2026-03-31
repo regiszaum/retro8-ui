@@ -1,10 +1,10 @@
 ---
-title: retro8-ui
-description: Public Retro8 UI documentation powered by Nuxt, with an expanded catalog, i18n, dedicated routes and an optional JS runtime.
+title: Retro8 UI
+description: Public Retro8 UI documentation powered by Nuxt, with an expanded catalog, i18n, dedicated routes and a JS runtime.
 kicker: Overview
 ---
 
-`retro8-ui` is a retro 8-bit UI library authored with Tailwind CSS and shipped as compiled CSS, an optional JS runtime and semantic classes.
+`retro8-ui` is a retro 8-bit UI library authored with Tailwind CSS and shipped as compiled CSS, a JS runtime and semantic classes.
 
 You do not need Tailwind in the consuming app. Import the compiled assets and use the semantic API.
 

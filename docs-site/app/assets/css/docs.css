@@ -1150,22 +1150,32 @@ pre {
   overflow: hidden;
 }
 
+.docs-code--compact > .r8-window__body {
+  display: flex;
+  flex-direction: column;
+}
+
 .docs-code--compact .docs-code__description {
   margin: 0 0 0.85rem;
   color: var(--docs-panel-muted);
   line-height: 1.65;
 }
 
+.docs-code--compact .docs-code__toolbar {
+  margin-top: auto;
+}
+
 .docs-code__toolbar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 0.75rem;
   margin-bottom: 0.75rem;
 }
 
 .docs-code__hint {
+  margin-right: auto;
   color: var(--docs-panel-muted);
   font-size: 0.8125rem;
 }

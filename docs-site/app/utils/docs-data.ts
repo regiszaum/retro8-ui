@@ -125,17 +125,17 @@ const localized = {
       heroPrimary: "Explorar catálogo",
       heroSecondary: "Abrir início rápido",
       heroStatus:
-        "Cobertura ampla de componentes, mantendo CSS semântico e JS opcional.",
+        "Cobertura ampla de componentes, mantendo CSS semântico e JS.",
       statsTitle: "Cobertura da biblioteca",
       overviewTitle: "Decisões de arquitetura",
       overviewItems: [
         `O catálogo principal cobre ${coreComponentCount} componentes principais, além de extras nativos da Retro8 UI.`,
         "A documentação continua separada da biblioteca: Nuxt para a experiência pública, CSS compilado para o produto final.",
-        "Componentes com comportamento mais complexo podem usar o JS opcional da Retro8 UI ou a própria aplicação.",
+        "Componentes com comportamento mais complexo podem usar o JS da Retro8 UI ou a própria aplicação.",
       ],
       quickStartTitle: "Instale, importe CSS + JS e use HTML semântico",
       quickStartCopy:
-        "O uso continua simples: importe o CSS final, adicione o JS opcional quando houver interação e monte uma marcação curta com classes r8-* previsíveis.",
+        "O uso continua simples: importe o CSS final, adicione o JS e monte uma marcação curta com classes r8-* previsíveis.",
       quickStartKicker: "Início rápido",
       quickStartCards: [
         {
@@ -149,8 +149,8 @@ const localized = {
           code: `import "retro8-ui/retro8.css";`,
         },
         {
-          title: "Importe o JS opcional",
-          description: "Adicione o JS opcional quando componentes interativos precisarem de comportamento pronto.",
+          title: "Importe o JS",
+          description: "Adicione o JS quando componentes interativos precisarem de comportamento pronto.",
           code: `import "retro8-ui/retro8.js";`,
         },
         {
@@ -166,7 +166,7 @@ const localized = {
         "HTML puro: inclua retro8.css e retro8.js, depois use classes r8-* direto na marcação.",
         "React / Next / Vite: importe retro8-ui/retro8.css e retro8-ui/retro8.js uma vez na aplicação.",
         "Vue / Nuxt: mesmo fluxo, sem encapsulamentos ou adaptadores obrigatórios.",
-        "Laravel / Blade: publique ou copie o CSS compilado e o JS opcional para os arquivos estáticos da aplicação.",
+        "Laravel / Blade: publique ou copie o CSS compilado e o JS para os arquivos estáticos da aplicação.",
       ],
       conventionsTitle: "Convenções da API",
       conventionsItems: [
@@ -243,7 +243,7 @@ const localized = {
       footerPrimary:
         "A documentação pública agora escala como um site de componentes de verdade, com navegação por grupo, idioma e tema.",
       footerSecondary:
-        "A biblioteca continua focada em CSS compilado, JS opcional e classes semânticas. Os extras de documentação, i18n e ícones recomendados continuam desacoplados.",
+        "A biblioteca continua focada em CSS compilado, JS e classes semânticas. Os extras de documentação, i18n e ícones recomendados continuam desacoplados.",
       stats: {
         coreLabel: "componentes principais",
         coreCopy: "como base ampla para a primeira versão pública",
@@ -255,7 +255,7 @@ const localized = {
     },
     componentPage: {
       previewLabel: "Prévia",
-      previewStatus: "Prévia ao vivo usando o CSS compilado e o JS opcional da Retro8 UI",
+      previewStatus: "Prévia ao vivo usando o CSS compilado e o JS da Retro8 UI",
       apiTitle: "API semântica",
       attributesTitle: "Atributos",
       dataAttributesTitle: "Atributos de dados",
@@ -273,8 +273,8 @@ const localized = {
         payload: "Carga",
       },
       htmlTitleSuffix: "HTML",
-      copyHint: "Copie o trecho e adapte ao seu projeto.",
-      copyButton: "Copiar HTML",
+      copyHint: "",
+      copyButton: "Copiar",
       copySuccess: "Copiado",
       copyUnavailable: "Área de transferência indisponível",
       dialogTitle: "Diálogo nativo",
@@ -334,11 +334,11 @@ const localized = {
       overviewItems: [
         `The main catalog covers ${coreComponentCount} core components, plus native Retro8 UI extras.`,
         "The docs stay separate from the library: Nuxt powers the public experience, compiled CSS remains the product.",
-        "Behavior-heavy components can use the optional Retro8 UI runtime or stay wired by the host app.",
+        "Behavior-heavy components can use the Retro8 UI runtime or stay wired by the host app.",
       ],
       quickStartTitle: "Install, import CSS + JS and use semantic HTML",
       quickStartCopy:
-        "Consumption still stays simple: import the final CSS, add the optional JS runtime when interaction is needed and compose short markup with predictable r8-* classes.",
+        "Consumption still stays simple: import the final CSS, add the JS runtime when interaction is needed and compose short markup with predictable r8-* classes.",
       quickStartKicker: "Quick start",
       quickStartCards: [
         {
@@ -353,7 +353,7 @@ const localized = {
         },
         {
           title: "Import the JS runtime",
-          description: "Add the optional runtime when interactive components need ready-to-use behavior.",
+          description: "Add the runtime when interactive components need ready-to-use behavior.",
           code: `import "retro8-ui/retro8.js";`,
         },
         {
@@ -446,7 +446,7 @@ const localized = {
       footerPrimary:
         "The public documentation now scales like a real component site, with grouped navigation, localization and theming.",
       footerSecondary:
-        "The library still focuses on compiled CSS, an optional JS runtime and semantic classes. Docs features, i18n and recommended icons remain decoupled.",
+        "The library still focuses on compiled CSS, a JS runtime and semantic classes. Docs features, i18n and recommended icons remain decoupled.",
       stats: {
         coreLabel: "core components",
         coreCopy: "as a broad foundation for the first public release",
@@ -476,8 +476,8 @@ const localized = {
         payload: "Payload",
       },
       htmlTitleSuffix: "HTML",
-      copyHint: "Copy the snippet and adapt it to your project.",
-      copyButton: "Copy HTML",
+      copyHint: "",
+      copyButton: "Copy",
       copySuccess: "Copied",
       copyUnavailable: "No clipboard",
       dialogTitle: "Native dialog",
