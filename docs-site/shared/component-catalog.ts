@@ -287,31 +287,6 @@ const basicComponents = [
 </div>`,
   },
   {
-    id: "layout",
-    name: "Layout",
-    group: "basic",
-    summary: l(
-      "Grid semantico de 12 colunas para compor paginas, paines e dashboards em retro pixel art.",
-      "Semantic 12-column grid for composing pages, panels and dashboards in retro pixel art.",
-    ),
-    classes: [
-      "r8-layout",
-      "r8-layout__cell",
-      "r8-layout__cell--span-3",
-      "r8-layout__cell--span-4",
-      "r8-layout__cell--span-6",
-      "r8-layout__cell--span-8",
-      "r8-layout__cell--span-12",
-    ],
-    preview: `<div class="r8-layout">
-  <div class="r8-layout__cell r8-layout__cell--span-4">4 cols</div>
-  <div class="r8-layout__cell r8-layout__cell--span-8">8 cols</div>
-  <div class="r8-layout__cell r8-layout__cell--span-3">3 cols</div>
-  <div class="r8-layout__cell r8-layout__cell--span-3">3 cols</div>
-  <div class="r8-layout__cell r8-layout__cell--span-6">6 cols</div>
-</div>`,
-  },
-  {
     id: "link",
     name: "Link",
     group: "basic",
@@ -324,78 +299,6 @@ const basicComponents = [
   <a class="r8-link" href="#0">Read docs</a>
   <a class="r8-link" href="#0">Install package</a>
   <a class="r8-link" href="#0" aria-disabled="true">Disabled state</a>
-</div>`,
-  },
-  {
-    id: "text",
-    name: "Text",
-    group: "basic",
-    summary: l(
-      "Texto de apoio com variantes semanticas para enfase, sucesso, perigo e estados suaves.",
-      "Supporting text with semantic variants for emphasis, success, danger and muted states.",
-    ),
-    classes: [
-      "r8-text",
-      "r8-text--muted",
-      "r8-text--primary",
-      "r8-text--secondary",
-      "r8-text--tertiary",
-      "r8-text--success",
-      "r8-text--info",
-      "r8-text--danger",
-    ],
-    preview: `<div class="docs-demo__stack">
-  <p class="r8-text">Default body text for mission logs and dense UI labels.</p>
-  <p class="r8-text r8-text--muted">Muted helper copy for secondary details.</p>
-  <p class="r8-text r8-text--primary">Primary text to highlight key information.</p>
-  <p class="r8-text r8-text--secondary">Secondary text for supportive hierarchy.</p>
-  <p class="r8-text r8-text--tertiary">Tertiary text for premium or elevated states.</p>
-  <p class="r8-text r8-text--success">Success text for positive states.</p>
-  <p class="r8-text r8-text--info">Info text for contextual guidance.</p>
-  <p class="r8-text r8-text--danger">Danger text for critical states.</p>
-</div>`,
-  },
-  {
-    id: "scrollbar",
-    name: "Scrollbar",
-    group: "basic",
-    summary: l(
-      "Container rolavel com trilha estilizada em 8-bit para listas, logs e areas de overflow.",
-      "Scrollable container with an 8-bit styled track for lists, logs and overflow areas.",
-    ),
-    classes: ["r8-scrollbar"],
-    preview: `<div class="r8-scrollbar">
-  <div class="r8-stack">
-    <p>Mission log 01</p>
-    <p>Mission log 02</p>
-    <p>Mission log 03</p>
-    <p>Mission log 04</p>
-    <p>Mission log 05</p>
-    <p>Mission log 06</p>
-    <p>Mission log 07</p>
-    <p>Mission log 08</p>
-  </div>
-</div>`,
-  },
-  {
-    id: "space",
-    name: "Space",
-    group: "basic",
-    summary: l(
-      "Agrupador leve para espaciar itens inline ou em coluna sem escrever utilitarios no HTML consumidor.",
-      "Lightweight wrapper for spacing inline or vertical items without exposing utility-heavy markup.",
-    ),
-    classes: ["r8-space", "r8-space--vertical", "r8-space--lg"],
-    preview: `<div class="docs-demo__stack">
-  <div class="r8-space">
-    <span class="r8-badge">Alpha</span>
-    <span class="r8-badge r8-badge--primary">Beta</span>
-    <span class="r8-badge r8-badge--success">Gamma</span>
-  </div>
-  <div class="r8-space r8-space--vertical r8-space--lg">
-    <span class="r8-badge">Vertical</span>
-    <span class="r8-badge r8-badge--warning">Large gap</span>
-  </div>
 </div>`,
   },
   {
@@ -425,11 +328,84 @@ const basicComponents = [
     name: "Typography",
     group: "basic",
     summary: l(
-      "Escala tipografica base para docs, paines e texto corrido mantendo o contraste retro da marca.",
-      "Base typographic scale for docs, panels and body copy while preserving the retro brand feel.",
+      "Sistema tipografico completo para blocos de conteudo, texto corrido e variantes semanticas de apoio.",
+      "Complete typographic system for content blocks, body copy and supporting semantic text variants.",
     ),
-    classes: ["r8-typography"],
-    preview: `<div class="r8-typography">
+    classes: [
+      "r8-typography",
+      "r8-text",
+      "r8-text--muted",
+      "r8-text--primary",
+      "r8-text--secondary",
+      "r8-text--tertiary",
+      "r8-text--success",
+      "r8-text--info",
+      "r8-text--danger",
+    ],
+    api: [
+      {
+        name: "r8-typography",
+        description: l(
+          "Container para headings, paragrafos, listas, code e blockquotes com hierarquia retro consistente.",
+          "Container for headings, paragraphs, lists, code and blockquotes with consistent retro hierarchy.",
+        ),
+      },
+      {
+        name: "r8-text",
+        description: l(
+          "Classe base para texto corrido curto, labels e copys de apoio fora de um bloco tipografico rico.",
+          "Base class for short body copy, labels and supporting text outside a rich typography block.",
+        ),
+      },
+      {
+        name: "r8-text--muted",
+        description: l("Suaviza o contraste para texto secundario ou detalhes auxiliares.", "Softens contrast for secondary text or helper details."),
+      },
+      {
+        name: "r8-text--primary",
+        description: l("Aplica enfase com a cor primaria do sistema.", "Applies emphasis with the system primary color."),
+      },
+      {
+        name: "r8-text--secondary",
+        description: l("Usa o tom secundario para apoio visual e hierarquia complementar.", "Uses the secondary tone for supporting hierarchy."),
+      },
+      {
+        name: "r8-text--tertiary",
+        description: l("Destaca texto com a cor terciaria em contextos mais chamativos.", "Highlights text with the tertiary color in more expressive contexts."),
+      },
+      {
+        name: "r8-text--success",
+        description: l("Comunica estados positivos ou confirmacoes.", "Communicates positive states or confirmations."),
+      },
+      {
+        name: "r8-text--info",
+        description: l("Comunica contexto, ajuda ou informacoes neutras.", "Communicates context, help or neutral information."),
+      },
+      {
+        name: "r8-text--danger",
+        description: l("Comunica erros, risco ou estados criticos.", "Communicates errors, risk or critical states."),
+      },
+    ],
+    preview: `<div class="docs-demo__stack">
+  <div class="r8-typography">
+    <h1>Retro heading</h1>
+    <p>Build framework-agnostic UI with compiled CSS and semantic classes.</p>
+    <ul>
+      <li>Consistent tokens</li>
+      <li>Strong hierarchy</li>
+      <li>Readable body copy</li>
+    </ul>
+  </div>
+
+  <div class="docs-demo__stack">
+    <p class="r8-text">Default body text for mission logs and dense UI labels.</p>
+    <p class="r8-text r8-text--muted">Muted helper copy for secondary details.</p>
+    <p class="r8-text r8-text--primary">Primary text to highlight key information.</p>
+    <p class="r8-text r8-text--success">Success text for positive states.</p>
+    <p class="r8-text r8-text--danger">Danger text for critical states.</p>
+  </div>
+</div>`,
+    code: `<div class="r8-typography">
   <h1>Retro heading</h1>
   <p>Build framework-agnostic UI with compiled CSS and semantic classes.</p>
   <ul>
@@ -437,7 +413,11 @@ const basicComponents = [
     <li>Strong hierarchy</li>
     <li>Readable body copy</li>
   </ul>
-</div>`,
+</div>
+
+<p class="r8-text">Default body text for mission logs and dense UI labels.</p>
+<p class="r8-text r8-text--muted">Muted helper copy for secondary details.</p>
+<p class="r8-text r8-text--primary">Primary text to highlight key information.</p>`,
   },
 ] satisfies CatalogEntry[];
 
@@ -711,7 +691,7 @@ const formComponents = [
       "Binary control for multiple selections with a retro box and immediate visual feedback.",
     ),
     classes: ["r8-checkbox", "r8-checkbox__box"],
-    preview: `<div class="r8-space r8-space--vertical">
+    preview: `<div class="r8-stack">
   <label class="r8-checkbox is-checked">
     <span class="r8-checkbox__box" aria-hidden="true"></span>
     <span>Enable scanlines</span>
@@ -720,26 +700,6 @@ const formComponents = [
     <span class="r8-checkbox__box" aria-hidden="true"></span>
     <span>Mute sound effects</span>
   </label>
-</div>`,
-  },
-  {
-    id: "color-picker-panel",
-    name: "Color Picker Panel",
-    group: "form",
-    summary: l(
-      "Painel puro de selecao de cor para embutir em dropdowns, drawers ou settings pages.",
-      "Standalone color selection panel ready to embed in dropdowns, drawers or settings pages.",
-    ),
-    classes: ["r8-color-picker-panel", "r8-color-picker__swatches", "r8-color-picker__swatch"],
-    preview: `<div class="r8-color-picker-panel">
-  <div class="r8-color-picker__swatches">
-    <div class="r8-color-picker__swatch is-selected" data-r8-value="#2563eb" style="background:#2563eb;"></div>
-    <div class="r8-color-picker__swatch" data-r8-value="#64748b" style="background:#64748b;"></div>
-    <div class="r8-color-picker__swatch" data-r8-value="#7c3aed" style="background:#7c3aed;"></div>
-    <div class="r8-color-picker__swatch" data-r8-value="#16a34a" style="background:#16a34a;"></div>
-    <div class="r8-color-picker__swatch" data-r8-value="#0891b2" style="background:#0891b2;"></div>
-    <div class="r8-color-picker__swatch" data-r8-value="#dc2626" style="background:#dc2626;"></div>
-  </div>
 </div>`,
   },
   {
@@ -767,35 +727,6 @@ const formComponents = [
     </div>
   </div>
 </div>`,
-  },
-  {
-    id: "date-picker-panel",
-    name: "Date Picker Panel",
-    group: "form",
-    summary: l(
-      "Grade de calendario reutilizavel para composicoes inline ou paines persistentes.",
-      "Reusable calendar grid for inline compositions or persistent panels.",
-    ),
-    classes: [
-      "r8-date-picker-panel",
-      "r8-date-picker__calendar",
-      "r8-date-picker__header",
-      "r8-date-picker__nav",
-      "r8-date-picker__title",
-      "r8-date-picker__weekdays",
-      "r8-date-picker__weekday",
-      "r8-date-picker__grid",
-      "r8-date-picker__day",
-      "r8-date-picker__footer",
-      "r8-date-picker__action",
-    ],
-    preview: `<div
-  class="r8-date-picker-panel"
-  data-r8-value="2026-03-28"
-  data-r8-month="2026-03"
-  data-r8-min="2026-03-05"
-  data-r8-max="2026-04-18"
-></div>`,
   },
   {
     id: "date-picker",
@@ -948,27 +879,6 @@ const formComponents = [
 </div>`,
   },
   {
-    id: "mention",
-    name: "Mention",
-    group: "form",
-    summary: l(
-      "Campo para referenciar usuarios ou entidades com token visual e lista de sugestoes.",
-      "Field for referencing users or entities with a visual token and suggestion list.",
-    ),
-    classes: ["r8-mention", "r8-mention__trigger", "r8-mention__token", "r8-mention__menu", "r8-mention__option"],
-    preview: `<div class="r8-mention">
-  <div class="r8-mention__trigger">
-    <span class="r8-mention__token">@captain</span>
-    <span> please review this mission log</span>
-  </div>
-  <div class="r8-mention__menu">
-    <div class="r8-mention__option">@captain</div>
-    <div class="r8-mention__option">@engineer</div>
-    <div class="r8-mention__option">@medic</div>
-  </div>
-</div>`,
-  },
-  {
     id: "radio",
     name: "Radio",
     group: "form",
@@ -977,7 +887,7 @@ const formComponents = [
       "Single-choice control with a pixelated circle and a clear active state.",
     ),
     classes: ["r8-radio", "r8-radio__box"],
-    preview: `<div class="r8-space r8-space--vertical">
+    preview: `<div class="r8-stack">
   <label class="r8-radio is-checked">
     <span class="r8-radio__box" aria-hidden="true"></span>
     <span>Online mode</span>
@@ -1039,27 +949,6 @@ const formComponents = [
 </div>`,
   },
   {
-    id: "virtualized-select",
-    name: "Virtualized Select",
-    group: "form",
-    summary: l(
-      "Variacao visual do select para catalogos longos e listas grandes virtualizadas pelo app.",
-      "Visual select variant for long catalogs and large lists virtualized by the host app.",
-    ),
-    classes: ["r8-virtual-select", "r8-virtual-select__trigger", "r8-virtual-select__menu", "r8-virtual-select__option"],
-    preview: `<div class="r8-virtual-select">
-  <div class="r8-virtual-select__trigger">
-    <span data-r8-choice-display>Sector 128 / item 440</span>
-    <span class="r8-badge">virtual</span>
-  </div>
-  <div class="r8-virtual-select__menu">
-    <div class="r8-virtual-select__option">Item 438</div>
-    <div class="r8-virtual-select__option">Item 439</div>
-    <div class="r8-virtual-select__option is-selected">Item 440</div>
-  </div>
-</div>`,
-  },
-  {
     id: "slider",
     name: "Slider",
     group: "form",
@@ -1085,7 +974,7 @@ const formComponents = [
       "Compact on/off toggle with a colored track and a highlighted thumb.",
     ),
     classes: ["r8-switch", "r8-switch__track", "r8-switch__thumb"],
-    preview: `<div class="r8-space r8-space--vertical">
+    preview: `<div class="r8-stack">
   <label class="r8-switch is-checked">
     <span class="r8-switch__track"><span class="r8-switch__thumb"></span></span>
     <span>Power enabled</span>
@@ -1116,50 +1005,6 @@ const formComponents = [
 </button>`,
   },
   {
-    id: "time-picker",
-    name: "Time Picker",
-    group: "form",
-    summary: l(
-      "Selecao de hora com slots destacados para horas e minutos em formato retro.",
-      "Time selection with highlighted slots for hours and minutes in a retro format.",
-    ),
-    classes: ["r8-time-picker", "r8-time-picker__trigger", "r8-time-picker__panel", "r8-time-picker__slots", "r8-time-picker__slot"],
-    preview: `<div class="r8-time-picker">
-  <div class="r8-time-picker__trigger">
-    <span data-r8-choice-display>08:30</span>
-    <span class="r8-badge">UTC</span>
-  </div>
-  <div class="r8-time-picker__panel">
-    <div class="r8-time-picker__slots">
-      <div class="r8-time-picker__slot">08:00</div>
-      <div class="r8-time-picker__slot is-selected">08:30</div>
-      <div class="r8-time-picker__slot">09:00</div>
-    </div>
-  </div>
-</div>`,
-  },
-  {
-    id: "time-select",
-    name: "Time Select",
-    group: "form",
-    summary: l(
-      "Lista de horarios predefinidos para agendas, turnos e janelas operacionais.",
-      "Preset time list for schedules, shifts and operational windows.",
-    ),
-    classes: ["r8-time-select", "r8-time-select__trigger", "r8-time-select__menu", "r8-time-select__option"],
-    preview: `<div class="r8-time-select">
-  <div class="r8-time-select__trigger">
-    <span data-r8-choice-display>08:30</span>
-    <span class="r8-choice__caret" aria-hidden="true">&gt;</span>
-  </div>
-  <div class="r8-time-select__menu">
-    <div class="r8-time-select__option">08:00</div>
-    <div class="r8-time-select__option is-selected">08:30</div>
-    <div class="r8-time-select__option">09:00</div>
-  </div>
-</div>`,
-  },
-  {
     id: "transfer",
     name: "Transfer",
     group: "form",
@@ -1181,29 +1026,6 @@ const formComponents = [
   <div class="r8-transfer__panel">
     <div class="r8-transfer__header">Selected</div>
     <div class="r8-transfer__item">Shield</div>
-  </div>
-</div>`,
-  },
-  {
-    id: "tree-select",
-    name: "TreeSelect",
-    group: "form",
-    summary: l(
-      "Combina trigger de selecao com arvore visual para categorias hierarquicas profundas.",
-      "Combines a selection trigger with a visual tree for deeper hierarchical categories.",
-    ),
-    classes: ["r8-tree-select", "r8-tree-select__trigger", "r8-tree-select__panel", "r8-tree-select__tree", "r8-tree-select__node"],
-    preview: `<div class="r8-tree-select">
-  <div class="r8-tree-select__trigger">
-    <span data-r8-choice-display>UI / Navigation / Menu</span>
-    <span class="r8-badge">tree</span>
-  </div>
-  <div class="r8-tree-select__panel">
-    <div class="r8-tree-select__tree">
-      <div class="r8-tree-select__node">UI</div>
-      <div class="r8-tree-select__node">Navigation</div>
-      <div class="r8-tree-select__node is-selected">Menu</div>
-    </div>
   </div>
 </div>`,
   },
@@ -1272,31 +1094,6 @@ const dataComponents = [
   <span class="r8-badge r8-badge--info">docs</span>
   <span class="r8-badge r8-badge--dark">night</span>
   <span class="r8-badge r8-badge--light">light</span>
-</div>`,
-  },
-  {
-    id: "calendar",
-    name: "Calendar",
-    group: "data",
-    summary: l(
-      "Calendario mensal para roadmap, eventos e planejamento visual.",
-      "Monthly calendar for roadmaps, events and visual planning.",
-    ),
-    classes: ["r8-calendar", "r8-calendar__header", "r8-calendar__title", "r8-calendar__grid", "r8-calendar__day"],
-    preview: `<div class="r8-calendar">
-  <div class="r8-calendar__header">
-    <span class="r8-calendar__title">March 2026</span>
-    <span class="r8-badge">UTC</span>
-  </div>
-  <div class="r8-calendar__grid">
-    <div class="r8-calendar__day">24</div>
-    <div class="r8-calendar__day">25</div>
-    <div class="r8-calendar__day">26</div>
-    <div class="r8-calendar__day">27</div>
-    <div class="r8-calendar__day is-today">28</div>
-    <div class="r8-calendar__day">29</div>
-    <div class="r8-calendar__day">30</div>
-  </div>
 </div>`,
   },
   {
@@ -1371,22 +1168,6 @@ const dataComponents = [
 </div>`,
   },
   {
-    id: "descriptions",
-    name: "Descriptions",
-    group: "data",
-    summary: l(
-      "Lista label/valor para detalhes de entidade, metadata tecnica e specs de itens.",
-      "Label/value list for entity details, technical metadata and item specs.",
-    ),
-    classes: ["r8-descriptions", "r8-descriptions__label", "r8-descriptions__value"],
-    preview: `<div class="r8-descriptions">
-  <div class="r8-descriptions__label">Engine</div>
-  <div class="r8-descriptions__value">MK-II</div>
-  <div class="r8-descriptions__label">Shield</div>
-  <div class="r8-descriptions__value">84%</div>
-</div>`,
-  },
-  {
     id: "empty",
     name: "Empty",
     group: "data",
@@ -1414,23 +1195,6 @@ const dataComponents = [
   <div class="r8-image__frame">PIXEL PREVIEW</div>
   <figcaption class="r8-image__caption">Sprite sheet preview</figcaption>
 </figure>`,
-  },
-  {
-    id: "infinite-scroll",
-    name: "Infinite Scroll",
-    group: "data",
-    summary: l(
-      "Lista com viewport limitada e sentinela visual para feeds longos ou logs infinitos.",
-      "List with a bounded viewport and visual sentinel for long feeds or infinite logs.",
-    ),
-    classes: ["r8-infinite-scroll", "r8-infinite-scroll__item", "r8-infinite-scroll__sentinel"],
-    preview: `<div class="r8-infinite-scroll">
-  <div class="r8-infinite-scroll__item">Feed entry 01</div>
-  <div class="r8-infinite-scroll__item">Feed entry 02</div>
-  <div class="r8-infinite-scroll__item">Feed entry 03</div>
-  <div class="r8-infinite-scroll__item">Feed entry 04</div>
-  <div class="r8-infinite-scroll__sentinel">Load next chunk</div>
-</div>`,
   },
   {
     id: "pagination",
@@ -1526,37 +1290,6 @@ const dataComponents = [
 </table>`,
   },
   {
-    id: "virtualized-table",
-    name: "Virtualized Table",
-    group: "data",
-    summary: l(
-      "Shell visual de tabela para datasets extensos virtualizados pelo framework hospedeiro.",
-      "Visual table shell for extensive datasets virtualized by the host framework.",
-    ),
-    classes: ["r8-virtual-table"],
-    preview: `<table class="r8-virtual-table">
-  <thead>
-    <tr>
-      <th>Row</th>
-      <th>Chunk</th>
-      <th>Latency</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>438</td>
-      <td>active</td>
-      <td>12ms</td>
-    </tr>
-    <tr>
-      <td>439</td>
-      <td>active</td>
-      <td>10ms</td>
-    </tr>
-  </tbody>
-</table>`,
-  },
-  {
     id: "tag",
     name: "Tag",
     group: "data",
@@ -1588,24 +1321,6 @@ const dataComponents = [
   <div class="r8-timeline__item">
     <span class="r8-timeline__dot"></span>
     <div class="r8-timeline__content">08:45 - Docs deployed</div>
-  </div>
-</div>`,
-  },
-  {
-    id: "tour",
-    name: "Tour",
-    group: "data",
-    summary: l(
-      "Baloon de onboarding para guiar usuarios por etapas e hotspots importantes.",
-      "Onboarding balloon used to guide users through steps and important hotspots.",
-    ),
-    classes: ["r8-tour"],
-    preview: `<div class="r8-tour">
-  <strong>Quick tour</strong>
-  <p class="r8-text">This panel highlights the next action in the interface.</p>
-  <div class="r8-row">
-    <button class="r8-btn r8-btn--sm" type="button">Skip</button>
-    <button class="r8-btn r8-btn--sm r8-btn--primary" type="button">Next</button>
   </div>
 </div>`,
   },
@@ -1773,123 +1488,113 @@ const feedbackComponents = [
     name: "Alert",
     group: "feedback",
     summary: l(
-      "Alert semantico que tambem pode funcionar como toast posicionado para feedback importante.",
-      "Semantic alert that can also behave as a positioned toast for important feedback.",
+      "Feedback contextual inline para status, warnings e dismissible callouts com a mesma intencao de um alert classico.",
+      "Inline contextual feedback surface for status messages, warnings and dismissible callouts with the same intent as a classic alert.",
     ),
     classes: [
       "r8-alert",
+      "r8-alert--primary",
+      "r8-alert--secondary",
+      "r8-alert--tertiary",
       "r8-alert--success",
+      "r8-alert--warning",
       "r8-alert--info",
       "r8-alert--danger",
-      "r8-alert--top-left",
-      "r8-alert--bottom-left",
-      "r8-alert--top-right",
-      "r8-alert--bottom-right",
+      "r8-alert--dark",
+      "r8-alert--light",
+      "r8-alert--dismissible",
+      "r8-alert__content",
       "r8-alert__title",
+      "r8-alert__heading",
+      "r8-alert__body",
+      "r8-alert__link",
+      "r8-alert__close",
       "r8-alert__actions",
     ],
     preview: `<div class="docs-demo__stack">
-  <div class="docs-demo__actions">
-    <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#docs-alert-top-left">
-      Top left
-    </button>
-    <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#docs-alert-bottom-left">
-      Bottom left
-    </button>
-    <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#docs-alert-top-right">
-      Top right
-    </button>
-    <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#docs-alert-bottom-right">
-      Bottom right
-    </button>
-  </div>
-  <div class="docs-demo__stage" data-r8-overlay-scope>
-    <p class="docs-demo__stage-copy">
-      Click a button to spawn the alert inside this contained preview. The same position classes pin it to the viewport in real app layouts.
-    </p>
+  <section class="r8-alert r8-alert--primary" role="alert">
+    <div class="r8-alert__content">
+      <strong class="r8-alert__title">Primary alert</strong>
+      <p class="r8-text">System boots with the default mission profile and synced controls.</p>
+    </div>
+  </section>
 
-    <section id="docs-alert-top-left" class="r8-alert r8-alert--info r8-alert--top-left" role="alert" aria-live="assertive" data-r8-duration="4500" hidden>
-      <strong class="r8-alert__title">Radar drift</strong>
-      <p class="r8-text">Signal integrity dropped below 82% on the left cluster.</p>
-      <div class="r8-alert__actions">
-        <button class="r8-btn r8-btn--sm r8-btn--dark" type="button" data-r8-close="#docs-alert-top-left">Dismiss</button>
-      </div>
-    </section>
+  <section class="r8-alert r8-alert--success" role="status" aria-live="polite">
+    <div class="r8-alert__content">
+      <strong class="r8-alert__title">Success alert</strong>
+      <p class="r8-text">
+        Deployment finished cleanly.
+        <a class="r8-alert__link" href="#">Read release notes</a>
+      </p>
+    </div>
+  </section>
 
-    <section id="docs-alert-bottom-left" class="r8-alert r8-alert--success r8-alert--bottom-left" role="status" aria-live="polite" data-r8-duration="4500" hidden>
-      <strong class="r8-alert__title">Build shipped</strong>
-      <p class="r8-text">The deploy completed and all four shards are synchronized.</p>
-      <div class="r8-alert__actions">
-        <button class="r8-btn r8-btn--sm r8-btn--dark" type="button" data-r8-close="#docs-alert-bottom-left">Close</button>
-      </div>
-    </section>
+  <section class="r8-alert r8-alert--warning r8-alert--dismissible" id="docs-alert-live" role="alert" hidden>
+    <div class="r8-alert__content">
+      <strong class="r8-alert__title">Live alert</strong>
+      <p class="r8-text">Nice, you triggered this alert message from the preview action.</p>
+    </div>
+    <button class="r8-alert__close" type="button" data-r8-dismiss="true" aria-label="Dismiss alert">x</button>
+  </section>
 
-    <section id="docs-alert-top-right" class="r8-alert r8-alert--danger r8-alert--top-right" role="alert" aria-live="assertive" data-r8-duration="4500" hidden>
-      <strong class="r8-alert__title">Boss alert</strong>
-      <p class="r8-text">The reactor core is overheating and needs immediate cooldown.</p>
-      <div class="r8-alert__actions">
-        <button class="r8-btn r8-btn--sm r8-btn--light" type="button" data-r8-close="#docs-alert-top-right">Dismiss</button>
-      </div>
-    </section>
+  <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#docs-alert-live">
+    Show dismissible alert
+  </button>
 
-    <section id="docs-alert-bottom-right" class="r8-alert r8-alert--bottom-right" role="alert" aria-live="assertive" data-r8-duration="4500" hidden>
-      <strong class="r8-alert__title">Quest updated</strong>
-      <p class="r8-text">A new objective marker was added to the east corridor.</p>
-      <div class="r8-alert__actions">
-        <button class="r8-btn r8-btn--sm r8-btn--dark" type="button" data-r8-close="#docs-alert-bottom-right">Close</button>
+  <section class="r8-alert r8-alert--danger" role="alert">
+    <div class="r8-alert__content">
+      <h3 class="r8-alert__heading">System offline</h3>
+      <div class="r8-alert__body">
+        <p class="r8-text">Backup power is running on a reduced grid while the main core cools down.</p>
+        <hr />
+        <p class="r8-text">Use the maintenance tunnel and keep all squad traffic on channel 03.</p>
       </div>
-    </section>
-  </div>
+    </div>
+  </section>
+
+  <section class="r8-alert r8-alert--dark" role="alert">
+    <div class="r8-alert__content">
+      <strong class="r8-alert__title">Dark alert</strong>
+      <div class="r8-alert__actions">
+        <button class="r8-btn r8-btn--sm r8-btn--light" type="button">Review</button>
+        <button class="r8-btn r8-btn--sm" type="button">Later</button>
+      </div>
+    </div>
+  </section>
 </div>`,
-    code: `<div class="r8-space r8-space--vertical">
-  <div class="r8-row">
-    <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#alert-top-left">
-      Top left
-    </button>
-    <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#alert-bottom-left">
-      Bottom left
-    </button>
-    <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#alert-top-right">
-      Top right
-    </button>
-    <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#alert-bottom-right">
-      Bottom right
-    </button>
-  </div>
+    code: `<div class="r8-stack">
+  <section class="r8-alert r8-alert--success" role="status" aria-live="polite">
+    <div class="r8-alert__content">
+      <strong class="r8-alert__title">Success alert</strong>
+      <p class="r8-text">
+        Deployment finished cleanly.
+        <a class="r8-alert__link" href="#">Read release notes</a>
+      </p>
+    </div>
+  </section>
 
-  <div data-r8-overlay-scope style="min-height: 18rem;">
-    <section id="alert-top-left" class="r8-alert r8-alert--info r8-alert--top-left" role="alert" aria-live="assertive" data-r8-duration="4500" hidden>
-      <strong class="r8-alert__title">Radar drift</strong>
-      <p class="r8-text">Signal integrity dropped below 82%.</p>
-      <div class="r8-alert__actions">
-        <button class="r8-btn r8-btn--sm r8-btn--dark" type="button" data-r8-close="#alert-top-left">Dismiss</button>
+  <section class="r8-alert r8-alert--danger" role="alert">
+    <div class="r8-alert__content">
+      <h3 class="r8-alert__heading">System offline</h3>
+      <div class="r8-alert__body">
+        <p class="r8-text">Backup power is running on a reduced grid.</p>
+        <hr />
+        <p class="r8-text">Use the maintenance tunnel and keep traffic on channel 03.</p>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section id="alert-bottom-left" class="r8-alert r8-alert--success r8-alert--bottom-left" role="status" aria-live="polite" data-r8-duration="4500" hidden>
-      <strong class="r8-alert__title">Build shipped</strong>
-      <p class="r8-text">All shards are synchronized.</p>
-      <div class="r8-alert__actions">
-        <button class="r8-btn r8-btn--sm r8-btn--dark" type="button" data-r8-close="#alert-bottom-left">Close</button>
-      </div>
-    </section>
+  <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#inline-alert">
+    Show dismissible alert
+  </button>
 
-    <section id="alert-top-right" class="r8-alert r8-alert--danger r8-alert--top-right" role="alert" aria-live="assertive" data-r8-duration="4500" hidden>
-      <strong class="r8-alert__title">Boss alert</strong>
-      <p class="r8-text">The reactor core is overheating.</p>
-      <div class="r8-alert__actions">
-        <button class="r8-btn r8-btn--sm r8-btn--light" type="button" data-r8-close="#alert-top-right">Dismiss</button>
-      </div>
-    </section>
-
-    <section id="alert-bottom-right" class="r8-alert r8-alert--bottom-right" role="alert" aria-live="assertive" data-r8-duration="4500" hidden>
-      <strong class="r8-alert__title">Quest updated</strong>
-      <p class="r8-text">A new objective marker was added.</p>
-      <div class="r8-alert__actions">
-        <button class="r8-btn r8-btn--sm r8-btn--dark" type="button" data-r8-close="#alert-bottom-right">Close</button>
-      </div>
-    </section>
-  </div>
+  <section id="inline-alert" class="r8-alert r8-alert--warning r8-alert--dismissible" role="alert" hidden>
+    <div class="r8-alert__content">
+      <strong class="r8-alert__title">Live alert</strong>
+      <p class="r8-text">Nice, you triggered this alert message.</p>
+    </div>
+    <button class="r8-alert__close" type="button" data-r8-dismiss="true" aria-label="Dismiss alert">x</button>
+  </section>
 </div>`,
   },
   {
@@ -1971,7 +1676,7 @@ const feedbackComponents = [
     </aside>
   </div>
 </div>`,
-    code: `<div class="r8-space r8-space--vertical">
+    code: `<div class="r8-stack">
   <button
     class="r8-btn r8-btn--primary"
     type="button"

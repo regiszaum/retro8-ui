@@ -34,7 +34,7 @@ function isActive(to: string) {
 <template>
   <div class="docs-shell">
     <header class="docs-topbar">
-      <nav class="r8-navbar r8-navbar--dark" aria-label="retro8-ui documentation navigation">
+      <nav class="r8-navbar r8-navbar--dark" aria-label="Retro8 UI documentation navigation">
         <NuxtLink class="r8-navbar__brand" :to="buildDocsPath(locale)">
           <span class="docs-brand">
             <img

@@ -43,49 +43,6 @@
     padding: var(--r8-space-4);
   }
 
-  .r8-calendar {
-    border: var(--r8-border-thick) solid var(--r8-color-border);
-    background: var(--r8-color-surface);
-    box-shadow: var(--r8-shadow-md);
-    display: grid;
-    gap: var(--r8-space-3);
-    padding: var(--r8-space-3);
-  }
-
-  .r8-calendar__header {
-    align-items: center;
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .r8-calendar__title {
-    font-family: var(--r8-font-display);
-    font-size: var(--r8-font-size-xs);
-    text-transform: uppercase;
-  }
-
-  .r8-calendar__grid {
-    display: grid;
-    gap: var(--r8-space-2);
-    grid-template-columns: repeat(7, minmax(0, 1fr));
-  }
-
-  .r8-calendar__day {
-    align-items: center;
-    background: var(--r8-color-surface-3);
-    border: var(--r8-border-thin) solid var(--r8-color-border);
-    display: inline-grid;
-    font-family: var(--r8-font-body);
-    font-size: var(--r8-font-size-xs);
-    min-height: 2.4rem;
-    place-items: center;
-  }
-
-  .r8-calendar__day.is-today {
-    background: var(--r8-color-accent);
-    color: var(--r8-color-accent-contrast);
-  }
-
   .r8-carousel {
     display: grid;
     gap: var(--r8-space-3);
@@ -153,32 +110,6 @@
     padding: var(--r8-space-4);
   }
 
-  .r8-descriptions {
-    border: var(--r8-border-thick) solid var(--r8-color-border);
-    box-shadow: var(--r8-shadow-md);
-    display: grid;
-    gap: 0;
-    grid-template-columns: minmax(0, 9rem) minmax(0, 1fr);
-  }
-
-  .r8-descriptions__label,
-  .r8-descriptions__value {
-    border-bottom: var(--r8-border-thin) solid var(--r8-color-border);
-    padding: var(--r8-space-3);
-  }
-
-  .r8-descriptions__label {
-    background: var(--r8-color-surface-2);
-    font-family: var(--r8-font-display);
-    font-size: var(--r8-font-size-xs);
-    text-transform: uppercase;
-  }
-
-  .r8-descriptions__value {
-    background: var(--r8-color-surface);
-    font-family: var(--r8-font-body);
-  }
-
   .r8-empty {
     align-items: center;
     border: var(--r8-border-thick) dashed var(--r8-color-border);
@@ -232,31 +163,6 @@
     color: var(--r8-color-ink-muted);
     font-family: var(--r8-font-body);
     font-size: var(--r8-font-size-xs);
-  }
-
-  .r8-infinite-scroll {
-    border: var(--r8-border-thick) solid var(--r8-color-border);
-    box-shadow: var(--r8-shadow-md);
-    display: grid;
-    gap: var(--r8-space-2);
-    max-height: 14rem;
-    overflow: auto;
-    padding: var(--r8-space-3);
-  }
-
-  .r8-infinite-scroll__item {
-    background: var(--r8-color-surface);
-    border: var(--r8-border-thin) solid var(--r8-color-border);
-    padding: var(--r8-space-3);
-  }
-
-  .r8-infinite-scroll__sentinel {
-    color: var(--r8-color-ink-muted);
-    font-family: var(--r8-font-display);
-    font-size: var(--r8-font-size-xs);
-    justify-self: center;
-    padding: var(--r8-space-3);
-    text-transform: uppercase;
   }
 
   .r8-pagination {
@@ -323,31 +229,26 @@
     min-height: 1rem;
   }
 
-  .r8-table,
-  .r8-virtual-table {
+  .r8-table {
     border-collapse: collapse;
     width: 100%;
   }
 
   .r8-table th,
-  .r8-table td,
-  .r8-virtual-table th,
-  .r8-virtual-table td {
+  .r8-table td {
     border: var(--r8-border-thin) solid var(--r8-color-border);
     padding: var(--r8-space-3);
     text-align: left;
   }
 
-  .r8-table thead th,
-  .r8-virtual-table thead th {
+  .r8-table thead th {
     background: var(--r8-color-surface-2);
     font-family: var(--r8-font-display);
     font-size: var(--r8-font-size-xs);
     text-transform: uppercase;
   }
 
-  .r8-table tbody td,
-  .r8-virtual-table tbody td {
+  .r8-table tbody td {
     background: var(--r8-color-surface);
     font-family: var(--r8-font-body);
     font-size: var(--r8-font-size-sm);
@@ -407,25 +308,6 @@
     padding: var(--r8-space-3);
   }
 
-  .r8-tour {
-    border: var(--r8-border-thick) solid var(--r8-color-border);
-    box-shadow: var(--r8-shadow-lg);
-    display: grid;
-    gap: var(--r8-space-3);
-    max-width: 22rem;
-    padding: var(--r8-space-4);
-    position: relative;
-  }
-
-  .r8-tour::after {
-    border: 10px solid transparent;
-    border-bottom-color: var(--r8-color-border);
-    content: "";
-    left: var(--r8-space-4);
-    position: absolute;
-    top: -24px;
-  }
-
   .r8-tree,
   .r8-virtual-tree {
     display: grid;
@@ -444,7 +326,6 @@
     margin-left: var(--r8-space-5);
   }
 
-  .r8-calendar__day:focus-visible,
   .r8-carousel__dot:focus-visible,
   .r8-collapse__header:focus-visible,
   .r8-pagination__item:focus-visible,

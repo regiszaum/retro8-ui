@@ -6,7 +6,7 @@ kicker: Components
 
 Each component now has its own documentation page, with live previews using the optional runtime whenever behavior is needed.
 
-The main catalog now covers **81 core components**, plus a few native `retro8-ui` extras.
+The main catalog now covers **66 core components**, plus a few native `Retro8 UI` extras.
 
 That scales much better for the library because every route can grow with:
 
