@@ -43,49 +43,6 @@
     padding: var(--r8-space-4);
   }
 
-  .r8-calendar {
-    border: var(--r8-border-thick) solid var(--r8-color-border);
-    background: var(--r8-color-surface);
-    box-shadow: var(--r8-shadow-md);
-    display: grid;
-    gap: var(--r8-space-3);
-    padding: var(--r8-space-3);
-  }
-
-  .r8-calendar__header {
-    align-items: center;
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .r8-calendar__title {
-    font-family: var(--r8-font-display);
-    font-size: var(--r8-font-size-xs);
-    text-transform: uppercase;
-  }
-
-  .r8-calendar__grid {
-    display: grid;
-    gap: var(--r8-space-2);
-    grid-template-columns: repeat(7, minmax(0, 1fr));
-  }
-
-  .r8-calendar__day {
-    align-items: center;
-    background: var(--r8-color-surface-3);
-    border: var(--r8-border-thin) solid var(--r8-color-border);
-    display: inline-grid;
-    font-family: var(--r8-font-body);
-    font-size: var(--r8-font-size-xs);
-    min-height: 2.4rem;
-    place-items: center;
-  }
-
-  .r8-calendar__day.is-today {
-    background: var(--r8-color-accent);
-    color: var(--r8-color-accent-contrast);
-  }
-
   .r8-carousel {
     display: grid;
     gap: var(--r8-space-3);
@@ -206,31 +163,6 @@
     color: var(--r8-color-ink-muted);
     font-family: var(--r8-font-body);
     font-size: var(--r8-font-size-xs);
-  }
-
-  .r8-infinite-scroll {
-    border: var(--r8-border-thick) solid var(--r8-color-border);
-    box-shadow: var(--r8-shadow-md);
-    display: grid;
-    gap: var(--r8-space-2);
-    max-height: 14rem;
-    overflow: auto;
-    padding: var(--r8-space-3);
-  }
-
-  .r8-infinite-scroll__item {
-    background: var(--r8-color-surface);
-    border: var(--r8-border-thin) solid var(--r8-color-border);
-    padding: var(--r8-space-3);
-  }
-
-  .r8-infinite-scroll__sentinel {
-    color: var(--r8-color-ink-muted);
-    font-family: var(--r8-font-display);
-    font-size: var(--r8-font-size-xs);
-    justify-self: center;
-    padding: var(--r8-space-3);
-    text-transform: uppercase;
   }
 
   .r8-pagination {
@@ -394,7 +326,6 @@
     margin-left: var(--r8-space-5);
   }
 
-  .r8-calendar__day:focus-visible,
   .r8-carousel__dot:focus-visible,
   .r8-collapse__header:focus-visible,
   .r8-pagination__item:focus-visible,

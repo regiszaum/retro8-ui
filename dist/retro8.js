@@ -30,43 +30,10 @@
       kind: "color",
     },
     {
-      root: ".r8-mention",
-      trigger: ".r8-mention__trigger",
-      panel: ".r8-mention__menu",
-      option: ".r8-mention__option",
-      kind: "mention",
-    },
-    {
       root: ".r8-select",
       trigger: ".r8-select__trigger",
       panel: ".r8-select__menu",
       option: ".r8-select__option",
-    },
-    {
-      root: ".r8-virtual-select",
-      trigger: ".r8-virtual-select__trigger",
-      panel: ".r8-virtual-select__menu",
-      option: ".r8-virtual-select__option",
-    },
-    {
-      root: ".r8-time-picker",
-      trigger: ".r8-time-picker__trigger",
-      panel: ".r8-time-picker__panel",
-      option: ".r8-time-picker__slot",
-      kind: "time",
-    },
-    {
-      root: ".r8-time-select",
-      trigger: ".r8-time-select__trigger",
-      panel: ".r8-time-select__menu",
-      option: ".r8-time-select__option",
-      kind: "time",
-    },
-    {
-      root: ".r8-tree-select",
-      trigger: ".r8-tree-select__trigger",
-      panel: ".r8-tree-select__panel",
-      option: ".r8-tree-select__node",
     },
     {
       root: ".r8-dropdown",
@@ -697,14 +664,6 @@
             display.style.background = colorValue;
           }
         }
-      }
-      return;
-    }
-
-    if (family.kind === "mention") {
-      const token = state.trigger.querySelector(".r8-mention__token");
-      if (token) {
-        token.textContent = value;
       }
       return;
     }

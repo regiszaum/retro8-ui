@@ -273,19 +273,10 @@
   .r8-color-picker__trigger:focus-visible,
   .r8-date-picker__trigger:focus-visible,
   .r8-datetime-picker__trigger:focus-visible,
-  .r8-mention__trigger:focus-visible,
   .r8-select__trigger:focus-visible,
-  .r8-virtual-select__trigger:focus-visible,
-  .r8-time-picker__trigger:focus-visible,
-  .r8-time-select__trigger:focus-visible,
-  .r8-tree-select__trigger:focus-visible,
   .r8-autocomplete__option:focus-visible,
   .r8-cascader__option:focus-visible,
-  .r8-mention__option:focus-visible,
   .r8-select__option:focus-visible,
-  .r8-virtual-select__option:focus-visible,
-  .r8-time-select__option:focus-visible,
-  .r8-tree-select__node:focus-visible,
   .r8-color-picker__swatch:focus-visible,
   .r8-date-picker__nav:focus-visible,
   .r8-date-picker__action:focus-visible,
@@ -351,20 +342,12 @@
   .r8-color-picker,
   .r8-date-picker,
   .r8-datetime-picker,
-  .r8-mention,
-  .r8-select,
-  .r8-virtual-select,
-  .r8-time-picker,
-  .r8-time-select,
-  .r8-tree-select {
+  .r8-select {
     display: grid;
     gap: var(--r8-space-2);
   }
 
   .r8-select,
-  .r8-virtual-select,
-  .r8-time-select,
-  .r8-tree-select,
   .r8-cascader {
     position: relative;
   }
@@ -374,12 +357,7 @@
   .r8-color-picker__trigger,
   .r8-date-picker__trigger,
   .r8-datetime-picker__trigger,
-  .r8-mention__trigger,
-  .r8-select__trigger,
-  .r8-virtual-select__trigger,
-  .r8-time-picker__trigger,
-  .r8-time-select__trigger,
-  .r8-tree-select__trigger {
+  .r8-select__trigger {
     align-items: center;
     background: var(--r8-color-surface-3);
     border: var(--r8-border-thick) solid var(--r8-color-border);
@@ -413,11 +391,7 @@
   .r8-color-picker__trigger[aria-expanded="true"] .r8-choice__caret,
   .r8-date-picker__trigger[aria-expanded="true"] .r8-choice__caret,
   .r8-datetime-picker__trigger[aria-expanded="true"] .r8-choice__caret,
-  .r8-mention__trigger[aria-expanded="true"] .r8-choice__caret,
-  .r8-select__trigger[aria-expanded="true"] .r8-choice__caret,
-  .r8-time-picker__trigger[aria-expanded="true"] .r8-choice__caret,
-  .r8-time-select__trigger[aria-expanded="true"] .r8-choice__caret,
-  .r8-tree-select__trigger[aria-expanded="true"] .r8-choice__caret {
+  .r8-select__trigger[aria-expanded="true"] .r8-choice__caret {
     transform: rotate(-90deg);
   }
 
@@ -452,12 +426,7 @@
   .r8-color-picker__panel,
   .r8-date-picker__panel,
   .r8-datetime-picker__panel,
-  .r8-mention__menu,
-  .r8-select__menu,
-  .r8-virtual-select__menu,
-  .r8-time-picker__panel,
-  .r8-time-select__menu,
-  .r8-tree-select__panel {
+  .r8-select__menu {
     background: var(--r8-color-surface);
     border: var(--r8-border-thick) solid var(--r8-color-border);
     box-shadow: var(--r8-shadow-md);
@@ -469,10 +438,7 @@
     padding: var(--r8-space-3);
   }
 
-  .r8-select__menu,
-  .r8-virtual-select__menu,
-  .r8-time-select__menu,
-  .r8-tree-select__panel {
+  .r8-select__menu {
     left: 0;
     position: absolute;
     right: 0;
@@ -500,28 +466,18 @@
   }
 
   .r8-select__menu:not(.is-open),
-  .r8-cascader__panel:not(.is-open),
-  .r8-virtual-select__menu:not(.is-open),
-  .r8-time-select__menu:not(.is-open),
-  .r8-tree-select__panel:not(.is-open) {
+  .r8-cascader__panel:not(.is-open) {
     display: none;
   }
 
   .r8-select__menu.is-open,
-  .r8-cascader__panel.is-open,
-  .r8-virtual-select__menu.is-open,
-  .r8-time-select__menu.is-open,
-  .r8-tree-select__panel.is-open {
+  .r8-cascader__panel.is-open {
     display: grid;
   }
 
   .r8-autocomplete__option,
   .r8-cascader__option,
-  .r8-mention__option,
-  .r8-select__option,
-  .r8-virtual-select__option,
-  .r8-time-select__option,
-  .r8-tree-select__node {
+  .r8-select__option {
     background: var(--r8-color-surface-3);
     border: var(--r8-border-thin) solid var(--r8-color-border);
     color: var(--r8-color-ink);
@@ -541,31 +497,19 @@
   .r8-autocomplete__option[aria-selected="true"],
   .r8-cascader__option.is-selected,
   .r8-cascader__option[aria-selected="true"],
-  .r8-mention__option.is-selected,
-  .r8-mention__option[aria-selected="true"],
   .r8-select__option.is-selected,
-  .r8-select__option[aria-selected="true"],
-  .r8-virtual-select__option.is-selected,
-  .r8-virtual-select__option[aria-selected="true"],
-  .r8-time-select__option.is-selected,
-  .r8-time-select__option[aria-selected="true"],
-  .r8-tree-select__node.is-selected,
-  .r8-tree-select__node[aria-selected="true"] {
+  .r8-select__option[aria-selected="true"] {
     background: var(--r8-color-accent);
     color: var(--r8-color-accent-contrast);
   }
 
-  .r8-select__option.is-active:not(.is-selected),
-  .r8-virtual-select__option.is-active:not(.is-selected),
-  .r8-time-select__option.is-active:not(.is-selected),
-  .r8-tree-select__node.is-active:not(.is-selected) {
+  .r8-select__option.is-active:not(.is-selected) {
     background: var(--r8-color-surface-2);
   }
 
   .r8-cascader__trail,
   .r8-cascader__menus,
-  .r8-time-picker__slots,
-  .r8-tree-select__tree {
+  .r8-time-picker__slots {
     display: grid;
     gap: var(--r8-space-2);
   }
@@ -984,18 +928,6 @@
       grid-template-columns: repeat(auto-fit, minmax(4.75rem, 1fr));
       max-height: 12rem;
     }
-  }
-
-  .r8-mention__token {
-    align-items: center;
-    background: var(--r8-color-info);
-    border: var(--r8-border-thin) solid var(--r8-color-border);
-    color: var(--r8-color-info-contrast);
-    display: inline-flex;
-    font-family: var(--r8-font-display);
-    font-size: var(--r8-font-size-xs);
-    padding: 0 var(--r8-space-2);
-    text-transform: uppercase;
   }
 
   .r8-transfer {

@@ -60,12 +60,7 @@ const choiceKinds = new Set([
   "autocomplete",
   "cascader",
   "color-picker",
-  "mention",
   "select",
-  "virtual-select",
-  "time-picker",
-  "time-select",
-  "tree-select",
   "dropdown",
 ]);
 const overlayKinds = new Set(["dialog", "drawer", "message-box", "notification", "popover", "tooltip"]);

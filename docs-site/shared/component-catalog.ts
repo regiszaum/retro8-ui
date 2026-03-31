@@ -302,28 +302,6 @@ const basicComponents = [
 </div>`,
   },
   {
-    id: "scrollbar",
-    name: "Scrollbar",
-    group: "basic",
-    summary: l(
-      "Container rolavel com trilha estilizada em 8-bit para listas, logs e areas de overflow.",
-      "Scrollable container with an 8-bit styled track for lists, logs and overflow areas.",
-    ),
-    classes: ["r8-scrollbar"],
-    preview: `<div class="r8-scrollbar">
-  <div class="r8-stack">
-    <p>Mission log 01</p>
-    <p>Mission log 02</p>
-    <p>Mission log 03</p>
-    <p>Mission log 04</p>
-    <p>Mission log 05</p>
-    <p>Mission log 06</p>
-    <p>Mission log 07</p>
-    <p>Mission log 08</p>
-  </div>
-</div>`,
-  },
-  {
     id: "splitter",
     name: "Splitter",
     group: "basic",
@@ -901,27 +879,6 @@ const formComponents = [
 </div>`,
   },
   {
-    id: "mention",
-    name: "Mention",
-    group: "form",
-    summary: l(
-      "Campo para referenciar usuarios ou entidades com token visual e lista de sugestoes.",
-      "Field for referencing users or entities with a visual token and suggestion list.",
-    ),
-    classes: ["r8-mention", "r8-mention__trigger", "r8-mention__token", "r8-mention__menu", "r8-mention__option"],
-    preview: `<div class="r8-mention">
-  <div class="r8-mention__trigger">
-    <span class="r8-mention__token">@captain</span>
-    <span> please review this mission log</span>
-  </div>
-  <div class="r8-mention__menu">
-    <div class="r8-mention__option">@captain</div>
-    <div class="r8-mention__option">@engineer</div>
-    <div class="r8-mention__option">@medic</div>
-  </div>
-</div>`,
-  },
-  {
     id: "radio",
     name: "Radio",
     group: "form",
@@ -992,27 +949,6 @@ const formComponents = [
 </div>`,
   },
   {
-    id: "virtualized-select",
-    name: "Virtualized Select",
-    group: "form",
-    summary: l(
-      "Variacao visual do select para catalogos longos e listas grandes virtualizadas pelo app.",
-      "Visual select variant for long catalogs and large lists virtualized by the host app.",
-    ),
-    classes: ["r8-virtual-select", "r8-virtual-select__trigger", "r8-virtual-select__menu", "r8-virtual-select__option"],
-    preview: `<div class="r8-virtual-select">
-  <div class="r8-virtual-select__trigger">
-    <span data-r8-choice-display>Sector 128 / item 440</span>
-    <span class="r8-badge">virtual</span>
-  </div>
-  <div class="r8-virtual-select__menu">
-    <div class="r8-virtual-select__option">Item 438</div>
-    <div class="r8-virtual-select__option">Item 439</div>
-    <div class="r8-virtual-select__option is-selected">Item 440</div>
-  </div>
-</div>`,
-  },
-  {
     id: "slider",
     name: "Slider",
     group: "form",
@@ -1069,50 +1005,6 @@ const formComponents = [
 </button>`,
   },
   {
-    id: "time-picker",
-    name: "Time Picker",
-    group: "form",
-    summary: l(
-      "Selecao de hora com slots destacados para horas e minutos em formato retro.",
-      "Time selection with highlighted slots for hours and minutes in a retro format.",
-    ),
-    classes: ["r8-time-picker", "r8-time-picker__trigger", "r8-time-picker__panel", "r8-time-picker__slots", "r8-time-picker__slot"],
-    preview: `<div class="r8-time-picker">
-  <div class="r8-time-picker__trigger">
-    <span data-r8-choice-display>08:30</span>
-    <span class="r8-badge">UTC</span>
-  </div>
-  <div class="r8-time-picker__panel">
-    <div class="r8-time-picker__slots">
-      <div class="r8-time-picker__slot">08:00</div>
-      <div class="r8-time-picker__slot is-selected">08:30</div>
-      <div class="r8-time-picker__slot">09:00</div>
-    </div>
-  </div>
-</div>`,
-  },
-  {
-    id: "time-select",
-    name: "Time Select",
-    group: "form",
-    summary: l(
-      "Lista de horarios predefinidos para agendas, turnos e janelas operacionais.",
-      "Preset time list for schedules, shifts and operational windows.",
-    ),
-    classes: ["r8-time-select", "r8-time-select__trigger", "r8-time-select__menu", "r8-time-select__option"],
-    preview: `<div class="r8-time-select">
-  <div class="r8-time-select__trigger">
-    <span data-r8-choice-display>08:30</span>
-    <span class="r8-choice__caret" aria-hidden="true">&gt;</span>
-  </div>
-  <div class="r8-time-select__menu">
-    <div class="r8-time-select__option">08:00</div>
-    <div class="r8-time-select__option is-selected">08:30</div>
-    <div class="r8-time-select__option">09:00</div>
-  </div>
-</div>`,
-  },
-  {
     id: "transfer",
     name: "Transfer",
     group: "form",
@@ -1134,29 +1026,6 @@ const formComponents = [
   <div class="r8-transfer__panel">
     <div class="r8-transfer__header">Selected</div>
     <div class="r8-transfer__item">Shield</div>
-  </div>
-</div>`,
-  },
-  {
-    id: "tree-select",
-    name: "TreeSelect",
-    group: "form",
-    summary: l(
-      "Combina trigger de selecao com arvore visual para categorias hierarquicas profundas.",
-      "Combines a selection trigger with a visual tree for deeper hierarchical categories.",
-    ),
-    classes: ["r8-tree-select", "r8-tree-select__trigger", "r8-tree-select__panel", "r8-tree-select__tree", "r8-tree-select__node"],
-    preview: `<div class="r8-tree-select">
-  <div class="r8-tree-select__trigger">
-    <span data-r8-choice-display>UI / Navigation / Menu</span>
-    <span class="r8-badge">tree</span>
-  </div>
-  <div class="r8-tree-select__panel">
-    <div class="r8-tree-select__tree">
-      <div class="r8-tree-select__node">UI</div>
-      <div class="r8-tree-select__node">Navigation</div>
-      <div class="r8-tree-select__node is-selected">Menu</div>
-    </div>
   </div>
 </div>`,
   },
@@ -1225,31 +1094,6 @@ const dataComponents = [
   <span class="r8-badge r8-badge--info">docs</span>
   <span class="r8-badge r8-badge--dark">night</span>
   <span class="r8-badge r8-badge--light">light</span>
-</div>`,
-  },
-  {
-    id: "calendar",
-    name: "Calendar",
-    group: "data",
-    summary: l(
-      "Calendario mensal para roadmap, eventos e planejamento visual.",
-      "Monthly calendar for roadmaps, events and visual planning.",
-    ),
-    classes: ["r8-calendar", "r8-calendar__header", "r8-calendar__title", "r8-calendar__grid", "r8-calendar__day"],
-    preview: `<div class="r8-calendar">
-  <div class="r8-calendar__header">
-    <span class="r8-calendar__title">March 2026</span>
-    <span class="r8-badge">UTC</span>
-  </div>
-  <div class="r8-calendar__grid">
-    <div class="r8-calendar__day">24</div>
-    <div class="r8-calendar__day">25</div>
-    <div class="r8-calendar__day">26</div>
-    <div class="r8-calendar__day">27</div>
-    <div class="r8-calendar__day is-today">28</div>
-    <div class="r8-calendar__day">29</div>
-    <div class="r8-calendar__day">30</div>
-  </div>
 </div>`,
   },
   {
@@ -1351,23 +1195,6 @@ const dataComponents = [
   <div class="r8-image__frame">PIXEL PREVIEW</div>
   <figcaption class="r8-image__caption">Sprite sheet preview</figcaption>
 </figure>`,
-  },
-  {
-    id: "infinite-scroll",
-    name: "Infinite Scroll",
-    group: "data",
-    summary: l(
-      "Lista com viewport limitada e sentinela visual para feeds longos ou logs infinitos.",
-      "List with a bounded viewport and visual sentinel for long feeds or infinite logs.",
-    ),
-    classes: ["r8-infinite-scroll", "r8-infinite-scroll__item", "r8-infinite-scroll__sentinel"],
-    preview: `<div class="r8-infinite-scroll">
-  <div class="r8-infinite-scroll__item">Feed entry 01</div>
-  <div class="r8-infinite-scroll__item">Feed entry 02</div>
-  <div class="r8-infinite-scroll__item">Feed entry 03</div>
-  <div class="r8-infinite-scroll__item">Feed entry 04</div>
-  <div class="r8-infinite-scroll__sentinel">Load next chunk</div>
-</div>`,
   },
   {
     id: "pagination",
