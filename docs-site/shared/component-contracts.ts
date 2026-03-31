@@ -60,7 +60,6 @@ const choiceKinds = new Set([
   "autocomplete",
   "cascader",
   "color-picker",
-  "color-picker-panel",
   "mention",
   "select",
   "virtual-select",
@@ -75,7 +74,6 @@ const runtimeKinds = new Set([
   "button",
   ...choiceKinds,
   "date-picker",
-  "date-picker-panel",
   "datetime-picker",
   ...overlayKinds,
   ...binaryKinds,
@@ -346,7 +344,6 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         ],
       });
       break;
-    case "date-picker-panel":
     case "date-picker":
       mergeContract(contract, {
         attributes: [

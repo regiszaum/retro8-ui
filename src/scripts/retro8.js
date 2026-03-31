@@ -23,14 +23,6 @@
       kind: "cascader",
     },
     {
-      root: ".r8-color-picker-panel",
-      trigger: "",
-      panel: ".r8-color-picker-panel",
-      option: ".r8-color-picker__swatch",
-      closeOnSelect: false,
-      kind: "color",
-    },
-    {
       root: ".r8-color-picker",
       trigger: ".r8-color-picker__trigger",
       panel: ".r8-color-picker__panel",
@@ -2612,7 +2604,7 @@
       trigger.setAttribute("aria-haspopup", "dialog");
     }
 
-    ensureId(panel, kind === "datetime" ? "r8-datetime-picker-panel" : "r8-date-picker-panel");
+    ensureId(panel, kind === "datetime" ? "r8-datetime-picker-panel" : "r8-date-picker-popup");
     if (trigger instanceof HTMLElement) {
       trigger.setAttribute("aria-controls", panel.id);
     }
@@ -2741,12 +2733,6 @@
   }
 
   function initDatePickers(root) {
-    toArray(root.querySelectorAll(".r8-date-picker-panel")).forEach((panel) => {
-      initDatePicker(panel, {
-        kind: "date",
-      });
-    });
-
     toArray(root.querySelectorAll(".r8-date-picker")).forEach((container) => {
       initDatePicker(container, {
         kind: "date",

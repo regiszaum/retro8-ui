@@ -209,40 +209,6 @@
     grid-area: footer;
   }
 
-  .r8-layout {
-    display: grid;
-    gap: var(--r8-space-3);
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-  }
-
-  .r8-layout__cell {
-    border: var(--r8-border-thick) solid var(--r8-color-border);
-    background: var(--r8-color-surface);
-    box-shadow: var(--r8-shadow-sm);
-    min-height: 4rem;
-    padding: var(--r8-space-4);
-  }
-
-  .r8-layout__cell--span-3 {
-    grid-column: span 3 / span 3;
-  }
-
-  .r8-layout__cell--span-4 {
-    grid-column: span 4 / span 4;
-  }
-
-  .r8-layout__cell--span-6 {
-    grid-column: span 6 / span 6;
-  }
-
-  .r8-layout__cell--span-8 {
-    grid-column: span 8 / span 8;
-  }
-
-  .r8-layout__cell--span-12 {
-    grid-column: span 12 / span 12;
-  }
-
   .r8-scrollbar {
     border: var(--r8-border-thick) solid var(--r8-color-border);
     background: var(--r8-color-surface);

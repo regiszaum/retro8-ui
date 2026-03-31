@@ -22,6 +22,7 @@ html[data-theme="dark"] {
   --docs-panel-text: #0f172a;
   --docs-panel-muted: #475569;
   --docs-panel-soft: #64748b;
+  --docs-section-copy: #f8fafc;
   --docs-panel-border: #0f172a;
   --docs-panel-border-soft: rgba(15, 23, 42, 0.14);
   --docs-panel-shadow: #0f172a;
@@ -83,6 +84,7 @@ html[data-theme="light"] {
   --docs-panel-text: #0f172a;
   --docs-panel-muted: #475569;
   --docs-panel-soft: #64748b;
+  --docs-section-copy: #475569;
   --docs-panel-border: #0f172a;
   --docs-panel-border-soft: rgba(15, 23, 42, 0.14);
   --docs-panel-shadow: #0f172a;
@@ -886,6 +888,10 @@ pre {
   font-size: 0.9375rem;
 }
 
+.docs-section__copy {
+  color: var(--docs-section-copy);
+}
+
 .docs-hero__copy strong {
   color: var(--docs-panel-text);
 }
@@ -1116,7 +1122,7 @@ pre {
   gap: 1rem;
   padding: 1rem;
   border: 2px dashed var(--docs-panel-border-soft);
-  background: var(--docs-preview-bg);
+  background-color: #e2e8f0;
   color: var(--docs-preview-text);
 }
 

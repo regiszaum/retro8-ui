@@ -287,31 +287,6 @@ const basicComponents = [
 </div>`,
   },
   {
-    id: "layout",
-    name: "Layout",
-    group: "basic",
-    summary: l(
-      "Grid semantico de 12 colunas para compor paginas, paines e dashboards em retro pixel art.",
-      "Semantic 12-column grid for composing pages, panels and dashboards in retro pixel art.",
-    ),
-    classes: [
-      "r8-layout",
-      "r8-layout__cell",
-      "r8-layout__cell--span-3",
-      "r8-layout__cell--span-4",
-      "r8-layout__cell--span-6",
-      "r8-layout__cell--span-8",
-      "r8-layout__cell--span-12",
-    ],
-    preview: `<div class="r8-layout">
-  <div class="r8-layout__cell r8-layout__cell--span-4">4 cols</div>
-  <div class="r8-layout__cell r8-layout__cell--span-8">8 cols</div>
-  <div class="r8-layout__cell r8-layout__cell--span-3">3 cols</div>
-  <div class="r8-layout__cell r8-layout__cell--span-3">3 cols</div>
-  <div class="r8-layout__cell r8-layout__cell--span-6">6 cols</div>
-</div>`,
-  },
-  {
     id: "link",
     name: "Link",
     group: "basic",
@@ -324,35 +299,6 @@ const basicComponents = [
   <a class="r8-link" href="#0">Read docs</a>
   <a class="r8-link" href="#0">Install package</a>
   <a class="r8-link" href="#0" aria-disabled="true">Disabled state</a>
-</div>`,
-  },
-  {
-    id: "text",
-    name: "Text",
-    group: "basic",
-    summary: l(
-      "Texto de apoio com variantes semanticas para enfase, sucesso, perigo e estados suaves.",
-      "Supporting text with semantic variants for emphasis, success, danger and muted states.",
-    ),
-    classes: [
-      "r8-text",
-      "r8-text--muted",
-      "r8-text--primary",
-      "r8-text--secondary",
-      "r8-text--tertiary",
-      "r8-text--success",
-      "r8-text--info",
-      "r8-text--danger",
-    ],
-    preview: `<div class="docs-demo__stack">
-  <p class="r8-text">Default body text for mission logs and dense UI labels.</p>
-  <p class="r8-text r8-text--muted">Muted helper copy for secondary details.</p>
-  <p class="r8-text r8-text--primary">Primary text to highlight key information.</p>
-  <p class="r8-text r8-text--secondary">Secondary text for supportive hierarchy.</p>
-  <p class="r8-text r8-text--tertiary">Tertiary text for premium or elevated states.</p>
-  <p class="r8-text r8-text--success">Success text for positive states.</p>
-  <p class="r8-text r8-text--info">Info text for contextual guidance.</p>
-  <p class="r8-text r8-text--danger">Danger text for critical states.</p>
 </div>`,
   },
   {
@@ -404,11 +350,84 @@ const basicComponents = [
     name: "Typography",
     group: "basic",
     summary: l(
-      "Escala tipografica base para docs, paines e texto corrido mantendo o contraste retro da marca.",
-      "Base typographic scale for docs, panels and body copy while preserving the retro brand feel.",
+      "Sistema tipografico completo para blocos de conteudo, texto corrido e variantes semanticas de apoio.",
+      "Complete typographic system for content blocks, body copy and supporting semantic text variants.",
     ),
-    classes: ["r8-typography"],
-    preview: `<div class="r8-typography">
+    classes: [
+      "r8-typography",
+      "r8-text",
+      "r8-text--muted",
+      "r8-text--primary",
+      "r8-text--secondary",
+      "r8-text--tertiary",
+      "r8-text--success",
+      "r8-text--info",
+      "r8-text--danger",
+    ],
+    api: [
+      {
+        name: "r8-typography",
+        description: l(
+          "Container para headings, paragrafos, listas, code e blockquotes com hierarquia retro consistente.",
+          "Container for headings, paragraphs, lists, code and blockquotes with consistent retro hierarchy.",
+        ),
+      },
+      {
+        name: "r8-text",
+        description: l(
+          "Classe base para texto corrido curto, labels e copys de apoio fora de um bloco tipografico rico.",
+          "Base class for short body copy, labels and supporting text outside a rich typography block.",
+        ),
+      },
+      {
+        name: "r8-text--muted",
+        description: l("Suaviza o contraste para texto secundario ou detalhes auxiliares.", "Softens contrast for secondary text or helper details."),
+      },
+      {
+        name: "r8-text--primary",
+        description: l("Aplica enfase com a cor primaria do sistema.", "Applies emphasis with the system primary color."),
+      },
+      {
+        name: "r8-text--secondary",
+        description: l("Usa o tom secundario para apoio visual e hierarquia complementar.", "Uses the secondary tone for supporting hierarchy."),
+      },
+      {
+        name: "r8-text--tertiary",
+        description: l("Destaca texto com a cor terciaria em contextos mais chamativos.", "Highlights text with the tertiary color in more expressive contexts."),
+      },
+      {
+        name: "r8-text--success",
+        description: l("Comunica estados positivos ou confirmacoes.", "Communicates positive states or confirmations."),
+      },
+      {
+        name: "r8-text--info",
+        description: l("Comunica contexto, ajuda ou informacoes neutras.", "Communicates context, help or neutral information."),
+      },
+      {
+        name: "r8-text--danger",
+        description: l("Comunica erros, risco ou estados criticos.", "Communicates errors, risk or critical states."),
+      },
+    ],
+    preview: `<div class="docs-demo__stack">
+  <div class="r8-typography">
+    <h1>Retro heading</h1>
+    <p>Build framework-agnostic UI with compiled CSS and semantic classes.</p>
+    <ul>
+      <li>Consistent tokens</li>
+      <li>Strong hierarchy</li>
+      <li>Readable body copy</li>
+    </ul>
+  </div>
+
+  <div class="docs-demo__stack">
+    <p class="r8-text">Default body text for mission logs and dense UI labels.</p>
+    <p class="r8-text r8-text--muted">Muted helper copy for secondary details.</p>
+    <p class="r8-text r8-text--primary">Primary text to highlight key information.</p>
+    <p class="r8-text r8-text--success">Success text for positive states.</p>
+    <p class="r8-text r8-text--danger">Danger text for critical states.</p>
+  </div>
+</div>`,
+    code: `<div class="r8-typography">
   <h1>Retro heading</h1>
   <p>Build framework-agnostic UI with compiled CSS and semantic classes.</p>
   <ul>
@@ -416,7 +435,11 @@ const basicComponents = [
     <li>Strong hierarchy</li>
     <li>Readable body copy</li>
   </ul>
-</div>`,
+</div>
+
+<p class="r8-text">Default body text for mission logs and dense UI labels.</p>
+<p class="r8-text r8-text--muted">Muted helper copy for secondary details.</p>
+<p class="r8-text r8-text--primary">Primary text to highlight key information.</p>`,
   },
 ] satisfies CatalogEntry[];
 
@@ -702,26 +725,6 @@ const formComponents = [
 </div>`,
   },
   {
-    id: "color-picker-panel",
-    name: "Color Picker Panel",
-    group: "form",
-    summary: l(
-      "Painel puro de selecao de cor para embutir em dropdowns, drawers ou settings pages.",
-      "Standalone color selection panel ready to embed in dropdowns, drawers or settings pages.",
-    ),
-    classes: ["r8-color-picker-panel", "r8-color-picker__swatches", "r8-color-picker__swatch"],
-    preview: `<div class="r8-color-picker-panel">
-  <div class="r8-color-picker__swatches">
-    <div class="r8-color-picker__swatch is-selected" data-r8-value="#2563eb" style="background:#2563eb;"></div>
-    <div class="r8-color-picker__swatch" data-r8-value="#64748b" style="background:#64748b;"></div>
-    <div class="r8-color-picker__swatch" data-r8-value="#7c3aed" style="background:#7c3aed;"></div>
-    <div class="r8-color-picker__swatch" data-r8-value="#16a34a" style="background:#16a34a;"></div>
-    <div class="r8-color-picker__swatch" data-r8-value="#0891b2" style="background:#0891b2;"></div>
-    <div class="r8-color-picker__swatch" data-r8-value="#dc2626" style="background:#dc2626;"></div>
-  </div>
-</div>`,
-  },
-  {
     id: "color-picker",
     name: "Color Picker",
     group: "form",
@@ -746,35 +749,6 @@ const formComponents = [
     </div>
   </div>
 </div>`,
-  },
-  {
-    id: "date-picker-panel",
-    name: "Date Picker Panel",
-    group: "form",
-    summary: l(
-      "Grade de calendario reutilizavel para composicoes inline ou paines persistentes.",
-      "Reusable calendar grid for inline compositions or persistent panels.",
-    ),
-    classes: [
-      "r8-date-picker-panel",
-      "r8-date-picker__calendar",
-      "r8-date-picker__header",
-      "r8-date-picker__nav",
-      "r8-date-picker__title",
-      "r8-date-picker__weekdays",
-      "r8-date-picker__weekday",
-      "r8-date-picker__grid",
-      "r8-date-picker__day",
-      "r8-date-picker__footer",
-      "r8-date-picker__action",
-    ],
-    preview: `<div
-  class="r8-date-picker-panel"
-  data-r8-value="2026-03-28"
-  data-r8-month="2026-03"
-  data-r8-min="2026-03-05"
-  data-r8-max="2026-04-18"
-></div>`,
   },
   {
     id: "date-picker",
@@ -1350,22 +1324,6 @@ const dataComponents = [
 </div>`,
   },
   {
-    id: "descriptions",
-    name: "Descriptions",
-    group: "data",
-    summary: l(
-      "Lista label/valor para detalhes de entidade, metadata tecnica e specs de itens.",
-      "Label/value list for entity details, technical metadata and item specs.",
-    ),
-    classes: ["r8-descriptions", "r8-descriptions__label", "r8-descriptions__value"],
-    preview: `<div class="r8-descriptions">
-  <div class="r8-descriptions__label">Engine</div>
-  <div class="r8-descriptions__value">MK-II</div>
-  <div class="r8-descriptions__label">Shield</div>
-  <div class="r8-descriptions__value">84%</div>
-</div>`,
-  },
-  {
     id: "empty",
     name: "Empty",
     group: "data",
@@ -1505,37 +1463,6 @@ const dataComponents = [
 </table>`,
   },
   {
-    id: "virtualized-table",
-    name: "Virtualized Table",
-    group: "data",
-    summary: l(
-      "Shell visual de tabela para datasets extensos virtualizados pelo framework hospedeiro.",
-      "Visual table shell for extensive datasets virtualized by the host framework.",
-    ),
-    classes: ["r8-virtual-table"],
-    preview: `<table class="r8-virtual-table">
-  <thead>
-    <tr>
-      <th>Row</th>
-      <th>Chunk</th>
-      <th>Latency</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>438</td>
-      <td>active</td>
-      <td>12ms</td>
-    </tr>
-    <tr>
-      <td>439</td>
-      <td>active</td>
-      <td>10ms</td>
-    </tr>
-  </tbody>
-</table>`,
-  },
-  {
     id: "tag",
     name: "Tag",
     group: "data",
@@ -1567,24 +1494,6 @@ const dataComponents = [
   <div class="r8-timeline__item">
     <span class="r8-timeline__dot"></span>
     <div class="r8-timeline__content">08:45 - Docs deployed</div>
-  </div>
-</div>`,
-  },
-  {
-    id: "tour",
-    name: "Tour",
-    group: "data",
-    summary: l(
-      "Baloon de onboarding para guiar usuarios por etapas e hotspots importantes.",
-      "Onboarding balloon used to guide users through steps and important hotspots.",
-    ),
-    classes: ["r8-tour"],
-    preview: `<div class="r8-tour">
-  <strong>Quick tour</strong>
-  <p class="r8-text">This panel highlights the next action in the interface.</p>
-  <div class="r8-row">
-    <button class="r8-btn r8-btn--sm" type="button">Skip</button>
-    <button class="r8-btn r8-btn--sm r8-btn--primary" type="button">Next</button>
   </div>
 </div>`,
   },

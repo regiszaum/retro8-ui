@@ -450,9 +450,7 @@
   .r8-autocomplete__menu,
   .r8-cascader__panel,
   .r8-color-picker__panel,
-  .r8-color-picker-panel,
   .r8-date-picker__panel,
-  .r8-date-picker-panel,
   .r8-datetime-picker__panel,
   .r8-mention__menu,
   .r8-select__menu,
@@ -715,7 +713,6 @@
   }
 
   .r8-date-picker__panel,
-  .r8-date-picker-panel,
   .r8-datetime-picker__panel {
     gap: var(--r8-space-3);
     max-height: none;

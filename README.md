@@ -1,10 +1,10 @@
-# retro8-ui
+# Retro8 UI
 
 Retro 8-bit UI library authored with Tailwind CSS and shipped as framework-agnostic semantic CSS classes, plus an optional JavaScript runtime for interactive components.
 
 ## Overview
 
-`retro8-ui` is a design system for building retro game-inspired interfaces without locking consumers into a specific framework. It is written with Tailwind CSS as an authoring tool, but the public API is intentionally simple:
+`Retro8 UI` is a design system for building retro game-inspired interfaces without locking consumers into a specific framework. It is written with Tailwind CSS as an authoring tool, but the public API is intentionally simple:
 
 - semantic class names such as `r8-btn`, `r8-panel`, `r8-window`, and `r8-badge`;
 - compiled CSS that can be imported anywhere;
@@ -15,7 +15,7 @@ The goal is to provide a strong visual foundation for plain HTML, React, Next.js
 
 You do not need Tailwind CSS in the consuming project. Tailwind is used only to author the library source before the final CSS is compiled.
 
-## Why retro8-ui
+## Why Retro8 UI
 
 - Framework-agnostic by design.
 - Semantic class API instead of utility-heavy consumer markup.
@@ -210,7 +210,7 @@ You can use the bundled runtime or replace it with your own application logic if
 
 The current catalog includes:
 
-- 81 core components across the main catalog, plus retro8-ui-specific extras;
+- 74 core components across the main catalog, plus retro8-ui-specific extras;
 - grouped categories across Basic, Configuration, Form, Data, Navigation, Feedback, and Others;
 - native `retro8-ui` extras such as `Panel`, `Window`, and `Navbar`.
 

@@ -153,32 +153,6 @@
     padding: var(--r8-space-4);
   }
 
-  .r8-descriptions {
-    border: var(--r8-border-thick) solid var(--r8-color-border);
-    box-shadow: var(--r8-shadow-md);
-    display: grid;
-    gap: 0;
-    grid-template-columns: minmax(0, 9rem) minmax(0, 1fr);
-  }
-
-  .r8-descriptions__label,
-  .r8-descriptions__value {
-    border-bottom: var(--r8-border-thin) solid var(--r8-color-border);
-    padding: var(--r8-space-3);
-  }
-
-  .r8-descriptions__label {
-    background: var(--r8-color-surface-2);
-    font-family: var(--r8-font-display);
-    font-size: var(--r8-font-size-xs);
-    text-transform: uppercase;
-  }
-
-  .r8-descriptions__value {
-    background: var(--r8-color-surface);
-    font-family: var(--r8-font-body);
-  }
-
   .r8-empty {
     align-items: center;
     border: var(--r8-border-thick) dashed var(--r8-color-border);
@@ -323,31 +297,26 @@
     min-height: 1rem;
   }
 
-  .r8-table,
-  .r8-virtual-table {
+  .r8-table {
     border-collapse: collapse;
     width: 100%;
   }
 
   .r8-table th,
-  .r8-table td,
-  .r8-virtual-table th,
-  .r8-virtual-table td {
+  .r8-table td {
     border: var(--r8-border-thin) solid var(--r8-color-border);
     padding: var(--r8-space-3);
     text-align: left;
   }
 
-  .r8-table thead th,
-  .r8-virtual-table thead th {
+  .r8-table thead th {
     background: var(--r8-color-surface-2);
     font-family: var(--r8-font-display);
     font-size: var(--r8-font-size-xs);
     text-transform: uppercase;
   }
 
-  .r8-table tbody td,
-  .r8-virtual-table tbody td {
+  .r8-table tbody td {
     background: var(--r8-color-surface);
     font-family: var(--r8-font-body);
     font-size: var(--r8-font-size-sm);
@@ -405,25 +374,6 @@
     border: var(--r8-border-thin) solid var(--r8-color-border);
     background: var(--r8-color-surface);
     padding: var(--r8-space-3);
-  }
-
-  .r8-tour {
-    border: var(--r8-border-thick) solid var(--r8-color-border);
-    box-shadow: var(--r8-shadow-lg);
-    display: grid;
-    gap: var(--r8-space-3);
-    max-width: 22rem;
-    padding: var(--r8-space-4);
-    position: relative;
-  }
-
-  .r8-tour::after {
-    border: 10px solid transparent;
-    border-bottom-color: var(--r8-color-border);
-    content: "";
-    left: var(--r8-space-4);
-    position: absolute;
-    top: -24px;
   }
 
   .r8-tree,
