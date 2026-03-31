@@ -45,7 +45,7 @@ async function copyCode() {
         {{ description }}
       </p>
       <div class="docs-code__toolbar">
-        <span class="docs-code__hint">{{ hint }}</span>
+        <span v-if="hint" class="docs-code__hint">{{ hint }}</span>
         <button class="r8-btn r8-btn--sm r8-btn--secondary" type="button" @click="copyCode">
           {{ buttonText }}
         </button>

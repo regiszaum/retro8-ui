@@ -8,7 +8,7 @@ O fluxo principal da `retro8-ui` continua simples:
 
 1. instale o pacote
 2. importe `retro8.css`
-3. importe `retro8.js` quando precisar de comportamento interativo
+3. importe `retro8.js`
 4. escreva semantic HTML usando classes como `r8-btn`, `r8-panel` e `r8-window`
 
 Essa abordagem funciona em HTML puro, React, Vue, Nuxt, Astro, Laravel e qualquer stack que aceite CSS.
@@ -20,7 +20,7 @@ Nao. Voce nao precisa de Tailwind CSS no projeto que vai usar a `retro8-ui`.
 O Tailwind e usado apenas para authoring da library. Quem consome a UI trabalha com os arquivos compilados:
 
 - `retro8.css` ou `retro8.min.css`
-- `retro8.js` ou `retro8.min.js` quando houver comportamento interativo
+- `retro8.js` ou `retro8.min.js`
 
 Se a sua aplicacao ja usa Tailwind, tudo bem, mas isso nao e um requisito para a `retro8-ui` funcionar.
 
@@ -30,7 +30,7 @@ Para uma integracao normal, o fluxo e:
 
 1. instalar `retro8-ui`
 2. importar o CSS compilado
-3. adicionar o runtime JS opcional para components interativos
+3. adicionar o runtime JS para components interativos
 4. usar classes semanticas no markup
 
 ```html
