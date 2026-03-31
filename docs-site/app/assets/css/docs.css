@@ -843,6 +843,26 @@ pre {
   min-width: 0;
 }
 
+.docs-hero__window,
+.docs-preview,
+.docs-code {
+  display: flex;
+  flex-direction: column;
+}
+
+.docs-hero__window > .r8-window__body,
+.docs-preview > .r8-window__body,
+.docs-code > .r8-window__body {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.docs-hero__window > .r8-window__statusbar,
+.docs-preview > .r8-window__statusbar,
+.docs-code > .r8-window__statusbar {
+  margin-top: auto;
+}
+
 .docs-section {
   scroll-margin-top: 6.5rem;
 }
