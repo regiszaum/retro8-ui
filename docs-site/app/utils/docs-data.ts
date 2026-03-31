@@ -121,7 +121,7 @@ const localized = {
       heroKicker: `${coreComponentCount} componentes principais + extras da Retro8 UI`,
       heroTitle: "A Retro8 UI agora oferece um catálogo amplo em linguagem visual 8 bits.",
       heroCopy:
-        "Retro8 UI é uma biblioteca de interface focada em CSS que pode ser usada em diferentes tecnologias web. A documentação está mais organizada, com componentes por categoria, página para cada item e suporte a tema claro e escuro.",
+        "Retro8 UI é uma biblioteca de interface focada em CSS que pode ser usada em diferentes tecnologias web. A documentação está organizada com componentes por categoria e suporte a tema claro e escuro.",
       heroPrimary: "Explorar catálogo",
       heroSecondary: "Abrir início rápido",
       heroStatus:
@@ -324,7 +324,7 @@ const localized = {
       heroKicker: `${coreComponentCount} core components + retro8 extras`,
       heroTitle: "Retro8 UI now ships a broad component catalog in an 8-bit visual language.",
       heroCopy:
-        "Retro8 UI is a CSS-focused interface library that works with any framework. The documentation is more organized, with components grouped by category, a dedicated page for each item, and support for both light and dark themes.",
+        "Retro8 UI is a CSS-focused interface library that works with any framework. The documentation is organized with components grouped by category and support for both light and dark themes.",
       heroPrimary: "Explore catalog",
       heroSecondary: "See quick start",
       heroStatus:
