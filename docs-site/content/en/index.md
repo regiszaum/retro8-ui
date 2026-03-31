@@ -1,6 +1,6 @@
 ---
 title: Retro8 UI
-description: Public Retro8 UI documentation powered by Nuxt, with an expanded catalog, i18n, dedicated routes and a JS runtime.
+description: Retro8 UI documentation with a broad component catalog, category-based navigation, and support for light and dark themes.
 kicker: Overview
 ---
 

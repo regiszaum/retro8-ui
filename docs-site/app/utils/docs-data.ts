@@ -85,7 +85,7 @@ const localized = {
     meta: {
       title: "Retro8 UI",
       description:
-        "Documentação bilíngue da Retro8 UI com catálogo expandido, páginas individuais por componente e modo claro/escuro.",
+        "Documentação da Retro8 UI com catálogo amplo de componentes, navegação por categorias e suporte a tema claro e escuro.",
     },
     nav: {
       topLinks: [
@@ -121,17 +121,17 @@ const localized = {
       heroKicker: `${coreComponentCount} componentes principais + extras da Retro8 UI`,
       heroTitle: "A Retro8 UI agora oferece um catálogo amplo em linguagem visual 8 bits.",
       heroCopy:
-        "Retro8 UI é uma biblioteca de interface focada em CSS que pode ser usada em diferentes tecnologias web. A documentação está mais organizada, com componentes por categoria, página para cada item e suporte a tema claro e escuro.",
+        "Retro8 UI é uma biblioteca de interface focada em CSS que pode ser usada em diferentes tecnologias web. A documentação está organizada com componentes por categoria e suporte a tema claro e escuro.",
       heroPrimary: "Explorar catálogo",
       heroSecondary: "Abrir início rápido",
       heroStatus:
         "Cobertura ampla de componentes, mantendo CSS semântico e JS.",
       statsTitle: "Cobertura da biblioteca",
-      overviewTitle: "Decisões de arquitetura",
+      overviewTitle: "Princípios da UI",
       overviewItems: [
-        `O catálogo principal cobre ${coreComponentCount} componentes principais, além de extras nativos da Retro8 UI.`,
-        "A documentação continua separada da biblioteca: Nuxt para a experiência pública, CSS compilado para o produto final.",
-        "Componentes com comportamento mais complexo podem usar o JS da Retro8 UI ou a própria aplicação.",
+        `A Retro8 UI reúne ${coreComponentCount} componentes principais, além de extras nativos, para cobrir interfaces completas com consistência visual.`,
+        "Os componentes compartilham a mesma linguagem visual, com categorias claras e padrões que facilitam combinar diferentes peças na mesma interface.",
+        "Elementos mais interativos mantêm a identidade da UI e podem ganhar comportamentos mais avançados quando a experiência pedir.",
       ],
       quickStartTitle: "Instale, importe CSS + JS e use HTML semântico",
       quickStartCopy:
@@ -238,7 +238,7 @@ const localized = {
       ],
       componentIndexTitle: "Catálogo completo por grupos",
       componentIndexCopy:
-        "Cada componente tem sua própria rota. O catálogo abaixo organiza a biblioteca em grupos previsíveis e ainda preserva extras próprios da Retro8 UI.",
+        "O catálogo abaixo organiza a biblioteca em grupos previsíveis e ainda preserva extras próprios da Retro8 UI.",
       componentIndexKicker: "Componentes",
       footerPrimary:
         "A documentação pública agora escala como um site de componentes de verdade, com navegação por grupo, idioma e tema.",
@@ -246,7 +246,7 @@ const localized = {
         "A biblioteca continua focada em CSS compilado, JS e classes semânticas. Os extras de documentação, i18n e ícones recomendados continuam desacoplados.",
       stats: {
         coreLabel: "componentes principais",
-        coreCopy: "como base ampla para a primeira versão pública",
+        coreCopy: "",
         docsLabel: "páginas de componentes",
         docsCopy: "incluindo extras nativos da Retro8 UI",
         groupsLabel: "grupos",
@@ -288,7 +288,7 @@ const localized = {
     meta: {
       title: "Retro8 UI",
       description:
-        "Bilingual Retro8 UI documentation with an expanded catalog, per-component pages and light/dark mode.",
+        "Retro8 UI documentation with a broad component catalog, category-based navigation, and support for light and dark themes.",
     },
     nav: {
       topLinks: [
@@ -324,17 +324,17 @@ const localized = {
       heroKicker: `${coreComponentCount} core components + retro8 extras`,
       heroTitle: "Retro8 UI now ships a broad component catalog in an 8-bit visual language.",
       heroCopy:
-        "Retro8 UI is a CSS-focused interface library that works with any framework. The documentation is more organized, with components grouped by category, a dedicated page for each item, and support for both light and dark themes.",
+        "Retro8 UI is a CSS-focused interface library that works with any framework. The documentation is organized with components grouped by category and support for both light and dark themes.",
       heroPrimary: "Explore catalog",
       heroSecondary: "See quick start",
       heroStatus:
         "Broad component coverage, while keeping semantic CSS and optional runtime behavior.",
       statsTitle: "Library coverage",
-      overviewTitle: "Architecture decisions",
+      overviewTitle: "UI principles",
       overviewItems: [
-        `The main catalog covers ${coreComponentCount} core components, plus native Retro8 UI extras.`,
-        "The docs stay separate from the library: Nuxt powers the public experience, compiled CSS remains the product.",
-        "Behavior-heavy components can use the Retro8 UI runtime or stay wired by the host app.",
+        `Retro8 UI brings together ${coreComponentCount} core components, plus native extras, to cover complete interfaces with visual consistency.`,
+        "Components share the same visual language, with clear categories and patterns that make different pieces work together naturally across the UI.",
+        "More interactive elements keep the same UI identity and can take on richer behavior when the experience calls for it.",
       ],
       quickStartTitle: "Install, import CSS + JS and use semantic HTML",
       quickStartCopy:
@@ -441,7 +441,7 @@ const localized = {
       ],
       componentIndexTitle: "Full grouped catalog",
       componentIndexCopy:
-        "Every component has its own route. The catalog below organizes the library into predictable groups while preserving Retro8 UI native extras.",
+        "The catalog below organizes the library into predictable groups while preserving Retro8 UI native extras.",
       componentIndexKicker: "Components",
       footerPrimary:
         "The public documentation now scales like a real component site, with grouped navigation, localization and theming.",
@@ -449,7 +449,7 @@ const localized = {
         "The library still focuses on compiled CSS, a JS runtime and semantic classes. Docs features, i18n and recommended icons remain decoupled.",
       stats: {
         coreLabel: "core components",
-        coreCopy: "as a broad foundation for the first public release",
+        coreCopy: "",
         docsLabel: "component pages",
         docsCopy: "including Retro8 UI native extras",
         groupsLabel: "groups",

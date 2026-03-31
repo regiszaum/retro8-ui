@@ -48,7 +48,7 @@ const props = defineProps<{
             <div v-for="stat in site.home.stats" :key="stat.value" class="docs-stat">
               <strong>{{ stat.value }}</strong>
               <span>{{ stat.label }}</span>
-              <small>{{ stat.copy }}</small>
+              <small v-if="stat.copy">{{ stat.copy }}</small>
             </div>
           </div>
         </section>

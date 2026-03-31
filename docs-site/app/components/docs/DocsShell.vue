@@ -2,6 +2,8 @@
 import { getSiteContent } from "~/utils/docs-data";
 import { buildDocsPath } from "~/utils/docs-routing";
 
+const SIDEBAR_SCROLL_STORAGE_KEY = "retro8-docs:sidebar-scroll";
+
 const props = defineProps<{
   locale: string;
   currentPath: string;
@@ -25,10 +27,87 @@ const guideLinks = computed(() => [
 ]);
 
 const componentSections = computed(() => site.value.componentSections);
+const sidebarBodyRef = ref<HTMLElement | null>(null);
 
 function isActive(to: string) {
   return props.currentPath === to;
 }
+
+function getSidebarScrollStorageKey() {
+  return `${SIDEBAR_SCROLL_STORAGE_KEY}:${props.locale}`;
+}
+
+function persistSidebarScroll() {
+  if (!import.meta.client || !sidebarBodyRef.value) {
+    return;
+  }
+
+  sessionStorage.setItem(getSidebarScrollStorageKey(), String(sidebarBodyRef.value.scrollTop));
+}
+
+function restoreSidebarScroll() {
+  if (!import.meta.client || !sidebarBodyRef.value) {
+    return;
+  }
+
+  const savedScrollTop = Number(sessionStorage.getItem(getSidebarScrollStorageKey()));
+
+  if (Number.isFinite(savedScrollTop)) {
+    sidebarBodyRef.value.scrollTop = savedScrollTop;
+  }
+}
+
+function ensureActiveLinkIsVisible() {
+  if (!import.meta.client || !sidebarBodyRef.value) {
+    return;
+  }
+
+  const container = sidebarBodyRef.value;
+  const activeLink = container.querySelector<HTMLElement>('.docs-sidebar__link[aria-current="page"]');
+
+  if (!activeLink) {
+    return;
+  }
+
+  const activeTop = activeLink.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop;
+  const activeBottom = activeTop + activeLink.offsetHeight;
+  const viewportTop = container.scrollTop;
+  const viewportBottom = viewportTop + container.clientHeight;
+  const gutter = 16;
+
+  if (activeTop >= viewportTop + gutter && activeBottom <= viewportBottom - gutter) {
+    return;
+  }
+
+  const centeredTop = Math.max(activeTop - (container.clientHeight - activeLink.offsetHeight) / 2, 0);
+  container.scrollTop = centeredTop;
+  persistSidebarScroll();
+}
+
+async function syncSidebarState(options: { restoreScroll?: boolean } = {}) {
+  await nextTick();
+
+  if (options.restoreScroll) {
+    restoreSidebarScroll();
+  }
+
+  ensureActiveLinkIsVisible();
+}
+
+onMounted(() => {
+  void syncSidebarState({ restoreScroll: true });
+});
+
+onBeforeUnmount(() => {
+  persistSidebarScroll();
+});
+
+watch(
+  () => props.currentPath,
+  () => {
+    void syncSidebarState();
+  },
+);
 </script>
 
 <template>
@@ -105,7 +184,7 @@ function isActive(to: string) {
             <p class="docs-sidebar__copy">{{ site.home.heroCopy }}</p>
           </div>
 
-          <div class="r8-panel__body docs-sidebar__body">
+          <div ref="sidebarBodyRef" class="r8-panel__body docs-sidebar__body" @scroll="persistSidebarScroll">
             <div class="docs-sidebar__group">
               <p class="docs-sidebar__eyebrow">{{ site.nav.guideTitle }}</p>
               <NuxtLink
