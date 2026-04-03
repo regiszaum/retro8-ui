@@ -166,6 +166,7 @@ watch(
       </div>
     </div>
 
+    <DocsAutocompletePlayground v-if="component.id === 'autocomplete'" :site="site" />
     <DocsButtonPlayground v-if="component.id === 'button'" :site="site" />
     <DocsBorderPlayground v-if="component.id === 'border'" :site="site" />
     <DocsConfigProviderPlayground v-if="component.id === 'config-provider'" :site="site" />

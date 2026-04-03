@@ -902,6 +902,8 @@
       state.activeOption = option;
       state.selectedOption = option;
       updateChoiceDisplay(container, option, family);
+      syncAutocompleteClear(state);
+      syncAutocompleteFeedback(state, state.input instanceof HTMLInputElement ? state.input.value.trim().toLowerCase() : "");
 
       if (state.input instanceof HTMLInputElement) {
         state.input.setAttribute("aria-activedescendant", ensureId(option, "r8-autocomplete-option"));
@@ -912,6 +914,11 @@
       }
 
       if (!silent) {
+        emitComponentEvent(container, "autocomplete-select", {
+          option,
+          text: getTextValue(option),
+          value: getTextValue(option),
+        });
         emitComponentEvent(container, "choice-change", {
           kind: family.kind,
           option,
@@ -1029,6 +1036,53 @@
     state.count.textContent = String(visibleCount);
   }
 
+  function ensureAutocompleteFeedbackNode(panel, selector, className, text) {
+    if (!(panel instanceof HTMLElement)) {
+      return null;
+    }
+
+    const existing = panel.querySelector(selector);
+    if (existing instanceof HTMLElement) {
+      return existing;
+    }
+
+    const element = document.createElement("div");
+    element.className = className;
+    element.hidden = true;
+    element.textContent = text;
+    panel.appendChild(element);
+    return element;
+  }
+
+  function syncAutocompleteClear(state) {
+    if (!(state?.clearButton instanceof HTMLElement)) {
+      return;
+    }
+
+    const hasValue = state.input instanceof HTMLInputElement && state.input.value.trim().length > 0;
+    state.clearButton.hidden = !(state.clearable && hasValue);
+  }
+
+  function syncAutocompleteFeedback(state, query = "") {
+    if (!state?.panel) {
+      return;
+    }
+
+    const isLoading = state.container?.dataset.r8Loading === "true";
+    const visibleOptions = getVisibleOptions(state);
+    const shouldShowEmpty = !isLoading && visibleOptions.length === 0 && (query.length > 0 || state.triggerOnFocus);
+
+    if (state.emptyState instanceof HTMLElement) {
+      state.emptyState.hidden = !shouldShowEmpty;
+      state.emptyState.textContent = state.container?.dataset.r8EmptyLabel?.trim() || "No matches found";
+    }
+
+    if (state.loadingState instanceof HTMLElement) {
+      state.loadingState.hidden = !isLoading;
+      state.loadingState.textContent = state.container?.dataset.r8LoadingLabel?.trim() || "Loading suggestions...";
+    }
+  }
+
   function setAutocompleteActiveOption(state, option) {
     if (!state?.options?.length) {
       return;
@@ -1051,14 +1105,25 @@
 
   function filterAutocompleteOptions(container) {
     const state = choiceStates.get(container);
-    if (!state?.options?.length || !(state.input instanceof HTMLInputElement)) {
+    if (!state || !(state.input instanceof HTMLInputElement)) {
       return;
     }
 
     const query = state.input.value.trim().toLowerCase();
+    const isLoading = container.dataset.r8Loading === "true";
+
+    if (isLoading) {
+      state.options.forEach((option) => option.setAttribute("hidden", ""));
+      setAutocompleteActiveOption(state, null);
+      syncAutocompleteCount(state);
+      syncAutocompleteClear(state);
+      syncAutocompleteFeedback(state, query);
+      return;
+    }
+
     state.options.forEach((option) => {
       const searchValue = `${option.dataset.r8Search || ""} ${getTextValue(option)} ${(option.textContent || "").trim()}`.toLowerCase();
-      const shouldShow = !query || searchValue.includes(query);
+      const shouldShow = query ? searchValue.includes(query) : state.triggerOnFocus;
       if (shouldShow) {
         option.removeAttribute("hidden");
       } else {
@@ -1074,6 +1139,45 @@
 
     setAutocompleteActiveOption(state, nextActive);
     syncAutocompleteCount(state);
+    syncAutocompleteClear(state);
+    syncAutocompleteFeedback(state, query);
+  }
+
+  function clearAutocomplete(container, options = {}) {
+    const state = choiceStates.get(container);
+    if (!state || !(state.input instanceof HTMLInputElement)) {
+      return;
+    }
+
+    const silent = options.silent === true;
+    state.input.value = "";
+    state.selectedOption = null;
+    state.activeOption = null;
+    container.dataset.r8Value = "";
+
+    state.options.forEach((option) => {
+      option.classList.remove("is-selected", "is-active");
+      option.setAttribute("aria-selected", "false");
+      option.removeAttribute("data-r8-active");
+    });
+
+    state.input.removeAttribute("aria-activedescendant");
+    filterAutocompleteOptions(container);
+
+    if (state.triggerOnFocus) {
+      openFloating(container);
+    } else {
+      closeFloating(container);
+    }
+
+    state.input.focus({ preventScroll: true });
+
+    if (!silent) {
+      emitComponentEvent(container, "autocomplete-clear", {
+        value: "",
+        text: "",
+      });
+    }
   }
 
   function initAutocomplete(container, family) {
@@ -1081,28 +1185,46 @@
     const panel = firstMatch(container, family.panel);
     const input = container.querySelector(".r8-autocomplete__input");
     const count = trigger?.querySelector("[data-r8-autocomplete-count]") || trigger?.querySelector(".r8-badge") || null;
+    const clearButton = trigger?.querySelector(".r8-autocomplete__clear") || null;
     const options = toArray(container.querySelectorAll(family.option)).filter((item) => item instanceof HTMLElement);
 
     if (!(trigger instanceof HTMLElement) || !(panel instanceof HTMLElement) || !(input instanceof HTMLInputElement)) {
       return;
     }
 
+    const emptyState =
+      firstMatch(panel, ".r8-autocomplete__empty") ||
+      ensureAutocompleteFeedbackNode(panel, ".r8-autocomplete__empty", "r8-autocomplete__empty", container.dataset.r8EmptyLabel?.trim() || "No matches found");
+    const loadingState =
+      firstMatch(panel, ".r8-autocomplete__loading") ||
+      ensureAutocompleteFeedbackNode(panel, ".r8-autocomplete__loading", "r8-autocomplete__loading", container.dataset.r8LoadingLabel?.trim() || "Loading suggestions...");
+    const triggerOnFocus = container.dataset.r8TriggerOnFocus !== "false";
+    const clearable = container.dataset.r8Clearable === "true" || clearButton instanceof HTMLElement;
+
     ensureId(panel, "r8-autocomplete-listbox");
     panel.setAttribute("role", "listbox");
 
     input.setAttribute("role", "combobox");
     input.setAttribute("aria-autocomplete", "list");
+    input.setAttribute("aria-haspopup", "listbox");
     input.setAttribute("aria-controls", panel.id);
     input.setAttribute("aria-expanded", "false");
     input.setAttribute("autocomplete", input.getAttribute("autocomplete") || "off");
     input.setAttribute("spellcheck", input.getAttribute("spellcheck") || "false");
 
     choiceStates.set(container, {
+      container,
+      kind: family.kind,
       trigger,
       panel,
       options,
       input,
       count,
+      clearButton,
+      emptyState,
+      loadingState,
+      triggerOnFocus,
+      clearable,
       activeOption: null,
       selectedOption: null,
     });
@@ -1112,17 +1234,26 @@
 
     trigger.addEventListener("click", () => {
       input.focus();
-      openFloating(container);
       filterAutocompleteOptions(container);
+      if (triggerOnFocus) {
+        openFloating(container);
+      }
     });
 
     input.addEventListener("focus", () => {
-      openFloating(container);
       filterAutocompleteOptions(container);
+      if (triggerOnFocus) {
+        openFloating(container);
+      }
     });
 
     input.addEventListener("input", () => {
       filterAutocompleteOptions(container);
+      if (triggerOnFocus || input.value.trim()) {
+        openFloating(container);
+      } else {
+        closeFloating(container);
+      }
     });
 
     input.addEventListener("keydown", (event) => {
@@ -1163,6 +1294,22 @@
         return;
       }
 
+      if (event.key === "Home" || event.key === "PageUp") {
+        event.preventDefault();
+        const firstOption = visibleOptions[0] || null;
+        setAutocompleteActiveOption(state, firstOption);
+        firstOption?.scrollIntoView({ block: "nearest" });
+        return;
+      }
+
+      if (event.key === "End" || event.key === "PageDown") {
+        event.preventDefault();
+        const lastOption = visibleOptions[visibleOptions.length - 1] || null;
+        setAutocompleteActiveOption(state, lastOption);
+        lastOption?.scrollIntoView({ block: "nearest" });
+        return;
+      }
+
       if (event.key === "Enter" && state.activeOption) {
         event.preventDefault();
         markChoiceSelection(container, state.activeOption, family);
@@ -1182,6 +1329,18 @@
       option.addEventListener("click", () => markChoiceSelection(container, option, family));
       bindKeyboardActivation(option, () => markChoiceSelection(container, option, family));
     });
+
+    if (clearButton instanceof HTMLElement) {
+      clearButton.hidden = true;
+      clearButton.addEventListener("mousedown", (event) => {
+        event.preventDefault();
+      });
+      clearButton.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        clearAutocomplete(container);
+      });
+    }
 
     const initialOption = options.find((option) => option.classList.contains("is-selected")) || null;
     if (initialOption) {

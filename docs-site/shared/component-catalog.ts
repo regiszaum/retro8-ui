@@ -1446,11 +1446,84 @@ const formComponents = [
     name: "Autocomplete",
     group: "form",
     summary: l(
-      "Campo com trigger e lista de sugestoes para busca rapida e escolha guiada.",
-      "Field with a trigger and suggestion list for quick search and guided selection.",
+      "Campo de busca com sugestoes locais, teclado, clear opcional e suporte a estados de loading, empty e templates mais ricos nas options.",
+      "Search field with local suggestions, keyboard support, optional clear, and support for loading, empty, and richer option templates.",
     ),
-    classes: ["r8-autocomplete", "r8-autocomplete__trigger", "r8-autocomplete__input", "r8-autocomplete__menu", "r8-autocomplete__option"],
-    preview: `<div class="r8-autocomplete">
+    classes: [
+      "r8-autocomplete",
+      "r8-autocomplete__trigger",
+      "r8-autocomplete__input",
+      "r8-autocomplete__clear",
+      "r8-autocomplete__menu",
+      "r8-autocomplete__option",
+      "r8-autocomplete__empty",
+      "r8-autocomplete__loading",
+    ],
+    preview: `<div class="docs-demo__stack">
+  <div
+    class="r8-autocomplete"
+    data-r8-clearable="true"
+    data-r8-empty-label="No pilots matched this query."
+  >
+    <div class="r8-autocomplete__trigger">
+      <input
+        class="r8-autocomplete__input"
+        type="text"
+        placeholder="Search pilot..."
+        aria-label="Search pilot"
+      />
+      <button class="r8-autocomplete__clear" type="button" aria-label="Clear search">X</button>
+      <span class="r8-badge" data-r8-autocomplete-count>4</span>
+    </div>
+    <div class="r8-autocomplete__menu" hidden>
+      <div class="r8-autocomplete__option" data-r8-search="pix-07 vanguard scout recon" data-r8-value="PIX-07 Vanguard">
+        <strong>PIX-07 Vanguard</strong>
+        <p class="r8-text r8-text--xs r8-text--muted">Recon pilot / scout division</p>
+      </div>
+      <div class="r8-autocomplete__option" data-r8-search="pix-11 sentinel support command" data-r8-value="PIX-11 Sentinel">
+        <strong>PIX-11 Sentinel</strong>
+        <p class="r8-text r8-text--xs r8-text--muted">Support wing / command relay</p>
+      </div>
+      <div class="r8-autocomplete__option" data-r8-search="pix-12 striker assault frontline" data-r8-value="PIX-12 Striker">
+        <strong>PIX-12 Striker</strong>
+        <p class="r8-text r8-text--xs r8-text--muted">Frontline assault / breach lead</p>
+      </div>
+      <div class="r8-autocomplete__option" data-r8-search="pix-21 oracle analyst intel" data-r8-value="PIX-21 Oracle">
+        <strong>PIX-21 Oracle</strong>
+        <p class="r8-text r8-text--xs r8-text--muted">Intel analyst / route prediction</p>
+      </div>
+      <div class="r8-autocomplete__empty" hidden>No pilots matched this query.</div>
+      <div class="r8-autocomplete__loading" hidden>Loading suggestions...</div>
+    </div>
+  </div>
+
+  <div
+    class="r8-autocomplete"
+    data-r8-trigger-on-focus="false"
+    data-r8-loading="true"
+    data-r8-loading-label="Syncing remote routes..."
+  >
+    <div class="r8-autocomplete__trigger">
+      <input
+        class="r8-autocomplete__input"
+        type="text"
+        placeholder="Search route..."
+        aria-label="Search route"
+      />
+      <span class="r8-badge" data-r8-autocomplete-count>0</span>
+    </div>
+    <div class="r8-autocomplete__menu" hidden>
+      <div class="r8-autocomplete__loading" hidden>Syncing remote routes...</div>
+      <div class="r8-autocomplete__empty" hidden>No routes available.</div>
+    </div>
+  </div>
+</div>`,
+    code: `<div
+  class="r8-autocomplete"
+  data-r8-clearable="true"
+  data-r8-trigger-on-focus="false"
+  data-r8-empty-label="No pilots matched this query."
+>
   <div class="r8-autocomplete__trigger">
     <input
       class="r8-autocomplete__input"
@@ -1458,23 +1531,90 @@ const formComponents = [
       placeholder="Search pilot..."
       aria-label="Search pilot"
     />
+    <button class="r8-autocomplete__clear" type="button" aria-label="Clear search">X</button>
     <span class="r8-badge" data-r8-autocomplete-count>4</span>
   </div>
+
   <div class="r8-autocomplete__menu" hidden>
-    <div class="r8-autocomplete__option" data-r8-search="pix-07 vanguard scout recon">
-      PIX-07 Vanguard
+    <div class="r8-autocomplete__option" data-r8-value="PIX-07 Vanguard" data-r8-search="recon scout">
+      <strong>PIX-07 Vanguard</strong>
+      <p class="r8-text r8-text--xs r8-text--muted">Recon pilot / scout division</p>
     </div>
-    <div class="r8-autocomplete__option" data-r8-search="pix-11 sentinel support command">
-      PIX-11 Sentinel
+    <div class="r8-autocomplete__option" data-r8-value="PIX-11 Sentinel" data-r8-search="support command">
+      <strong>PIX-11 Sentinel</strong>
+      <p class="r8-text r8-text--xs r8-text--muted">Support wing / command relay</p>
     </div>
-    <div class="r8-autocomplete__option" data-r8-search="pix-12 striker assault frontline">
-      PIX-12 Striker
-    </div>
-    <div class="r8-autocomplete__option" data-r8-search="pix-21 oracle analyst intel">
-      PIX-21 Oracle
-    </div>
+    <div class="r8-autocomplete__empty" hidden>No pilots matched this query.</div>
+    <div class="r8-autocomplete__loading" hidden>Loading suggestions...</div>
   </div>
 </div>`,
+    anatomy: ll(
+      [
+        "`r8-autocomplete` e o wrapper raiz que conecta trigger, input, panel e options no mesmo scope do runtime.",
+        "`r8-autocomplete__trigger` agrupa o input, o clear opcional e um badge de contagem ou feedback curto.",
+        "`r8-autocomplete__option` aceita markup rico; use `data-r8-value` para controlar o texto que volta ao input e `data-r8-search` para indexacao extra.",
+        "`r8-autocomplete__empty` e `r8-autocomplete__loading` funcionam como feedback visual para busca vazia ou remota.",
+        "`r8-autocomplete__clear` e opcional e aparece apenas quando o scope estiver marcado como clearable e houver texto digitado.",
+      ],
+      [
+        "`r8-autocomplete` is the root wrapper that keeps trigger, input, panel, and options in the same runtime scope.",
+        "`r8-autocomplete__trigger` groups the input, optional clear action, and a count badge or short feedback token.",
+        "`r8-autocomplete__option` accepts richer markup; use `data-r8-value` to control the text written back to the input and `data-r8-search` for extra indexing.",
+        "`r8-autocomplete__empty` and `r8-autocomplete__loading` work as visual feedback for empty or remote states.",
+        "`r8-autocomplete__clear` is optional and only appears when the scope is marked as clearable and the field has typed text.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Mantenha `aria-label` ou um label visivel associado ao input, porque o campo atua como combobox e precisa de nome acessivel claro.",
+        "Quando usar markup rico nas options, preserve um `data-r8-value` curto e objetivo para o valor que volta ao input.",
+        "Use `data-r8-trigger-on-focus=\"false\"` quando a lista so fizer sentido depois da primeira digitacao, evitando ruído na abertura do campo.",
+        "Em loading remoto, prefira feedback textual visivel e atualize as options no DOM antes de chamar `Retro8UI.refresh()` no subtree.",
+      ],
+      [
+        "Keep `aria-label` or a visible associated label on the input, because the field behaves like a combobox and needs a clear accessible name.",
+        "When using richer option markup, keep a short `data-r8-value` for the value written back to the input.",
+        "Use `data-r8-trigger-on-focus=\"false\"` when the list only makes sense after the first keystroke, avoiding noisy open-on-focus behavior.",
+        "For remote loading, prefer visible textual feedback and update the options in the DOM before calling `Retro8UI.refresh()` on the subtree.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-autocomplete",
+        description: l(
+          "Wrapper base do combobox, com filtro local, teclado e selecao sincronizados pelo runtime.",
+          "Base combobox wrapper with local filtering, keyboard navigation, and selection synchronized by the runtime.",
+        ),
+      },
+      {
+        name: "r8-autocomplete__trigger / __input / __menu / __option",
+        description: l(
+          "Partes semanticas do componente para trigger, campo digitavel, lista e items selecionaveis.",
+          "Semantic parts for the trigger, typing field, list, and selectable items.",
+        ),
+      },
+      {
+        name: "r8-autocomplete__clear / __empty / __loading",
+        description: l(
+          "Elementos opcionais para limpar o campo e comunicar estados de vazio ou carregamento sem CSS ad-hoc.",
+          "Optional elements for clearing the field and communicating empty or loading states without ad-hoc CSS.",
+        ),
+      },
+      {
+        name: "data-r8-clearable / data-r8-trigger-on-focus / data-r8-empty-label / data-r8-loading / data-r8-loading-label",
+        description: l(
+          "Helpers declarativos para controlar abertura no foco, clear, feedback vazio e loading remoto pelo proprio markup.",
+          "Declarative helpers for controlling open-on-focus, clear behavior, empty feedback, and remote loading through markup itself.",
+        ),
+      },
+      {
+        name: "data-r8-value / data-r8-search",
+        description: l(
+          "Permitem separar o texto exibido no option do valor final e enriquecer a indexacao do filtro local.",
+          "Let you separate the visible option text from the final value and enrich local filter indexing.",
+        ),
+      },
+    ],
   },
   {
     id: "cascader",

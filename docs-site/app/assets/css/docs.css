@@ -1207,6 +1207,7 @@ pre {
   margin-top: 1rem;
 }
 
+.docs-autocomplete-playground,
 .docs-button-playground,
 .docs-border-playground,
 .docs-config-provider-playground,
@@ -1219,6 +1220,12 @@ pre {
   margin-bottom: 1rem;
 }
 
+.docs-autocomplete-playground__header,
+.docs-autocomplete-playground__intro,
+.docs-autocomplete-playground__controls,
+.docs-autocomplete-playground__preview,
+.docs-autocomplete-playground__events,
+.docs-autocomplete-playground__markup,
 .docs-button-playground__header,
 .docs-button-playground__intro,
 .docs-button-playground__controls,
@@ -1269,6 +1276,7 @@ pre {
   gap: 0.75rem;
 }
 
+.docs-autocomplete-playground__header,
 .docs-button-playground__header,
 .docs-border-playground__header,
 .docs-config-provider-playground__header,
@@ -1282,6 +1290,7 @@ pre {
   align-items: start;
 }
 
+.docs-autocomplete-playground__intro > .docs-panel__meta,
 .docs-button-playground__intro > .docs-panel__meta,
 .docs-border-playground__intro > .docs-panel__meta,
 .docs-config-provider-playground__intro > .docs-panel__meta,
@@ -1294,6 +1303,7 @@ pre {
   margin: 0;
 }
 
+.docs-autocomplete-playground__body,
 .docs-button-playground__body,
 .docs-border-playground__body,
 .docs-config-provider-playground__body,
@@ -1309,6 +1319,7 @@ pre {
   align-items: start;
 }
 
+.docs-autocomplete-playground__field-grid,
 .docs-button-playground__field-grid,
 .docs-border-playground__field-grid,
 .docs-config-provider-playground__field-grid,
@@ -1323,6 +1334,7 @@ pre {
   grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
 }
 
+.docs-autocomplete-playground__toggles,
 .docs-button-playground__toggles,
 .docs-border-playground__toggles,
 .docs-config-provider-playground__toggles,
@@ -1336,6 +1348,7 @@ pre {
   gap: 0.6rem;
 }
 
+.docs-autocomplete-playground__stage,
 .docs-button-playground__stage,
 .docs-border-playground__stage,
 .docs-config-provider-playground__stage,
@@ -1381,6 +1394,7 @@ pre {
   margin: 0;
 }
 
+.docs-autocomplete-playground__code,
 .docs-button-playground__code,
 .docs-border-playground__code,
 .docs-config-provider-playground__code,
@@ -1400,6 +1414,18 @@ pre {
   font-size: 0.84rem;
   line-height: 1.7;
   white-space: pre-wrap;
+}
+
+.docs-autocomplete-playground__surface {
+  width: min(100%, 34rem);
+}
+
+.docs-autocomplete-playground__surface > .r8-autocomplete {
+  width: 100%;
+}
+
+.docs-autocomplete-playground__surface .r8-text {
+  margin: 0;
 }
 
 .docs-color-playground__surface {
@@ -1456,6 +1482,7 @@ pre {
   margin: 0;
 }
 
+.docs-autocomplete-playground__event-log,
 .docs-splitter-playground__event-log {
   display: grid;
   gap: 0.35rem;
@@ -1464,6 +1491,7 @@ pre {
   background: color-mix(in srgb, var(--docs-panel-surface) 90%, var(--docs-panel-bg) 10%);
 }
 
+.docs-autocomplete-playground__event-log > .r8-text,
 .docs-splitter-playground__event-log > .r8-text {
   margin: 0;
 }
@@ -1764,6 +1792,7 @@ dialog.r8-dialog {
     grid-template-columns: 1fr;
   }
 
+  .docs-autocomplete-playground__body,
   .docs-button-playground__body,
   .docs-border-playground__body,
   .docs-config-provider-playground__body,
@@ -1845,6 +1874,7 @@ dialog.r8-dialog {
     text-align: left;
   }
 
+  .docs-autocomplete-playground__header,
   .docs-button-playground__header,
   .docs-border-playground__header,
   .docs-config-provider-playground__header,
@@ -1857,6 +1887,7 @@ dialog.r8-dialog {
     grid-template-columns: 1fr;
   }
 
+  .docs-autocomplete-playground__field-grid,
   .docs-button-playground__field-grid,
   .docs-border-playground__field-grid,
   .docs-config-provider-playground__field-grid,

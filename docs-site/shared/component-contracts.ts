@@ -352,6 +352,61 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         ],
       });
       break;
+    case "autocomplete":
+      mergeContract(contract, {
+        dataAttributes: [
+          row(
+            "data-r8-clearable",
+            `"true" | "false"`,
+            `"false"`,
+            "Exibe `r8-autocomplete__clear` quando houver texto digitado, sem precisar de JS customizado no host app.",
+            "Shows `r8-autocomplete__clear` when the field has typed content, without needing custom host-app JS.",
+          ),
+          row(
+            "data-r8-trigger-on-focus",
+            `"true" | "false"`,
+            `"true"`,
+            "Define se o menu abre ao focar o input ou apenas depois da primeira digitacao.",
+            "Defines whether the menu opens on input focus or only after the first typed character.",
+          ),
+          row(
+            "data-r8-empty-label",
+            "string",
+            `"No matches found"`,
+            "Texto exibido em `r8-autocomplete__empty` quando nenhum item visivel combina com a busca atual.",
+            "Text shown inside `r8-autocomplete__empty` when no visible item matches the current query.",
+          ),
+          row(
+            "data-r8-loading",
+            `"true" | "false"`,
+            `"false"`,
+            "Forca o estado de loading, oculta as options temporariamente e prioriza o feedback de busca remota.",
+            "Forces the loading state, temporarily hides options, and prioritizes remote-search feedback.",
+          ),
+          row(
+            "data-r8-loading-label",
+            "string",
+            `"Loading suggestions..."`,
+            "Texto exibido em `r8-autocomplete__loading` enquanto o scope estiver em loading.",
+            "Text shown inside `r8-autocomplete__loading` while the scope remains in loading state.",
+          ),
+        ],
+        events: [
+          event(
+            "r8:autocomplete-select",
+            `{ value, text, option }`,
+            "Emitido quando o Autocomplete confirma uma sugestao e escreve o valor final no input.",
+            "Emitted when Autocomplete confirms a suggestion and writes the final value back to the input.",
+          ),
+          event(
+            "r8:autocomplete-clear",
+            `{ value, text }`,
+            "Emitido quando a action de clear limpa o campo e remove a sugestao selecionada.",
+            "Emitted when the clear action resets the field and removes the selected suggestion.",
+          ),
+        ],
+      });
+      break;
     case "cascader":
       mergeContract(contract, {
         attributes: [

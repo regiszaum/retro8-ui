@@ -275,6 +275,7 @@
   .r8-datetime-picker__trigger:focus-visible,
   .r8-select__trigger:focus-visible,
   .r8-autocomplete__option:focus-visible,
+  .r8-autocomplete__clear:focus-visible,
   .r8-cascader__option:focus-visible,
   .r8-select__option:focus-visible,
   .r8-color-picker__swatch:focus-visible,
@@ -417,6 +418,27 @@
     opacity: 1;
   }
 
+  .r8-autocomplete__clear {
+    align-items: center;
+    background: var(--r8-color-surface-raised);
+    border: var(--r8-border-thick) solid var(--r8-color-border);
+    box-shadow: var(--r8-shadow-sm);
+    color: var(--r8-color-ink);
+    cursor: pointer;
+    display: inline-flex;
+    flex: 0 0 auto;
+    font-family: var(--r8-font-display);
+    font-size: var(--r8-font-size-xs);
+    justify-content: center;
+    min-height: 1.7rem;
+    min-width: 1.7rem;
+    padding: 0;
+  }
+
+  .r8-autocomplete__clear[hidden] {
+    display: none;
+  }
+
   .r8-cascader__trigger [data-r8-choice-display].is-placeholder {
     color: var(--r8-color-ink-muted);
   }
@@ -476,6 +498,8 @@
   }
 
   .r8-autocomplete__option,
+  .r8-autocomplete__empty,
+  .r8-autocomplete__loading,
   .r8-cascader__option,
   .r8-select__option {
     background: var(--r8-color-surface-3);
@@ -487,6 +511,45 @@
     line-height: 1.45;
     min-height: 2.5rem;
     padding: var(--r8-space-3);
+  }
+
+  .r8-autocomplete__option {
+    align-content: start;
+    display: grid;
+    gap: var(--r8-space-1);
+  }
+
+  .r8-autocomplete__option > :where(strong, .r8-text) {
+    margin: 0;
+  }
+
+  .r8-autocomplete__empty,
+  .r8-autocomplete__loading {
+    cursor: default;
+  }
+
+  .r8-autocomplete__empty {
+    color: var(--r8-color-ink-muted);
+  }
+
+  .r8-autocomplete__loading {
+    align-items: center;
+    display: inline-flex;
+    gap: var(--r8-space-3);
+  }
+
+  .r8-autocomplete__empty[hidden],
+  .r8-autocomplete__loading[hidden] {
+    display: none;
+  }
+
+  .r8-autocomplete__loading::before {
+    animation: r8-autocomplete-blink 560ms steps(2, end) infinite;
+    content: ">";
+    display: inline-flex;
+    font-family: var(--r8-font-display);
+    font-size: 0.75rem;
+    line-height: 1;
   }
 
   .r8-autocomplete__option.is-active:not(.is-selected) {
@@ -505,6 +568,18 @@
 
   .r8-select__option.is-active:not(.is-selected) {
     background: var(--r8-color-surface-2);
+  }
+
+  @keyframes r8-autocomplete-blink {
+    0%,
+    49% {
+      opacity: 1;
+    }
+
+    50%,
+    100% {
+      opacity: 0.2;
+    }
   }
 
   .r8-cascader__trail,
