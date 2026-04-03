@@ -1822,20 +1822,110 @@ const formComponents = [
     name: "Checkbox",
     group: "form",
     summary: l(
-      "Controle binario para multiplas selecoes com caixa retro e feedback visual imediato.",
-      "Binary control for multiple selections with a retro box and immediate visual feedback.",
+      "Controle binario para listas, preferencias e padroes de 'check all', com suporte a estado misto, tamanho e shell opcional com borda.",
+      "Binary control for lists, preferences, and 'check all' patterns, with support for mixed state, sizing, and an optional bordered shell.",
     ),
-    classes: ["r8-checkbox", "r8-checkbox__box"],
+    classes: [
+      "r8-checkbox",
+      "r8-checkbox__box",
+      "r8-checkbox--sm",
+      "r8-checkbox--lg",
+      "r8-checkbox--bordered",
+      "is-checked",
+      "is-indeterminate",
+    ],
     preview: `<div class="r8-stack">
   <label class="r8-checkbox is-checked">
     <span class="r8-checkbox__box" aria-hidden="true"></span>
     <span>Enable scanlines</span>
   </label>
-  <label class="r8-checkbox">
+  <label class="r8-checkbox" data-r8-border="true" data-r8-indeterminate="true" aria-checked="mixed">
     <span class="r8-checkbox__box" aria-hidden="true"></span>
-    <span>Mute sound effects</span>
+    <span>Sync selected modules only</span>
+  </label>
+  <label class="r8-checkbox" data-r8-size="lg" aria-disabled="true">
+    <span class="r8-checkbox__box" aria-hidden="true"></span>
+    <span>Locked by mission policy</span>
   </label>
 </div>`,
+    code: `<label
+  class="r8-checkbox"
+  data-r8-size="lg"
+  data-r8-border="true"
+  data-r8-indeterminate="true"
+  aria-checked="mixed"
+  aria-label="Partial module selection"
+>
+  <span class="r8-checkbox__box" aria-hidden="true"></span>
+  <span>Sync selected modules only</span>
+</label>`,
+    anatomy: ll(
+      [
+        "`r8-checkbox` e o host clicavel que recebe estado, foco e os helpers declarativos do componente.",
+        "`r8-checkbox__box` desenha a caixa pixelada, o checkmark e a barra do estado misto.",
+        "O texto ao lado do box funciona como label visivel e ajuda a ampliar a area de clique.",
+        "`data-r8-indeterminate=\"true\"` e `aria-checked=\"mixed\"` comunicam selecao parcial sem inventar markup extra.",
+        "`data-r8-size` e `data-r8-border` ajustam footprint e shell visual sem trocar a estrutura base.",
+      ],
+      [
+        "`r8-checkbox` is the clickable host that receives state, focus, and the component's declarative helpers.",
+        "`r8-checkbox__box` draws the pixel box, the checkmark, and the mixed-state dash.",
+        "The text beside the box acts as the visible label and enlarges the click target.",
+        "`data-r8-indeterminate=\"true\"` plus `aria-checked=\"mixed\"` communicate partial selection without extra markup.",
+        "`data-r8-size` and `data-r8-border` adjust footprint and shell styling without changing the base structure.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Mantenha texto visivel ou `aria-label` quando o copy ao lado do controle nao explicar a acao sozinho.",
+        "Use `aria-checked=\"mixed\"` apenas para estados parciais, como um parent control que resume um grupo.",
+        "Em hosts nao nativos, prefira `aria-disabled=\"true\"` para expor bloqueio sem perder semantica.",
+        "Se o state precisar participar de submit HTML tradicional, espelhe o valor em um input nativo ou hidden controlado pela aplicacao hospedeira.",
+      ],
+      [
+        "Keep visible text or an `aria-label` when the copy beside the control does not fully explain the action.",
+        "Use `aria-checked=\"mixed\"` only for partial states, such as a parent control summarizing a group.",
+        "On non-native hosts, prefer `aria-disabled=\"true\"` so the blocked state remains semantic.",
+        "If the state must participate in traditional HTML form submission, mirror it into a native or hidden input controlled by the host application.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-checkbox / r8-checkbox__box",
+        description: l(
+          "Root clicavel e caixa visual que sustentam o estado binario sem depender de wrappers extras.",
+          "Clickable root and visual box that carry the binary state without extra wrappers.",
+        ),
+      },
+      {
+        name: "r8-checkbox--sm / --lg / --bordered",
+        description: l(
+          "Modifiers para reduzir, ampliar ou envolver o controle em um shell com borda sem trocar o markup base.",
+          "Modifiers for compact, large, or bordered treatments without replacing the base markup.",
+        ),
+      },
+      {
+        name: "data-r8-size / data-r8-border / data-r8-indeterminate",
+        description: l(
+          "Helpers declarativos para tamanho, shell com borda e estado misto antes da primeira interacao do usuario.",
+          "Declarative helpers for size, bordered shell, and mixed state before the user's first interaction.",
+        ),
+      },
+      {
+        name: "aria-checked=\"mixed\" / aria-disabled=\"true\"",
+        description: l(
+          "Explicita estados parcial e desabilitado quando o host nao e um input nativo.",
+          "Makes partial and disabled states explicit when the host is not a native input.",
+        ),
+      },
+      {
+        name: "r8:binary-change",
+        description: l(
+          "Evento emitido quando o Checkbox muda de estado, incluindo o recorte de `indeterminate` no payload.",
+          "Event emitted when Checkbox changes state, including the `indeterminate` slice in the payload.",
+        ),
+      },
+    ],
   },
   {
     id: "color-picker",

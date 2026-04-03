@@ -3142,9 +3142,64 @@
     });
   }
 
-  function setBinaryState(control, checked) {
-    control.classList.toggle("is-checked", checked);
-    control.setAttribute("aria-checked", checked ? "true" : "false");
+  function syncCheckboxModifiers(control) {
+    if (!(control instanceof HTMLElement) || !control.classList.contains("r8-checkbox")) {
+      return;
+    }
+
+    const sizeValue = control.dataset.r8Size || "";
+    const hasSizeBinding = Object.prototype.hasOwnProperty.call(control.dataset, "r8Size");
+    const hasBorderBinding = Object.prototype.hasOwnProperty.call(control.dataset, "r8Border");
+
+    if (hasSizeBinding) {
+      control.classList.remove("r8-checkbox--sm", "r8-checkbox--lg");
+
+      if (sizeValue === "sm") {
+        control.classList.add("r8-checkbox--sm");
+      } else if (sizeValue === "lg") {
+        control.classList.add("r8-checkbox--lg");
+      }
+    }
+
+    if (hasBorderBinding) {
+      control.classList.toggle("r8-checkbox--bordered", matchesTrue(control.dataset.r8Border || "false"));
+    }
+  }
+
+  function readBinaryState(control, kind) {
+    const ariaState = control.getAttribute("aria-checked");
+    const indeterminate =
+      kind === "checkbox" &&
+      (matchesTrue(control.dataset.r8Indeterminate || "false") ||
+        control.classList.contains("is-indeterminate") ||
+        ariaState === "mixed");
+    const checked = !indeterminate && (control.classList.contains("is-checked") || ariaState === "true");
+
+    return {
+      checked,
+      indeterminate,
+    };
+  }
+
+  function isBinaryDisabled(control) {
+    return (
+      isElement(control) &&
+      (control.hasAttribute("disabled") ||
+        control.getAttribute("aria-disabled") === "true" ||
+        control.classList.contains("is-disabled"))
+    );
+  }
+
+  function setBinaryState(control, checked, options = {}) {
+    const indeterminate = control.classList.contains("r8-checkbox") && options.indeterminate === true;
+
+    control.classList.toggle("is-indeterminate", indeterminate);
+    control.classList.toggle("is-checked", checked && !indeterminate);
+    control.setAttribute("aria-checked", indeterminate ? "mixed" : checked ? "true" : "false");
+
+    if (control.classList.contains("r8-checkbox") && Object.prototype.hasOwnProperty.call(control.dataset, "r8Indeterminate")) {
+      control.dataset.r8Indeterminate = indeterminate ? "true" : "false";
+    }
   }
 
   function findRadioGroup(control) {
@@ -3159,11 +3214,10 @@
 
   function initBinaryControls(root) {
     toArray(root.querySelectorAll(".r8-checkbox, .r8-radio, .r8-switch, .r8-theme-switch")).forEach((control) => {
-      if (!(control instanceof HTMLElement) || control.dataset.r8BinaryReady === "true") {
+      if (!(control instanceof HTMLElement)) {
         return;
       }
 
-      control.dataset.r8BinaryReady = "true";
       const kind = control.classList.contains("r8-radio")
         ? "radio"
         : control.classList.contains("r8-theme-switch")
@@ -3171,24 +3225,41 @@
           : control.classList.contains("r8-switch")
           ? "switch"
           : "checkbox";
+      const state = readBinaryState(control, kind);
+
+      syncCheckboxModifiers(control);
+      setBinaryState(control, state.checked, { indeterminate: state.indeterminate });
+
+      if (control.dataset.r8BinaryReady === "true") {
+        return;
+      }
+
+      control.dataset.r8BinaryReady = "true";
 
       prepareActionLikeElement(control, kind === "switch" || kind === "theme-switch" ? "switch" : kind);
-      setBinaryState(control, control.classList.contains("is-checked") || control.getAttribute("aria-checked") === "true");
 
       const toggle = () => {
+        if (isBinaryDisabled(control)) {
+          return;
+        }
+
         if (kind === "radio") {
-          findRadioGroup(control).forEach((item) => setBinaryState(item, item === control));
+          findRadioGroup(control).forEach((item) => setBinaryState(item, item === control, { indeterminate: false }));
           emitComponentEvent(control, "binary-change", {
             checked: true,
             kind,
+            indeterminate: false,
           });
           return;
         }
 
-        setBinaryState(control, !control.classList.contains("is-checked"));
+        const nextChecked = control.classList.contains("is-indeterminate") ? true : !control.classList.contains("is-checked");
+
+        setBinaryState(control, nextChecked, { indeterminate: false });
         emitComponentEvent(control, "binary-change", {
           checked: control.classList.contains("is-checked"),
           kind,
+          indeterminate: false,
         });
       };
 

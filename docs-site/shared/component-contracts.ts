@@ -267,10 +267,10 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
       attributes: [
         row(
           "aria-checked",
-          "boolean",
+          `"true" | "false" | "mixed"`,
           "false",
-          `State binario controlado pelo runtime de ${component.name}.`,
-          `Binary state controlled by the ${component.name} runtime.`,
+          `State binario controlado pelo runtime de ${component.name}; Checkbox tambem pode usar o valor misto.`,
+          `Binary state controlled by the ${component.name} runtime; Checkbox can also use the mixed value.`,
         ),
         row(
           "disabled",
@@ -284,15 +284,81 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
       events: [
         event(
           "r8:binary-change",
-          `{ checked, kind }`,
+          `{ checked, kind, indeterminate }`,
           "Emitido quando checkbox, radio, switch ou theme switch muda de state.",
-          "Emitted when a checkbox, radio, switch or theme switch changes state.",
+          "Emitted when a checkbox, radio, switch, or theme switch changes state.",
         ),
       ],
     });
   }
 
   switch (component.id) {
+    case "checkbox":
+      mergeContract(contract, {
+        attributes: [
+          row(
+            "aria-disabled",
+            "boolean",
+            "false",
+            "Use em hosts customizados quando o Checkbox nao for um input nativo e precisar expor bloqueio semanticamente.",
+            "Use it on custom hosts when Checkbox is not a native input and still needs to expose a blocked state semantically.",
+          ),
+        ],
+        dataAttributes: [
+          row(
+            "data-r8-size",
+            `"sm" | "md" | "lg"`,
+            `"md"`,
+            "Aplica escala compacta ou ampliada no Checkbox sem trocar a classe base.",
+            "Applies a compact or larger Checkbox scale without replacing the base class.",
+          ),
+          row(
+            "data-r8-border",
+            `"true" | "false"`,
+            `"false"`,
+            "Ativa um shell com borda em volta do controle, util para listas selecionaveis e cards curtos.",
+            "Turns on a bordered shell around the control, useful for selectable lists and short cards.",
+          ),
+          row(
+            "data-r8-indeterminate",
+            `"true" | "false"`,
+            `"false"`,
+            "Inicializa o Checkbox em estado misto e sincroniza `aria-checked=\"mixed\"` no host.",
+            "Boots Checkbox in a mixed state and keeps `aria-checked=\"mixed\"` in sync on the host.",
+          ),
+        ],
+        cssVariables: [
+          row(
+            "--r8-checkbox-box-size",
+            "length",
+            "1.25rem",
+            "Controla o tamanho da caixa pixelada antes dos modifiers `sm` e `lg` ajustarem a escala.",
+            "Controls the pixel box size before the `sm` and `lg` modifiers adjust the scale.",
+          ),
+          row(
+            "--r8-checkbox-mark-size",
+            "length",
+            "0.55rem",
+            "Define a escala visual do X e ajuda a equilibrar o dash do estado misto.",
+            "Defines the visual scale of the X mark and helps balance the mixed-state dash.",
+          ),
+          row(
+            "--r8-checkbox-gap",
+            "length",
+            "var(--r8-space-3)",
+            "Ajusta a distancia entre a caixa e o label sem alterar a estrutura do host.",
+            "Adjusts the distance between the box and the label without changing the host structure.",
+          ),
+          row(
+            "--r8-checkbox-shell-bg / --r8-checkbox-shell-padding / --r8-checkbox-shell-shadow",
+            "color | length | box-shadow",
+            "theme defaults",
+            "Permitem personalizar o shell do modifier `r8-checkbox--bordered` sem sobrescrever toda a regra.",
+            "Let you customize the `r8-checkbox--bordered` shell without overriding the whole rule.",
+          ),
+        ],
+      });
+      break;
     case "button":
       mergeContract(contract, {
         attributes: [

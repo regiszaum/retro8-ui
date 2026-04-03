@@ -1219,6 +1219,7 @@ pre {
 .docs-button-playground,
 .docs-border-playground,
 .docs-cascader-playground,
+.docs-checkbox-playground,
 .docs-config-provider-playground,
 .docs-color-playground,
 .docs-icon-playground,
@@ -1241,6 +1242,12 @@ pre {
 .docs-cascader-playground__preview,
 .docs-cascader-playground__events,
 .docs-cascader-playground__markup,
+.docs-checkbox-playground__header,
+.docs-checkbox-playground__intro,
+.docs-checkbox-playground__controls,
+.docs-checkbox-playground__preview,
+.docs-checkbox-playground__events,
+.docs-checkbox-playground__markup,
 .docs-button-playground__header,
 .docs-button-playground__intro,
 .docs-button-playground__controls,
@@ -1293,6 +1300,7 @@ pre {
 
 .docs-autocomplete-playground__header,
 .docs-cascader-playground__header,
+.docs-checkbox-playground__header,
 .docs-button-playground__header,
 .docs-border-playground__header,
 .docs-config-provider-playground__header,
@@ -1308,6 +1316,7 @@ pre {
 
 .docs-autocomplete-playground__intro > .docs-panel__meta,
 .docs-cascader-playground__intro > .docs-panel__meta,
+.docs-checkbox-playground__intro > .docs-panel__meta,
 .docs-button-playground__intro > .docs-panel__meta,
 .docs-border-playground__intro > .docs-panel__meta,
 .docs-config-provider-playground__intro > .docs-panel__meta,
@@ -1322,6 +1331,7 @@ pre {
 
 .docs-autocomplete-playground__body,
 .docs-cascader-playground__body,
+.docs-checkbox-playground__body,
 .docs-button-playground__body,
 .docs-border-playground__body,
 .docs-config-provider-playground__body,
@@ -1339,6 +1349,7 @@ pre {
 
 .docs-autocomplete-playground__field-grid,
 .docs-cascader-playground__field-grid,
+.docs-checkbox-playground__field-grid,
 .docs-button-playground__field-grid,
 .docs-border-playground__field-grid,
 .docs-config-provider-playground__field-grid,
@@ -1355,6 +1366,7 @@ pre {
 
 .docs-autocomplete-playground__toggles,
 .docs-cascader-playground__toggles,
+.docs-checkbox-playground__toggles,
 .docs-button-playground__toggles,
 .docs-border-playground__toggles,
 .docs-config-provider-playground__toggles,
@@ -1370,6 +1382,7 @@ pre {
 
 .docs-autocomplete-playground__stage,
 .docs-cascader-playground__stage,
+.docs-checkbox-playground__stage,
 .docs-button-playground__stage,
 .docs-border-playground__stage,
 .docs-config-provider-playground__stage,
@@ -1417,6 +1430,7 @@ pre {
 
 .docs-autocomplete-playground__code,
 .docs-cascader-playground__code,
+.docs-checkbox-playground__code,
 .docs-button-playground__code,
 .docs-border-playground__code,
 .docs-config-provider-playground__code,
@@ -1456,6 +1470,22 @@ pre {
 
 .docs-cascader-playground__surface > .r8-cascader {
   width: 100%;
+}
+
+.docs-checkbox-playground__surface {
+  display: grid;
+  gap: 0.85rem;
+  width: min(100%, 30rem);
+}
+
+.docs-checkbox-playground__surface > .r8-checkbox {
+  width: fit-content;
+  max-width: 100%;
+}
+
+.docs-checkbox-playground__helper {
+  margin: 0;
+  max-width: 28rem;
 }
 
 .docs-color-playground__surface {
@@ -1514,6 +1544,7 @@ pre {
 
 .docs-autocomplete-playground__event-log,
 .docs-cascader-playground__event-log,
+.docs-checkbox-playground__event-log,
 .docs-splitter-playground__event-log {
   display: grid;
   gap: 0.35rem;
@@ -1524,6 +1555,7 @@ pre {
 
 .docs-autocomplete-playground__event-log > .r8-text,
 .docs-cascader-playground__event-log > .r8-text,
+.docs-checkbox-playground__event-log > .r8-text,
 .docs-splitter-playground__event-log > .r8-text {
   margin: 0;
 }
@@ -1826,6 +1858,7 @@ dialog.r8-dialog {
 
   .docs-autocomplete-playground__body,
   .docs-cascader-playground__body,
+  .docs-checkbox-playground__body,
   .docs-button-playground__body,
   .docs-border-playground__body,
   .docs-config-provider-playground__body,
@@ -1909,6 +1942,7 @@ dialog.r8-dialog {
 
   .docs-autocomplete-playground__header,
   .docs-cascader-playground__header,
+  .docs-checkbox-playground__header,
   .docs-button-playground__header,
   .docs-border-playground__header,
   .docs-config-provider-playground__header,
@@ -1923,6 +1957,7 @@ dialog.r8-dialog {
 
   .docs-autocomplete-playground__field-grid,
   .docs-cascader-playground__field-grid,
+  .docs-checkbox-playground__field-grid,
   .docs-button-playground__field-grid,
   .docs-border-playground__field-grid,
   .docs-config-provider-playground__field-grid,
