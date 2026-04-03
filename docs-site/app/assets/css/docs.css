@@ -1207,7 +1207,8 @@ pre {
   margin-top: 1rem;
 }
 
-.docs-button-playground {
+.docs-button-playground,
+.docs-border-playground {
   margin-bottom: 1rem;
 }
 
@@ -1215,40 +1216,51 @@ pre {
 .docs-button-playground__intro,
 .docs-button-playground__controls,
 .docs-button-playground__preview,
-.docs-button-playground__markup {
+.docs-button-playground__markup,
+.docs-border-playground__header,
+.docs-border-playground__intro,
+.docs-border-playground__controls,
+.docs-border-playground__preview,
+.docs-border-playground__markup {
   display: grid;
   gap: 0.75rem;
 }
 
-.docs-button-playground__header {
+.docs-button-playground__header,
+.docs-border-playground__header {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: start;
 }
 
-.docs-button-playground__intro > .docs-panel__meta {
+.docs-button-playground__intro > .docs-panel__meta,
+.docs-border-playground__intro > .docs-panel__meta {
   margin: 0;
 }
 
-.docs-button-playground__body {
+.docs-button-playground__body,
+.docs-border-playground__body {
   display: grid;
   grid-template-columns: minmax(18rem, 0.95fr) minmax(0, 1.05fr);
   gap: 1rem;
   align-items: start;
 }
 
-.docs-button-playground__field-grid {
+.docs-button-playground__field-grid,
+.docs-border-playground__field-grid {
   display: grid;
   gap: 0.85rem;
   grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
 }
 
-.docs-button-playground__toggles {
+.docs-button-playground__toggles,
+.docs-border-playground__toggles {
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem;
 }
 
-.docs-button-playground__stage {
+.docs-button-playground__stage,
+.docs-border-playground__stage {
   display: grid;
   gap: 1rem;
   align-content: start;
@@ -1264,7 +1276,17 @@ pre {
   width: min(100%, 22rem);
 }
 
-.docs-button-playground__code {
+.docs-border-playground__surface {
+  width: min(100%, 30rem);
+}
+
+.docs-border-playground__surface .r8-border-sample {
+  min-height: 10rem;
+  align-content: start;
+}
+
+.docs-button-playground__code,
+.docs-border-playground__code {
   margin: 0;
   padding: 0.9rem 1rem;
   overflow: auto;
@@ -1565,7 +1587,8 @@ dialog.r8-dialog {
     grid-template-columns: 1fr;
   }
 
-  .docs-button-playground__body {
+  .docs-button-playground__body,
+  .docs-border-playground__body {
     grid-template-columns: 1fr;
   }
 }
@@ -1638,11 +1661,13 @@ dialog.r8-dialog {
     text-align: left;
   }
 
-  .docs-button-playground__header {
+  .docs-button-playground__header,
+  .docs-border-playground__header {
     grid-template-columns: 1fr;
   }
 
-  .docs-button-playground__field-grid {
+  .docs-button-playground__field-grid,
+  .docs-border-playground__field-grid {
     grid-template-columns: 1fr;
   }
 

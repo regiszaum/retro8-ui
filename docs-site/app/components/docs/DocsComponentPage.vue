@@ -167,6 +167,7 @@ watch(
     </div>
 
     <DocsButtonPlayground v-if="component.id === 'button'" :site="site" />
+    <DocsBorderPlayground v-if="component.id === 'border'" :site="site" />
 
     <DocsCodeBlock
       :title="`${component.name} ${site.componentPage.htmlTitleSuffix}`"

@@ -318,6 +318,40 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         methods: runtimeMethods,
       });
       break;
+    case "border":
+      mergeContract(contract, {
+        cssVariables: [
+          row(
+            "--r8-border-sample-color",
+            "color",
+            "var(--r8-color-border)",
+            "Controla a cor efetiva da borda e da sombra seca quando o Border usa o estilo padrao.",
+            "Controls the effective border and dry-shadow color when Border uses the default style.",
+          ),
+          row(
+            "--r8-border-sample-width",
+            "length",
+            "var(--r8-border-thick)",
+            "Define a espessura base da moldura antes dos modifiers de lado unico entrarem em cena.",
+            "Defines the base frame thickness before single-edge modifiers kick in.",
+          ),
+          row(
+            "--r8-border-sample-shadow",
+            "box-shadow",
+            "4px 4px 0 0 var(--r8-border-sample-color)",
+            "Permite trocar, reduzir ou remover a sombra seca sem alterar as classes principais.",
+            "Lets you change, reduce or remove the dry shadow without altering the main classes.",
+          ),
+          row(
+            "--r8-border-sample-bg",
+            "color",
+            "var(--r8-color-surface)",
+            "Ajusta o preenchimento interno da surface sem quebrar o contorno semantico.",
+            "Adjusts the inner fill of the surface without breaking the semantic outline.",
+          ),
+        ],
+      });
+      break;
     case "cascader":
       mergeContract(contract, {
         attributes: [

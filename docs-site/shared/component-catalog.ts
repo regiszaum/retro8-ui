@@ -260,15 +260,136 @@ const basicComponents = [
     name: "Border",
     group: "basic",
     summary: l(
-      "Mostra combinacoes de borda dura e sombra seca para definir a textura visual do sistema.",
-      "Showcases hard-edge border and hard-shadow combinations that define the system texture.",
+      "Surface utilitaria para aplicar borda retro com controle de espessura, tom, lado isolado e modo ghost.",
+      "Utility surface for applying a retro border with control over width, tone, isolated edge and ghost mode.",
     ),
-    classes: ["r8-border-showcase", "r8-border-sample", "r8-border-sample--thin", "r8-border-sample--ghost"],
+    classes: [
+      "r8-border-showcase",
+      "r8-border-sample",
+      "r8-border-sample--thin",
+      "r8-border-sample--ghost",
+      "r8-border-sample--primary",
+      "r8-border-sample--secondary",
+      "r8-border-sample--success",
+      "r8-border-sample--info",
+      "r8-border-sample--danger",
+      "r8-border-sample--top",
+      "r8-border-sample--end",
+      "r8-border-sample--bottom",
+      "r8-border-sample--start",
+    ],
     preview: `<div class="r8-border-showcase">
-  <div class="r8-border-sample">Thick retro border</div>
-  <div class="r8-border-sample r8-border-sample--thin">Thin border</div>
-  <div class="r8-border-sample r8-border-sample--ghost">Ghost border</div>
+  <div class="r8-border-sample">
+    <strong>Default shell</strong>
+    <span>Thick border and dry shadow for framed surfaces.</span>
+  </div>
+  <div class="r8-border-sample r8-border-sample--thin">
+    <strong>Thin border</strong>
+    <span>Lighter edge for quieter containers and helper blocks.</span>
+  </div>
+  <div class="r8-border-sample r8-border-sample--primary">
+    <strong>Primary tone</strong>
+    <span>Use a semantic accent without replacing the base structure.</span>
+  </div>
+  <div class="r8-border-sample r8-border-sample--success r8-border-sample--top">
+    <strong>Top edge</strong>
+    <span>Single-edge border works well for separators and docked sections.</span>
+  </div>
+  <div class="r8-border-sample r8-border-sample--danger r8-border-sample--start">
+    <strong>Start edge</strong>
+    <span>A stronger side cue for alerts, status rails or pinned lists.</span>
+  </div>
+  <div class="r8-border-sample r8-border-sample--ghost">
+    <strong>Ghost border</strong>
+    <span>Transparent fill when only the outline should stay visible.</span>
+  </div>
 </div>`,
+    code: `<div class="r8-border-showcase">
+  <div class="r8-border-sample r8-border-sample--primary">
+    <strong>Primary frame</strong>
+    <span>Semantic accent using the default thick border.</span>
+  </div>
+
+  <div class="r8-border-sample r8-border-sample--thin r8-border-sample--bottom">
+    <strong>Bottom edge only</strong>
+    <span>Useful for stacked sections, list headers or inline separators.</span>
+  </div>
+
+  <div
+    class="r8-border-sample r8-border-sample--ghost"
+    style="
+      --r8-border-sample-color: var(--r8-color-tertiary-strong);
+      --r8-border-sample-width: 6px;
+      --r8-border-sample-shadow: none;
+    "
+  >
+    <strong>Custom variable override</strong>
+    <span>Dial the exact border color and width without creating a new modifier.</span>
+  </div>
+</div>`,
+    anatomy: ll(
+      [
+        "`r8-border-sample` e um wrapper visual generico para destacar blocos, avisos curtos, cards auxiliares e trilhos laterais.",
+        "Modifiers como `--thin` e `--ghost` ajustam peso e preenchimento sem trocar o elemento hospedeiro.",
+        "Tons semanticos como `--primary`, `--success` e `--danger` ajudam a puxar a borda para o contexto certo sem depender so do background.",
+        "Modifiers de lado unico como `--top`, `--end`, `--bottom` e `--start` funcionam bem para separadores, cabecalhos e faixas laterais.",
+      ],
+      [
+        "`r8-border-sample` is a generic visual wrapper for highlighted blocks, short notices, helper cards and side rails.",
+        "Modifiers such as `--thin` and `--ghost` adjust weight and fill without changing the host element.",
+        "Semantic tones like `--primary`, `--success` and `--danger` help pull the border into the right context without relying on the background alone.",
+        "Single-edge modifiers such as `--top`, `--end`, `--bottom` and `--start` work well for separators, headers and side rails.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Border e apenas tratamento visual; escolha o elemento semantico certo, como `<section>`, `<article>` ou `<aside>`, de acordo com o conteudo.",
+        "Nao dependa so da cor da borda para comunicar state critico ou sucesso; mantenha texto, icone ou label explicito.",
+        "Quando usar borda em um unico lado, preserve espacamento suficiente para que a faixa continue perceptivel sem colidir com o conteudo.",
+      ],
+      [
+        "Border is a visual treatment only; choose the right semantic host, such as `<section>`, `<article>` or `<aside>`, based on the content.",
+        "Do not rely on border color alone to communicate critical or success states; keep explicit text, icon or label support.",
+        "When using a single-edge border, preserve enough spacing so the rail stays visible without colliding with the content.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-border-sample",
+        description: l(
+          "Classe base para uma surface emoldurada com borda dura, fundo opcional e sombra seca no estilo Retro8 UI.",
+          "Base class for a framed surface with a hard border, optional fill and dry shadow in the Retro8 UI style.",
+        ),
+      },
+      {
+        name: "r8-border-sample--thin / --ghost",
+        description: l(
+          "Ajustam espessura e preenchimento para surfaces mais discretas ou outlines transparentes.",
+          "Adjust thickness and fill for quieter surfaces or transparent outlines.",
+        ),
+      },
+      {
+        name: "r8-border-sample--primary / --secondary / --success / --info / --danger",
+        description: l(
+          "Trocam o tom da borda usando cores semanticas ja presentes nos tokens da biblioteca.",
+          "Change the border tone using semantic colors already present in the library tokens.",
+        ),
+      },
+      {
+        name: "r8-border-sample--top / --end / --bottom / --start",
+        description: l(
+          "Mantem apenas uma face da borda visivel para casos de separacao, encaixe lateral ou destaque de faixa.",
+          "Keep only one border edge visible for separator, docked or side-rail scenarios.",
+        ),
+      },
+      {
+        name: "--r8-border-sample-*",
+        description: l(
+          "Custom properties para ajustar cor, largura, sombra e background sem precisar criar novos modifiers fixos.",
+          "Custom properties for dialing color, width, shadow and background without creating new fixed modifiers.",
+        ),
+      },
+    ],
   },
   {
     id: "color",

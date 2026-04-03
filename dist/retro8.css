@@ -425,8 +425,28 @@
     gap: var(--r8-space-4);
     grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
   }
-.r8-border-sample,
-  .r8-color-card,
+.r8-border-sample {
+    --r8-border-sample-color: var(--r8-color-border);
+    --r8-border-sample-width: var(--r8-border-thick);
+    --r8-border-sample-shadow: 4px 4px 0 0 var(--r8-border-sample-color);
+    --r8-border-sample-bg: var(--r8-color-surface);
+    --r8-border-sample-top-width: var(--r8-border-sample-width);
+    --r8-border-sample-right-width: var(--r8-border-sample-width);
+    --r8-border-sample-bottom-width: var(--r8-border-sample-width);
+    --r8-border-sample-left-width: var(--r8-border-sample-width);
+    background: var(--r8-border-sample-bg);
+    border-color: var(--r8-border-sample-color);
+    border-style: solid;
+    border-top-width: var(--r8-border-sample-top-width);
+    border-right-width: var(--r8-border-sample-right-width);
+    border-bottom-width: var(--r8-border-sample-bottom-width);
+    border-left-width: var(--r8-border-sample-left-width);
+    box-shadow: var(--r8-border-sample-shadow);
+    display: grid;
+    gap: var(--r8-space-3);
+    padding: var(--r8-space-4);
+  }
+.r8-color-card,
   .r8-icon-tile {
     border: var(--r8-border-thick) solid var(--r8-color-border);
     background: var(--r8-color-surface);
@@ -436,12 +456,53 @@
     padding: var(--r8-space-4);
   }
 .r8-border-sample--thin {
-    border-width: var(--r8-border-thin);
-    box-shadow: var(--r8-shadow-sm);
+    --r8-border-sample-width: var(--r8-border-thin);
+    --r8-border-sample-shadow: 2px 2px 0 0 var(--r8-border-sample-color);
+  }
+.r8-border-sample--primary {
+    --r8-border-sample-color: var(--r8-color-primary-strong);
+  }
+.r8-border-sample--secondary {
+    --r8-border-sample-color: var(--r8-color-secondary-strong);
+  }
+.r8-border-sample--success {
+    --r8-border-sample-color: var(--r8-color-success-strong);
+  }
+.r8-border-sample--info {
+    --r8-border-sample-color: var(--r8-color-info-strong);
+  }
+.r8-border-sample--danger {
+    --r8-border-sample-color: var(--r8-color-danger-strong);
   }
 .r8-border-sample--ghost {
-    background: transparent;
-    box-shadow: none;
+    --r8-border-sample-bg: transparent;
+    --r8-border-sample-shadow: none;
+  }
+.r8-border-sample--top,
+  .r8-border-sample--end,
+  .r8-border-sample--bottom,
+  .r8-border-sample--start {
+    --r8-border-sample-shadow: none;
+  }
+.r8-border-sample--top {
+    --r8-border-sample-right-width: 0;
+    --r8-border-sample-bottom-width: 0;
+    --r8-border-sample-left-width: 0;
+  }
+.r8-border-sample--end {
+    --r8-border-sample-top-width: 0;
+    --r8-border-sample-bottom-width: 0;
+    --r8-border-sample-left-width: 0;
+  }
+.r8-border-sample--bottom {
+    --r8-border-sample-top-width: 0;
+    --r8-border-sample-right-width: 0;
+    --r8-border-sample-left-width: 0;
+  }
+.r8-border-sample--start {
+    --r8-border-sample-top-width: 0;
+    --r8-border-sample-right-width: 0;
+    --r8-border-sample-bottom-width: 0;
   }
 .r8-color-card__swatch {
     border: var(--r8-border-thick) solid var(--r8-color-border);
@@ -3322,6 +3383,9 @@ dialog.r8-dialog::backdrop {
     transform: translate(-50%, -50%) rotate(-18deg);
     white-space: nowrap;
   }
+.visible {
+    visibility: visible;
+}
 .collapse {
     visibility: collapse;
 }
