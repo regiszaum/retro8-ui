@@ -1018,22 +1018,112 @@ const basicComponents = [
     name: "Splitter",
     group: "basic",
     summary: l(
-      "Shell visual para layouts redimensionaveis com handle pixelado horizontal ou vertical.",
-      "Visual shell for resizable layouts with a pixelated horizontal or vertical handle.",
+      "Layout redimensionavel com handle pixelado, suporte horizontal ou vertical, disable drag e eventos de resize para apps mais densos.",
+      "Resizable layout with a pixelated handle, horizontal or vertical support, disable-drag mode, and resize events for denser app shells.",
     ),
-    classes: ["r8-splitter", "r8-splitter--vertical", "r8-splitter__pane", "r8-splitter__handle"],
+    classes: [
+      "r8-splitter",
+      "r8-splitter--vertical",
+      "r8-splitter__pane",
+      "r8-splitter__handle",
+      "is-disabled",
+    ],
     preview: `<div class="docs-demo__stack">
   <div class="r8-splitter" data-r8-splitter-position="42">
     <div class="r8-splitter__pane">Navigator pane</div>
     <div class="r8-splitter__handle" aria-label="Resize horizontal panes"></div>
     <div class="r8-splitter__pane">Viewport pane</div>
   </div>
-  <div class="r8-splitter r8-splitter--vertical" data-r8-splitter-position="58">
+  <div class="r8-splitter r8-splitter--vertical" data-r8-splitter-position="58" style="--r8-splitter-handle-size: 1rem;">
     <div class="r8-splitter__pane">Inspector pane</div>
     <div class="r8-splitter__handle" aria-label="Resize vertical panes"></div>
     <div class="r8-splitter__pane">Console pane</div>
   </div>
+  <div class="r8-splitter" data-r8-splitter-position="35" data-r8-splitter-disabled="true">
+    <div class="r8-splitter__pane">Locked navigation rail</div>
+    <div class="r8-splitter__handle" aria-label="Resize disabled panes"></div>
+    <div class="r8-splitter__pane">Pinned preview area</div>
+  </div>
 </div>`,
+    code: `<div
+  class="r8-splitter"
+  data-r8-splitter-position="42"
+  data-r8-splitter-min="24"
+  data-r8-splitter-max="76"
+  data-r8-splitter-step="4"
+  style="
+    --r8-splitter-handle-size: 1rem;
+    --r8-splitter-handle-accent: var(--r8-color-primary-strong);
+  "
+>
+  <section class="r8-splitter__pane">Navigator pane</section>
+  <div class="r8-splitter__handle" aria-label="Resize panes"></div>
+  <section class="r8-splitter__pane">Viewport pane</section>
+</div>
+
+<div class="r8-splitter r8-splitter--vertical" data-r8-splitter-position="58">
+  <section class="r8-splitter__pane">Inspector pane</section>
+  <div class="r8-splitter__handle" aria-label="Resize stacked panes"></div>
+  <section class="r8-splitter__pane">Console pane</section>
+</div>`,
+    anatomy: ll(
+      [
+        "`r8-splitter` e o shell base que distribui dois panes e um handle central governado pelo runtime.",
+        "`r8-splitter__pane` representa cada area redimensionavel e pode receber qualquer conteudo, de listas a paines de preview.",
+        "`r8-splitter__handle` e o separador focavel usado para pointer drag e ajuste por teclado.",
+        "`r8-splitter--vertical` troca o eixo do layout quando a divisao precisa acontecer em linhas, nao colunas.",
+      ],
+      [
+        "`r8-splitter` is the base shell that distributes two panes and a central handle governed by the runtime.",
+        "`r8-splitter__pane` represents each resizable area and can host anything from lists to preview panes.",
+        "`r8-splitter__handle` is the focusable separator used for pointer dragging and keyboard adjustment.",
+        "`r8-splitter--vertical` swaps the layout axis when the split should happen in rows rather than columns.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Mantenha um `aria-label` claro no handle para explicar o que esta sendo redimensionado.",
+        "O handle ja expoe `role=\"separator\"`, orientation e valores ARIA; preserve isso se voce personalizar o host.",
+        "Use `data-r8-splitter-disabled=\"true\"` quando o layout estiver travado para nao sugerir drag em um estado indisponivel.",
+        "Em areas criticas, deixe cada pane com headings ou landmarks claros para que a divisao espacial faca sentido tambem em leitores de tela.",
+      ],
+      [
+        "Keep a clear `aria-label` on the handle so it explains what is being resized.",
+        "The handle already exposes `role=\"separator\"`, orientation, and ARIA values; preserve that if you customize the host.",
+        "Use `data-r8-splitter-disabled=\"true\"` when the layout is locked so drag is not implied in an unavailable state.",
+        "In critical app areas, give each pane clear headings or landmarks so the spatial split also makes sense in screen readers.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-splitter / r8-splitter--vertical",
+        description: l(
+          "Shell base para o layout redimensionavel, com variant vertical quando a divisao precisa acontecer em linhas.",
+          "Base shell for the resizable layout, with a vertical variant when the split needs to happen in rows.",
+        ),
+      },
+      {
+        name: "r8-splitter__pane / r8-splitter__handle",
+        description: l(
+          "Os panes recebem o conteudo real e o handle fica responsavel pela interacao de resize via pointer e teclado.",
+          "The panes host the real content while the handle is responsible for resize interaction through pointer and keyboard.",
+        ),
+      },
+      {
+        name: "data-r8-splitter-position / -min / -max / -step / -disabled",
+        description: l(
+          "Controlam posicao inicial, limites, passo de teclado e bloqueio de interacao sem exigir JS customizado no host app.",
+          "Control initial position, limits, keyboard step, and interaction lock without requiring custom JS in the host app.",
+        ),
+      },
+      {
+        name: "--r8-splitter-*",
+        description: l(
+          "Custom properties para ajustar posicao, tamanho do handle, acento visual do grip e fundo dos panes.",
+          "Custom properties for adjusting position, handle size, grip accent, and pane background.",
+        ),
+      },
+    ],
   },
   {
     id: "typography",

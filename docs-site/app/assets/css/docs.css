@@ -1212,6 +1212,7 @@ pre {
 .docs-color-playground,
 .docs-icon-playground,
 .docs-link-playground,
+.docs-splitter-playground,
 .docs-layout-container-playground {
   margin-bottom: 1rem;
 }
@@ -1241,6 +1242,12 @@ pre {
 .docs-link-playground__controls,
 .docs-link-playground__preview,
 .docs-link-playground__markup,
+.docs-splitter-playground__header,
+.docs-splitter-playground__intro,
+.docs-splitter-playground__controls,
+.docs-splitter-playground__preview,
+.docs-splitter-playground__events,
+.docs-splitter-playground__markup,
 .docs-layout-container-playground__header,
 .docs-layout-container-playground__intro,
 .docs-layout-container-playground__controls,
@@ -1255,6 +1262,7 @@ pre {
 .docs-color-playground__header,
 .docs-icon-playground__header,
 .docs-link-playground__header,
+.docs-splitter-playground__header,
 .docs-layout-container-playground__header {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: start;
@@ -1265,6 +1273,7 @@ pre {
 .docs-color-playground__intro > .docs-panel__meta,
 .docs-icon-playground__intro > .docs-panel__meta,
 .docs-link-playground__intro > .docs-panel__meta,
+.docs-splitter-playground__intro > .docs-panel__meta,
 .docs-layout-container-playground__intro > .docs-panel__meta {
   margin: 0;
 }
@@ -1274,6 +1283,7 @@ pre {
 .docs-color-playground__body,
 .docs-icon-playground__body,
 .docs-link-playground__body,
+.docs-splitter-playground__body,
 .docs-layout-container-playground__body {
   display: grid;
   grid-template-columns: minmax(18rem, 0.95fr) minmax(0, 1.05fr);
@@ -1286,6 +1296,7 @@ pre {
 .docs-color-playground__field-grid,
 .docs-icon-playground__field-grid,
 .docs-link-playground__field-grid,
+.docs-splitter-playground__field-grid,
 .docs-layout-container-playground__field-grid {
   display: grid;
   gap: 0.85rem;
@@ -1296,6 +1307,7 @@ pre {
 .docs-border-playground__toggles,
 .docs-icon-playground__toggles,
 .docs-link-playground__toggles,
+.docs-splitter-playground__toggles,
 .docs-layout-container-playground__toggles {
   display: flex;
   flex-wrap: wrap;
@@ -1307,6 +1319,7 @@ pre {
 .docs-color-playground__stage,
 .docs-icon-playground__stage,
 .docs-link-playground__stage,
+.docs-splitter-playground__stage,
 .docs-layout-container-playground__stage {
   display: grid;
   gap: 1rem;
@@ -1337,6 +1350,7 @@ pre {
 .docs-color-playground__code,
 .docs-icon-playground__code,
 .docs-link-playground__code,
+.docs-splitter-playground__code,
 .docs-layout-container-playground__code {
   margin: 0;
   padding: 0.9rem 1rem;
@@ -1374,11 +1388,31 @@ pre {
   border: 2px solid var(--docs-panel-border);
 }
 
+.docs-splitter-playground__surface {
+  width: 100%;
+}
+
+.docs-splitter-playground__surface > .r8-splitter {
+  width: 100%;
+}
+
 .docs-color-playground__surface > .r8-text {
   margin: 0;
 }
 
 .docs-link-playground__surface > .r8-text {
+  margin: 0;
+}
+
+.docs-splitter-playground__event-log {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.85rem 1rem;
+  border: 2px solid var(--docs-inline-code-border);
+  background: color-mix(in srgb, var(--docs-panel-surface) 90%, var(--docs-panel-bg) 10%);
+}
+
+.docs-splitter-playground__event-log > .r8-text {
   margin: 0;
 }
 
@@ -1683,6 +1717,7 @@ dialog.r8-dialog {
   .docs-color-playground__body,
   .docs-icon-playground__body,
   .docs-link-playground__body,
+  .docs-splitter-playground__body,
   .docs-layout-container-playground__body {
     grid-template-columns: 1fr;
   }
@@ -1761,6 +1796,7 @@ dialog.r8-dialog {
   .docs-color-playground__header,
   .docs-icon-playground__header,
   .docs-link-playground__header,
+  .docs-splitter-playground__header,
   .docs-layout-container-playground__header {
     grid-template-columns: 1fr;
   }
@@ -1770,6 +1806,7 @@ dialog.r8-dialog {
   .docs-color-playground__field-grid,
   .docs-icon-playground__field-grid,
   .docs-link-playground__field-grid,
+  .docs-splitter-playground__field-grid,
   .docs-layout-container-playground__field-grid {
     grid-template-columns: 1fr;
   }

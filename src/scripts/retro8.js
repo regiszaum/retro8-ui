@@ -3094,16 +3094,20 @@
     }
 
     const silent = options.silent === true;
+    const source = options.source || "programmatic";
     const value = clamp(Number(nextValue) || 50, state.min, state.max);
+    state.value = value;
     component.style.setProperty("--r8-splitter-position", `${value}%`);
     component.dataset.r8SplitterPosition = String(value);
     state.handle.setAttribute("aria-valuenow", String(Math.round(value)));
+    state.handle.setAttribute("aria-valuetext", `${Math.round(value)}%`);
     if (!silent) {
       emitComponentEvent(component, "splitter-change", {
         value,
         min: state.min,
         max: state.max,
         orientation: state.isVertical ? "horizontal" : "vertical",
+        source,
       });
     }
   }
@@ -3126,6 +3130,8 @@
       const min = clamp(Number(component.dataset.r8SplitterMin || "20") || 20, 5, 95);
       const max = clamp(Number(component.dataset.r8SplitterMax || "80") || 80, min + 1, 95);
       const initialValue = clamp(Number(component.dataset.r8SplitterPosition || "50") || 50, min, max);
+      const keyboardStep = clamp(Number(component.dataset.r8SplitterStep || "5") || 5, 1, 25);
+      const isDisabled = component.dataset.r8SplitterDisabled === "true";
 
       panes.forEach((pane, index) => ensureId(pane, `r8-splitter-pane-${index + 1}`));
 
@@ -3143,9 +3149,25 @@
         isVertical,
         min,
         max,
+        step: keyboardStep,
+        disabled: isDisabled,
+        value: initialValue,
       });
 
       updateSplitter(component, initialValue, { silent: true });
+      component.classList.toggle("is-disabled", isDisabled);
+      handle.setAttribute("aria-disabled", isDisabled ? "true" : "false");
+      handle.tabIndex = isDisabled ? -1 : 0;
+
+      const emitLifecycle = (name, source, value) => {
+        emitComponentEvent(component, name, {
+          value,
+          min,
+          max,
+          orientation: isVertical ? "horizontal" : "vertical",
+          source,
+        });
+      };
 
       const setFromPointer = (clientX, clientY) => {
         const rect = component.getBoundingClientRect();
@@ -3157,7 +3179,7 @@
             ? 0
             : (clientX - rect.left) / rect.width;
 
-        updateSplitter(component, Math.round(clamp(ratio, 0, 1) * 100));
+        updateSplitter(component, Math.round(clamp(ratio, 0, 1) * 100), { source: "pointer" });
       };
 
       const onPointerMove = (event) => {
@@ -3173,57 +3195,64 @@
         document.body.style.cursor = "";
         window.removeEventListener("pointermove", onPointerMove);
         window.removeEventListener("pointerup", onPointerUp);
+        emitLifecycle("splitter-resize-end", "pointer", Number(component.dataset.r8SplitterPosition || initialValue));
       };
 
       handle.addEventListener("pointerdown", (event) => {
+        if (isDisabled) {
+          return;
+        }
+
         event.preventDefault();
         component.classList.add("is-resizing");
         document.body.style.cursor = isVertical
           ? "var(--r8-runtime-cursor-row-resize, row-resize)"
           : "var(--r8-runtime-cursor-col-resize, col-resize)";
         handle.setPointerCapture?.(event.pointerId);
+        emitLifecycle("splitter-resize-start", "pointer", Number(component.dataset.r8SplitterPosition || initialValue));
         setFromPointer(event.clientX, event.clientY);
         window.addEventListener("pointermove", onPointerMove);
         window.addEventListener("pointerup", onPointerUp);
       });
 
       handle.addEventListener("keydown", (event) => {
-        const step = event.shiftKey ? 10 : 5;
+        if (isDisabled) {
+          return;
+        }
+
+        const step = keyboardStep * (event.shiftKey ? 2 : 1);
         const current = Number(component.dataset.r8SplitterPosition || initialValue);
+        let nextValue = null;
 
         if (!isVertical && event.key === "ArrowLeft") {
-          event.preventDefault();
-          updateSplitter(component, current - step);
-          return;
+          nextValue = current - step;
         }
 
         if (!isVertical && event.key === "ArrowRight") {
-          event.preventDefault();
-          updateSplitter(component, current + step);
-          return;
+          nextValue = current + step;
         }
 
         if (isVertical && event.key === "ArrowUp") {
-          event.preventDefault();
-          updateSplitter(component, current - step);
-          return;
+          nextValue = current - step;
         }
 
         if (isVertical && event.key === "ArrowDown") {
-          event.preventDefault();
-          updateSplitter(component, current + step);
-          return;
+          nextValue = current + step;
         }
 
         if (event.key === "Home") {
-          event.preventDefault();
-          updateSplitter(component, min);
-          return;
+          nextValue = min;
         }
 
         if (event.key === "End") {
+          nextValue = max;
+        }
+
+        if (nextValue !== null) {
           event.preventDefault();
-          updateSplitter(component, max);
+          emitLifecycle("splitter-resize-start", "keyboard", current);
+          updateSplitter(component, nextValue, { source: "keyboard" });
+          emitLifecycle("splitter-resize-end", "keyboard", Number(component.dataset.r8SplitterPosition || initialValue));
         }
       });
     });

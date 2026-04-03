@@ -593,18 +593,29 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         attributes: [
           row("aria-orientation", `"horizontal" | "vertical"`, "derived from class", "O runtime aplica a orientation do handle a partir da classe do Splitter.", "The runtime applies the handle orientation from the Splitter class."),
           row("aria-valuenow", "number", "50", "Reflete a posicao atual do handle durante resize.", "Reflects the current handle position during resize."),
+          row("aria-valuetext", "string", '"50%"', "Expone a posicao atual em formato textual para tecnologia assistiva.", "Exposes the current position as text for assistive technology."),
+          row("aria-disabled", "boolean", "false", "Marca quando o Splitter foi travado e o handle nao deve aceitar interacao.", "Marks when the Splitter is locked and the handle should not accept interaction."),
         ],
         dataAttributes: [
           row("data-r8-splitter-position", "number", "50", "Posicao inicial do handle em porcentagem.", "Initial handle position in percentage."),
           row("data-r8-splitter-min", "number", "20", "Limite minimo do primeiro pane em porcentagem.", "Minimum size of the first pane in percentage."),
           row("data-r8-splitter-max", "number", "80", "Limite maximo do primeiro pane em porcentagem.", "Maximum size of the first pane in percentage."),
+          row("data-r8-splitter-step", "number", "5", "Passo de teclado usado nas setas; com Shift o valor dobra.", "Keyboard step used by arrow keys; with Shift the value doubles."),
+          row("data-r8-splitter-disabled", `"true" | "false"`, `"false"`, "Bloqueia drag e resize por teclado mantendo a aparencia do Splitter visivel.", "Locks drag and keyboard resize while keeping the Splitter visible."),
         ],
         cssVariables: [
           row("--r8-splitter-position", "percentage", "50%", "Custom property usada pelo layout para distribuir os panes.", "Custom property used by the layout to distribute the panes."),
+          row("--r8-splitter-pane-bg", "color", "var(--r8-color-surface)", "Permite trocar o fundo base dos panes sem recriar o componente.", "Lets you change the base pane background without recreating the component."),
+          row("--r8-splitter-handle-size", "length", "0.875rem", "Controla a espessura visual do handle no eixo do resize.", "Controls the visual thickness of the handle on the resize axis."),
+          row("--r8-splitter-handle-surface", "color", "var(--r8-color-surface-2)", "Cor base usada nas faixas do handle.", "Base color used in the handle stripes."),
+          row("--r8-splitter-handle-accent", "color", "var(--r8-color-accent)", "Cor de destaque usada no grip pixelado do handle.", "Accent color used in the pixel grip on the handle."),
+          row("--r8-splitter-handle-border", "color", "var(--r8-color-border)", "Ajusta o contorno do handle para contextos claros ou escuros.", "Adjusts the handle outline for light or dark contexts."),
         ],
         methods: runtimeMethods,
         events: [
-          event("r8:splitter-change", `{ value, min, max, orientation }`, "Emitido a cada resize por pointer ou keyboard.", "Emitted on each resize through pointer or keyboard."),
+          event("r8:splitter-resize-start", `{ value, min, max, orientation, source }`, "Emitido quando o usuario inicia um resize por pointer ou teclado.", "Emitted when the user starts resizing through pointer or keyboard."),
+          event("r8:splitter-change", `{ value, min, max, orientation, source }`, "Emitido a cada resize por pointer ou keyboard.", "Emitted on each resize through pointer or keyboard."),
+          event("r8:splitter-resize-end", `{ value, min, max, orientation, source }`, "Emitido quando o resize termina e o Splitter estabiliza no valor final.", "Emitted when resizing ends and the Splitter settles on the final value."),
         ],
       });
       break;

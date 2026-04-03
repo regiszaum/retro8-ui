@@ -697,6 +697,11 @@
   }
 .r8-splitter {
     --r8-splitter-position: 50%;
+    --r8-splitter-pane-bg: var(--r8-color-surface);
+    --r8-splitter-handle-size: 0.875rem;
+    --r8-splitter-handle-surface: var(--r8-color-surface-2);
+    --r8-splitter-handle-accent: var(--r8-color-accent);
+    --r8-splitter-handle-border: var(--r8-color-border);
     align-items: stretch;
     display: grid;
     grid-template-columns: minmax(0, var(--r8-splitter-position)) auto minmax(0, 1fr);
@@ -709,7 +714,7 @@
   }
 .r8-splitter__pane {
     border: var(--r8-border-thick) solid var(--r8-color-border);
-    background: var(--r8-color-surface);
+    background: var(--r8-splitter-pane-bg);
     box-shadow: var(--r8-shadow-sm);
     min-width: 0;
     overflow: auto;
@@ -719,19 +724,19 @@
     background:
       repeating-linear-gradient(
         90deg,
-        var(--r8-color-surface-2),
-        var(--r8-color-surface-2) 6px,
-        var(--r8-color-accent) 6px,
-        var(--r8-color-accent) 12px
+        var(--r8-splitter-handle-surface),
+        var(--r8-splitter-handle-surface) 6px,
+        var(--r8-splitter-handle-accent) 6px,
+        var(--r8-splitter-handle-accent) 12px
       );
-    border-inline: var(--r8-border-thin) solid var(--r8-color-border);
+    border-inline: var(--r8-border-thin) solid var(--r8-splitter-handle-border);
     cursor: col-resize;
-    inline-size: 0.875rem;
+    inline-size: var(--r8-splitter-handle-size);
     touch-action: none;
   }
 .r8-splitter--vertical .r8-splitter__handle {
-    block-size: 0.875rem;
-    border-block: var(--r8-border-thin) solid var(--r8-color-border);
+    block-size: var(--r8-splitter-handle-size);
+    border-block: var(--r8-border-thin) solid var(--r8-splitter-handle-border);
     border-inline: 0;
     cursor: row-resize;
     inline-size: auto;
@@ -744,6 +749,12 @@
     -webkit-user-select: none;
        -moz-user-select: none;
             user-select: none;
+  }
+.r8-splitter.is-disabled .r8-splitter__handle,
+  .r8-splitter__handle[aria-disabled="true"] {
+    cursor: not-allowed;
+    filter: saturate(0.45);
+    opacity: 0.55;
   }
 .r8-config-provider {
     position: relative;
