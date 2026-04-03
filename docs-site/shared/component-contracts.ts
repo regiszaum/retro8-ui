@@ -54,7 +54,7 @@ const event = (name: string, payload: string, ptBr: string, en: string): Catalog
   description: l(ptBr, en),
 });
 
-const buttonVariants = `"default" | "primary" | "secondary" | "tertiary" | "success" | "info" | "danger" | "dark" | "light" | "ghost"`;
+const buttonVariants = `"primary" | "secondary" | "tertiary" | "success" | "info" | "danger" | "dark" | "light" | "ghost"`;
 const buttonSizes = `"sm" | "md" | "lg"`;
 const choiceKinds = new Set([
   "autocomplete",
@@ -298,6 +298,13 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         attributes: [
           row("type", `"button" | "submit" | "reset"`, `"button"`, "Tipo nativo do `<button>` ou do submit control.", "Native `<button>` or submit control type."),
           row("disabled", "boolean", "false", "Desativa interacao e aplica o disabled treatment da retro8-ui.", "Disables interaction and applies the retro8-ui disabled treatment."),
+          row(
+            "aria-disabled",
+            "boolean",
+            "false",
+            "Use em links ou hosts customizados quando o disabled nativo nao estiver disponivel.",
+            "Use it on links or custom hosts when native disabled is not available.",
+          ),
           row("aria-pressed", "boolean", "false", "Marca Buttons toggle ou action states persistentes.", "Marks toggle buttons or persistent action states."),
           row("aria-busy", "boolean", "false", "State sincronizado quando `data-r8-loading` estiver ativo.", "State kept in sync when `data-r8-loading` is active."),
         ],

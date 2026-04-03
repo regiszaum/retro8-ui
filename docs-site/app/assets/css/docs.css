@@ -1207,6 +1207,76 @@ pre {
   margin-top: 1rem;
 }
 
+.docs-button-playground {
+  margin-bottom: 1rem;
+}
+
+.docs-button-playground__header,
+.docs-button-playground__intro,
+.docs-button-playground__controls,
+.docs-button-playground__preview,
+.docs-button-playground__markup {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.docs-button-playground__header {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+}
+
+.docs-button-playground__intro > .docs-panel__meta {
+  margin: 0;
+}
+
+.docs-button-playground__body {
+  display: grid;
+  grid-template-columns: minmax(18rem, 0.95fr) minmax(0, 1.05fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.docs-button-playground__field-grid {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+}
+
+.docs-button-playground__toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.docs-button-playground__stage {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+  min-height: auto;
+}
+
+.docs-button-playground__surface {
+  width: fit-content;
+  max-width: 100%;
+}
+
+.docs-button-playground__surface--block {
+  width: min(100%, 22rem);
+}
+
+.docs-button-playground__code {
+  margin: 0;
+  padding: 0.9rem 1rem;
+  overflow: auto;
+  border: 2px solid var(--docs-inline-code-border);
+  background: color-mix(in srgb, var(--docs-panel-surface) 82%, var(--docs-code-bg) 18%);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--docs-panel-border) 72%, transparent);
+  color: var(--docs-panel-text);
+  font-size: 0.84rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
 .docs-preview__surface {
   display: grid;
   gap: 1rem;
@@ -1494,6 +1564,10 @@ dialog.r8-dialog {
   .docs-component__layout {
     grid-template-columns: 1fr;
   }
+
+  .docs-button-playground__body {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 720px) {
@@ -1562,6 +1636,14 @@ dialog.r8-dialog {
   .docs-token-list__value {
     justify-self: start;
     text-align: left;
+  }
+
+  .docs-button-playground__header {
+    grid-template-columns: 1fr;
+  }
+
+  .docs-button-playground__field-grid {
+    grid-template-columns: 1fr;
   }
 
   .docs-pager {

@@ -136,46 +136,124 @@ const basicComponents = [
     <button class="r8-btn" type="button">Default</button>
     <button class="r8-btn r8-btn--primary" type="button">Primary</button>
     <button class="r8-btn r8-btn--secondary" type="button">Secondary</button>
-    <button class="r8-btn r8-btn--tertiary" type="button">Tertiary</button>
+    <button class="r8-btn r8-btn--ghost" type="button">Ghost</button>
   </div>
   <div class="r8-cluster">
+    <button class="r8-btn r8-btn--tertiary" type="button">Tertiary</button>
     <button class="r8-btn r8-btn--success" type="button">Success</button>
     <button class="r8-btn r8-btn--info" type="button">Info</button>
     <button class="r8-btn r8-btn--danger" type="button">Danger</button>
-    <button class="r8-btn r8-btn--dark" type="button">Dark</button>
+    <button class="r8-btn r8-btn--light" type="button">Light</button>
   </div>
   <div class="r8-cluster">
-    <button class="r8-btn r8-btn--light" type="button">Light</button>
-    <button class="r8-btn r8-btn--ghost" type="button">Ghost</button>
     <button class="r8-btn r8-btn--sm" type="button">Small</button>
-    <button class="r8-btn r8-btn--lg" type="button">Large</button>
+    <button class="r8-btn r8-btn--primary" type="button" aria-pressed="true">Pressed</button>
+    <button class="r8-btn r8-btn--lg" type="button">
+      <span class="r8-btn__icon" aria-hidden="true">></span>
+      Launch
+    </button>
     <button class="r8-btn" type="button" disabled>Disabled</button>
   </div>
-  <div class="r8-cluster">
-    <button class="r8-btn" type="button" data-r8-variant="primary">Data variant</button>
-    <button class="r8-btn" type="button" data-r8-variant="danger" data-r8-size="lg">Boss alert</button>
+  <div class="docs-demo__actions">
     <button class="r8-btn" type="button" data-r8-variant="secondary" data-r8-loading="true">Saving</button>
+    <a class="r8-btn r8-btn--dark r8-btn--sm" href="#0">Open docs</a>
   </div>
-  <button class="r8-btn" type="button" data-r8-variant="dark" data-r8-block="true">Full width action</button>
+  <button class="r8-btn r8-btn--dark r8-btn--block" type="button">Full width action</button>
 </div>`,
     code: `<div class="docs-demo__stack">
   <div class="r8-cluster">
-    <button class="r8-btn r8-btn--primary" type="button">Primary</button>
-    <button class="r8-btn r8-btn--ghost" type="button">Ghost</button>
-    <button class="r8-btn r8-btn--sm" type="button">Small</button>
-    <button class="r8-btn r8-btn--lg" type="button">Large</button>
+    <button class="r8-btn r8-btn--primary" type="button">Save changes</button>
+    <button class="r8-btn r8-btn--ghost" type="button">Cancel</button>
   </div>
 
-  <div class="r8-cluster">
-    <button class="r8-btn" type="button" data-r8-variant="primary">Data variant</button>
-    <button class="r8-btn" type="button" data-r8-variant="danger" data-r8-size="lg">Boss alert</button>
-    <button class="r8-btn" type="button" data-r8-variant="secondary" data-r8-loading="true">Saving</button>
-  </div>
+  <button class="r8-btn" type="button" aria-pressed="true">
+    Toggle filters
+  </button>
 
-  <button class="r8-btn" type="button" data-r8-variant="dark" data-r8-block="true">
+  <button class="r8-btn" type="button" data-r8-variant="secondary" data-r8-loading="true">
+    Syncing
+  </button>
+
+  <a class="r8-btn r8-btn--sm r8-btn--light" href="/release-notes">
+    Release notes
+  </a>
+
+  <button class="r8-btn r8-btn--lg" type="button">
+    <span class="r8-btn__icon" aria-hidden="true">></span>
+    Launch mission
+  </button>
+
+  <button class="r8-btn r8-btn--dark r8-btn--block" type="button">
     Full width action
   </button>
 </div>`,
+    anatomy: ll(
+      [
+        "`r8-btn` e o shell base e funciona melhor em `<button>` para acoes e em `<a>` apenas quando a navegacao pedir visual de CTA.",
+        "Modifiers como `--primary`, `--ghost`, `--sm`, `--lg` e `--block` ajustam tom, escala e largura sem trocar a estrutura base.",
+        "`r8-btn__icon` adiciona um glyph curto antes ou depois do label mantendo alinhamento previsivel.",
+        "`r8-btn__spinner` representa loading visual e pode ser usado manualmente ou pelo helper declarativo.",
+      ],
+      [
+        "`r8-btn` is the base shell and works best on `<button>` for actions and on `<a>` only when navigation needs CTA styling.",
+        "Modifiers such as `--primary`, `--ghost`, `--sm`, `--lg` and `--block` adjust tone, scale and width without changing the base structure.",
+        "`r8-btn__icon` adds a short glyph before or after the label while keeping alignment predictable.",
+        "`r8-btn__spinner` represents the loading visual and can be used manually or through the declarative helper.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Prefira `<button>` para acoes reais e use `<a>` apenas quando houver navegacao de verdade.",
+        "Dentro de forms, defina `type=\"button\"` nas acoes que nao devem submeter o formulario.",
+        "Use `aria-pressed` somente quando o Button representar um state persistente de liga/desliga ou selecionado.",
+        "Quando um link for exibido como Button e estiver indisponivel, exponha `aria-disabled=\"true\"` e proteja ou remova o `href`.",
+        "States de loading devem manter texto visivel; nao dependa apenas do spinner para comunicar o que esta acontecendo.",
+      ],
+      [
+        "Prefer `<button>` for real actions and use `<a>` only when there is actual navigation.",
+        "Inside forms, set `type=\"button\"` on actions that should not submit the form.",
+        "Use `aria-pressed` only when the Button represents a persistent selected or on/off state.",
+        "When a link is styled as a Button and unavailable, expose `aria-disabled=\"true\"` and guard or remove the `href`.",
+        "Loading states should keep visible text; do not rely on the spinner alone to communicate what is happening.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-btn",
+        description: l(
+          "Classe base para a superficie clicavel com textura retro, foco visivel e estados de hover/press.",
+          "Base class for the clickable surface with retro texture, visible focus and hover/press states.",
+        ),
+      },
+      {
+        name: "r8-btn--primary / --secondary / --tertiary / --success / --info / --danger / --dark / --light / --ghost",
+        description: l(
+          "Modifiers semanticos para trocar o peso visual da acao sem mudar a estrutura do markup.",
+          "Semantic modifiers for changing the visual weight of the action without changing the markup structure.",
+        ),
+      },
+      {
+        name: "r8-btn--sm / --lg / --block",
+        description: l(
+          "Ajustam escala e largura do Button para toolbars compactas, CTAs maiores ou acoes em largura total.",
+          "Adjust the Button scale and width for compact toolbars, larger CTAs or full-width actions.",
+        ),
+      },
+      {
+        name: "r8-btn__icon / r8-btn__spinner",
+        description: l(
+          "Slots visuais para glyphs curtos e indicacao de loading dentro do proprio Button.",
+          "Visual slots for short glyphs and a loading indicator inside the Button itself.",
+        ),
+      },
+      {
+        name: "data-r8-variant / data-r8-size / data-r8-loading / data-r8-active",
+        description: l(
+          "Helpers declarativos para sincronizar variant, tamanho, loading e state pressed sem concatenacao manual.",
+          "Declarative helpers for syncing variant, size, loading and pressed state without manual class concatenation.",
+        ),
+      },
+    ],
   },
   {
     id: "border",

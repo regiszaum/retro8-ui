@@ -166,6 +166,8 @@ watch(
       </div>
     </div>
 
+    <DocsButtonPlayground v-if="component.id === 'button'" :site="site" />
+
     <DocsCodeBlock
       :title="`${component.name} ${site.componentPage.htmlTitleSuffix}`"
       :code="component.code"
