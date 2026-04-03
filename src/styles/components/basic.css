@@ -21,6 +21,10 @@
     color: var(--r8-color-ink-muted);
   }
 
+  .r8-text--subtle {
+    color: var(--r8-color-ink-subtle);
+  }
+
   .r8-text--primary {
     color: var(--r8-color-primary-strong);
   }
@@ -37,12 +41,24 @@
     color: var(--r8-color-success-strong);
   }
 
+  .r8-text--warning {
+    color: var(--r8-color-warning-strong);
+  }
+
   .r8-text--info {
     color: var(--r8-color-info-strong);
   }
 
   .r8-text--danger {
     color: var(--r8-color-danger-strong);
+  }
+
+  .r8-text--dark {
+    color: var(--r8-color-dark-strong);
+  }
+
+  .r8-text--light {
+    color: var(--r8-color-light);
   }
 
   .r8-typography {

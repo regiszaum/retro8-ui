@@ -396,54 +396,205 @@ const basicComponents = [
     name: "Color",
     group: "basic",
     summary: l(
-      "Apresenta a paleta limitada da biblioteca, com contraste alto e leitura rapida.",
-      "Presents the library limited palette with strong contrast and quick readability.",
+      "Organiza a paleta semantica da UI e os helpers de cor para texto, com foco em contraste e leitura rapida.",
+      "Organizes the UI semantic palette and text color helpers, with a focus on contrast and fast readability.",
     ),
-    classes: ["r8-color-grid", "r8-color-card", "r8-color-card__swatch", "r8-color-card__meta"],
-    preview: `<div class="r8-color-grid">
+    classes: [
+      "r8-color-grid",
+      "r8-color-card",
+      "r8-color-card__swatch",
+      "r8-color-card__meta",
+      "r8-text",
+      "r8-text--muted",
+      "r8-text--subtle",
+      "r8-text--primary",
+      "r8-text--secondary",
+      "r8-text--tertiary",
+      "r8-text--success",
+      "r8-text--warning",
+      "r8-text--info",
+      "r8-text--danger",
+      "r8-text--dark",
+      "r8-text--light",
+    ],
+    preview: `<div class="docs-demo__stack">
+  <div class="r8-color-grid">
   <div class="r8-color-card">
-    <div class="r8-color-card__swatch" style="background:#0f172a;"></div>
+    <div class="r8-color-card__swatch" style="background:var(--r8-color-bg);"></div>
     <div class="r8-color-card__meta">
       <strong>Background</strong>
-      <span>#0f172a</span>
+      <span>--r8-color-bg</span>
     </div>
   </div>
   <div class="r8-color-card">
-    <div class="r8-color-card__swatch" style="background:#2563eb;"></div>
+    <div class="r8-color-card__swatch" style="background:var(--r8-color-primary);"></div>
     <div class="r8-color-card__meta">
       <strong>Primary</strong>
-      <span>#2563eb</span>
+      <span>--r8-color-primary</span>
     </div>
   </div>
   <div class="r8-color-card">
-    <div class="r8-color-card__swatch" style="background:#64748b;"></div>
+    <div class="r8-color-card__swatch" style="background:var(--r8-color-secondary);"></div>
     <div class="r8-color-card__meta">
       <strong>Secondary</strong>
-      <span>#64748b</span>
+      <span>--r8-color-secondary</span>
     </div>
   </div>
   <div class="r8-color-card">
-    <div class="r8-color-card__swatch" style="background:#16a34a;"></div>
-    <div class="r8-color-card__meta">
-      <strong>Success</strong>
-      <span>#16a34a</span>
-    </div>
-  </div>
-  <div class="r8-color-card">
-    <div class="r8-color-card__swatch" style="background:#dc2626;"></div>
-    <div class="r8-color-card__meta">
-      <strong>Danger</strong>
-      <span>#dc2626</span>
-    </div>
-  </div>
-  <div class="r8-color-card">
-    <div class="r8-color-card__swatch" style="background:#7c3aed;"></div>
+    <div class="r8-color-card__swatch" style="background:var(--r8-color-tertiary);"></div>
     <div class="r8-color-card__meta">
       <strong>Tertiary</strong>
-      <span>#7c3aed</span>
+      <span>--r8-color-tertiary</span>
+    </div>
+  </div>
+  <div class="r8-color-card">
+    <div class="r8-color-card__swatch" style="background:var(--r8-color-success);"></div>
+    <div class="r8-color-card__meta">
+      <strong>Success</strong>
+      <span>--r8-color-success</span>
+    </div>
+  </div>
+  <div class="r8-color-card">
+    <div class="r8-color-card__swatch" style="background:var(--r8-color-warning);"></div>
+    <div class="r8-color-card__meta">
+      <strong>Warning</strong>
+      <span>--r8-color-warning</span>
+    </div>
+  </div>
+  <div class="r8-color-card">
+    <div class="r8-color-card__swatch" style="background:var(--r8-color-info);"></div>
+    <div class="r8-color-card__meta">
+      <strong>Info</strong>
+      <span>--r8-color-info</span>
+    </div>
+  </div>
+  <div class="r8-color-card">
+    <div class="r8-color-card__swatch" style="background:var(--r8-color-danger);"></div>
+    <div class="r8-color-card__meta">
+      <strong>Danger</strong>
+      <span>--r8-color-danger</span>
+    </div>
+  </div>
+  <div class="r8-color-card">
+    <div class="r8-color-card__swatch" style="background:var(--r8-color-dark);"></div>
+    <div class="r8-color-card__meta">
+      <strong>Dark</strong>
+      <span>--r8-color-dark</span>
+    </div>
+  </div>
+  <div class="r8-color-card">
+    <div class="r8-color-card__swatch" style="background:var(--r8-color-light);"></div>
+    <div class="r8-color-card__meta">
+      <strong>Light</strong>
+      <span>--r8-color-light</span>
+    </div>
+  </div>
+  </div>
+
+  <div class="docs-demo__stack">
+    <p class="r8-text">Default body tone for base UI copy.</p>
+    <p class="r8-text r8-text--muted">Muted tone for helper text and secondary context.</p>
+    <p class="r8-text r8-text--subtle">Subtle tone for tertiary metadata and quiet labels.</p>
+    <p class="r8-text r8-text--primary">Primary tone for key actions and highlights.</p>
+    <p class="r8-text r8-text--warning">Warning tone for caution states that need attention.</p>
+    <div
+      class="r8-border-sample"
+      style="
+        --r8-border-sample-color: var(--r8-color-dark-strong);
+        --r8-border-sample-shadow: none;
+        --r8-border-sample-bg: var(--r8-color-dark);
+      "
+    >
+      <p class="r8-text r8-text--light">Light tone stays readable on dark Retro8 surfaces.</p>
     </div>
   </div>
 </div>`,
+    code: `<div class="r8-color-grid">
+  <div class="r8-color-card">
+    <div class="r8-color-card__swatch" style="background:var(--r8-color-primary);"></div>
+    <div class="r8-color-card__meta">
+      <strong>Primary</strong>
+      <span>--r8-color-primary</span>
+    </div>
+  </div>
+
+  <div class="r8-color-card">
+    <div class="r8-color-card__swatch" style="background:var(--r8-color-warning);"></div>
+    <div class="r8-color-card__meta">
+      <strong>Warning</strong>
+      <span>--r8-color-warning</span>
+    </div>
+  </div>
+</div>
+
+<p class="r8-text r8-text--primary">Primary emphasis for key information.</p>
+<p class="r8-text r8-text--warning">Warning emphasis for caution states.</p>
+<p class="r8-text r8-text--subtle">Subtle tone for tertiary metadata.</p>
+
+<section style="padding: var(--r8-space-4); background: var(--r8-color-dark);">
+  <p class="r8-text r8-text--light">Readable copy on dark surfaces.</p>
+</section>`,
+    anatomy: ll(
+      [
+        "`r8-color-grid` organiza swatches em uma grade responsiva para inspecionar a paleta rapidamente.",
+        "`r8-color-card`, `__swatch` e `__meta` formam o bloco visual de cada token de cor exibido na documentacao.",
+        "`r8-text` e os modifiers `--*` aplicam cor semantica ao texto corrido sem precisar criar estilos locais para cada contexto.",
+      ],
+      [
+        "`r8-color-grid` organizes swatches in a responsive grid so the palette can be scanned quickly.",
+        "`r8-color-card`, `__swatch` and `__meta` form the visual block used to present each color token in the documentation.",
+        "`r8-text` and its `--*` modifiers apply semantic color to body copy without needing local one-off styles for each context.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Nao use cor sozinha para comunicar meaning; combine o tom com texto claro, icone ou label visivel.",
+        "Tons claros como `r8-text--light` funcionam melhor sobre surfaces escuras ou coloridas com contraste suficiente.",
+        "Para metadata discreta, prefira `--muted` ou `--subtle` em vez de reduzir opacidade e comprometer a leitura.",
+      ],
+      [
+        "Do not use color alone to communicate meaning; pair the tone with clear text, an icon or a visible label.",
+        "Light tones such as `r8-text--light` work best on dark or saturated surfaces with enough contrast.",
+        "For quieter metadata, prefer `--muted` or `--subtle` instead of lowering opacity and hurting readability.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-color-grid / r8-color-card / r8-color-card__swatch / r8-color-card__meta",
+        description: l(
+          "Estrutura visual para apresentar tokens, amostras e nomes de cor em uma grade consistente.",
+          "Visual structure for presenting tokens, swatches and color names in a consistent grid.",
+        ),
+      },
+      {
+        name: "r8-text",
+        description: l(
+          "Classe base para texto corrido, labels e pequenos blocos de copy onde a cor pode variar semanticamente.",
+          "Base class for body copy, labels and short text blocks where color may vary semantically.",
+        ),
+      },
+      {
+        name: "r8-text--muted / --subtle",
+        description: l(
+          "Reduzem o peso visual para detalhes secundarios e metadata mais quieta.",
+          "Reduce visual weight for secondary details and quieter metadata.",
+        ),
+      },
+      {
+        name: "r8-text--primary / --secondary / --tertiary / --success / --warning / --info / --danger",
+        description: l(
+          "Aplicam os tons semanticos principais da Retro8 UI diretamente no texto.",
+          "Apply the main Retro8 UI semantic tones directly to text.",
+        ),
+      },
+      {
+        name: "r8-text--dark / --light",
+        description: l(
+          "Ajudam a ajustar leitura em superfícies muito claras ou muito escuras quando o contexto pedir contraste explicito.",
+          "Help adjust readability on very light or very dark surfaces when the context needs explicit contrast.",
+        ),
+      },
+    ],
   },
   {
     id: "layout-container",
@@ -534,12 +685,16 @@ const basicComponents = [
       "r8-typography",
       "r8-text",
       "r8-text--muted",
+      "r8-text--subtle",
       "r8-text--primary",
       "r8-text--secondary",
       "r8-text--tertiary",
       "r8-text--success",
+      "r8-text--warning",
       "r8-text--info",
       "r8-text--danger",
+      "r8-text--dark",
+      "r8-text--light",
     ],
     api: [
       {
@@ -561,6 +716,10 @@ const basicComponents = [
         description: l("Suaviza o contraste para texto secundario ou detalhes auxiliares.", "Softens contrast for secondary text or helper details."),
       },
       {
+        name: "r8-text--subtle",
+        description: l("Reduz ainda mais o peso visual para metadata e labels de baixo destaque.", "Reduces visual weight further for metadata and low-emphasis labels."),
+      },
+      {
         name: "r8-text--primary",
         description: l("Aplica enfase com a cor primaria do sistema.", "Applies emphasis with the system primary color."),
       },
@@ -577,12 +736,20 @@ const basicComponents = [
         description: l("Comunica estados positivos ou confirmacoes.", "Communicates positive states or confirmations."),
       },
       {
+        name: "r8-text--warning",
+        description: l("Comunica cautela, alerta moderado ou atencao preventiva.", "Communicates caution, moderate alerts or preventive attention."),
+      },
+      {
         name: "r8-text--info",
         description: l("Comunica contexto, ajuda ou informacoes neutras.", "Communicates context, help or neutral information."),
       },
       {
         name: "r8-text--danger",
         description: l("Comunica erros, risco ou estados criticos.", "Communicates errors, risk or critical states."),
+      },
+      {
+        name: "r8-text--dark / r8-text--light",
+        description: l("Ajustam contraste explicito em superfícies muito claras ou muito escuras.", "Adjust explicit contrast on very light or very dark surfaces."),
       },
     ],
     preview: `<div class="docs-demo__stack">
@@ -599,7 +766,9 @@ const basicComponents = [
   <div class="docs-demo__stack">
     <p class="r8-text">Default body text for mission logs and dense UI labels.</p>
     <p class="r8-text r8-text--muted">Muted helper copy for secondary details.</p>
+    <p class="r8-text r8-text--subtle">Subtle metadata for low-priority context.</p>
     <p class="r8-text r8-text--primary">Primary text to highlight key information.</p>
+    <p class="r8-text r8-text--warning">Warning text for caution states.</p>
     <p class="r8-text r8-text--success">Success text for positive states.</p>
     <p class="r8-text r8-text--danger">Danger text for critical states.</p>
   </div>
@@ -616,7 +785,9 @@ const basicComponents = [
 
 <p class="r8-text">Default body text for mission logs and dense UI labels.</p>
 <p class="r8-text r8-text--muted">Muted helper copy for secondary details.</p>
-<p class="r8-text r8-text--primary">Primary text to highlight key information.</p>`,
+<p class="r8-text r8-text--subtle">Subtle metadata for low-priority context.</p>
+<p class="r8-text r8-text--primary">Primary text to highlight key information.</p>
+<p class="r8-text r8-text--warning">Warning text for caution states.</p>`,
   },
 ] satisfies CatalogEntry[];
 
