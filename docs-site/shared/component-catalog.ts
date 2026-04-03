@@ -1286,11 +1286,13 @@ const configurationComponents = [
     name: "Config Provider",
     group: "configuration",
     summary: l(
-      "Theme scope local para trocar tokens, contraste e skin apenas em uma parte da interface.",
-      "Local theme scope for swapping tokens, contrast and skins in only one part of the interface.",
+      "Escopo local de tokens para trocar skin, densidade e acentos sem afetar o restante da interface.",
+      "Local token scope for swapping skin, density, and accents without affecting the rest of the interface.",
     ),
     classes: [
       "r8-config-provider",
+      "r8-config-provider--compact",
+      "r8-config-provider--comfortable",
       "r8-config-provider--night",
       "r8-config-provider--terminal",
       "r8-config-provider--danger",
@@ -1304,15 +1306,17 @@ const configurationComponents = [
       <button class="r8-btn r8-btn--secondary" type="button">Review</button>
     </div>
   </section>
-  <section class="r8-config-provider r8-config-provider--night">
-    <span class="r8-badge">Night skin</span>
+
+  <section class="r8-config-provider r8-config-provider--night r8-config-provider--compact">
+    <span class="r8-badge">Night compact scope</span>
     <input class="r8-input" type="text" value="Night console" aria-label="Night scope input" />
     <div class="r8-cluster">
       <button class="r8-btn r8-btn--primary" type="button">Open console</button>
       <button class="r8-btn" type="button">Ping</button>
     </div>
   </section>
-  <section class="r8-config-provider r8-config-provider--terminal">
+
+  <section class="r8-config-provider" data-theme="terminal" data-density="comfortable">
     <span class="r8-badge r8-badge--primary">Terminal skin</span>
     <input class="r8-input" type="text" value="grep --color retro8" aria-label="Terminal scope input" />
     <div class="r8-cluster">
@@ -1320,6 +1324,7 @@ const configurationComponents = [
       <button class="r8-btn r8-btn--secondary" type="button">Inspect</button>
     </div>
   </section>
+
   <section class="r8-config-provider r8-config-provider--danger">
     <span class="r8-badge r8-badge--danger">Danger zone</span>
     <input class="r8-input" type="text" value="Confirm shutdown" aria-label="Danger scope input" />
@@ -1327,8 +1332,111 @@ const configurationComponents = [
       <button class="r8-btn r8-btn--danger" type="button">Shutdown</button>
       <button class="r8-btn r8-btn--light" type="button">Cancel</button>
     </div>
+
+    <section class="r8-config-provider" style="--r8-color-primary: var(--r8-color-warning); --r8-color-primary-strong: var(--r8-color-warning-strong); --r8-color-primary-contrast: var(--r8-color-warning-contrast);">
+      <span class="r8-badge r8-badge--warning">Nested override</span>
+      <button class="r8-btn r8-btn--primary" type="button">Require final confirmation</button>
+    </section>
   </section>
 </div>`,
+    code: `<section class="r8-config-provider r8-config-provider--night r8-config-provider--compact">
+  <span class="r8-badge">Night compact scope</span>
+  <input class="r8-input" type="text" value="Night console" aria-label="Night scope input" />
+  <div class="r8-cluster">
+    <button class="r8-btn r8-btn--primary" type="button">Open console</button>
+    <button class="r8-btn" type="button">Ping</button>
+  </div>
+</section>
+
+<section class="r8-config-provider" data-theme="terminal" data-density="comfortable">
+  <span class="r8-badge r8-badge--primary">Terminal skin</span>
+  <button class="r8-btn r8-btn--primary" type="button">Run</button>
+</section>
+
+<section
+  class="r8-config-provider"
+  style="
+    --r8-color-primary: var(--r8-color-warning);
+    --r8-color-primary-strong: var(--r8-color-warning-strong);
+    --r8-color-primary-contrast: var(--r8-color-warning-contrast);
+  "
+>
+  <button class="r8-btn r8-btn--primary" type="button">Warn inside local scope</button>
+</section>`,
+    anatomy: ll(
+      [
+        "`r8-config-provider` cria um escopo local de tokens; tudo dentro dele herda cores, sombras, spacing e tipografia desse contexto.",
+        "As variantes `--night`, `--terminal` e `--danger` trocam a skin local sem exigir um theme switch global no documento inteiro.",
+        "`--compact` e `--comfortable` ajustam densidade local ao reescrever tokens de spacing e escala tipografica dentro do scope.",
+        "Voce pode combinar classes com `data-theme` e `data-density` quando o host app controla estado por atributo.",
+        "Nested providers funcionam para sobrescrever apenas uma ilha da interface, mantendo o resto do shell intacto.",
+      ],
+      [
+        "`r8-config-provider` creates a local token scope; everything inside inherits colors, shadows, spacing, and typography from that context.",
+        "The `--night`, `--terminal`, and `--danger` variants swap the local skin without requiring a global theme switch on the whole document.",
+        "`--compact` and `--comfortable` adjust local density by rewriting spacing and type-scale tokens inside the scope.",
+        "You can combine classes with `data-theme` and `data-density` when the host app drives state through attributes.",
+        "Nested providers work for overriding a small island of UI while keeping the rest of the shell intact.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Use o `Config Provider` para contraste e densidade, mas mantenha labels, headings e estado textual visiveis mesmo quando o tema mudar.",
+        "Temas locais escuros ou danger precisam continuar respeitando contraste suficiente entre surface, texto e foco.",
+        "Se usar nested providers, preserve a ordem semantica da interface; o escopo visual nao deve confundir landmarks ou hierarquia real.",
+        "Atributos como `data-theme` ajudam quando a mudanca vem do host app, mas a experiencia acessivel continua dependendo do markup interno correto.",
+      ],
+      [
+        "Use `Config Provider` for contrast and density, but keep labels, headings, and state text visible even when the local theme changes.",
+        "Dark or danger local themes still need enough contrast between surface, text, and focus styles.",
+        "If you use nested providers, preserve the semantic order of the UI; the visual scope should not blur real landmarks or hierarchy.",
+        "Attributes such as `data-theme` help when the host app drives the change, but accessible behavior still depends on correct inner markup.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-config-provider",
+        description: l(
+          "Wrapper base do scope local, usado para reaplicar tokens de cor, sombra, spacing e tipografia apenas nos descendants.",
+          "Base local-scope wrapper used to reapply color, shadow, spacing, and typography tokens only to descendants.",
+        ),
+      },
+      {
+        name: "r8-config-provider--night / --terminal / --danger",
+        description: l(
+          "Presets de skin para trocar o visual local sem alterar o restante da aplicacao.",
+          "Skin presets for changing the local visual language without altering the rest of the application.",
+        ),
+      },
+      {
+        name: "r8-config-provider--compact / --comfortable",
+        description: l(
+          "Presets de densidade local, inspirados na ideia de configuracao global de tamanho, mas resolvidos via tokens em cascata.",
+          "Local density presets inspired by global size configuration, but solved through cascading tokens.",
+        ),
+      },
+      {
+        name: "data-theme / data-density",
+        description: l(
+          "Aliases por atributo para integrar o scope com switches externos, CMS ou shells que controlam estado sem tocar classes.",
+          "Attribute aliases for integrating the scope with external switches, CMS data, or shells that drive state without touching classes.",
+        ),
+      },
+      {
+        name: "--r8-color-* / --r8-shadow-* / --r8-font-size-* / --r8-space-*",
+        description: l(
+          "Tokens globais da Retro8 UI continuam sobrescreviveis localmente para criar acentos e densidades especificas dentro do scope.",
+          "Retro8 UI global tokens remain locally overridable so you can create scope-specific accents and density inside the provider.",
+        ),
+      },
+      {
+        name: "--r8-config-provider-*",
+        description: l(
+          "Custom properties do wrapper para ajustar padding, gap, surface, borda, sombra e cor base do proprio provider.",
+          "Wrapper custom properties for adjusting padding, gap, surface, border, shadow, and the provider shell base color.",
+        ),
+      },
+    ],
   },
 ] satisfies CatalogEntry[];
 

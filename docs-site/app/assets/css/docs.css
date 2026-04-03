@@ -1209,6 +1209,7 @@ pre {
 
 .docs-button-playground,
 .docs-border-playground,
+.docs-config-provider-playground,
 .docs-color-playground,
 .docs-icon-playground,
 .docs-link-playground,
@@ -1228,6 +1229,11 @@ pre {
 .docs-border-playground__controls,
 .docs-border-playground__preview,
 .docs-border-playground__markup,
+.docs-config-provider-playground__header,
+.docs-config-provider-playground__intro,
+.docs-config-provider-playground__controls,
+.docs-config-provider-playground__preview,
+.docs-config-provider-playground__markup,
 .docs-color-playground__header,
 .docs-color-playground__intro,
 .docs-color-playground__controls,
@@ -1265,6 +1271,7 @@ pre {
 
 .docs-button-playground__header,
 .docs-border-playground__header,
+.docs-config-provider-playground__header,
 .docs-color-playground__header,
 .docs-icon-playground__header,
 .docs-link-playground__header,
@@ -1277,6 +1284,7 @@ pre {
 
 .docs-button-playground__intro > .docs-panel__meta,
 .docs-border-playground__intro > .docs-panel__meta,
+.docs-config-provider-playground__intro > .docs-panel__meta,
 .docs-color-playground__intro > .docs-panel__meta,
 .docs-icon-playground__intro > .docs-panel__meta,
 .docs-link-playground__intro > .docs-panel__meta,
@@ -1288,6 +1296,7 @@ pre {
 
 .docs-button-playground__body,
 .docs-border-playground__body,
+.docs-config-provider-playground__body,
 .docs-color-playground__body,
 .docs-icon-playground__body,
 .docs-link-playground__body,
@@ -1302,6 +1311,7 @@ pre {
 
 .docs-button-playground__field-grid,
 .docs-border-playground__field-grid,
+.docs-config-provider-playground__field-grid,
 .docs-color-playground__field-grid,
 .docs-icon-playground__field-grid,
 .docs-link-playground__field-grid,
@@ -1315,6 +1325,7 @@ pre {
 
 .docs-button-playground__toggles,
 .docs-border-playground__toggles,
+.docs-config-provider-playground__toggles,
 .docs-icon-playground__toggles,
 .docs-link-playground__toggles,
 .docs-typography-playground__toggles,
@@ -1327,6 +1338,7 @@ pre {
 
 .docs-button-playground__stage,
 .docs-border-playground__stage,
+.docs-config-provider-playground__stage,
 .docs-color-playground__stage,
 .docs-icon-playground__stage,
 .docs-link-playground__stage,
@@ -1357,8 +1369,21 @@ pre {
   align-content: start;
 }
 
+.docs-config-provider-playground__surface {
+  width: min(100%, 34rem);
+}
+
+.docs-config-provider-playground__surface > .r8-config-provider {
+  width: 100%;
+}
+
+.docs-config-provider-playground__surface .r8-text {
+  margin: 0;
+}
+
 .docs-button-playground__code,
 .docs-border-playground__code,
+.docs-config-provider-playground__code,
 .docs-color-playground__code,
 .docs-icon-playground__code,
 .docs-link-playground__code,
@@ -1741,6 +1766,7 @@ dialog.r8-dialog {
 
   .docs-button-playground__body,
   .docs-border-playground__body,
+  .docs-config-provider-playground__body,
   .docs-color-playground__body,
   .docs-icon-playground__body,
   .docs-link-playground__body,
@@ -1821,6 +1847,7 @@ dialog.r8-dialog {
 
   .docs-button-playground__header,
   .docs-border-playground__header,
+  .docs-config-provider-playground__header,
   .docs-color-playground__header,
   .docs-icon-playground__header,
   .docs-link-playground__header,
@@ -1832,6 +1859,7 @@ dialog.r8-dialog {
 
   .docs-button-playground__field-grid,
   .docs-border-playground__field-grid,
+  .docs-config-provider-playground__field-grid,
   .docs-color-playground__field-grid,
   .docs-icon-playground__field-grid,
   .docs-link-playground__field-grid,

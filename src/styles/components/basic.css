@@ -555,19 +555,52 @@
   }
 
   .r8-config-provider {
+    --r8-config-provider-padding: var(--r8-space-4);
+    --r8-config-provider-gap: var(--r8-space-4);
+    --r8-config-provider-surface: var(--r8-color-surface);
+    --r8-config-provider-border: var(--r8-color-border);
+    --r8-config-provider-shadow: var(--r8-shadow-md);
+    --r8-config-provider-text: var(--r8-color-ink);
     position: relative;
     isolation: isolate;
-    border: var(--r8-border-thick) solid var(--r8-color-border);
-    background: var(--r8-color-surface);
-    box-shadow: var(--r8-shadow-md);
-    color: var(--r8-color-ink);
+    border: var(--r8-border-thick) solid var(--r8-config-provider-border);
+    background: var(--r8-config-provider-surface);
+    box-shadow: var(--r8-config-provider-shadow);
+    color: var(--r8-config-provider-text);
     display: grid;
-    gap: var(--r8-space-4);
+    gap: var(--r8-config-provider-gap);
     min-width: 0;
-    padding: var(--r8-space-4);
+    padding: var(--r8-config-provider-padding);
   }
 
-  .r8-config-provider--night {
+  .r8-config-provider--compact,
+  .r8-config-provider[data-density="compact"] {
+    --r8-space-2: 0.25rem;
+    --r8-space-3: 0.4375rem;
+    --r8-space-4: 0.625rem;
+    --r8-space-5: 0.875rem;
+    --r8-space-6: 1rem;
+    --r8-font-size-xs: 0.625rem;
+    --r8-font-size-sm: 0.75rem;
+    --r8-font-size-base: 0.875rem;
+    --r8-font-size-lg: 1rem;
+  }
+
+  .r8-config-provider--comfortable,
+  .r8-config-provider[data-density="comfortable"] {
+    --r8-space-2: 0.625rem;
+    --r8-space-3: 0.875rem;
+    --r8-space-4: 1.125rem;
+    --r8-space-5: 1.375rem;
+    --r8-space-6: 1.625rem;
+    --r8-font-size-xs: 0.75rem;
+    --r8-font-size-sm: 0.875rem;
+    --r8-font-size-base: 1rem;
+    --r8-font-size-lg: 1.1875rem;
+  }
+
+  .r8-config-provider--night,
+  .r8-config-provider[data-theme="night"] {
     color-scheme: dark;
     --r8-color-bg: #020617;
     --r8-color-surface: #0f172a;
@@ -613,7 +646,8 @@
     --r8-dialog-backdrop: rgba(2, 6, 23, 0.84);
   }
 
-  .r8-config-provider--terminal {
+  .r8-config-provider--terminal,
+  .r8-config-provider[data-theme="terminal"] {
     color-scheme: dark;
     --r8-color-bg: #020a02;
     --r8-color-surface: #081d08;
@@ -659,7 +693,8 @@
     --r8-dialog-backdrop: rgba(2, 10, 2, 0.86);
   }
 
-  .r8-config-provider--danger {
+  .r8-config-provider--danger,
+  .r8-config-provider[data-theme="danger"] {
     --r8-color-bg: #2b0c12;
     --r8-color-surface: #fff5f5;
     --r8-color-surface-2: #fecdd3;

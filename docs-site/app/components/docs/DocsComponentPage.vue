@@ -168,6 +168,7 @@ watch(
 
     <DocsButtonPlayground v-if="component.id === 'button'" :site="site" />
     <DocsBorderPlayground v-if="component.id === 'border'" :site="site" />
+    <DocsConfigProviderPlayground v-if="component.id === 'config-provider'" :site="site" />
     <DocsColorPlayground v-if="component.id === 'color'" :site="site" />
     <DocsIconPlayground v-if="component.id === 'icon'" :site="site" />
     <DocsLinkPlayground v-if="component.id === 'link'" :site="site" />

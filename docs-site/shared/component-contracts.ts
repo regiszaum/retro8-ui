@@ -939,13 +939,22 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
       break;
     case "config-provider":
       mergeContract(contract, {
-        attributes: [
-          row("data-theme", "string", "none", "Opcional no host app quando quiser combinar `Config Provider` com theme switches externos.", "Optional in the host app when you want to pair `Config Provider` with external theme switches."),
+        dataAttributes: [
+          row("data-theme", `"night" | "terminal" | "danger"`, "none", "Opcional no host app quando quiser combinar `Config Provider` com theme switches externos ou estado vindo de CMS.", "Optional in the host app when you want to pair `Config Provider` with external theme switches or CMS-driven state."),
+          row("data-density", `"compact" | "comfortable"`, "none", "Permite controlar a densidade local do scope por atributo, sem depender de classes utilitarias adicionais.", "Lets you control local scope density through an attribute without relying on extra utility classes."),
         ],
         cssVariables: [
+          row("--r8-config-provider-padding", "length", "var(--r8-space-4)", "Ajusta o padding do shell do provider sem alterar os componentes internos diretamente.", "Adjusts the provider shell padding without directly altering inner components."),
+          row("--r8-config-provider-gap", "length", "var(--r8-space-4)", "Controla o espacamento entre os filhos imediatos do scope.", "Controls spacing between the scope immediate children."),
+          row("--r8-config-provider-surface", "color", "var(--r8-color-surface)", "Troca a superficie do wrapper local enquanto os descendants continuam herdando os tokens do scope.", "Changes the local wrapper surface while descendants continue inheriting the scope tokens."),
+          row("--r8-config-provider-border", "color", "var(--r8-color-border)", "Permite afinar o contorno do provider para shells mais claros, escuros ou tematicos.", "Lets you tune the provider outline for lighter, darker, or themed shells."),
+          row("--r8-config-provider-shadow", "shadow", "var(--r8-shadow-md)", "Controla a sombra estrutural do wrapper local.", "Controls the structural shadow of the local wrapper."),
+          row("--r8-config-provider-text", "color", "var(--r8-color-ink)", "Define a cor base do texto do wrapper sem quebrar a heranca de tokens.", "Defines the wrapper base text color without breaking token inheritance."),
           row("--r8-color-surface", "color", "theme default", "Superficie base reaplicada para todos os filhos dentro do scope.", "Base surface reapplied to all children inside the scope."),
           row("--r8-color-ink", "color", "theme default", "Texto principal dos descendants dentro do scope.", "Primary descendant text inside the scope."),
           row("--r8-color-primary", "color", "theme default", "Accent principal para Buttons, badges e controls no scope.", "Primary accent for Buttons, badges and controls inside the scope."),
+          row("--r8-font-size-sm", "length", "theme default", "Ajusta a escala media de texto dentro do scope, util para presets de densidade local.", "Adjusts the medium text scale inside the scope, useful for local density presets."),
+          row("--r8-space-4", "length", "theme default", "Ajusta o ritmo de espacamento usado por varios componentes dentro do scope.", "Adjusts the spacing rhythm used by many components inside the scope."),
           row("--r8-shadow-md", "shadow", "theme default", "Shadow principal usada pelas surfaces dentro do scope.", "Main shadow used by surfaces inside the scope."),
           row("--r8-dialog-backdrop", "color", "theme default", "Backdrop reaplicado para overlays renderizados dentro do scope.", "Backdrop reapplied to overlays rendered inside the scope."),
         ],
