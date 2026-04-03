@@ -1427,6 +1427,14 @@
     return getCascaderNodeLabels(node).join(state.separator);
   }
 
+  function formatCascaderDisplayValue(state, node) {
+    if (!node) {
+      return "";
+    }
+
+    return state?.showAllLevels === false ? node.label : formatCascaderPath(state, node);
+  }
+
   function findCascaderNode(state, matcher) {
     if (!state?.allNodes?.length || typeof matcher !== "function") {
       return null;
@@ -1441,7 +1449,7 @@
     }
 
     const hasValue = Boolean(state.selectedNode);
-    state.display.textContent = hasValue ? formatCascaderPath(state, state.selectedNode) : state.placeholder;
+    state.display.textContent = hasValue ? formatCascaderDisplayValue(state, state.selectedNode) : state.placeholder;
     state.display.classList.toggle("is-placeholder", !hasValue);
     state.container.dataset.r8Value = hasValue ? state.selectedNode.value : "";
     state.container.dataset.r8Path = hasValue ? getCascaderNodeValues(state.selectedNode).join("/") : "";
@@ -1710,6 +1718,7 @@
       };
       emitComponentEvent(state.container, "choice-change", detail);
       emitComponentEvent(state.container, "cascader-change", detail);
+      emitComponentEvent(state.container, "cascader-clear", detail);
     }
   }
 
@@ -1997,6 +2006,7 @@
       placeholder,
       emptyLabel: container.dataset.r8EmptyLabel || "No matching routes",
       separator: container.dataset.r8Separator || " / ",
+      showAllLevels: container.dataset.r8ShowAllLevels !== "false",
       expandTrigger: container.dataset.r8ExpandTrigger === "hover" ? "hover" : "click",
       filterable,
       clearable,

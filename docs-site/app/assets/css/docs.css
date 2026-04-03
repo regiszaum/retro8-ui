@@ -1178,6 +1178,14 @@ pre {
   gap: 1rem;
 }
 
+.docs-demo__stack--cascader {
+  padding-bottom: 19rem;
+}
+
+.docs-demo__stack--cascader > .r8-cascader {
+  width: min(100%, 42rem);
+}
+
 .docs-demo__actions {
   display: flex;
   flex-wrap: wrap;
@@ -1210,6 +1218,7 @@ pre {
 .docs-autocomplete-playground,
 .docs-button-playground,
 .docs-border-playground,
+.docs-cascader-playground,
 .docs-config-provider-playground,
 .docs-color-playground,
 .docs-icon-playground,
@@ -1226,6 +1235,12 @@ pre {
 .docs-autocomplete-playground__preview,
 .docs-autocomplete-playground__events,
 .docs-autocomplete-playground__markup,
+.docs-cascader-playground__header,
+.docs-cascader-playground__intro,
+.docs-cascader-playground__controls,
+.docs-cascader-playground__preview,
+.docs-cascader-playground__events,
+.docs-cascader-playground__markup,
 .docs-button-playground__header,
 .docs-button-playground__intro,
 .docs-button-playground__controls,
@@ -1277,6 +1292,7 @@ pre {
 }
 
 .docs-autocomplete-playground__header,
+.docs-cascader-playground__header,
 .docs-button-playground__header,
 .docs-border-playground__header,
 .docs-config-provider-playground__header,
@@ -1291,6 +1307,7 @@ pre {
 }
 
 .docs-autocomplete-playground__intro > .docs-panel__meta,
+.docs-cascader-playground__intro > .docs-panel__meta,
 .docs-button-playground__intro > .docs-panel__meta,
 .docs-border-playground__intro > .docs-panel__meta,
 .docs-config-provider-playground__intro > .docs-panel__meta,
@@ -1304,6 +1321,7 @@ pre {
 }
 
 .docs-autocomplete-playground__body,
+.docs-cascader-playground__body,
 .docs-button-playground__body,
 .docs-border-playground__body,
 .docs-config-provider-playground__body,
@@ -1320,6 +1338,7 @@ pre {
 }
 
 .docs-autocomplete-playground__field-grid,
+.docs-cascader-playground__field-grid,
 .docs-button-playground__field-grid,
 .docs-border-playground__field-grid,
 .docs-config-provider-playground__field-grid,
@@ -1335,6 +1354,7 @@ pre {
 }
 
 .docs-autocomplete-playground__toggles,
+.docs-cascader-playground__toggles,
 .docs-button-playground__toggles,
 .docs-border-playground__toggles,
 .docs-config-provider-playground__toggles,
@@ -1349,6 +1369,7 @@ pre {
 }
 
 .docs-autocomplete-playground__stage,
+.docs-cascader-playground__stage,
 .docs-button-playground__stage,
 .docs-border-playground__stage,
 .docs-config-provider-playground__stage,
@@ -1395,6 +1416,7 @@ pre {
 }
 
 .docs-autocomplete-playground__code,
+.docs-cascader-playground__code,
 .docs-button-playground__code,
 .docs-border-playground__code,
 .docs-config-provider-playground__code,
@@ -1426,6 +1448,14 @@ pre {
 
 .docs-autocomplete-playground__surface .r8-text {
   margin: 0;
+}
+
+.docs-cascader-playground__surface {
+  width: min(100%, 42rem);
+}
+
+.docs-cascader-playground__surface > .r8-cascader {
+  width: 100%;
 }
 
 .docs-color-playground__surface {
@@ -1483,6 +1513,7 @@ pre {
 }
 
 .docs-autocomplete-playground__event-log,
+.docs-cascader-playground__event-log,
 .docs-splitter-playground__event-log {
   display: grid;
   gap: 0.35rem;
@@ -1492,6 +1523,7 @@ pre {
 }
 
 .docs-autocomplete-playground__event-log > .r8-text,
+.docs-cascader-playground__event-log > .r8-text,
 .docs-splitter-playground__event-log > .r8-text {
   margin: 0;
 }
@@ -1793,6 +1825,7 @@ dialog.r8-dialog {
   }
 
   .docs-autocomplete-playground__body,
+  .docs-cascader-playground__body,
   .docs-button-playground__body,
   .docs-border-playground__body,
   .docs-config-provider-playground__body,
@@ -1875,6 +1908,7 @@ dialog.r8-dialog {
   }
 
   .docs-autocomplete-playground__header,
+  .docs-cascader-playground__header,
   .docs-button-playground__header,
   .docs-border-playground__header,
   .docs-config-provider-playground__header,
@@ -1888,6 +1922,7 @@ dialog.r8-dialog {
   }
 
   .docs-autocomplete-playground__field-grid,
+  .docs-cascader-playground__field-grid,
   .docs-button-playground__field-grid,
   .docs-border-playground__field-grid,
   .docs-config-provider-playground__field-grid,

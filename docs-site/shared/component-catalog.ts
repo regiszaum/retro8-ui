@@ -1621,8 +1621,8 @@ const formComponents = [
     name: "Cascader",
     group: "form",
     summary: l(
-      "Selecao hierarquica para arvore de categorias, areas ou taxonomias em varias etapas.",
-      "Hierarchical selection for category trees, areas or taxonomies across multiple steps.",
+      "Selecao hierarquica para arvores de categorias, areas ou taxonomias, com filtro opcional, clear, hover expansion e controle entre caminho completo ou ultimo nivel no trigger.",
+      "Hierarchical selection for category trees, areas, or taxonomies, with optional filtering, clear, hover expansion, and control over full-path versus last-level trigger display.",
     ),
     classes: [
       "r8-cascader",
@@ -1638,7 +1638,7 @@ const formComponents = [
       "r8-cascader__node",
       "r8-cascader__children",
     ],
-    preview: `<div class="docs-demo__stack">
+    preview: `<div class="docs-demo__stack docs-demo__stack--cascader">
   <div class="r8-cascader" data-r8-filterable="true" data-r8-clearable="true" data-r8-placeholder="Select outpost">
     <button class="r8-cascader__trigger" type="button" aria-label="Select outpost">
       <span data-r8-choice-display>Select outpost</span>
@@ -1686,9 +1686,15 @@ const formComponents = [
     </div>
   </div>
 
-  <div class="r8-cascader" data-r8-expand-trigger="hover" data-r8-check-strictly="true" data-r8-placeholder="Hover or select any level">
+  <div
+    class="r8-cascader"
+    data-r8-expand-trigger="hover"
+    data-r8-check-strictly="true"
+    data-r8-show-all-levels="false"
+    data-r8-placeholder="Hover or select any level"
+  >
     <button class="r8-cascader__trigger" type="button" aria-label="Hover or select any level">
-      <span data-r8-choice-display>Hover or select any level</span>
+      <span data-r8-choice-display>Research</span>
       <span class="r8-choice__caret" aria-hidden="true">&gt;</span>
     </button>
     <div class="r8-cascader__panel" hidden>
@@ -1701,7 +1707,7 @@ const formComponents = [
                 <div class="r8-cascader__node" data-r8-label="Tower East" data-r8-value="tower-east"></div>
               </div>
             </div>
-            <div class="r8-cascader__node" data-r8-label="Research" data-r8-value="research"></div>
+            <div class="r8-cascader__node" data-r8-label="Research" data-r8-value="research" data-r8-selected="true"></div>
           </div>
         </div>
         <div class="r8-cascader__node" data-r8-label="Outer Colonies" data-r8-value="outer-colonies">
@@ -1714,7 +1720,14 @@ const formComponents = [
     </div>
   </div>
 </div>`,
-    code: `<div class="r8-cascader" data-r8-filterable="true" data-r8-clearable="true" data-r8-placeholder="Select outpost">
+    code: `<div
+  class="r8-cascader"
+  data-r8-filterable="true"
+  data-r8-filter-placeholder="Filter routes..."
+  data-r8-clearable="true"
+  data-r8-show-all-levels="false"
+  data-r8-placeholder="Select outpost"
+>
   <button class="r8-cascader__trigger" type="button" aria-label="Select outpost">
     <span data-r8-choice-display>Select outpost</span>
     <span class="r8-choice__caret" aria-hidden="true">&gt;</span>
@@ -1754,12 +1767,14 @@ const formComponents = [
         "`r8-cascader__trigger` abre o floating panel e expoe o caminho selecionado.",
         "`r8-cascader__panel` abriga toolbar, generated menus e a source tree oculta.",
         "`r8-cascader__node` e `r8-cascader__children` definem a hierarquia declarativa.",
+        "`data-r8-show-all-levels=\"false\"` deixa o trigger mais compacto ao exibir apenas o ultimo label, sem perder `data-r8-path` no host.",
       ],
       [
         "`r8-cascader` is the root shell and receives `data-r8-*` behavior flags.",
         "`r8-cascader__trigger` opens the floating panel and exposes the selected path.",
         "`r8-cascader__panel` contains toolbar, generated menus and the hidden source tree.",
         "`r8-cascader__node` and `r8-cascader__children` define the declarative hierarchy.",
+        "`data-r8-show-all-levels=\"false\"` keeps the trigger more compact by showing only the last label while preserving `data-r8-path` on the host.",
       ],
     ),
     accessibility: ll(
@@ -1767,11 +1782,13 @@ const formComponents = [
         "Use `aria-label` no trigger quando o label visivel nao for descritivo o bastante.",
         "Marque disabled branches com `data-r8-disabled=\"true\"` para preservar keyboard semantics.",
         "Mantenha instances pesquisaveis com `r8-cascader__input` devidamente rotulado.",
+        "Quando optar por mostrar so o ultimo nivel no trigger, preserve contexto adicional no label visivel ao redor do campo.",
       ],
       [
         "Use `aria-label` on the trigger when the visible label is not descriptive enough.",
         "Mark disabled branches with `data-r8-disabled=\"true\"` to preserve keyboard semantics.",
         "Keep searchable instances with a labeled `r8-cascader__input` for screen-reader clarity.",
+        "When you choose a last-level-only trigger display, keep extra context in nearby visible copy around the field.",
       ],
     ),
     api: [
@@ -1784,8 +1801,19 @@ const formComponents = [
         description: l("Allows selecting parent nodes instead of leaves only.", "Allows selecting parent nodes instead of leaves only."),
       },
       {
+        name: "data-r8-show-all-levels / data-r8-filter-placeholder",
+        description: l(
+          "Controla se o trigger mostra o caminho inteiro ou so o ultimo nivel, e permite ajustar o placeholder do filtro gerado pelo runtime.",
+          "Controls whether the trigger shows the full path or only the last level, and lets you tune the placeholder of the runtime-generated filter input.",
+        ),
+      },
+      {
         name: "r8:cascader-change",
         description: l("Emits the final value, labels and full path after selection.", "Emits the final value, labels and full path after selection."),
+      },
+      {
+        name: "r8:cascader-clear",
+        description: l("Emits an empty payload when the current selection is cleared.", "Emits an empty payload when the current selection is cleared."),
       },
     ],
   },

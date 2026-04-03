@@ -169,6 +169,7 @@ watch(
     <DocsAutocompletePlayground v-if="component.id === 'autocomplete'" :site="site" />
     <DocsButtonPlayground v-if="component.id === 'button'" :site="site" />
     <DocsBorderPlayground v-if="component.id === 'border'" :site="site" />
+    <DocsCascaderPlayground v-if="component.id === 'cascader'" :site="site" />
     <DocsConfigProviderPlayground v-if="component.id === 'config-provider'" :site="site" />
     <DocsColorPlayground v-if="component.id === 'color'" :site="site" />
     <DocsIconPlayground v-if="component.id === 'icon'" :site="site" />

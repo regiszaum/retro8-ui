@@ -420,7 +420,9 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
           row("data-r8-expand-trigger", `"click" | "hover"`, `"click"`, "Define se branches abrem por click ou hover.", "Defines whether branches expand on click or hover."),
           row("data-r8-check-strictly", `"true" | "false"`, `"false"`, "Permite selecionar parent nodes, nao apenas leaf nodes.", "Allows selecting parent nodes, not only leaf nodes."),
           row("data-r8-filterable", `"true" | "false"`, `"false"`, "Ativa o filtro textual do panel usando `r8-cascader__input`.", "Enables panel text filtering using `r8-cascader__input`."),
+          row("data-r8-filter-placeholder", "string", `"Filter options..."`, "Placeholder usado quando o runtime precisa gerar `r8-cascader__input` automaticamente.", "Placeholder used when the runtime needs to generate `r8-cascader__input` automatically."),
           row("data-r8-clearable", `"true" | "false"`, `"false"`, "Exibe `r8-cascader__clear` para limpar a escolha atual.", "Shows `r8-cascader__clear` to clear the current selection."),
+          row("data-r8-show-all-levels", `"true" | "false"`, `"true"`, "Controla se o trigger mostra o caminho completo ou apenas o ultimo label selecionado.", "Controls whether the trigger shows the full path or only the last selected label."),
           row("data-r8-separator", "string", `" / "`, "Separador usado para compor o label final do caminho.", "Separator used to compose the final path label."),
           row("data-r8-empty-label", "string", `"No matching routes"`, "Mensagem exibida quando o filtro nao encontra resultados.", "Message shown when the filter finds no results."),
           row("data-r8-label", "string", "required on `r8-cascader__node`", "Label semantico de cada node da arvore declarativa.", "Semantic label for each node inside the declarative tree."),
@@ -431,6 +433,7 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         methods: runtimeMethods,
         events: [
           event("r8:cascader-change", `{ value, label, labels, values, path, node, option, text }`, "Emitido quando o Cascader confirma uma selecao.", "Emitted when the Cascader commits a selection."),
+          event("r8:cascader-clear", `{ value, label, labels, values, path, node, option, text }`, "Emitido quando a action de clear remove a selecao atual.", "Emitted when the clear action removes the current selection."),
           event("r8:choice-change", `{ kind, value, label, labels, values, path, node, option, text }`, "Evento generico tambem emitido para manter compatibilidade com o choice runtime.", "Generic event also emitted to preserve compatibility with the choice runtime."),
         ],
       });
