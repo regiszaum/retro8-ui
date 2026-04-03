@@ -77,8 +77,8 @@ export const componentGroups = [
     core: false,
     title: l("retro8 extras", "retro8 extras"),
     description: l(
-      "Componentes nativos da retro8-ui que complementam o catalogo principal com pecas proprias do sistema.",
-      "retro8-ui native components that extend the main catalog with system-specific pieces.",
+      "Componentes nativos da Retro8 UI que complementam o catalogo principal com pecas proprias do sistema.",
+      "Retro8 UI native components that extend the main catalog with system-specific pieces.",
     ),
   },
 ] as const;
@@ -136,131 +136,577 @@ const basicComponents = [
     <button class="r8-btn" type="button">Default</button>
     <button class="r8-btn r8-btn--primary" type="button">Primary</button>
     <button class="r8-btn r8-btn--secondary" type="button">Secondary</button>
-    <button class="r8-btn r8-btn--tertiary" type="button">Tertiary</button>
+    <button class="r8-btn r8-btn--ghost" type="button">Ghost</button>
   </div>
   <div class="r8-cluster">
+    <button class="r8-btn r8-btn--tertiary" type="button">Tertiary</button>
     <button class="r8-btn r8-btn--success" type="button">Success</button>
     <button class="r8-btn r8-btn--info" type="button">Info</button>
     <button class="r8-btn r8-btn--danger" type="button">Danger</button>
-    <button class="r8-btn r8-btn--dark" type="button">Dark</button>
+    <button class="r8-btn r8-btn--light" type="button">Light</button>
   </div>
   <div class="r8-cluster">
-    <button class="r8-btn r8-btn--light" type="button">Light</button>
-    <button class="r8-btn r8-btn--ghost" type="button">Ghost</button>
     <button class="r8-btn r8-btn--sm" type="button">Small</button>
-    <button class="r8-btn r8-btn--lg" type="button">Large</button>
+    <button class="r8-btn r8-btn--primary" type="button" aria-pressed="true">Pressed</button>
+    <button class="r8-btn r8-btn--lg" type="button">
+      <span class="r8-btn__icon" aria-hidden="true">></span>
+      Launch
+    </button>
     <button class="r8-btn" type="button" disabled>Disabled</button>
   </div>
-  <div class="r8-cluster">
-    <button class="r8-btn" type="button" data-r8-variant="primary">Data variant</button>
-    <button class="r8-btn" type="button" data-r8-variant="danger" data-r8-size="lg">Boss alert</button>
+  <div class="docs-demo__actions">
     <button class="r8-btn" type="button" data-r8-variant="secondary" data-r8-loading="true">Saving</button>
+    <a class="r8-btn r8-btn--dark r8-btn--sm" href="#0">Open docs</a>
   </div>
-  <button class="r8-btn" type="button" data-r8-variant="dark" data-r8-block="true">Full width action</button>
+  <button class="r8-btn r8-btn--dark r8-btn--block" type="button">Full width action</button>
 </div>`,
     code: `<div class="docs-demo__stack">
   <div class="r8-cluster">
-    <button class="r8-btn r8-btn--primary" type="button">Primary</button>
-    <button class="r8-btn r8-btn--ghost" type="button">Ghost</button>
-    <button class="r8-btn r8-btn--sm" type="button">Small</button>
-    <button class="r8-btn r8-btn--lg" type="button">Large</button>
+    <button class="r8-btn r8-btn--primary" type="button">Save changes</button>
+    <button class="r8-btn r8-btn--ghost" type="button">Cancel</button>
   </div>
 
-  <div class="r8-cluster">
-    <button class="r8-btn" type="button" data-r8-variant="primary">Data variant</button>
-    <button class="r8-btn" type="button" data-r8-variant="danger" data-r8-size="lg">Boss alert</button>
-    <button class="r8-btn" type="button" data-r8-variant="secondary" data-r8-loading="true">Saving</button>
-  </div>
+  <button class="r8-btn" type="button" aria-pressed="true">
+    Toggle filters
+  </button>
 
-  <button class="r8-btn" type="button" data-r8-variant="dark" data-r8-block="true">
+  <button class="r8-btn" type="button" data-r8-variant="secondary" data-r8-loading="true">
+    Syncing
+  </button>
+
+  <a class="r8-btn r8-btn--sm r8-btn--light" href="/release-notes">
+    Release notes
+  </a>
+
+  <button class="r8-btn r8-btn--lg" type="button">
+    <span class="r8-btn__icon" aria-hidden="true">></span>
+    Launch mission
+  </button>
+
+  <button class="r8-btn r8-btn--dark r8-btn--block" type="button">
     Full width action
   </button>
 </div>`,
+    anatomy: ll(
+      [
+        "`r8-btn` e o shell base e funciona melhor em `<button>` para acoes e em `<a>` apenas quando a navegacao pedir visual de CTA.",
+        "Modifiers como `--primary`, `--ghost`, `--sm`, `--lg` e `--block` ajustam tom, escala e largura sem trocar a estrutura base.",
+        "`r8-btn__icon` adiciona um glyph curto antes ou depois do label mantendo alinhamento previsivel.",
+        "`r8-btn__spinner` representa loading visual e pode ser usado manualmente ou pelo helper declarativo.",
+      ],
+      [
+        "`r8-btn` is the base shell and works best on `<button>` for actions and on `<a>` only when navigation needs CTA styling.",
+        "Modifiers such as `--primary`, `--ghost`, `--sm`, `--lg` and `--block` adjust tone, scale and width without changing the base structure.",
+        "`r8-btn__icon` adds a short glyph before or after the label while keeping alignment predictable.",
+        "`r8-btn__spinner` represents the loading visual and can be used manually or through the declarative helper.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Prefira `<button>` para acoes reais e use `<a>` apenas quando houver navegacao de verdade.",
+        "Dentro de forms, defina `type=\"button\"` nas acoes que nao devem submeter o formulario.",
+        "Use `aria-pressed` somente quando o Button representar um state persistente de liga/desliga ou selecionado.",
+        "Quando um link for exibido como Button e estiver indisponivel, exponha `aria-disabled=\"true\"` e proteja ou remova o `href`.",
+        "States de loading devem manter texto visivel; nao dependa apenas do spinner para comunicar o que esta acontecendo.",
+      ],
+      [
+        "Prefer `<button>` for real actions and use `<a>` only when there is actual navigation.",
+        "Inside forms, set `type=\"button\"` on actions that should not submit the form.",
+        "Use `aria-pressed` only when the Button represents a persistent selected or on/off state.",
+        "When a link is styled as a Button and unavailable, expose `aria-disabled=\"true\"` and guard or remove the `href`.",
+        "Loading states should keep visible text; do not rely on the spinner alone to communicate what is happening.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-btn",
+        description: l(
+          "Classe base para a superficie clicavel com textura retro, foco visivel e estados de hover/press.",
+          "Base class for the clickable surface with retro texture, visible focus and hover/press states.",
+        ),
+      },
+      {
+        name: "r8-btn--primary / --secondary / --tertiary / --success / --info / --danger / --dark / --light / --ghost",
+        description: l(
+          "Modifiers semanticos para trocar o peso visual da acao sem mudar a estrutura do markup.",
+          "Semantic modifiers for changing the visual weight of the action without changing the markup structure.",
+        ),
+      },
+      {
+        name: "r8-btn--sm / --lg / --block",
+        description: l(
+          "Ajustam escala e largura do Button para toolbars compactas, CTAs maiores ou acoes em largura total.",
+          "Adjust the Button scale and width for compact toolbars, larger CTAs or full-width actions.",
+        ),
+      },
+      {
+        name: "r8-btn__icon / r8-btn__spinner",
+        description: l(
+          "Slots visuais para glyphs curtos e indicacao de loading dentro do proprio Button.",
+          "Visual slots for short glyphs and a loading indicator inside the Button itself.",
+        ),
+      },
+      {
+        name: "data-r8-variant / data-r8-size / data-r8-loading / data-r8-active",
+        description: l(
+          "Helpers declarativos para sincronizar variant, tamanho, loading e state pressed sem concatenacao manual.",
+          "Declarative helpers for syncing variant, size, loading and pressed state without manual class concatenation.",
+        ),
+      },
+    ],
   },
   {
     id: "border",
     name: "Border",
     group: "basic",
     summary: l(
-      "Mostra combinacoes de borda dura e sombra seca para definir a textura visual do sistema.",
-      "Showcases hard-edge border and hard-shadow combinations that define the system texture.",
+      "Surface utilitaria para aplicar borda retro com controle de espessura, tom, lado isolado e modo ghost.",
+      "Utility surface for applying a retro border with control over width, tone, isolated edge and ghost mode.",
     ),
-    classes: ["r8-border-showcase", "r8-border-sample", "r8-border-sample--thin", "r8-border-sample--ghost"],
+    classes: [
+      "r8-border-showcase",
+      "r8-border-sample",
+      "r8-border-sample--thin",
+      "r8-border-sample--ghost",
+      "r8-border-sample--primary",
+      "r8-border-sample--secondary",
+      "r8-border-sample--success",
+      "r8-border-sample--info",
+      "r8-border-sample--danger",
+      "r8-border-sample--top",
+      "r8-border-sample--end",
+      "r8-border-sample--bottom",
+      "r8-border-sample--start",
+    ],
     preview: `<div class="r8-border-showcase">
-  <div class="r8-border-sample">Thick retro border</div>
-  <div class="r8-border-sample r8-border-sample--thin">Thin border</div>
-  <div class="r8-border-sample r8-border-sample--ghost">Ghost border</div>
+  <div class="r8-border-sample">
+    <strong>Default shell</strong>
+    <span>Thick border and dry shadow for framed surfaces.</span>
+  </div>
+  <div class="r8-border-sample r8-border-sample--thin">
+    <strong>Thin border</strong>
+    <span>Lighter edge for quieter containers and helper blocks.</span>
+  </div>
+  <div class="r8-border-sample r8-border-sample--primary">
+    <strong>Primary tone</strong>
+    <span>Use a semantic accent without replacing the base structure.</span>
+  </div>
+  <div class="r8-border-sample r8-border-sample--success r8-border-sample--top">
+    <strong>Top edge</strong>
+    <span>Single-edge border works well for separators and docked sections.</span>
+  </div>
+  <div class="r8-border-sample r8-border-sample--danger r8-border-sample--start">
+    <strong>Start edge</strong>
+    <span>A stronger side cue for alerts, status rails or pinned lists.</span>
+  </div>
+  <div class="r8-border-sample r8-border-sample--ghost">
+    <strong>Ghost border</strong>
+    <span>Transparent fill when only the outline should stay visible.</span>
+  </div>
 </div>`,
+    code: `<div class="r8-border-showcase">
+  <div class="r8-border-sample r8-border-sample--primary">
+    <strong>Primary frame</strong>
+    <span>Semantic accent using the default thick border.</span>
+  </div>
+
+  <div class="r8-border-sample r8-border-sample--thin r8-border-sample--bottom">
+    <strong>Bottom edge only</strong>
+    <span>Useful for stacked sections, list headers or inline separators.</span>
+  </div>
+
+  <div
+    class="r8-border-sample r8-border-sample--ghost"
+    style="
+      --r8-border-sample-color: var(--r8-color-tertiary-strong);
+      --r8-border-sample-width: 6px;
+      --r8-border-sample-shadow: none;
+    "
+  >
+    <strong>Custom variable override</strong>
+    <span>Dial the exact border color and width without creating a new modifier.</span>
+  </div>
+</div>`,
+    anatomy: ll(
+      [
+        "`r8-border-sample` e um wrapper visual generico para destacar blocos, avisos curtos, cards auxiliares e trilhos laterais.",
+        "Modifiers como `--thin` e `--ghost` ajustam peso e preenchimento sem trocar o elemento hospedeiro.",
+        "Tons semanticos como `--primary`, `--success` e `--danger` ajudam a puxar a borda para o contexto certo sem depender so do background.",
+        "Modifiers de lado unico como `--top`, `--end`, `--bottom` e `--start` funcionam bem para separadores, cabecalhos e faixas laterais.",
+      ],
+      [
+        "`r8-border-sample` is a generic visual wrapper for highlighted blocks, short notices, helper cards and side rails.",
+        "Modifiers such as `--thin` and `--ghost` adjust weight and fill without changing the host element.",
+        "Semantic tones like `--primary`, `--success` and `--danger` help pull the border into the right context without relying on the background alone.",
+        "Single-edge modifiers such as `--top`, `--end`, `--bottom` and `--start` work well for separators, headers and side rails.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Border e apenas tratamento visual; escolha o elemento semantico certo, como `<section>`, `<article>` ou `<aside>`, de acordo com o conteudo.",
+        "Nao dependa so da cor da borda para comunicar state critico ou sucesso; mantenha texto, icone ou label explicito.",
+        "Quando usar borda em um unico lado, preserve espacamento suficiente para que a faixa continue perceptivel sem colidir com o conteudo.",
+      ],
+      [
+        "Border is a visual treatment only; choose the right semantic host, such as `<section>`, `<article>` or `<aside>`, based on the content.",
+        "Do not rely on border color alone to communicate critical or success states; keep explicit text, icon or label support.",
+        "When using a single-edge border, preserve enough spacing so the rail stays visible without colliding with the content.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-border-sample",
+        description: l(
+          "Classe base para uma surface emoldurada com borda dura, fundo opcional e sombra seca no estilo Retro8 UI.",
+          "Base class for a framed surface with a hard border, optional fill and dry shadow in the Retro8 UI style.",
+        ),
+      },
+      {
+        name: "r8-border-sample--thin / --ghost",
+        description: l(
+          "Ajustam espessura e preenchimento para surfaces mais discretas ou outlines transparentes.",
+          "Adjust thickness and fill for quieter surfaces or transparent outlines.",
+        ),
+      },
+      {
+        name: "r8-border-sample--primary / --secondary / --success / --info / --danger",
+        description: l(
+          "Trocam o tom da borda usando cores semanticas ja presentes nos tokens da biblioteca.",
+          "Change the border tone using semantic colors already present in the library tokens.",
+        ),
+      },
+      {
+        name: "r8-border-sample--top / --end / --bottom / --start",
+        description: l(
+          "Mantem apenas uma face da borda visivel para casos de separacao, encaixe lateral ou destaque de faixa.",
+          "Keep only one border edge visible for separator, docked or side-rail scenarios.",
+        ),
+      },
+      {
+        name: "--r8-border-sample-*",
+        description: l(
+          "Custom properties para ajustar cor, largura, sombra e background sem precisar criar novos modifiers fixos.",
+          "Custom properties for dialing color, width, shadow and background without creating new fixed modifiers.",
+        ),
+      },
+    ],
   },
   {
     id: "color",
     name: "Color",
     group: "basic",
     summary: l(
-      "Apresenta a paleta limitada da biblioteca, com contraste alto e leitura rapida.",
-      "Presents the library limited palette with strong contrast and quick readability.",
+      "Organiza a paleta semantica da UI e os helpers de cor para texto, com foco em contraste e leitura rapida.",
+      "Organizes the UI semantic palette and text color helpers, with a focus on contrast and fast readability.",
     ),
-    classes: ["r8-color-grid", "r8-color-card", "r8-color-card__swatch", "r8-color-card__meta"],
-    preview: `<div class="r8-color-grid">
+    classes: [
+      "r8-color-grid",
+      "r8-color-card",
+      "r8-color-card__swatch",
+      "r8-color-card__meta",
+      "r8-text",
+      "r8-text--muted",
+      "r8-text--subtle",
+      "r8-text--primary",
+      "r8-text--secondary",
+      "r8-text--tertiary",
+      "r8-text--success",
+      "r8-text--warning",
+      "r8-text--info",
+      "r8-text--danger",
+      "r8-text--dark",
+      "r8-text--light",
+    ],
+    preview: `<div class="docs-demo__stack">
+  <div class="r8-color-grid">
   <div class="r8-color-card">
-    <div class="r8-color-card__swatch" style="background:#0f172a;"></div>
+    <div class="r8-color-card__swatch" style="background:var(--r8-color-bg);"></div>
     <div class="r8-color-card__meta">
       <strong>Background</strong>
-      <span>#0f172a</span>
+      <span>--r8-color-bg</span>
     </div>
   </div>
   <div class="r8-color-card">
-    <div class="r8-color-card__swatch" style="background:#2563eb;"></div>
+    <div class="r8-color-card__swatch" style="background:var(--r8-color-primary);"></div>
     <div class="r8-color-card__meta">
       <strong>Primary</strong>
-      <span>#2563eb</span>
+      <span>--r8-color-primary</span>
     </div>
   </div>
   <div class="r8-color-card">
-    <div class="r8-color-card__swatch" style="background:#64748b;"></div>
+    <div class="r8-color-card__swatch" style="background:var(--r8-color-secondary);"></div>
     <div class="r8-color-card__meta">
       <strong>Secondary</strong>
-      <span>#64748b</span>
+      <span>--r8-color-secondary</span>
     </div>
   </div>
   <div class="r8-color-card">
-    <div class="r8-color-card__swatch" style="background:#16a34a;"></div>
-    <div class="r8-color-card__meta">
-      <strong>Success</strong>
-      <span>#16a34a</span>
-    </div>
-  </div>
-  <div class="r8-color-card">
-    <div class="r8-color-card__swatch" style="background:#dc2626;"></div>
-    <div class="r8-color-card__meta">
-      <strong>Danger</strong>
-      <span>#dc2626</span>
-    </div>
-  </div>
-  <div class="r8-color-card">
-    <div class="r8-color-card__swatch" style="background:#7c3aed;"></div>
+    <div class="r8-color-card__swatch" style="background:var(--r8-color-tertiary);"></div>
     <div class="r8-color-card__meta">
       <strong>Tertiary</strong>
-      <span>#7c3aed</span>
+      <span>--r8-color-tertiary</span>
+    </div>
+  </div>
+  <div class="r8-color-card">
+    <div class="r8-color-card__swatch" style="background:var(--r8-color-success);"></div>
+    <div class="r8-color-card__meta">
+      <strong>Success</strong>
+      <span>--r8-color-success</span>
+    </div>
+  </div>
+  <div class="r8-color-card">
+    <div class="r8-color-card__swatch" style="background:var(--r8-color-warning);"></div>
+    <div class="r8-color-card__meta">
+      <strong>Warning</strong>
+      <span>--r8-color-warning</span>
+    </div>
+  </div>
+  <div class="r8-color-card">
+    <div class="r8-color-card__swatch" style="background:var(--r8-color-info);"></div>
+    <div class="r8-color-card__meta">
+      <strong>Info</strong>
+      <span>--r8-color-info</span>
+    </div>
+  </div>
+  <div class="r8-color-card">
+    <div class="r8-color-card__swatch" style="background:var(--r8-color-danger);"></div>
+    <div class="r8-color-card__meta">
+      <strong>Danger</strong>
+      <span>--r8-color-danger</span>
+    </div>
+  </div>
+  <div class="r8-color-card">
+    <div class="r8-color-card__swatch" style="background:var(--r8-color-dark);"></div>
+    <div class="r8-color-card__meta">
+      <strong>Dark</strong>
+      <span>--r8-color-dark</span>
+    </div>
+  </div>
+  <div class="r8-color-card">
+    <div class="r8-color-card__swatch" style="background:var(--r8-color-light);"></div>
+    <div class="r8-color-card__meta">
+      <strong>Light</strong>
+      <span>--r8-color-light</span>
+    </div>
+  </div>
+  </div>
+
+  <div class="docs-demo__stack">
+    <p class="r8-text">Default body tone for base UI copy.</p>
+    <p class="r8-text r8-text--muted">Muted tone for helper text and secondary context.</p>
+    <p class="r8-text r8-text--subtle">Subtle tone for tertiary metadata and quiet labels.</p>
+    <p class="r8-text r8-text--primary">Primary tone for key actions and highlights.</p>
+    <p class="r8-text r8-text--warning">Warning tone for caution states that need attention.</p>
+    <div
+      class="r8-border-sample"
+      style="
+        --r8-border-sample-color: var(--r8-color-dark-strong);
+        --r8-border-sample-shadow: none;
+        --r8-border-sample-bg: var(--r8-color-dark);
+      "
+    >
+      <p class="r8-text r8-text--light">Light tone stays readable on dark Retro8 surfaces.</p>
     </div>
   </div>
 </div>`,
+    code: `<div class="r8-color-grid">
+  <div class="r8-color-card">
+    <div class="r8-color-card__swatch" style="background:var(--r8-color-primary);"></div>
+    <div class="r8-color-card__meta">
+      <strong>Primary</strong>
+      <span>--r8-color-primary</span>
+    </div>
+  </div>
+
+  <div class="r8-color-card">
+    <div class="r8-color-card__swatch" style="background:var(--r8-color-warning);"></div>
+    <div class="r8-color-card__meta">
+      <strong>Warning</strong>
+      <span>--r8-color-warning</span>
+    </div>
+  </div>
+</div>
+
+<p class="r8-text r8-text--primary">Primary emphasis for key information.</p>
+<p class="r8-text r8-text--warning">Warning emphasis for caution states.</p>
+<p class="r8-text r8-text--subtle">Subtle tone for tertiary metadata.</p>
+
+<section style="padding: var(--r8-space-4); background: var(--r8-color-dark);">
+  <p class="r8-text r8-text--light">Readable copy on dark surfaces.</p>
+</section>`,
+    anatomy: ll(
+      [
+        "`r8-color-grid` organiza swatches em uma grade responsiva para inspecionar a paleta rapidamente.",
+        "`r8-color-card`, `__swatch` e `__meta` formam o bloco visual de cada token de cor exibido na documentacao.",
+        "`r8-text` e os modifiers `--*` aplicam cor semantica ao texto corrido sem precisar criar estilos locais para cada contexto.",
+      ],
+      [
+        "`r8-color-grid` organizes swatches in a responsive grid so the palette can be scanned quickly.",
+        "`r8-color-card`, `__swatch` and `__meta` form the visual block used to present each color token in the documentation.",
+        "`r8-text` and its `--*` modifiers apply semantic color to body copy without needing local one-off styles for each context.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Nao use cor sozinha para comunicar meaning; combine o tom com texto claro, icone ou label visivel.",
+        "Tons claros como `r8-text--light` funcionam melhor sobre surfaces escuras ou coloridas com contraste suficiente.",
+        "Para metadata discreta, prefira `--muted` ou `--subtle` em vez de reduzir opacidade e comprometer a leitura.",
+      ],
+      [
+        "Do not use color alone to communicate meaning; pair the tone with clear text, an icon or a visible label.",
+        "Light tones such as `r8-text--light` work best on dark or saturated surfaces with enough contrast.",
+        "For quieter metadata, prefer `--muted` or `--subtle` instead of lowering opacity and hurting readability.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-color-grid / r8-color-card / r8-color-card__swatch / r8-color-card__meta",
+        description: l(
+          "Estrutura visual para apresentar tokens, amostras e nomes de cor em uma grade consistente.",
+          "Visual structure for presenting tokens, swatches and color names in a consistent grid.",
+        ),
+      },
+      {
+        name: "r8-text",
+        description: l(
+          "Classe base para texto corrido, labels e pequenos blocos de copy onde a cor pode variar semanticamente.",
+          "Base class for body copy, labels and short text blocks where color may vary semantically.",
+        ),
+      },
+      {
+        name: "r8-text--muted / --subtle",
+        description: l(
+          "Reduzem o peso visual para detalhes secundarios e metadata mais quieta.",
+          "Reduce visual weight for secondary details and quieter metadata.",
+        ),
+      },
+      {
+        name: "r8-text--primary / --secondary / --tertiary / --success / --warning / --info / --danger",
+        description: l(
+          "Aplicam os tons semanticos principais da Retro8 UI diretamente no texto.",
+          "Apply the main Retro8 UI semantic tones directly to text.",
+        ),
+      },
+      {
+        name: "r8-text--dark / --light",
+        description: l(
+          "Ajudam a ajustar leitura em superfícies muito claras ou muito escuras quando o contexto pedir contraste explicito.",
+          "Help adjust readability on very light or very dark surfaces when the context needs explicit contrast.",
+        ),
+      },
+    ],
   },
   {
     id: "layout-container",
     name: "Layout Container",
     group: "basic",
     summary: l(
-      "Estrutura completa com header, aside, main e footer para shells de app e dashboards.",
-      "Complete shell with header, aside, main and footer for app shells and dashboards.",
+      "Shell estrutural para montar layouts com header, aside, main e footer, agora com direcao e largura lateral ajustaveis.",
+      "Structural shell for layouts with header, aside, main and footer, now with adjustable direction and sidebar width.",
     ),
-    classes: ["r8-container", "r8-container__header", "r8-container__aside", "r8-container__main", "r8-container__footer"],
-    preview: `<div class="r8-container">
+    classes: [
+      "r8-container",
+      "r8-container--aside-end",
+      "r8-container--stack",
+      "r8-container__header",
+      "r8-container__aside",
+      "r8-container__main",
+      "r8-container__footer",
+    ],
+    preview: `<div class="docs-demo__stack">
+  <div class="r8-container" style="--r8-container-aside-width: 12rem; --r8-container-min-height: 16rem;">
+    <header class="r8-container__header">Header</header>
+    <aside class="r8-container__aside">Aside</aside>
+    <main class="r8-container__main">Main content</main>
+    <footer class="r8-container__footer">Footer</footer>
+  </div>
+
+  <div class="r8-container r8-container--aside-end" style="--r8-container-aside-width: 11rem;">
+    <header class="r8-container__header">Toolbar</header>
+    <main class="r8-container__main">Content first, rail after</main>
+    <aside class="r8-container__aside">Inspector</aside>
+  </div>
+
+  <div class="r8-container r8-container--stack" style="--r8-container-min-height: 0;">
+    <header class="r8-container__header">Stacked header</header>
+    <main class="r8-container__main">Main content without sidebar</main>
+    <footer class="r8-container__footer">Footer</footer>
+  </div>
+</div>`,
+    code: `<div class="r8-container" style="--r8-container-aside-width: 13rem;">
   <header class="r8-container__header">Header</header>
-  <aside class="r8-container__aside">Aside</aside>
+  <aside class="r8-container__aside">Navigation</aside>
   <main class="r8-container__main">Main content</main>
   <footer class="r8-container__footer">Footer</footer>
+</div>
+
+<div class="r8-container r8-container--aside-end">
+  <main class="r8-container__main">Primary pane</main>
+  <aside class="r8-container__aside">Secondary rail</aside>
+</div>
+
+<div class="r8-container r8-container--stack" style="--r8-container-min-height: 0;">
+  <header class="r8-container__header">Header</header>
+  <main class="r8-container__main">Main content</main>
 </div>`,
+    anatomy: ll(
+      [
+        "`r8-container` e o wrapper estrutural que distribui os blocos principais do shell e aceita nesting quando a hierarquia pedir.",
+        "`r8-container__header` e `r8-container__footer` ocupam a largura total e funcionam bem para barras de contexto, status e acoes.",
+        "`r8-container__aside` cria a coluna lateral e pode ficar no inicio ou no fim usando `r8-container--aside-end`.",
+        "`r8-container__main` recebe a area principal e continua responsiva mesmo quando o aside desaparece.",
+        "`r8-container--stack` simplifica o shell para um fluxo vertical sem sidebar, util para paginas simples ou areas compactas.",
+      ],
+      [
+        "`r8-container` is the structural wrapper that distributes the main shell regions and accepts nesting when the hierarchy needs it.",
+        "`r8-container__header` and `r8-container__footer` span the full width and work well for contextual bars, status areas and actions.",
+        "`r8-container__aside` creates the side column and can move to the trailing side with `r8-container--aside-end`.",
+        "`r8-container__main` receives the primary area and stays responsive even when the aside disappears.",
+        "`r8-container--stack` simplifies the shell into a vertical flow without a sidebar, useful for simpler pages or compact areas.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Use elementos semanticos nativos como `<header>`, `<aside>`, `<main>` e `<footer>` sempre que eles fizerem sentido para a estrutura real.",
+        "Mantenha apenas um `<main>` por pagina ou por landmark principal do app para evitar landmarks duplicados.",
+        "Se o aside for navegacao, exponha links e headings claros; se for painel auxiliar, rotule o bloco para orientar assistive tech.",
+      ],
+      [
+        "Use native semantic elements such as `<header>`, `<aside>`, `<main>` and `<footer>` whenever they match the real structure.",
+        "Keep only one `<main>` per page or per primary app landmark to avoid duplicate landmarks.",
+        "If the aside is navigation, expose clear links and headings; if it is a supporting panel, label the region for assistive tech.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-container",
+        description: l(
+          "Classe base do shell, com gap, altura minima e largura lateral controladas por CSS variables.",
+          "Base shell class, with gap, minimum height and sidebar width controlled by CSS variables.",
+        ),
+      },
+      {
+        name: "r8-container--aside-end / r8-container--stack",
+        description: l(
+          "Modifiers para mover o aside para a direita logica ou simplificar o layout para um fluxo vertical.",
+          "Modifiers for moving the aside to the logical end or simplifying the layout into a vertical flow.",
+        ),
+      },
+      {
+        name: "r8-container__header / __aside / __main / __footer",
+        description: l(
+          "Regioes semanticas do shell que podem ser combinadas conforme a necessidade do layout.",
+          "Semantic shell regions that can be combined based on the layout needs.",
+        ),
+      },
+      {
+        name: "--r8-container-*",
+        description: l(
+          "Custom properties para ajustar gap, largura do aside, altura minima e alturas do header/footer sem criar novos modifiers fixos.",
+          "Custom properties for adjusting gap, aside width, minimum height and header/footer heights without creating new fixed modifiers.",
+        ),
+      },
+    ],
   },
   {
     id: "icon",
@@ -335,12 +781,16 @@ const basicComponents = [
       "r8-typography",
       "r8-text",
       "r8-text--muted",
+      "r8-text--subtle",
       "r8-text--primary",
       "r8-text--secondary",
       "r8-text--tertiary",
       "r8-text--success",
+      "r8-text--warning",
       "r8-text--info",
       "r8-text--danger",
+      "r8-text--dark",
+      "r8-text--light",
     ],
     api: [
       {
@@ -362,6 +812,10 @@ const basicComponents = [
         description: l("Suaviza o contraste para texto secundario ou detalhes auxiliares.", "Softens contrast for secondary text or helper details."),
       },
       {
+        name: "r8-text--subtle",
+        description: l("Reduz ainda mais o peso visual para metadata e labels de baixo destaque.", "Reduces visual weight further for metadata and low-emphasis labels."),
+      },
+      {
         name: "r8-text--primary",
         description: l("Aplica enfase com a cor primaria do sistema.", "Applies emphasis with the system primary color."),
       },
@@ -378,12 +832,20 @@ const basicComponents = [
         description: l("Comunica estados positivos ou confirmacoes.", "Communicates positive states or confirmations."),
       },
       {
+        name: "r8-text--warning",
+        description: l("Comunica cautela, alerta moderado ou atencao preventiva.", "Communicates caution, moderate alerts or preventive attention."),
+      },
+      {
         name: "r8-text--info",
         description: l("Comunica contexto, ajuda ou informacoes neutras.", "Communicates context, help or neutral information."),
       },
       {
         name: "r8-text--danger",
         description: l("Comunica erros, risco ou estados criticos.", "Communicates errors, risk or critical states."),
+      },
+      {
+        name: "r8-text--dark / r8-text--light",
+        description: l("Ajustam contraste explicito em superfícies muito claras ou muito escuras.", "Adjust explicit contrast on very light or very dark surfaces."),
       },
     ],
     preview: `<div class="docs-demo__stack">
@@ -400,7 +862,9 @@ const basicComponents = [
   <div class="docs-demo__stack">
     <p class="r8-text">Default body text for mission logs and dense UI labels.</p>
     <p class="r8-text r8-text--muted">Muted helper copy for secondary details.</p>
+    <p class="r8-text r8-text--subtle">Subtle metadata for low-priority context.</p>
     <p class="r8-text r8-text--primary">Primary text to highlight key information.</p>
+    <p class="r8-text r8-text--warning">Warning text for caution states.</p>
     <p class="r8-text r8-text--success">Success text for positive states.</p>
     <p class="r8-text r8-text--danger">Danger text for critical states.</p>
   </div>
@@ -417,7 +881,9 @@ const basicComponents = [
 
 <p class="r8-text">Default body text for mission logs and dense UI labels.</p>
 <p class="r8-text r8-text--muted">Muted helper copy for secondary details.</p>
-<p class="r8-text r8-text--primary">Primary text to highlight key information.</p>`,
+<p class="r8-text r8-text--subtle">Subtle metadata for low-priority context.</p>
+<p class="r8-text r8-text--primary">Primary text to highlight key information.</p>
+<p class="r8-text r8-text--warning">Warning text for caution states.</p>`,
   },
 ] satisfies CatalogEntry[];
 
@@ -1339,21 +1805,6 @@ const dataComponents = [
   <div class="r8-tree__node r8-tree__node--child">components</div>
 </div>`,
   },
-  {
-    id: "virtualized-tree",
-    name: "Virtualized Tree",
-    group: "data",
-    summary: l(
-      "Variacao de arvore para estruturas maiores, com renderizacao controlada pela aplicacao hospedeira.",
-      "Tree variant for larger structures, with rendering controlled by the host application.",
-    ),
-    classes: ["r8-virtual-tree", "r8-virtual-tree__node", "r8-virtual-tree__node--child"],
-    preview: `<div class="r8-virtual-tree">
-  <div class="r8-virtual-tree__node">root / chunk 12</div>
-  <div class="r8-virtual-tree__node r8-virtual-tree__node--child">node / 438</div>
-  <div class="r8-virtual-tree__node r8-virtual-tree__node--child">node / 439</div>
-</div>`,
-  },
 ] satisfies CatalogEntry[];
 
 const navigationComponents = [
@@ -2085,8 +2536,8 @@ const retroExtraComponents = [
     group: "retro-extras",
     core: false,
     summary: l(
-      "Superficie nativa da retro8-ui para cards e blocos editoriais, paralela ao Card do catalogo core.",
-      "Native retro8-ui surface for cards and editorial blocks, complementing the core Card component.",
+      "Superficie nativa da Retro8 UI para cards e blocos editoriais, paralela ao Card do catalogo core.",
+      "Native Retro8 UI surface for cards and editorial blocks, complementing the core Card component.",
     ),
     classes: ["r8-panel", "r8-panel--muted", "r8-panel__header", "r8-panel__title", "r8-panel__meta", "r8-panel__body", "r8-panel__footer"],
     preview: `<section class="r8-panel">

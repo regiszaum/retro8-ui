@@ -210,7 +210,7 @@ You can use the bundled runtime or replace it with your own application logic if
 
 The current catalog includes:
 
-- 66 core components across the main catalog, plus retro8-ui-specific extras;
+- 57 core components across the main catalog, plus retro8-ui-specific extras;
 - grouped categories across Basic, Configuration, Form, Data, Navigation, Feedback, and Others;
 - native `retro8-ui` extras such as `Panel`, `Window`, and `Navbar`.
 

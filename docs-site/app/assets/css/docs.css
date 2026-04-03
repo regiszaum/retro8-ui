@@ -171,7 +171,6 @@ button:not(:disabled),
 .r8-rate__item,
 .r8-transfer__item,
 .r8-tree__node,
-.r8-virtual-tree__node,
 .r8-input-number__button,
 [data-r8-toggle],
 [data-r8-close],
@@ -1018,7 +1017,53 @@ pre {
 }
 
 .docs-token-card {
+  display: flex;
+  flex-direction: column;
   height: 100%;
+  max-height: min(36rem, 72vh);
+}
+
+.docs-token-card > .r8-panel__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+.docs-token-sections {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.docs-token-section {
+  display: grid;
+  gap: 1rem;
+}
+
+.docs-token-section__header {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.docs-token-section__title {
+  margin: 0;
+  font-family: "Press Start 2P", "Courier New", Courier, monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  text-transform: uppercase;
+  color: var(--docs-panel-text);
+}
+
+.docs-token-section__copy {
+  margin: 0;
+  color: var(--docs-panel-muted);
+  line-height: 1.65;
+}
+
+.docs-token-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
 }
 
 .docs-token-list {
@@ -1031,9 +1076,9 @@ pre {
 
 .docs-token-list__item {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto minmax(0, 1fr);
   gap: 0.75rem;
-  align-items: center;
+  align-items: start;
   color: var(--docs-panel-text);
 }
 
@@ -1050,13 +1095,38 @@ pre {
   box-shadow: none;
 }
 
-.docs-token-list__meta {
+.docs-token-list__content {
   display: grid;
   gap: 0.18rem;
+  min-width: 0;
 }
 
-.docs-token-list__meta strong {
+.docs-token-list__content strong {
   color: var(--docs-panel-text);
+}
+
+.docs-token-list__pair {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: start;
+}
+
+.docs-token-list__pair code {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.docs-token-list__value {
+  width: 100%;
+  max-width: 100%;
+  justify-self: end;
+  text-align: right;
+}
+
+.docs-token-list__content small {
+  color: var(--docs-panel-muted);
+  line-height: 1.55;
 }
 
 .docs-summary-card {
@@ -1097,7 +1167,7 @@ pre {
 
 .docs-component__layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.9fr);
+  grid-template-columns: 1fr;
   gap: 1rem;
   margin-bottom: 1rem;
 }
@@ -1135,6 +1205,143 @@ pre {
   display: grid;
   gap: 1rem;
   margin-top: 1rem;
+}
+
+.docs-button-playground,
+.docs-border-playground,
+.docs-color-playground,
+.docs-layout-container-playground {
+  margin-bottom: 1rem;
+}
+
+.docs-button-playground__header,
+.docs-button-playground__intro,
+.docs-button-playground__controls,
+.docs-button-playground__preview,
+.docs-button-playground__markup,
+.docs-border-playground__header,
+.docs-border-playground__intro,
+.docs-border-playground__controls,
+.docs-border-playground__preview,
+.docs-border-playground__markup,
+.docs-color-playground__header,
+.docs-color-playground__intro,
+.docs-color-playground__controls,
+.docs-color-playground__preview,
+.docs-color-playground__markup,
+.docs-layout-container-playground__header,
+.docs-layout-container-playground__intro,
+.docs-layout-container-playground__controls,
+.docs-layout-container-playground__preview,
+.docs-layout-container-playground__markup {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.docs-button-playground__header,
+.docs-border-playground__header,
+.docs-color-playground__header,
+.docs-layout-container-playground__header {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+}
+
+.docs-button-playground__intro > .docs-panel__meta,
+.docs-border-playground__intro > .docs-panel__meta,
+.docs-color-playground__intro > .docs-panel__meta,
+.docs-layout-container-playground__intro > .docs-panel__meta {
+  margin: 0;
+}
+
+.docs-button-playground__body,
+.docs-border-playground__body,
+.docs-color-playground__body,
+.docs-layout-container-playground__body {
+  display: grid;
+  grid-template-columns: minmax(18rem, 0.95fr) minmax(0, 1.05fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.docs-button-playground__field-grid,
+.docs-border-playground__field-grid,
+.docs-color-playground__field-grid,
+.docs-layout-container-playground__field-grid {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+}
+
+.docs-button-playground__toggles,
+.docs-border-playground__toggles,
+.docs-layout-container-playground__toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.docs-button-playground__stage,
+.docs-border-playground__stage,
+.docs-color-playground__stage,
+.docs-layout-container-playground__stage {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+  min-height: auto;
+}
+
+.docs-button-playground__surface {
+  width: fit-content;
+  max-width: 100%;
+}
+
+.docs-button-playground__surface--block {
+  width: min(100%, 22rem);
+}
+
+.docs-border-playground__surface {
+  width: min(100%, 30rem);
+}
+
+.docs-border-playground__surface .r8-border-sample {
+  min-height: 10rem;
+  align-content: start;
+}
+
+.docs-button-playground__code,
+.docs-border-playground__code,
+.docs-color-playground__code,
+.docs-layout-container-playground__code {
+  margin: 0;
+  padding: 0.9rem 1rem;
+  overflow: auto;
+  border: 2px solid var(--docs-inline-code-border);
+  background: color-mix(in srgb, var(--docs-panel-surface) 82%, var(--docs-code-bg) 18%);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--docs-panel-border) 72%, transparent);
+  color: var(--docs-panel-text);
+  font-size: 0.84rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.docs-color-playground__surface {
+  display: grid;
+  align-items: center;
+  min-height: 10rem;
+  padding: 1rem;
+  border: 2px solid var(--docs-panel-border);
+}
+
+.docs-color-playground__surface > .r8-text {
+  margin: 0;
+}
+
+.docs-layout-container-playground__surface {
+  width: 100%;
+}
+
+.docs-layout-container-playground__surface > .r8-container {
+  width: 100%;
 }
 
 .docs-preview__surface {
@@ -1282,6 +1489,14 @@ dialog.r8-dialog {
   line-height: 1.75;
 }
 
+.docs-guide-page__body {
+  padding: 1.15rem 1.25rem 1.35rem;
+}
+
+.docs-guide-page__body--getting-started {
+  padding: 1.35rem 1.6rem 1.6rem;
+}
+
 .docs-prose > :first-child {
   margin-top: 0;
 }
@@ -1358,6 +1573,39 @@ dialog.r8-dialog {
   padding: 0;
 }
 
+.docs-prose--getting-started {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.docs-prose--getting-started > :not(pre) {
+  max-width: 72ch;
+}
+
+.docs-prose--getting-started p,
+.docs-prose--getting-started ul,
+.docs-prose--getting-started ol {
+  margin: 0.95rem 0;
+}
+
+.docs-prose--getting-started ul,
+.docs-prose--getting-started ol {
+  padding-left: 1.8rem;
+  margin-left: 0.35rem;
+}
+
+.docs-prose--getting-started li {
+  padding-left: 0.35rem;
+}
+
+.docs-prose--getting-started li + li {
+  margin-top: 0.7rem;
+}
+
+.docs-prose--getting-started pre {
+  margin: 1.2rem 0;
+}
+
 @media (max-width: 1080px) {
   .docs-layout {
     grid-template-columns: 1fr;
@@ -1381,6 +1629,13 @@ dialog.r8-dialog {
 
   .docs-hero__layout,
   .docs-component__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .docs-button-playground__body,
+  .docs-border-playground__body,
+  .docs-color-playground__body,
+  .docs-layout-container-playground__body {
     grid-template-columns: 1fr;
   }
 }
@@ -1444,12 +1699,41 @@ dialog.r8-dialog {
     grid-template-columns: auto 1fr;
   }
 
-  .docs-token-list__item > code {
-    grid-column: 2;
+  .docs-token-list__pair {
+    grid-template-columns: 1fr;
+  }
+
+  .docs-token-list__value {
+    justify-self: start;
+    text-align: left;
+  }
+
+  .docs-button-playground__header,
+  .docs-border-playground__header,
+  .docs-color-playground__header,
+  .docs-layout-container-playground__header {
+    grid-template-columns: 1fr;
+  }
+
+  .docs-button-playground__field-grid,
+  .docs-border-playground__field-grid,
+  .docs-color-playground__field-grid,
+  .docs-layout-container-playground__field-grid {
+    grid-template-columns: 1fr;
   }
 
   .docs-pager {
     flex-direction: column;
+  }
+
+  .docs-guide-page__body--getting-started {
+    padding: 1.15rem 1rem 1.25rem;
+  }
+
+  .docs-prose--getting-started ul,
+  .docs-prose--getting-started ol {
+    padding-left: 1.45rem;
+    margin-left: 0.1rem;
   }
 
   .docs-brand__label {

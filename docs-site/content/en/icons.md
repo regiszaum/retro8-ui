@@ -1,6 +1,6 @@
 ---
 title: Icons package
-description: 8-bit icon recommendations that pair well with retro8-ui without bloating the main package.
+description: 8-bit icon recommendations that pair well with Retro8 UI without bloating the main package.
 kicker: Ecosystem
 ---
 

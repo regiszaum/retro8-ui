@@ -1,6 +1,6 @@
 ---
 title: Tokens
-description: Cores, spacing, bordas, sombras e tipografia que sustentam a identidade retro da retro8-ui.
+description: Cores, spacing, bordas, sombras e tipografia que sustentam a identidade retro da Retro8 UI.
 kicker: Foundation
 ---
 

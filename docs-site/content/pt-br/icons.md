@@ -1,6 +1,6 @@
 ---
 title: Icon package
-description: Recomendacoes de icons 8-bit para combinar com a retro8-ui sem misturar responsabilidades no package principal.
+description: Recomendacoes de icons 8-bit para combinar com a Retro UI sem misturar responsabilidades no package principal.
 kicker: Ecosystem
 ---
 

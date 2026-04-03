@@ -54,7 +54,7 @@ const event = (name: string, payload: string, ptBr: string, en: string): Catalog
   description: l(ptBr, en),
 });
 
-const buttonVariants = `"default" | "primary" | "secondary" | "tertiary" | "success" | "info" | "danger" | "dark" | "light" | "ghost"`;
+const buttonVariants = `"primary" | "secondary" | "tertiary" | "success" | "info" | "danger" | "dark" | "light" | "ghost"`;
 const buttonSizes = `"sm" | "md" | "lg"`;
 const choiceKinds = new Set([
   "autocomplete",
@@ -298,6 +298,13 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         attributes: [
           row("type", `"button" | "submit" | "reset"`, `"button"`, "Tipo nativo do `<button>` ou do submit control.", "Native `<button>` or submit control type."),
           row("disabled", "boolean", "false", "Desativa interacao e aplica o disabled treatment da retro8-ui.", "Disables interaction and applies the retro8-ui disabled treatment."),
+          row(
+            "aria-disabled",
+            "boolean",
+            "false",
+            "Use em links ou hosts customizados quando o disabled nativo nao estiver disponivel.",
+            "Use it on links or custom hosts when native disabled is not available.",
+          ),
           row("aria-pressed", "boolean", "false", "Marca Buttons toggle ou action states persistentes.", "Marks toggle buttons or persistent action states."),
           row("aria-busy", "boolean", "false", "State sincronizado quando `data-r8-loading` estiver ativo.", "State kept in sync when `data-r8-loading` is active."),
         ],
@@ -309,6 +316,40 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
           row("data-r8-active", `"true" | "false"`, `"false"`, "Conveniencia para sincronizar `aria-pressed` via markup declarativo.", "Convenience attribute for syncing `aria-pressed` through declarative markup."),
         ],
         methods: runtimeMethods,
+      });
+      break;
+    case "border":
+      mergeContract(contract, {
+        cssVariables: [
+          row(
+            "--r8-border-sample-color",
+            "color",
+            "var(--r8-color-border)",
+            "Controla a cor efetiva da borda e da sombra seca quando o Border usa o estilo padrao.",
+            "Controls the effective border and dry-shadow color when Border uses the default style.",
+          ),
+          row(
+            "--r8-border-sample-width",
+            "length",
+            "var(--r8-border-thick)",
+            "Define a espessura base da moldura antes dos modifiers de lado unico entrarem em cena.",
+            "Defines the base frame thickness before single-edge modifiers kick in.",
+          ),
+          row(
+            "--r8-border-sample-shadow",
+            "box-shadow",
+            "4px 4px 0 0 var(--r8-border-sample-color)",
+            "Permite trocar, reduzir ou remover a sombra seca sem alterar as classes principais.",
+            "Lets you change, reduce or remove the dry shadow without altering the main classes.",
+          ),
+          row(
+            "--r8-border-sample-bg",
+            "color",
+            "var(--r8-color-surface)",
+            "Ajusta o preenchimento interno da surface sem quebrar o contorno semantico.",
+            "Adjusts the inner fill of the surface without breaking the semantic outline.",
+          ),
+        ],
       });
       break;
     case "cascader":
@@ -396,6 +437,47 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
           row("href", "string", "required", "Destino nativo do anchor quando `r8-link` e usado em `<a>`.", "Native anchor destination when `r8-link` is used on `<a>`."),
           row("target", `"_self" | "_blank" | "_parent" | "_top"`, `"_self"`, "Comportamento nativo de abertura do link.", "Native link opening behavior."),
           row("aria-disabled", "boolean", "false", "Permite expor um link visualmente desabilitado sem trocar o elemento.", "Lets you expose a visually disabled link without changing the element."),
+        ],
+      });
+      break;
+    case "layout-container":
+      mergeContract(contract, {
+        cssVariables: [
+          row(
+            "--r8-container-gap",
+            "length",
+            "var(--r8-space-3)",
+            "Controla o espacamento entre as regioes do shell sem alterar padding interno de cada bloco.",
+            "Controls spacing between shell regions without changing the inner padding of each block.",
+          ),
+          row(
+            "--r8-container-aside-width",
+            "length",
+            "clamp(11rem, 24vw, 15rem)",
+            "Define a largura da coluna lateral quando o layout usa aside ao lado do main.",
+            "Defines the width of the side column when the layout places an aside next to the main area.",
+          ),
+          row(
+            "--r8-container-min-height",
+            "length",
+            "18rem",
+            "Estabelece uma altura minima para o shell completo, util em dashboards e demos de app chrome.",
+            "Sets a minimum height for the full shell, useful in dashboards and app chrome demos.",
+          ),
+          row(
+            "--r8-container-header-height",
+            "length",
+            "none",
+            "Permite fixar uma altura minima para o header quando o chrome superior precisa de medida mais previsivel.",
+            "Lets you set a minimum height for the header when the top chrome needs a more predictable measure.",
+          ),
+          row(
+            "--r8-container-footer-height",
+            "length",
+            "none",
+            "Permite fixar uma altura minima para o footer quando a barra inferior precisa de proporcao mais estavel.",
+            "Lets you set a minimum height for the footer when the bottom bar needs a more stable proportion.",
+          ),
         ],
       });
       break;

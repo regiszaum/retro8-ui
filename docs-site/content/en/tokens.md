@@ -1,6 +1,6 @@
 ---
 title: Tokens
-description: Colors, spacing, borders, shadows and typography that hold the retro8-ui visual system together.
+description: Colors, spacing, borders, shadows and typography that hold the Retro8 UI visual system together.
 kicker: Foundation
 ---
 
