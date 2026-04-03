@@ -1213,6 +1213,7 @@ pre {
 .docs-icon-playground,
 .docs-link-playground,
 .docs-splitter-playground,
+.docs-typography-playground,
 .docs-layout-container-playground {
   margin-bottom: 1rem;
 }
@@ -1242,6 +1243,11 @@ pre {
 .docs-link-playground__controls,
 .docs-link-playground__preview,
 .docs-link-playground__markup,
+.docs-typography-playground__header,
+.docs-typography-playground__intro,
+.docs-typography-playground__controls,
+.docs-typography-playground__preview,
+.docs-typography-playground__markup,
 .docs-splitter-playground__header,
 .docs-splitter-playground__intro,
 .docs-splitter-playground__controls,
@@ -1262,6 +1268,7 @@ pre {
 .docs-color-playground__header,
 .docs-icon-playground__header,
 .docs-link-playground__header,
+.docs-typography-playground__header,
 .docs-splitter-playground__header,
 .docs-layout-container-playground__header {
   grid-template-columns: minmax(0, 1fr) auto;
@@ -1273,6 +1280,7 @@ pre {
 .docs-color-playground__intro > .docs-panel__meta,
 .docs-icon-playground__intro > .docs-panel__meta,
 .docs-link-playground__intro > .docs-panel__meta,
+.docs-typography-playground__intro > .docs-panel__meta,
 .docs-splitter-playground__intro > .docs-panel__meta,
 .docs-layout-container-playground__intro > .docs-panel__meta {
   margin: 0;
@@ -1283,6 +1291,7 @@ pre {
 .docs-color-playground__body,
 .docs-icon-playground__body,
 .docs-link-playground__body,
+.docs-typography-playground__body,
 .docs-splitter-playground__body,
 .docs-layout-container-playground__body {
   display: grid;
@@ -1296,6 +1305,7 @@ pre {
 .docs-color-playground__field-grid,
 .docs-icon-playground__field-grid,
 .docs-link-playground__field-grid,
+.docs-typography-playground__field-grid,
 .docs-splitter-playground__field-grid,
 .docs-layout-container-playground__field-grid {
   display: grid;
@@ -1307,6 +1317,7 @@ pre {
 .docs-border-playground__toggles,
 .docs-icon-playground__toggles,
 .docs-link-playground__toggles,
+.docs-typography-playground__toggles,
 .docs-splitter-playground__toggles,
 .docs-layout-container-playground__toggles {
   display: flex;
@@ -1319,6 +1330,7 @@ pre {
 .docs-color-playground__stage,
 .docs-icon-playground__stage,
 .docs-link-playground__stage,
+.docs-typography-playground__stage,
 .docs-splitter-playground__stage,
 .docs-layout-container-playground__stage {
   display: grid;
@@ -1350,6 +1362,7 @@ pre {
 .docs-color-playground__code,
 .docs-icon-playground__code,
 .docs-link-playground__code,
+.docs-typography-playground__code,
 .docs-splitter-playground__code,
 .docs-layout-container-playground__code {
   margin: 0;
@@ -1386,6 +1399,20 @@ pre {
   min-height: 10rem;
   padding: 1rem;
   border: 2px solid var(--docs-panel-border);
+}
+
+.docs-typography-playground__surface {
+  align-content: start;
+  border: 2px solid var(--docs-panel-border);
+  display: grid;
+  gap: 1rem;
+  min-height: 10rem;
+  padding: 1rem;
+  width: min(100%, 44rem);
+}
+
+.docs-typography-playground__surface > .r8-text {
+  margin: 0;
 }
 
 .docs-splitter-playground__surface {
@@ -1717,6 +1744,7 @@ dialog.r8-dialog {
   .docs-color-playground__body,
   .docs-icon-playground__body,
   .docs-link-playground__body,
+  .docs-typography-playground__body,
   .docs-splitter-playground__body,
   .docs-layout-container-playground__body {
     grid-template-columns: 1fr;
@@ -1796,6 +1824,7 @@ dialog.r8-dialog {
   .docs-color-playground__header,
   .docs-icon-playground__header,
   .docs-link-playground__header,
+  .docs-typography-playground__header,
   .docs-splitter-playground__header,
   .docs-layout-container-playground__header {
     grid-template-columns: 1fr;
@@ -1806,6 +1835,7 @@ dialog.r8-dialog {
   .docs-color-playground__field-grid,
   .docs-icon-playground__field-grid,
   .docs-link-playground__field-grid,
+  .docs-typography-playground__field-grid,
   .docs-splitter-playground__field-grid,
   .docs-layout-container-playground__field-grid {
     grid-template-columns: 1fr;

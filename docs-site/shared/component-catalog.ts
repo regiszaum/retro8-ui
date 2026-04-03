@@ -1130,12 +1130,21 @@ const basicComponents = [
     name: "Typography",
     group: "basic",
     summary: l(
-      "Sistema tipografico completo para blocos de conteudo, texto corrido e variantes semanticas de apoio.",
-      "Complete typographic system for content blocks, body copy and supporting semantic text variants.",
+      "Sistema tipografico para hierarquia retro, largura de leitura confortavel, escala de texto e tons semanticos de apoio.",
+      "Typographic system for retro hierarchy, comfortable reading measure, text scale, and supporting semantic tones.",
     ),
     classes: [
       "r8-typography",
+      "r8-typography--compact",
+      "r8-typography--loose",
+      "r8-typography--measure",
       "r8-text",
+      "r8-text--xs",
+      "r8-text--sm",
+      "r8-text--base",
+      "r8-text--lg",
+      "r8-text--compact",
+      "r8-text--loose",
       "r8-text--muted",
       "r8-text--subtle",
       "r8-text--primary",
@@ -1148,98 +1157,126 @@ const basicComponents = [
       "r8-text--dark",
       "r8-text--light",
     ],
+    preview: `<div class="docs-demo__stack">
+  <article class="r8-typography r8-typography--measure">
+    <small>Mission log / readable measure</small>
+    <h1>Readable retro hierarchy</h1>
+    <p class="r8-text r8-text--base">
+      Build long-form UI copy with a display heading, comfortable measure and a body scale that still fits dense interfaces.
+    </p>
+    <blockquote>Keep the display font for hierarchy, not for full paragraphs.</blockquote>
+    <ul>
+      <li>Display font for headings only</li>
+      <li>Body scale driven by tokens</li>
+      <li>Optional readable measure for longer copy</li>
+    </ul>
+  </article>
+
+  <div class="docs-demo__stack">
+    <p class="r8-text r8-text--xs r8-text--muted">Extra-small helper copy for metadata and timestamps.</p>
+    <p class="r8-text">Default body size for compact interface copy.</p>
+    <p class="r8-text r8-text--base r8-text--primary">Base size gives intro copy and highlighted paragraphs more air.</p>
+    <p class="r8-text r8-text--lg r8-text--loose">Large relaxed copy helps banners, empty states and longer explanatory messages.</p>
+  </div>
+</div>`,
+    code: `<article class="r8-typography r8-typography--measure">
+  <small>Mission log / readable measure</small>
+  <h1>Readable retro hierarchy</h1>
+  <p class="r8-text r8-text--base">
+    Build long-form UI copy with a display heading, comfortable measure and a body scale that still fits dense interfaces.
+  </p>
+  <blockquote>Keep the display font for hierarchy, not for full paragraphs.</blockquote>
+  <ul>
+    <li>Display font for headings only</li>
+    <li>Body scale driven by tokens</li>
+    <li>Optional readable measure for longer copy</li>
+  </ul>
+</article>
+
+<p class="r8-text r8-text--xs r8-text--muted">Extra-small helper copy for metadata and timestamps.</p>
+<p class="r8-text r8-text--base r8-text--primary">Base size gives intro copy and highlighted paragraphs more air.</p>
+<p class="r8-text r8-text--lg r8-text--loose">Large relaxed copy helps banners, empty states and longer explanatory messages.</p>`,
+    anatomy: ll(
+      [
+        "`r8-typography` e o wrapper para headings, paragrafos, listas, code, blockquotes e pequenos apoios como `small`.",
+        "`r8-typography--measure` limita a largura da leitura para blocos mais longos sem criar um wrapper extra.",
+        "`r8-typography--compact` e `r8-typography--loose` ajustam gap e line-height do bloco inteiro para contextos mais densos ou mais relaxados.",
+        "`r8-text` funciona dentro ou fora do bloco tipografico quando voce precisa aplicar tom, escala ou line-height em um trecho especifico.",
+        "Os modifiers de escala `r8-text--xs / --sm / --base / --lg` usam os tokens da UI em vez de tamanhos arbitrarios soltos.",
+      ],
+      [
+        "`r8-typography` is the wrapper for headings, paragraphs, lists, code, blockquotes, and lighter support copy such as `small`.",
+        "`r8-typography--measure` limits reading width for longer blocks without needing an extra wrapper.",
+        "`r8-typography--compact` and `r8-typography--loose` adjust gap and line-height for denser or more relaxed reading contexts.",
+        "`r8-text` works inside or outside the main prose block whenever a specific line needs tone, scale, or line-height adjustments.",
+        "The `r8-text--xs / --sm / --base / --lg` scale modifiers stay tied to UI tokens instead of ad-hoc sizes.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Mantenha a ordem semantica de headings (`h1`, `h2`, `h3`) mesmo quando o visual parecer resolvido com apenas classes.",
+        "Use os tons semanticos como apoio, nao como unico canal para erro, sucesso ou alerta; sempre combine com contexto textual.",
+        "Prefira `r8-typography--measure` e line-heights mais relaxados quando houver paragrafos longos ou instrucoes importantes.",
+        "Use os modos compactos com parcimonia em areas densas; leitura longa com line-height apertado cansa mais rapido.",
+      ],
+      [
+        "Keep semantic heading order (`h1`, `h2`, `h3`) even when the visual hierarchy looks solved by classes alone.",
+        "Use semantic tones as support, not as the only signal for error, success, or warning states; always pair them with text context.",
+        "Prefer `r8-typography--measure` and looser line-heights for longer paragraphs or important instructions.",
+        "Use compact modes sparingly in dense UI areas; extended reading with tight line-height becomes tiring faster.",
+      ],
+    ),
     api: [
       {
         name: "r8-typography",
         description: l(
-          "Container para headings, paragrafos, listas, code e blockquotes com hierarquia retro consistente.",
-          "Container for headings, paragraphs, lists, code and blockquotes with consistent retro hierarchy.",
+          "Wrapper base para hierarquia tipografica, com headings retro, corpo em mono legivel e suporte a listas, blockquotes, code e small.",
+          "Base wrapper for typographic hierarchy, with retro headings, readable mono body copy, and support for lists, blockquotes, code, and small text.",
+        ),
+      },
+      {
+        name: "r8-typography--compact / --loose / --measure",
+        description: l(
+          "Modifiers para densidade vertical e largura de leitura sem precisar criar wrappers ou CSS local para cada bloco.",
+          "Modifiers for vertical density and reading width without creating extra wrappers or local CSS for every prose block.",
         ),
       },
       {
         name: "r8-text",
         description: l(
-          "Classe base para texto corrido curto, labels e copys de apoio fora de um bloco tipografico rico.",
-          "Base class for short body copy, labels and supporting text outside a rich typography block.",
+          "Classe base para copys curtas, labels e paragrafos que precisam de ajustes fora ou dentro de um bloco tipografico.",
+          "Base class for short copy, labels, and paragraphs that need adjustments outside or inside a prose block.",
         ),
       },
       {
-        name: "r8-text--muted",
-        description: l("Suaviza o contraste para texto secundario ou detalhes auxiliares.", "Softens contrast for secondary text or helper details."),
+        name: "r8-text--xs / --sm / --base / --lg",
+        description: l(
+          "Escala de texto baseada nos tokens da UI para metadata, corpo compacto, intros e mensagens de maior destaque.",
+          "Token-based text scale for metadata, compact body copy, intros, and more prominent messages.",
+        ),
       },
       {
-        name: "r8-text--subtle",
-        description: l("Reduz ainda mais o peso visual para metadata e labels de baixo destaque.", "Reduces visual weight further for metadata and low-emphasis labels."),
+        name: "r8-text--compact / --loose",
+        description: l(
+          "Ajustam line-height de um trecho especifico quando a densidade precisa fugir do valor padrao do bloco.",
+          "Adjust line-height for a specific line or paragraph when density needs to differ from the block default.",
+        ),
       },
       {
-        name: "r8-text--primary",
-        description: l("Aplica enfase com a cor primaria do sistema.", "Applies emphasis with the system primary color."),
+        name: "r8-text--muted / --subtle / --primary / --secondary / --tertiary / --success / --warning / --info / --danger / --dark / --light",
+        description: l(
+          "Tons semanticos para apoio visual, enfase contextual e contraste explicito em superficies mais claras ou escuras.",
+          "Semantic tones for visual support, contextual emphasis, and explicit contrast on lighter or darker surfaces.",
+        ),
       },
       {
-        name: "r8-text--secondary",
-        description: l("Usa o tom secundario para apoio visual e hierarquia complementar.", "Uses the secondary tone for supporting hierarchy."),
-      },
-      {
-        name: "r8-text--tertiary",
-        description: l("Destaca texto com a cor terciaria em contextos mais chamativos.", "Highlights text with the tertiary color in more expressive contexts."),
-      },
-      {
-        name: "r8-text--success",
-        description: l("Comunica estados positivos ou confirmacoes.", "Communicates positive states or confirmations."),
-      },
-      {
-        name: "r8-text--warning",
-        description: l("Comunica cautela, alerta moderado ou atencao preventiva.", "Communicates caution, moderate alerts or preventive attention."),
-      },
-      {
-        name: "r8-text--info",
-        description: l("Comunica contexto, ajuda ou informacoes neutras.", "Communicates context, help or neutral information."),
-      },
-      {
-        name: "r8-text--danger",
-        description: l("Comunica erros, risco ou estados criticos.", "Communicates errors, risk or critical states."),
-      },
-      {
-        name: "r8-text--dark / r8-text--light",
-        description: l("Ajustam contraste explicito em superfícies muito claras ou muito escuras.", "Adjust explicit contrast on very light or very dark surfaces."),
+        name: "--r8-text-* / --r8-typography-*",
+        description: l(
+          "Custom properties para trocar familia, escala, line-height, gap e largura de leitura sem abrir novos modifiers fixos.",
+          "Custom properties for swapping family, scale, line-height, gap, and reading width without expanding the modifier surface.",
+        ),
       },
     ],
-    preview: `<div class="docs-demo__stack">
-  <div class="r8-typography">
-    <h1>Retro heading</h1>
-    <p>Build framework-agnostic UI with compiled CSS and semantic classes.</p>
-    <ul>
-      <li>Consistent tokens</li>
-      <li>Strong hierarchy</li>
-      <li>Readable body copy</li>
-    </ul>
-  </div>
-
-  <div class="docs-demo__stack">
-    <p class="r8-text">Default body text for mission logs and dense UI labels.</p>
-    <p class="r8-text r8-text--muted">Muted helper copy for secondary details.</p>
-    <p class="r8-text r8-text--subtle">Subtle metadata for low-priority context.</p>
-    <p class="r8-text r8-text--primary">Primary text to highlight key information.</p>
-    <p class="r8-text r8-text--warning">Warning text for caution states.</p>
-    <p class="r8-text r8-text--success">Success text for positive states.</p>
-    <p class="r8-text r8-text--danger">Danger text for critical states.</p>
-  </div>
-</div>`,
-    code: `<div class="r8-typography">
-  <h1>Retro heading</h1>
-  <p>Build framework-agnostic UI with compiled CSS and semantic classes.</p>
-  <ul>
-    <li>Consistent tokens</li>
-    <li>Strong hierarchy</li>
-    <li>Readable body copy</li>
-  </ul>
-</div>
-
-<p class="r8-text">Default body text for mission logs and dense UI labels.</p>
-<p class="r8-text r8-text--muted">Muted helper copy for secondary details.</p>
-<p class="r8-text r8-text--subtle">Subtle metadata for low-priority context.</p>
-<p class="r8-text r8-text--primary">Primary text to highlight key information.</p>
-<p class="r8-text r8-text--warning">Warning text for caution states.</p>`,
   },
 ] satisfies CatalogEntry[];
 

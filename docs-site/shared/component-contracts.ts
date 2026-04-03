@@ -588,6 +588,82 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         ],
       });
       break;
+    case "typography":
+      mergeContract(contract, {
+        cssVariables: [
+          row(
+            "--r8-text-font-family",
+            "font-family",
+            "var(--r8-font-body)",
+            "Permite trocar a familia tipografica de um trecho isolado sem mexer no token global.",
+            "Lets you swap the font family of an isolated snippet without changing the global token.",
+          ),
+          row(
+            "--r8-text-size",
+            "length",
+            "var(--r8-font-size-sm)",
+            "Controla a escala de um trecho `r8-text` ou de um paragrafo especifico dentro do bloco tipografico.",
+            "Controls the scale of an `r8-text` snippet or a specific paragraph inside the typography block.",
+          ),
+          row(
+            "--r8-text-line-height",
+            "number",
+            "1.7",
+            "Ajusta o line-height de uma linha ou paragrafo especifico sem alterar o restante do bloco.",
+            "Adjusts the line-height of a specific line or paragraph without changing the rest of the block.",
+          ),
+          row(
+            "--r8-typography-gap",
+            "length",
+            "var(--r8-space-4)",
+            "Controla o ritmo vertical entre headings, paragrafos, listas e blockquotes do bloco.",
+            "Controls the vertical rhythm between headings, paragraphs, lists, and blockquotes in the block.",
+          ),
+          row(
+            "--r8-typography-measure",
+            "length",
+            "100%",
+            "Define a largura maxima do bloco, util para texto longo, hero copy ou trechos editoriais.",
+            "Defines the block maximum width, useful for long text, hero copy, or editorial sections.",
+          ),
+          row(
+            "--r8-typography-heading-font",
+            "font-family",
+            "var(--r8-font-display)",
+            "Troca a familia dos headings apenas neste bloco, mantendo o resto da UI intacto.",
+            "Swaps the heading family only in this block while keeping the rest of the UI intact.",
+          ),
+          row(
+            "--r8-typography-body-font",
+            "font-family",
+            "var(--r8-font-body)",
+            "Troca a familia do corpo do texto para um bloco especifico sem acoplar utilitarios externos.",
+            "Swaps the body text family for a specific block without relying on external utilities.",
+          ),
+          row(
+            "--r8-typography-body-size",
+            "length",
+            "var(--r8-font-size-sm)",
+            "Permite elevar ou reduzir a escala base de paragrafos, listas e blockquotes do bloco inteiro.",
+            "Lets you raise or lower the base scale of paragraphs, lists, and blockquotes across the whole block.",
+          ),
+          row(
+            "--r8-typography-heading-line-height",
+            "number",
+            "1.2",
+            "Controla a compactacao dos headings sem reescrever os seletores internos.",
+            "Controls heading compactness without rewriting the internal selectors.",
+          ),
+          row(
+            "--r8-typography-body-line-height",
+            "number",
+            "1.7",
+            "Ajusta a legibilidade do corpo tipografico inteiro, inclusive listas e blockquotes.",
+            "Adjusts the readability of the full body copy, including lists and blockquotes.",
+          ),
+        ],
+      });
+      break;
     case "splitter":
       mergeContract(contract, {
         attributes: [

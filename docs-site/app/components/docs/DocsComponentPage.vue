@@ -173,6 +173,7 @@ watch(
     <DocsLinkPlayground v-if="component.id === 'link'" :site="site" />
     <DocsLayoutContainerPlayground v-if="component.id === 'layout-container'" :site="site" />
     <DocsSplitterPlayground v-if="component.id === 'splitter'" :site="site" />
+    <DocsTypographyPlayground v-if="component.id === 'typography'" :site="site" />
 
     <DocsCodeBlock
       :title="`${component.name} ${site.componentPage.htmlTitleSuffix}`"
