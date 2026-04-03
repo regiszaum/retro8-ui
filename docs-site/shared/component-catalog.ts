@@ -77,8 +77,8 @@ export const componentGroups = [
     core: false,
     title: l("retro8 extras", "retro8 extras"),
     description: l(
-      "Componentes nativos da retro8-ui que complementam o catalogo principal com pecas proprias do sistema.",
-      "retro8-ui native components that extend the main catalog with system-specific pieces.",
+      "Componentes nativos da Retro8 UI que complementam o catalogo principal com pecas proprias do sistema.",
+      "Retro8 UI native components that extend the main catalog with system-specific pieces.",
     ),
   },
 ] as const;
@@ -1339,21 +1339,6 @@ const dataComponents = [
   <div class="r8-tree__node r8-tree__node--child">components</div>
 </div>`,
   },
-  {
-    id: "virtualized-tree",
-    name: "Virtualized Tree",
-    group: "data",
-    summary: l(
-      "Variacao de arvore para estruturas maiores, com renderizacao controlada pela aplicacao hospedeira.",
-      "Tree variant for larger structures, with rendering controlled by the host application.",
-    ),
-    classes: ["r8-virtual-tree", "r8-virtual-tree__node", "r8-virtual-tree__node--child"],
-    preview: `<div class="r8-virtual-tree">
-  <div class="r8-virtual-tree__node">root / chunk 12</div>
-  <div class="r8-virtual-tree__node r8-virtual-tree__node--child">node / 438</div>
-  <div class="r8-virtual-tree__node r8-virtual-tree__node--child">node / 439</div>
-</div>`,
-  },
 ] satisfies CatalogEntry[];
 
 const navigationComponents = [
@@ -2085,8 +2070,8 @@ const retroExtraComponents = [
     group: "retro-extras",
     core: false,
     summary: l(
-      "Superficie nativa da retro8-ui para cards e blocos editoriais, paralela ao Card do catalogo core.",
-      "Native retro8-ui surface for cards and editorial blocks, complementing the core Card component.",
+      "Superficie nativa da Retro8 UI para cards e blocos editoriais, paralela ao Card do catalogo core.",
+      "Native Retro8 UI surface for cards and editorial blocks, complementing the core Card component.",
     ),
     classes: ["r8-panel", "r8-panel--muted", "r8-panel__header", "r8-panel__title", "r8-panel__meta", "r8-panel__body", "r8-panel__footer"],
     preview: `<section class="r8-panel">

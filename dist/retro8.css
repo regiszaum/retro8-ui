@@ -2066,27 +2066,23 @@
     background: var(--r8-color-surface);
     padding: var(--r8-space-3);
   }
-.r8-tree,
-  .r8-virtual-tree {
+.r8-tree {
     display: grid;
     gap: var(--r8-space-2);
   }
-.r8-tree__node,
-  .r8-virtual-tree__node {
+.r8-tree__node {
     background: var(--r8-color-surface);
     border: var(--r8-border-thin) solid var(--r8-color-border);
     padding: var(--r8-space-2) var(--r8-space-3);
   }
-.r8-tree__node--child,
-  .r8-virtual-tree__node--child {
+.r8-tree__node--child {
     margin-left: var(--r8-space-5);
   }
 .r8-carousel__dot:focus-visible,
   .r8-collapse__header:focus-visible,
   .r8-pagination__item:focus-visible,
   .r8-pagination__more:focus-visible,
-  .r8-tree__node:focus-visible,
-  .r8-virtual-tree__node:focus-visible {
+  .r8-tree__node:focus-visible {
     outline: var(--r8-focus-width) solid var(--r8-color-focus);
     outline-offset: 1px;
   }

@@ -16,6 +16,7 @@ import {
   type CatalogMethodEntry,
   type CatalogTableEntry,
 } from "~~/shared/component-contracts";
+import baseTokensSource from "../../../src/styles/base/tokens.css?raw";
 
 export const localeMeta = {
   en: {
@@ -30,55 +31,193 @@ export const localeMeta = {
   },
 } as const;
 
-const sharedTokenGroups = [
-  {
-    key: "colors",
-    type: "color",
-    items: [
-      { labelKey: "background", token: "--r8-color-bg", value: "#0f172a" },
-      { labelKey: "surface", token: "--r8-color-surface", value: "#f8fafc" },
-      { labelKey: "primary", token: "--r8-color-primary", value: "#2563eb" },
-      { labelKey: "secondary", token: "--r8-color-secondary", value: "#64748b" },
-      { labelKey: "tertiary", token: "--r8-color-tertiary", value: "#7c3aed" },
-      { labelKey: "success", token: "--r8-color-success", value: "#16a34a" },
-      { labelKey: "info", token: "--r8-color-info", value: "#0891b2" },
-      { labelKey: "danger", token: "--r8-color-danger", value: "#dc2626" },
-      { labelKey: "dark", token: "--r8-color-dark", value: "#1e293b" },
-      { labelKey: "light", token: "--r8-color-light", value: "#f8fafc" },
-      { labelKey: "focus", token: "--r8-color-focus", value: "#facc15" },
-    ],
-  },
-  {
-    key: "spacing",
-    type: "token",
-    items: [
-      { labelKey: "xs", token: "--r8-space-2", value: "0.25rem" },
-      { labelKey: "sm", token: "--r8-space-3", value: "0.5rem" },
-      { labelKey: "md", token: "--r8-space-5", value: "1rem" },
-      { labelKey: "lg", token: "--r8-space-8", value: "1.75rem" },
-    ],
-  },
-  {
-    key: "borders",
-    type: "token",
-    items: [
-      { labelKey: "thinBorder", token: "--r8-border-thin", value: "2px" },
-      { labelKey: "thickBorder", token: "--r8-border-thick", value: "4px" },
-      { labelKey: "shadowMd", token: "--r8-shadow-md", value: "4px 4px 0 0" },
-      { labelKey: "pressed", token: "--r8-shadow-pressed", value: "1px 1px 0 0" },
-    ],
-  },
-  {
-    key: "typeAndMotion",
-    type: "token",
-    items: [
-      { labelKey: "display", token: "--r8-font-display", value: "Press Start 2P" },
-      { labelKey: "body", token: "--r8-font-body", value: "IBM Plex Mono" },
-      { labelKey: "lift", token: "--r8-motion-lift", value: "-1px" },
-      { labelKey: "press", token: "--r8-motion-press", value: "2px" },
-    ],
-  },
+const foundationTokenGroupOrder = [
+  "surfacesAndInk",
+  "semanticColors",
+  "statesAndOverlay",
+  "spacing",
+  "bordersAndRadius",
+  "shadows",
+  "typography",
+  "focusAndMotion",
 ] as const;
+
+type FoundationTokenGroupKey = (typeof foundationTokenGroupOrder)[number];
+
+type DocsTokenItem = {
+  label: string;
+  token: string;
+  value: string;
+  description?: string;
+};
+
+type DocsTokenGroup = {
+  id: string;
+  title: string;
+  type: "color" | "token";
+  meta?: string;
+  items: DocsTokenItem[];
+};
+
+const foundationColorGroups = new Set<FoundationTokenGroupKey>([
+  "surfacesAndInk",
+  "semanticColors",
+  "statesAndOverlay",
+]);
+
+const tokenLabelDictionary = {
+  en: {
+    accent: "Accent",
+    backdrop: "Backdrop",
+    bg: "Background",
+    body: "Body",
+    border: "Border",
+    contrast: "Contrast",
+    danger: "Danger",
+    dark: "Dark",
+    dialog: "Dialog",
+    disabled: "Disabled",
+    display: "Display",
+    focus: "Focus",
+    font: "Font",
+    info: "Info",
+    ink: "Ink",
+    inset: "Inset",
+    light: "Light",
+    lift: "Lift",
+    motion: "Motion",
+    muted: "Muted",
+    offset: "Offset",
+    press: "Press",
+    primary: "Primary",
+    radius: "Radius",
+    raised: "Raised",
+    secondary: "Secondary",
+    shadow: "Shadow",
+    size: "Size",
+    space: "Space",
+    step: "Step",
+    strong: "Strong",
+    success: "Success",
+    surface: "Surface",
+    tertiary: "Tertiary",
+    thin: "Thin",
+    thick: "Thick",
+    warning: "Warning",
+    width: "Width",
+  },
+  "pt-br": {
+    accent: "Destaque",
+    backdrop: "Backdrop",
+    bg: "Fundo",
+    body: "Corpo",
+    border: "Borda",
+    contrast: "Contraste",
+    danger: "Perigo",
+    dark: "Escuro",
+    dialog: "Dialogo",
+    disabled: "Desabilitado",
+    display: "Destaque",
+    focus: "Foco",
+    font: "Fonte",
+    info: "Info",
+    ink: "Texto",
+    inset: "Interna",
+    light: "Claro",
+    lift: "Elevacao",
+    motion: "Movimento",
+    muted: "Suave",
+    offset: "Offset",
+    press: "Pressao",
+    primary: "Primaria",
+    radius: "Raio",
+    raised: "Elevada",
+    secondary: "Secundaria",
+    shadow: "Sombra",
+    size: "Tamanho",
+    space: "Espaco",
+    step: "Passo",
+    strong: "Forte",
+    success: "Sucesso",
+    surface: "Superficie",
+    tertiary: "Terciaria",
+    thin: "Fina",
+    thick: "Grossa",
+    warning: "Aviso",
+    width: "Largura",
+  },
+} as const;
+
+function extractRootTokens(source: string) {
+  const rootBlock = source.match(/:root\s*\{([\s\S]*?)\n\s*\}/);
+
+  if (!rootBlock) {
+    return [];
+  }
+
+  return [...rootBlock[1].matchAll(/^\s*(--r8-[a-z0-9-]+)\s*:\s*([^;]+);/gm)].map((match) => ({
+    token: match[1],
+    value: match[2].trim(),
+  }));
+}
+
+const foundationTokenEntries = extractRootTokens(baseTokensSource);
+
+function getFoundationTokenGroupKey(token: string): FoundationTokenGroupKey {
+  if (
+    token === "--r8-color-bg" ||
+    token === "--r8-color-border" ||
+    token.startsWith("--r8-color-surface") ||
+    token.startsWith("--r8-color-ink")
+  ) {
+    return "surfacesAndInk";
+  }
+
+  if (token.startsWith("--r8-color-")) {
+    return token === "--r8-color-focus" || token.startsWith("--r8-color-disabled")
+      ? "statesAndOverlay"
+      : "semanticColors";
+  }
+
+  if (token === "--r8-dialog-backdrop") {
+    return "statesAndOverlay";
+  }
+
+  if (token.startsWith("--r8-space-")) {
+    return "spacing";
+  }
+
+  if (token.startsWith("--r8-border-") || token.startsWith("--r8-radius-")) {
+    return "bordersAndRadius";
+  }
+
+  if (token.startsWith("--r8-shadow-")) {
+    return "shadows";
+  }
+
+  if (token.startsWith("--r8-font-")) {
+    return "typography";
+  }
+
+  return "focusAndMotion";
+}
+
+function formatTokenLabel(token: string, locale: DocsLocale) {
+  const safeLocale = locale in tokenLabelDictionary ? locale : "en";
+  const dictionary = tokenLabelDictionary[safeLocale];
+  const segments = token.replace(/^--r8-/, "").split("-");
+  const normalizedSegments = segments[0] === "color" ? segments.slice(1) : segments;
+
+  return normalizedSegments
+    .map((segment) => {
+      if (/^\d+$/.test(segment)) {
+        return segment;
+      }
+
+      return dictionary[segment as keyof typeof dictionary] ?? segment.toUpperCase();
+    })
+    .join(" ");
+}
 
 const localized = {
   "pt-br": {
@@ -179,6 +318,19 @@ const localized = {
       tokensCopy:
         "Cores, espaçamento, bordas, sombras, tipografia e estados de interação usam propriedades customizadas de CSS para manter consistência e facilitar a evolução.",
       tokensKicker: "Base",
+      componentTokensTitle: "Variaveis especificas de componentes",
+      componentTokensCopy:
+        "Alguns componentes expõem variaveis proprias para controlar comportamento visual, tamanho, estado ou ajustes locais sem mexer na base inteira.",
+      foundationTokenGroupTitles: {
+        surfacesAndInk: "Superficies e texto",
+        semanticColors: "Cores semanticas",
+        statesAndOverlay: "Estados e overlay",
+        spacing: "Espacamento",
+        bordersAndRadius: "Bordas e raio",
+        shadows: "Sombras",
+        typography: "Tipografia",
+        focusAndMotion: "Foco e movimento",
+      },
       tokensGroupTitles: {
         colors: "Cores semânticas",
         spacing: "Espaçamento",
@@ -382,6 +534,19 @@ const localized = {
       tokensCopy:
         "Color, spacing, borders, shadows, typography and interaction states live in custom properties so the system stays consistent and easy to evolve.",
       tokensKicker: "Foundation",
+      componentTokensTitle: "Component-specific variables",
+      componentTokensCopy:
+        "Some components expose their own variables to control visual behavior, sizing, state, or local adjustments without changing the whole foundation.",
+      foundationTokenGroupTitles: {
+        surfacesAndInk: "Surfaces and ink",
+        semanticColors: "Semantic colors",
+        statesAndOverlay: "States and overlay",
+        spacing: "Spacing",
+        bordersAndRadius: "Borders and radius",
+        shadows: "Shadows",
+        typography: "Typography",
+        focusAndMotion: "Focus and motion",
+      },
       tokensGroupTitles: {
         colors: "Semantic colors",
         spacing: "Spacing",
@@ -600,21 +765,68 @@ function buildComponentSections(locale: DocsLocale) {
     .filter(Boolean);
 }
 
+function buildFoundationTokenGroups(locale: DocsLocale, dictionary: (typeof localized)[DocsLocale]) {
+  const groupedTokens = new Map<FoundationTokenGroupKey, DocsTokenItem[]>(
+    foundationTokenGroupOrder.map((groupKey) => [groupKey, []]),
+  );
+
+  foundationTokenEntries.forEach((entry) => {
+    const groupKey = getFoundationTokenGroupKey(entry.token);
+    const bucket = groupedTokens.get(groupKey);
+
+    if (!bucket) {
+      return;
+    }
+
+    bucket.push({
+      label: formatTokenLabel(entry.token, locale),
+      token: entry.token,
+      value: entry.value,
+    });
+  });
+
+  return foundationTokenGroupOrder
+    .map((groupKey) => ({
+      id: groupKey,
+      title: dictionary.home.foundationTokenGroupTitles[groupKey],
+      type: foundationColorGroups.has(groupKey) ? "color" : "token",
+      items: groupedTokens.get(groupKey) ?? [],
+    }))
+    .filter((group) => group.items.length);
+}
+
+function buildComponentTokenGroups(locale: DocsLocale) {
+  return componentCatalog
+    .map((component) => {
+      const cssVariables = getComponentContract(component).cssVariables;
+
+      if (!cssVariables.length) {
+        return null;
+      }
+
+      return {
+        id: component.id,
+        title: component.name,
+        type: "token" as const,
+        meta: component.summary[locale],
+        items: cssVariables.map((entry) => ({
+          label: formatTokenLabel(entry.name, locale),
+          token: entry.name,
+          value: entry.defaultValue,
+          description: entry.description[locale],
+        })),
+      } satisfies DocsTokenGroup;
+    })
+    .filter(Boolean);
+}
+
 export function getSiteContent(locale = "en") {
   const safeLocale = isDocsLocale(locale) ? locale : "en";
   const dictionary = localized[safeLocale];
   const componentSections = buildComponentSections(safeLocale);
   const components = componentSections.flatMap((section) => section.components);
-
-  const tokens = sharedTokenGroups.map((group) => ({
-    title: dictionary.home.tokensGroupTitles[group.key],
-    type: group.type,
-    items: group.items.map((item) => ({
-      label: dictionary.home.tokenItemLabels[item.labelKey],
-      token: item.token,
-      value: item.value,
-    })),
-  }));
+  const tokens = buildFoundationTokenGroups(safeLocale, dictionary);
+  const componentTokens = buildComponentTokenGroups(safeLocale);
 
   const stats =
     safeLocale === "en"
@@ -665,6 +877,7 @@ export function getSiteContent(locale = "en") {
       ...dictionary.home,
       stats,
       tokens,
+      componentTokens,
       componentSections,
       components,
     },
