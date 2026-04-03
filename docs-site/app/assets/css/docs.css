@@ -1167,7 +1167,7 @@ pre {
 
 .docs-component__layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.9fr);
+  grid-template-columns: 1fr;
   gap: 1rem;
   margin-bottom: 1rem;
 }
