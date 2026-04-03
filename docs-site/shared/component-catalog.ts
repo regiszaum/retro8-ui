@@ -601,16 +601,112 @@ const basicComponents = [
     name: "Layout Container",
     group: "basic",
     summary: l(
-      "Estrutura completa com header, aside, main e footer para shells de app e dashboards.",
-      "Complete shell with header, aside, main and footer for app shells and dashboards.",
+      "Shell estrutural para montar layouts com header, aside, main e footer, agora com direcao e largura lateral ajustaveis.",
+      "Structural shell for layouts with header, aside, main and footer, now with adjustable direction and sidebar width.",
     ),
-    classes: ["r8-container", "r8-container__header", "r8-container__aside", "r8-container__main", "r8-container__footer"],
-    preview: `<div class="r8-container">
+    classes: [
+      "r8-container",
+      "r8-container--aside-end",
+      "r8-container--stack",
+      "r8-container__header",
+      "r8-container__aside",
+      "r8-container__main",
+      "r8-container__footer",
+    ],
+    preview: `<div class="docs-demo__stack">
+  <div class="r8-container" style="--r8-container-aside-width: 12rem; --r8-container-min-height: 16rem;">
+    <header class="r8-container__header">Header</header>
+    <aside class="r8-container__aside">Aside</aside>
+    <main class="r8-container__main">Main content</main>
+    <footer class="r8-container__footer">Footer</footer>
+  </div>
+
+  <div class="r8-container r8-container--aside-end" style="--r8-container-aside-width: 11rem;">
+    <header class="r8-container__header">Toolbar</header>
+    <main class="r8-container__main">Content first, rail after</main>
+    <aside class="r8-container__aside">Inspector</aside>
+  </div>
+
+  <div class="r8-container r8-container--stack" style="--r8-container-min-height: 0;">
+    <header class="r8-container__header">Stacked header</header>
+    <main class="r8-container__main">Main content without sidebar</main>
+    <footer class="r8-container__footer">Footer</footer>
+  </div>
+</div>`,
+    code: `<div class="r8-container" style="--r8-container-aside-width: 13rem;">
   <header class="r8-container__header">Header</header>
-  <aside class="r8-container__aside">Aside</aside>
+  <aside class="r8-container__aside">Navigation</aside>
   <main class="r8-container__main">Main content</main>
   <footer class="r8-container__footer">Footer</footer>
+</div>
+
+<div class="r8-container r8-container--aside-end">
+  <main class="r8-container__main">Primary pane</main>
+  <aside class="r8-container__aside">Secondary rail</aside>
+</div>
+
+<div class="r8-container r8-container--stack" style="--r8-container-min-height: 0;">
+  <header class="r8-container__header">Header</header>
+  <main class="r8-container__main">Main content</main>
 </div>`,
+    anatomy: ll(
+      [
+        "`r8-container` e o wrapper estrutural que distribui os blocos principais do shell e aceita nesting quando a hierarquia pedir.",
+        "`r8-container__header` e `r8-container__footer` ocupam a largura total e funcionam bem para barras de contexto, status e acoes.",
+        "`r8-container__aside` cria a coluna lateral e pode ficar no inicio ou no fim usando `r8-container--aside-end`.",
+        "`r8-container__main` recebe a area principal e continua responsiva mesmo quando o aside desaparece.",
+        "`r8-container--stack` simplifica o shell para um fluxo vertical sem sidebar, util para paginas simples ou areas compactas.",
+      ],
+      [
+        "`r8-container` is the structural wrapper that distributes the main shell regions and accepts nesting when the hierarchy needs it.",
+        "`r8-container__header` and `r8-container__footer` span the full width and work well for contextual bars, status areas and actions.",
+        "`r8-container__aside` creates the side column and can move to the trailing side with `r8-container--aside-end`.",
+        "`r8-container__main` receives the primary area and stays responsive even when the aside disappears.",
+        "`r8-container--stack` simplifies the shell into a vertical flow without a sidebar, useful for simpler pages or compact areas.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Use elementos semanticos nativos como `<header>`, `<aside>`, `<main>` e `<footer>` sempre que eles fizerem sentido para a estrutura real.",
+        "Mantenha apenas um `<main>` por pagina ou por landmark principal do app para evitar landmarks duplicados.",
+        "Se o aside for navegacao, exponha links e headings claros; se for painel auxiliar, rotule o bloco para orientar assistive tech.",
+      ],
+      [
+        "Use native semantic elements such as `<header>`, `<aside>`, `<main>` and `<footer>` whenever they match the real structure.",
+        "Keep only one `<main>` per page or per primary app landmark to avoid duplicate landmarks.",
+        "If the aside is navigation, expose clear links and headings; if it is a supporting panel, label the region for assistive tech.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-container",
+        description: l(
+          "Classe base do shell, com gap, altura minima e largura lateral controladas por CSS variables.",
+          "Base shell class, with gap, minimum height and sidebar width controlled by CSS variables.",
+        ),
+      },
+      {
+        name: "r8-container--aside-end / r8-container--stack",
+        description: l(
+          "Modifiers para mover o aside para a direita logica ou simplificar o layout para um fluxo vertical.",
+          "Modifiers for moving the aside to the logical end or simplifying the layout into a vertical flow.",
+        ),
+      },
+      {
+        name: "r8-container__header / __aside / __main / __footer",
+        description: l(
+          "Regioes semanticas do shell que podem ser combinadas conforme a necessidade do layout.",
+          "Semantic shell regions that can be combined based on the layout needs.",
+        ),
+      },
+      {
+        name: "--r8-container-*",
+        description: l(
+          "Custom properties para ajustar gap, largura do aside, altura minima e alturas do header/footer sem criar novos modifiers fixos.",
+          "Custom properties for adjusting gap, aside width, minimum height and header/footer heights without creating new fixed modifiers.",
+        ),
+      },
+    ],
   },
   {
     id: "icon",

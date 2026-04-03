@@ -169,6 +169,7 @@ watch(
     <DocsButtonPlayground v-if="component.id === 'button'" :site="site" />
     <DocsBorderPlayground v-if="component.id === 'border'" :site="site" />
     <DocsColorPlayground v-if="component.id === 'color'" :site="site" />
+    <DocsLayoutContainerPlayground v-if="component.id === 'layout-container'" :site="site" />
 
     <DocsCodeBlock
       :title="`${component.name} ${site.componentPage.htmlTitleSuffix}`"

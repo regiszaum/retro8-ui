@@ -440,6 +440,47 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         ],
       });
       break;
+    case "layout-container":
+      mergeContract(contract, {
+        cssVariables: [
+          row(
+            "--r8-container-gap",
+            "length",
+            "var(--r8-space-3)",
+            "Controla o espacamento entre as regioes do shell sem alterar padding interno de cada bloco.",
+            "Controls spacing between shell regions without changing the inner padding of each block.",
+          ),
+          row(
+            "--r8-container-aside-width",
+            "length",
+            "clamp(11rem, 24vw, 15rem)",
+            "Define a largura da coluna lateral quando o layout usa aside ao lado do main.",
+            "Defines the width of the side column when the layout places an aside next to the main area.",
+          ),
+          row(
+            "--r8-container-min-height",
+            "length",
+            "18rem",
+            "Estabelece uma altura minima para o shell completo, util em dashboards e demos de app chrome.",
+            "Sets a minimum height for the full shell, useful in dashboards and app chrome demos.",
+          ),
+          row(
+            "--r8-container-header-height",
+            "length",
+            "none",
+            "Permite fixar uma altura minima para o header quando o chrome superior precisa de medida mais previsivel.",
+            "Lets you set a minimum height for the header when the top chrome needs a more predictable measure.",
+          ),
+          row(
+            "--r8-container-footer-height",
+            "length",
+            "none",
+            "Permite fixar uma altura minima para o footer quando a barra inferior precisa de proporcao mais estavel.",
+            "Lets you set a minimum height for the footer when the bottom bar needs a more stable proportion.",
+          ),
+        ],
+      });
+      break;
     case "splitter":
       mergeContract(contract, {
         attributes: [
