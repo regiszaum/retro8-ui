@@ -1,16 +1,90 @@
 @layer components {
   .r8-link {
-    @apply inline-flex items-center gap-r8-2 font-display text-r8-xs uppercase tracking-r8 text-r8-primary no-underline transition-transform duration-75 ease-r8;
+    --r8-link-color: var(--r8-color-primary-strong);
+    --r8-link-hover-color: var(--r8-link-color);
+    --r8-link-opacity: 1;
+    --r8-link-hover-opacity: 1;
+    --r8-link-underline-color: var(--r8-link-color);
+    --r8-link-hover-underline-color: var(--r8-link-hover-color);
+    --r8-link-underline-opacity: 0%;
+    --r8-link-hover-underline-opacity: 100%;
+    --r8-link-underline-offset: 0.18em;
+    @apply inline-flex items-center gap-r8-2 font-display text-r8-xs uppercase tracking-r8 no-underline transition-transform duration-75 ease-r8;
+    color: var(--r8-link-color);
+    opacity: var(--r8-link-opacity);
+    text-decoration-line: underline;
+    text-decoration-thickness: 0.12em;
+    text-decoration-color: color-mix(in srgb, var(--r8-link-underline-color) var(--r8-link-underline-opacity), transparent);
+    text-underline-offset: var(--r8-link-underline-offset);
+    transition-property: color, opacity, text-decoration-color, transform;
   }
 
-  .r8-link:hover:not([aria-disabled="true"]) {
-    text-decoration: underline;
+  .r8-link:hover:not([aria-disabled="true"]),
+  .r8-link:focus-visible:not([aria-disabled="true"]) {
+    color: var(--r8-link-hover-color);
+    opacity: var(--r8-link-hover-opacity);
+    text-decoration-color: color-mix(
+      in srgb,
+      var(--r8-link-hover-underline-color) var(--r8-link-hover-underline-opacity),
+      transparent
+    );
     transform: translate(var(--r8-motion-lift), var(--r8-motion-lift));
   }
 
   .r8-link:focus-visible {
     outline: var(--r8-focus-width) solid var(--r8-color-focus);
     outline-offset: var(--r8-focus-offset);
+  }
+
+  .r8-link[aria-disabled="true"] {
+    color: var(--r8-color-disabled);
+    cursor: not-allowed;
+    opacity: 1;
+    pointer-events: none;
+    text-decoration-color: transparent;
+    transform: none;
+  }
+
+  .r8-link--secondary {
+    --r8-link-color: var(--r8-color-secondary-strong);
+  }
+
+  .r8-link--tertiary {
+    --r8-link-color: var(--r8-color-tertiary-strong);
+  }
+
+  .r8-link--success {
+    --r8-link-color: var(--r8-color-success-strong);
+  }
+
+  .r8-link--warning {
+    --r8-link-color: var(--r8-color-warning-strong);
+  }
+
+  .r8-link--info {
+    --r8-link-color: var(--r8-color-info-strong);
+  }
+
+  .r8-link--danger {
+    --r8-link-color: var(--r8-color-danger-strong);
+  }
+
+  .r8-link--dark {
+    --r8-link-color: var(--r8-color-dark-strong);
+  }
+
+  .r8-link--muted {
+    --r8-link-color: var(--r8-color-ink-muted);
+    --r8-link-hover-color: var(--r8-color-ink);
+  }
+
+  .r8-link--quiet {
+    --r8-link-opacity: 0.72;
+    --r8-link-hover-opacity: 1;
+  }
+
+  .r8-link--underline {
+    --r8-link-underline-opacity: 55%;
   }
 
   .r8-text {

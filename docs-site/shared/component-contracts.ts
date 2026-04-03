@@ -477,7 +477,73 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         attributes: [
           row("href", "string", "required", "Destino nativo do anchor quando `r8-link` e usado em `<a>`.", "Native anchor destination when `r8-link` is used on `<a>`."),
           row("target", `"_self" | "_blank" | "_parent" | "_top"`, `"_self"`, "Comportamento nativo de abertura do link.", "Native link opening behavior."),
+          row("rel", "string", "none", "Use com `target=\"_blank\"` para proteger contexto com `noreferrer noopener`.", "Use with `target=\"_blank\"` to protect context with `noreferrer noopener`."),
           row("aria-disabled", "boolean", "false", "Permite expor um link visualmente desabilitado sem trocar o elemento.", "Lets you expose a visually disabled link without changing the element."),
+        ],
+        cssVariables: [
+          row(
+            "--r8-link-color",
+            "color",
+            "var(--r8-color-primary-strong)",
+            "Controla a cor base do link no estado idle.",
+            "Controls the base link color in the idle state.",
+          ),
+          row(
+            "--r8-link-hover-color",
+            "color",
+            "var(--r8-link-color)",
+            "Permite trocar a cor do texto durante hover e focus sem criar um modifier novo.",
+            "Lets you change the text color on hover and focus without creating a new modifier.",
+          ),
+          row(
+            "--r8-link-opacity",
+            "number",
+            "1",
+            "Ajusta a opacidade base do link. Reduzir demais pode comprometer contraste.",
+            "Adjusts the base link opacity. Lower values may hurt contrast.",
+          ),
+          row(
+            "--r8-link-hover-opacity",
+            "number",
+            "1",
+            "Define a opacidade aplicada quando o link recebe hover ou focus visivel.",
+            "Defines the opacity applied when the link receives hover or visible focus.",
+          ),
+          row(
+            "--r8-link-underline-color",
+            "color",
+            "var(--r8-link-color)",
+            "Controla a cor do underline no estado base, independentemente do texto.",
+            "Controls the underline color in the base state independently from the text.",
+          ),
+          row(
+            "--r8-link-hover-underline-color",
+            "color",
+            "var(--r8-link-hover-color)",
+            "Permite destacar o underline no hover com uma cor diferente do texto base.",
+            "Lets the underline stand out on hover with a different color from the base text.",
+          ),
+          row(
+            "--r8-link-underline-opacity",
+            "percentage",
+            "0%",
+            "Ajusta quao visivel o underline fica antes do hover.",
+            "Adjusts how visible the underline is before hover.",
+          ),
+          row(
+            "--r8-link-hover-underline-opacity",
+            "percentage",
+            "100%",
+            "Define quao forte o underline aparece no hover e no focus visivel.",
+            "Defines how strong the underline appears on hover and visible focus.",
+          ),
+          row(
+            "--r8-link-underline-offset",
+            "length",
+            "0.18em",
+            "Controla a distancia entre o texto e o underline sem depender de utilities externas.",
+            "Controls the distance between the text and underline without relying on external utilities.",
+          ),
         ],
       });
       break;

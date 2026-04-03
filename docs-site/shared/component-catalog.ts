@@ -885,15 +885,133 @@ const basicComponents = [
     name: "Link",
     group: "basic",
     summary: l(
-      "Link textual curto com foco visivel e microdeslocamento ao passar o mouse.",
-      "Compact text link with visible focus and a tiny hover shift.",
+      "Link textual com tom semantico, controle de underline e opacidade suave para navegação inline e ações secundarias.",
+      "Text link with semantic tone, underline control and gentle opacity handling for inline navigation and secondary actions.",
     ),
-    classes: ["r8-link"],
-    preview: `<div class="r8-cluster">
-  <a class="r8-link" href="#0">Read docs</a>
-  <a class="r8-link" href="#0">Install package</a>
-  <a class="r8-link" href="#0" aria-disabled="true">Disabled state</a>
+    classes: [
+      "r8-link",
+      "r8-link--secondary",
+      "r8-link--tertiary",
+      "r8-link--success",
+      "r8-link--warning",
+      "r8-link--info",
+      "r8-link--danger",
+      "r8-link--dark",
+      "r8-link--muted",
+      "r8-link--quiet",
+      "r8-link--underline",
+    ],
+    preview: `<div class="docs-demo__stack">
+  <p class="r8-text">
+    Start with the <a class="r8-link" href="#0">installation guide</a> for the default inline action.
+  </p>
+  <p class="r8-text">
+    Open the <a class="r8-link r8-link--secondary r8-link--underline" href="#0">release notes</a> when the link should stay visible even before hover.
+  </p>
+  <p class="r8-text">
+    Keep supporting actions quieter with a <a class="r8-link r8-link--muted r8-link--quiet" href="#0">secondary docs trail</a>.
+  </p>
+  <p class="r8-text">
+    Use a <a class="r8-link r8-link--warning" href="#0" style="--r8-link-underline-opacity: 35%; --r8-link-underline-offset: 0.28em;">warning link</a> when the destination deserves extra care.
+  </p>
+  <p class="r8-text">
+    <a class="r8-link r8-link--dark" href="https://retro8-ui.dev" target="_blank" rel="noreferrer noopener">External docs</a>
+  </p>
+  <p class="r8-text">
+    <a class="r8-link" aria-disabled="true">Disabled state</a>
+  </p>
 </div>`,
+    code: `<div class="docs-demo__stack">
+  <p class="r8-text">
+    Read the <a class="r8-link" href="/getting-started">quick start</a>.
+  </p>
+
+  <p class="r8-text">
+    Open the
+    <a class="r8-link r8-link--secondary r8-link--underline" href="/release-notes">
+      release notes
+    </a>
+    for migration details.
+  </p>
+
+  <p class="r8-text">
+    Keep lower-priority actions subtle with
+    <a class="r8-link r8-link--muted r8-link--quiet" href="/changelog">
+      a quieter supporting link
+    </a>.
+  </p>
+
+  <a
+    class="r8-link r8-link--warning"
+    href="/migration"
+    style="
+      --r8-link-opacity: 0.75;
+      --r8-link-underline-opacity: 40%;
+      --r8-link-hover-underline-opacity: 100%;
+      --r8-link-underline-offset: 0.3em;
+    "
+  >
+    Migration guide
+  </a>
+</div>`,
+    anatomy: ll(
+      [
+        "`r8-link` e a base para anchors, `NuxtLink` e outras navegacoes textuais curtas que precisam manter a linguagem visual da Retro8 UI.",
+        "Modifiers de tom como `--secondary`, `--warning`, `--danger` e `--muted` mudam a cor sem perder foco visivel nem comportamento de hover.",
+        "`r8-link--quiet` reduz a presenca visual do link, enquanto `r8-link--underline` deixa o sublinhado sempre presente antes mesmo do hover.",
+        "CSS variables `--r8-link-*` refinam opacidade, cor e offset do underline sem multiplicar modifiers utilitarios.",
+      ],
+      [
+        "`r8-link` is the base for anchors, `NuxtLink`, and other short text navigation patterns that should stay within the Retro8 UI visual language.",
+        "Tone modifiers such as `--secondary`, `--warning`, `--danger`, and `--muted` change color without losing visible focus or hover behavior.",
+        "`r8-link--quiet` lowers visual presence, while `r8-link--underline` keeps the underline visible even before hover.",
+        "`--r8-link-*` CSS variables refine opacity, color, and underline offset without multiplying utility-like modifiers.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Mantenha texto de destino explicito; evite labels vagas como 'clique aqui' quando o link aparecer fora de contexto.",
+        "Se usar `target=\"_blank\"`, combine com `rel=\"noreferrer noopener\"` e deixe claro quando a navegacao abrir outra aba.",
+        "Opacidade mais baixa pode prejudicar contraste; use `r8-link--quiet` e overrides de opacity com moderacao, principalmente em texto corrido pequeno.",
+        "Para links indisponiveis, exponha `aria-disabled=\"true\"` e proteja ou remova o `href` para evitar navegacao acidental.",
+      ],
+      [
+        "Keep destination text explicit; avoid vague labels such as 'click here' when the link appears outside its surrounding context.",
+        "If you use `target=\"_blank\"`, pair it with `rel=\"noreferrer noopener\"` and make it clear when navigation opens a new tab.",
+        "Lower opacity can hurt contrast; use `r8-link--quiet` and opacity overrides sparingly, especially in small inline copy.",
+        "For unavailable links, expose `aria-disabled=\"true\"` and guard or remove the `href` to avoid accidental navigation.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-link",
+        description: l(
+          "Classe base para links textuais com foco visivel, hover com pixel shift e underline controlado por CSS variables.",
+          "Base class for text links with visible focus, pixel-shift hover, and underline driven by CSS variables.",
+        ),
+      },
+      {
+        name: "r8-link--secondary / --tertiary / --success / --warning / --info / --danger / --dark / --muted",
+        description: l(
+          "Modifiers semanticos para mudar o tom do link sem trocar a estrutura do anchor ou do router link.",
+          "Semantic modifiers for changing the link tone without changing the anchor or router-link structure.",
+        ),
+      },
+      {
+        name: "r8-link--quiet / --underline",
+        description: l(
+          "Presets seguros para reduzir a opacidade base do link ou manter o underline visivel desde o estado idle.",
+          "Safe presets for lowering the base link opacity or keeping the underline visible from the idle state.",
+        ),
+      },
+      {
+        name: "--r8-link-*",
+        description: l(
+          "Custom properties para ajustar cor, opacity, underline opacity e underline offset seguindo o contexto da tela.",
+          "Custom properties for tuning color, opacity, underline opacity, and underline offset to match the screen context.",
+        ),
+      },
+    ],
   },
   {
     id: "splitter",
