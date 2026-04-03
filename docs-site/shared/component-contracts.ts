@@ -405,6 +405,47 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         ],
       });
       break;
+    case "icon":
+      mergeContract(contract, {
+        cssVariables: [
+          row(
+            "--r8-icon-glyph-size",
+            "length",
+            "3rem",
+            "Controla a largura e a altura do quadrado que recebe o icone ou glyph.",
+            "Controls the width and height of the square that receives the icon or glyph.",
+          ),
+          row(
+            "--r8-icon-glyph-font-size",
+            "length",
+            "1.25rem",
+            "Ajusta o tamanho de glyphs textuais curtos dentro do frame.",
+            "Adjusts the size of short text glyphs inside the frame.",
+          ),
+          row(
+            "--r8-icon-glyph-bg",
+            "color",
+            "var(--r8-color-accent)",
+            "Troca o background do frame do icone sem alterar a estrutura do tile.",
+            "Changes the icon frame background without altering the tile structure.",
+          ),
+          row(
+            "--r8-icon-glyph-color",
+            "color",
+            "var(--r8-color-accent-contrast)",
+            "Define a cor do texto ou do SVG inline renderizado dentro do glyph.",
+            "Defines the color used by text or inline SVG rendered inside the glyph.",
+          ),
+          row(
+            "--r8-icon-glyph-border",
+            "color",
+            "var(--r8-color-border)",
+            "Permite ajustar o contorno do glyph para acompanhar superficies mais claras ou mais escuras.",
+            "Lets you tune the glyph outline to match lighter or darker surfaces.",
+          ),
+        ],
+      });
+      break;
     case "datetime-picker":
       mergeContract(contract, {
         attributes: [

@@ -238,17 +238,39 @@
   }
 
   .r8-icon-tile__glyph {
+    --r8-icon-glyph-size: 3rem;
+    --r8-icon-glyph-font-size: 1.25rem;
+    --r8-icon-glyph-bg: var(--r8-color-accent);
+    --r8-icon-glyph-color: var(--r8-color-accent-contrast);
+    --r8-icon-glyph-border: var(--r8-color-border);
     align-items: center;
-    background: var(--r8-color-accent);
-    border: var(--r8-border-thick) solid var(--r8-color-border);
+    background: var(--r8-icon-glyph-bg);
+    border: var(--r8-border-thick) solid var(--r8-icon-glyph-border);
     box-shadow: var(--r8-shadow-sm);
-    color: var(--r8-color-accent-contrast);
+    color: var(--r8-icon-glyph-color);
     display: inline-grid;
     font-family: var(--r8-font-display);
-    font-size: 1.25rem;
-    height: 3rem;
+    font-size: var(--r8-icon-glyph-font-size);
+    height: var(--r8-icon-glyph-size);
+    line-height: 1;
+    overflow: hidden;
     place-items: center;
-    width: 3rem;
+    width: var(--r8-icon-glyph-size);
+  }
+
+  .r8-icon-tile__glyph :where(img, svg) {
+    display: block;
+    height: max(1rem, calc(var(--r8-icon-glyph-size) - 1rem));
+    width: max(1rem, calc(var(--r8-icon-glyph-size) - 1rem));
+  }
+
+  .r8-icon-tile__glyph img {
+    image-rendering: pixelated;
+    object-fit: contain;
+  }
+
+  .r8-icon-tile__glyph svg {
+    fill: currentColor;
   }
 
   .r8-container {

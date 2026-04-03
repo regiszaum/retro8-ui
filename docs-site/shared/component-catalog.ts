@@ -713,24 +713,172 @@ const basicComponents = [
     name: "Icon",
     group: "basic",
     summary: l(
-      "Grade de placeholders para combinar a UI com um pacote de icones pixelados externo.",
-      "Placeholder grid for pairing the UI with an external pixel-art icon pack.",
+      "Moldura visual para encaixar icones externos, cursores pixelados ou glyphs curtos sem acoplar um pacote de icones na library.",
+      "Visual frame for external icon packs, pixel cursor assets or short glyphs without coupling the library to a bundled icon set.",
     ),
     classes: ["r8-icon-grid", "r8-icon-tile", "r8-icon-tile__glyph", "r8-icon-tile__label"],
-    preview: `<div class="r8-icon-grid">
-  <div class="r8-icon-tile">
-    <span class="r8-icon-tile__glyph">HP</span>
-    <span class="r8-icon-tile__label">Health</span>
+    preview: `<div class="docs-demo__stack">
+  <div class="r8-icon-grid">
+    <div class="r8-icon-tile">
+      <span class="r8-icon-tile__glyph" aria-hidden="true">
+        <img src="/cursors/default.png" alt="" />
+      </span>
+      <span class="r8-icon-tile__label">Docs default cursor</span>
+    </div>
+    <div class="r8-icon-tile">
+      <span class="r8-icon-tile__glyph" aria-hidden="true">
+        <img src="/cursors/pointer.png" alt="" />
+      </span>
+      <span class="r8-icon-tile__label">Pointer state</span>
+    </div>
+    <div class="r8-icon-tile">
+      <span class="r8-icon-tile__glyph" aria-hidden="true">
+        <img src="/cursors/text.png" alt="" />
+      </span>
+      <span class="r8-icon-tile__label">Text input state</span>
+    </div>
+    <div class="r8-icon-tile">
+      <span class="r8-icon-tile__glyph" aria-hidden="true">
+        <img src="/cursors/grab.png" alt="" />
+      </span>
+      <span class="r8-icon-tile__label">Grab state</span>
+    </div>
   </div>
-  <div class="r8-icon-tile">
-    <span class="r8-icon-tile__glyph">XP</span>
-    <span class="r8-icon-tile__label">Experience</span>
-  </div>
-  <div class="r8-icon-tile">
-    <span class="r8-icon-tile__glyph">LV</span>
-    <span class="r8-icon-tile__label">Level</span>
+
+  <div class="r8-icon-grid">
+    <div class="r8-icon-tile">
+      <span class="r8-icon-tile__glyph" aria-hidden="true">HP</span>
+      <span class="r8-icon-tile__label">Short glyph fallback</span>
+    </div>
+    <div class="r8-icon-tile">
+      <span class="r8-icon-tile__glyph" aria-hidden="true">
+        <svg viewBox="0 0 16 16" aria-hidden="true">
+          <rect x="2" y="2" width="4" height="4"></rect>
+          <rect x="10" y="2" width="4" height="4"></rect>
+          <rect x="6" y="6" width="4" height="4"></rect>
+          <rect x="2" y="10" width="4" height="4"></rect>
+          <rect x="10" y="10" width="4" height="4"></rect>
+        </svg>
+      </span>
+      <span class="r8-icon-tile__label">Inline SVG drop-in</span>
+    </div>
+    <div class="r8-icon-tile">
+      <span
+        class="r8-icon-tile__glyph"
+        aria-hidden="true"
+        style="
+          --r8-icon-glyph-bg: var(--r8-color-dark);
+          --r8-icon-glyph-color: var(--r8-color-light);
+          --r8-icon-glyph-border: var(--r8-color-dark-strong);
+        "
+      >
+        <img src="/cursors/wait.png" alt="" />
+      </span>
+      <span class="r8-icon-tile__label">Waiting state</span>
+    </div>
   </div>
 </div>`,
+    code: `<div class="r8-icon-grid">
+  <div class="r8-icon-tile">
+    <span class="r8-icon-tile__glyph" aria-hidden="true">
+      <img src="/cursors/pointer.png" alt="" />
+    </span>
+    <span class="r8-icon-tile__label">Pointer cursor</span>
+  </div>
+
+  <div class="r8-icon-tile">
+    <span class="r8-icon-tile__glyph" aria-hidden="true">
+      <svg viewBox="0 0 16 16" aria-hidden="true">
+        <rect x="2" y="2" width="4" height="4"></rect>
+        <rect x="10" y="2" width="4" height="4"></rect>
+        <rect x="6" y="6" width="4" height="4"></rect>
+        <rect x="2" y="10" width="4" height="4"></rect>
+        <rect x="10" y="10" width="4" height="4"></rect>
+      </svg>
+    </span>
+    <span class="r8-icon-tile__label">Inline SVG</span>
+  </div>
+
+  <div class="r8-icon-tile">
+    <span
+      class="r8-icon-tile__glyph"
+      aria-hidden="true"
+      style="
+        --r8-icon-glyph-size: 3.5rem;
+        --r8-icon-glyph-bg: var(--r8-color-primary-strong);
+        --r8-icon-glyph-color: var(--r8-color-primary-contrast);
+      "
+    >
+      HP
+    </span>
+    <span class="r8-icon-tile__label">Short glyph fallback</span>
+  </div>
+</div>`,
+    anatomy: ll(
+      [
+        "`r8-icon-grid` organiza galerias de icones, cursores ou estados visuais em uma grade leve e responsiva.",
+        "`r8-icon-tile` emoldura cada item com a mesma surface retro usada em outros blocos da UI, mantendo consistencia com cards e samples.",
+        "`r8-icon-tile__glyph` aceita texto curto, `<img>` ou `<svg>` inline, entao voce pode encaixar assets externos sem trocar a estrutura.",
+        "`r8-icon-tile__label` nomeia o item e ajuda a explicar o significado do icone quando ele aparece fora de um contexto maior.",
+      ],
+      [
+        "`r8-icon-grid` organizes icon galleries, cursor assets or state markers in a light responsive grid.",
+        "`r8-icon-tile` frames each item with the same retro surface language used by other UI blocks, keeping it consistent with cards and samples.",
+        "`r8-icon-tile__glyph` accepts short text, `<img>` or inline `<svg>`, so external assets can drop in without changing the structure.",
+        "`r8-icon-tile__label` names the item and helps explain the icon meaning when it appears outside a larger context.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Se o icone for apenas decorativo, marque o glyph como `aria-hidden=\"true\"` e use `alt=\"\"` em imagens para evitar redundancia.",
+        "Quando o icone carregar significado proprio, mantenha label visivel ou um nome acessivel claro no elemento interativo hospedeiro.",
+        "O tile nao e interativo por si so; se o icone abrir uma acao ou navegacao, hospede a estrutura dentro de `<button>` ou `<a>` sem perder o label.",
+        "Nao dependa so do icone para comunicar estado importante; combine com texto, cor e contexto visivel.",
+      ],
+      [
+        "If the icon is purely decorative, mark the glyph as `aria-hidden=\"true\"` and use `alt=\"\"` on images to avoid redundancy.",
+        "When the icon carries meaning, keep a visible label or a clear accessible name on the interactive host element.",
+        "The tile is not interactive on its own; if the icon triggers an action or navigation, host the structure inside a `<button>` or `<a>` without losing the label.",
+        "Do not rely on the icon alone for important status; combine it with text, color and visible context.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-icon-grid",
+        description: l(
+          "Grid responsiva para listar opcoes de pacote, estados de cursor, acoes iconicas ou galerias curtas dentro da documentacao e do produto.",
+          "Responsive grid for listing package options, cursor states, icon actions or short galleries in docs and product surfaces.",
+        ),
+      },
+      {
+        name: "r8-icon-tile",
+        description: l(
+          "Tile base com moldura retro para agrupar um glyph e seu label sem precisar montar um card bespoke.",
+          "Base tile with a retro frame for grouping a glyph and its label without building a bespoke card.",
+        ),
+      },
+      {
+        name: "r8-icon-tile__glyph",
+        description: l(
+          "Janela visual do icone. Funciona com texto curto, `<img>` ou `<svg>` inline e aceita customizacao por CSS variables.",
+          "Visual icon frame. Works with short text, `<img>` or inline `<svg>` and accepts CSS variable overrides.",
+        ),
+      },
+      {
+        name: "r8-icon-tile__label",
+        description: l(
+          "Label em caixa alta para nomear o asset, estado ou significado do icone de forma previsivel.",
+          "Uppercase label for naming the asset, state or icon meaning predictably.",
+        ),
+      },
+      {
+        name: "--r8-icon-glyph-*",
+        description: l(
+          "Custom properties para ajustar tamanho, cor de frente, background e borda do glyph quando o contexto pedir outra enfase.",
+          "Custom properties for adjusting glyph size, foreground color, background and border when the context needs different emphasis.",
+        ),
+      },
+    ],
   },
   {
     id: "link",

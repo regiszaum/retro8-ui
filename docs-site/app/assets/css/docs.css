@@ -1210,6 +1210,7 @@ pre {
 .docs-button-playground,
 .docs-border-playground,
 .docs-color-playground,
+.docs-icon-playground,
 .docs-layout-container-playground {
   margin-bottom: 1rem;
 }
@@ -1229,6 +1230,11 @@ pre {
 .docs-color-playground__controls,
 .docs-color-playground__preview,
 .docs-color-playground__markup,
+.docs-icon-playground__header,
+.docs-icon-playground__intro,
+.docs-icon-playground__controls,
+.docs-icon-playground__preview,
+.docs-icon-playground__markup,
 .docs-layout-container-playground__header,
 .docs-layout-container-playground__intro,
 .docs-layout-container-playground__controls,
@@ -1241,6 +1247,7 @@ pre {
 .docs-button-playground__header,
 .docs-border-playground__header,
 .docs-color-playground__header,
+.docs-icon-playground__header,
 .docs-layout-container-playground__header {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: start;
@@ -1249,6 +1256,7 @@ pre {
 .docs-button-playground__intro > .docs-panel__meta,
 .docs-border-playground__intro > .docs-panel__meta,
 .docs-color-playground__intro > .docs-panel__meta,
+.docs-icon-playground__intro > .docs-panel__meta,
 .docs-layout-container-playground__intro > .docs-panel__meta {
   margin: 0;
 }
@@ -1256,6 +1264,7 @@ pre {
 .docs-button-playground__body,
 .docs-border-playground__body,
 .docs-color-playground__body,
+.docs-icon-playground__body,
 .docs-layout-container-playground__body {
   display: grid;
   grid-template-columns: minmax(18rem, 0.95fr) minmax(0, 1.05fr);
@@ -1266,6 +1275,7 @@ pre {
 .docs-button-playground__field-grid,
 .docs-border-playground__field-grid,
 .docs-color-playground__field-grid,
+.docs-icon-playground__field-grid,
 .docs-layout-container-playground__field-grid {
   display: grid;
   gap: 0.85rem;
@@ -1274,6 +1284,7 @@ pre {
 
 .docs-button-playground__toggles,
 .docs-border-playground__toggles,
+.docs-icon-playground__toggles,
 .docs-layout-container-playground__toggles {
   display: flex;
   flex-wrap: wrap;
@@ -1283,6 +1294,7 @@ pre {
 .docs-button-playground__stage,
 .docs-border-playground__stage,
 .docs-color-playground__stage,
+.docs-icon-playground__stage,
 .docs-layout-container-playground__stage {
   display: grid;
   gap: 1rem;
@@ -1311,6 +1323,7 @@ pre {
 .docs-button-playground__code,
 .docs-border-playground__code,
 .docs-color-playground__code,
+.docs-icon-playground__code,
 .docs-layout-container-playground__code {
   margin: 0;
   padding: 0.9rem 1rem;
@@ -1330,6 +1343,14 @@ pre {
   min-height: 10rem;
   padding: 1rem;
   border: 2px solid var(--docs-panel-border);
+}
+
+.docs-icon-playground__surface {
+  width: min(100%, 14rem);
+}
+
+.docs-icon-playground__surface .r8-icon-grid {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .docs-color-playground__surface > .r8-text {
@@ -1635,6 +1656,7 @@ dialog.r8-dialog {
   .docs-button-playground__body,
   .docs-border-playground__body,
   .docs-color-playground__body,
+  .docs-icon-playground__body,
   .docs-layout-container-playground__body {
     grid-template-columns: 1fr;
   }
@@ -1711,6 +1733,7 @@ dialog.r8-dialog {
   .docs-button-playground__header,
   .docs-border-playground__header,
   .docs-color-playground__header,
+  .docs-icon-playground__header,
   .docs-layout-container-playground__header {
     grid-template-columns: 1fr;
   }
@@ -1718,6 +1741,7 @@ dialog.r8-dialog {
   .docs-button-playground__field-grid,
   .docs-border-playground__field-grid,
   .docs-color-playground__field-grid,
+  .docs-icon-playground__field-grid,
   .docs-layout-container-playground__field-grid {
     grid-template-columns: 1fr;
   }
