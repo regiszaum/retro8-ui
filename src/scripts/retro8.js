@@ -3059,7 +3059,11 @@
       return {
         previousMonth: "Mes anterior",
         nextMonth: "Proximo mes",
+        weekNumber: "Sem",
+        shortcuts: "Atalhos",
         today: "Hoje",
+        yesterday: "Ontem",
+        weekAgo: "1 semana atras",
         now: "Agora",
         clear: "Clear",
         calendar: "Calendario",
@@ -3072,7 +3076,11 @@
     return {
       previousMonth: "Previous month",
       nextMonth: "Next month",
+      weekNumber: "Wk",
+      shortcuts: "Shortcuts",
       today: "Today",
+      yesterday: "Yesterday",
+      weekAgo: "A week ago",
       now: "Now",
       clear: "Clear",
       calendar: "Calendar",
@@ -3080,6 +3088,60 @@
       empty: "Select a date",
       emptyDateTime: "Select date and time",
     };
+  }
+
+  function getCalendarWeekNumber(date, weekStart = 0) {
+    if (!isValidDate(date)) {
+      return "";
+    }
+
+    const safeWeekStart = clamp(Number(weekStart) || 0, 0, 6);
+    const currentWeek = startOfWeek(date, safeWeekStart) || date;
+    const yearStart = createCalendarDate(currentWeek.getFullYear(), 0, 1);
+    const firstWeek = startOfWeek(yearStart, safeWeekStart) || yearStart;
+    const diffInDays = Math.round((currentWeek.getTime() - firstWeek.getTime()) / 86400000);
+    return String(Math.floor(diffInDays / 7) + 1).padStart(2, "0");
+  }
+
+  function getDatePickerShortcutConfigs(container, messages) {
+    const rawValue = container?.dataset?.r8Shortcuts || "";
+    if (!rawValue.trim()) {
+      return [];
+    }
+
+    const aliases = {
+      today: "today",
+      yesterday: "yesterday",
+      "week-ago": "week-ago",
+      "a-week-ago": "week-ago",
+      "last-week": "week-ago",
+    };
+
+    const catalog = {
+      today: {
+        key: "today",
+        label: messages.today,
+        resolve: () => createCalendarDate(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()),
+      },
+      yesterday: {
+        key: "yesterday",
+        label: messages.yesterday,
+        resolve: () => addCalendarDays(createCalendarDate(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()), -1),
+      },
+      "week-ago": {
+        key: "week-ago",
+        label: messages.weekAgo,
+        resolve: () => addCalendarDays(createCalendarDate(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()), -7),
+      },
+    };
+
+    const seen = new Set();
+    return rawValue
+      .split(",")
+      .map((token) => token.trim().toLowerCase())
+      .map((token) => aliases[token] || "")
+      .filter((token) => token && catalog[token] && !seen.has(token) && seen.add(token))
+      .map((token) => catalog[token]);
   }
 
   function isDateDisabled(state, date) {
@@ -3393,8 +3455,34 @@
     header.append(previousButton, title, nextButton);
     calendar.append(header);
 
+    if (state.shortcuts.length) {
+      const shortcuts = document.createElement("div");
+      shortcuts.className = "r8-date-picker__shortcuts";
+      shortcuts.setAttribute("aria-label", state.messages.shortcuts);
+
+      state.shortcuts.forEach((shortcut) => {
+        const shortcutDate = shortcut.resolve?.();
+        const shortcutButton = document.createElement("button");
+        shortcutButton.className = "r8-date-picker__shortcut";
+        shortcutButton.type = "button";
+        shortcutButton.dataset.r8DateShortcut = shortcut.key;
+        shortcutButton.textContent = shortcut.label;
+        shortcutButton.disabled = !isValidDate(shortcutDate) || isDateDisabled(state, shortcutDate);
+        shortcuts.append(shortcutButton);
+      });
+
+      calendar.append(shortcuts);
+    }
+
     const weekdays = document.createElement("div");
     weekdays.className = "r8-date-picker__weekdays";
+    if (state.showWeekNumber) {
+      weekdays.classList.add("has-week-numbers");
+      const weekHeader = document.createElement("span");
+      weekHeader.className = "r8-date-picker__weekday r8-date-picker__weekday--week";
+      weekHeader.textContent = state.messages.weekNumber;
+      weekdays.append(weekHeader);
+    }
     state.weekdayLabels.forEach((label) => {
       const weekday = document.createElement("span");
       weekday.className = "r8-date-picker__weekday";
@@ -3405,6 +3493,9 @@
 
     const grid = document.createElement("div");
     grid.className = "r8-date-picker__grid";
+    if (state.showWeekNumber) {
+      grid.classList.add("has-week-numbers");
+    }
     grid.setAttribute("role", "grid");
     grid.setAttribute("aria-label", `${state.messages.calendar} ${formatMonthTitle(visibleMonth, state.locale)}`);
 
@@ -3413,6 +3504,14 @@
 
     for (let index = 0; index < 42; index += 1) {
       const dayDate = addCalendarDays(gridStart, index) || visibleMonth;
+      if (state.showWeekNumber && index % 7 === 0) {
+        const weekNumber = document.createElement("span");
+        weekNumber.className = "r8-date-picker__week-number";
+        weekNumber.textContent = getCalendarWeekNumber(dayDate, state.weekStart);
+        weekNumber.setAttribute("aria-hidden", "true");
+        grid.append(weekNumber);
+      }
+
       const dayButton = document.createElement("button");
       const dateKey = toDateKey(dayDate);
       const isCurrentMonth = dayDate.getMonth() === visibleMonth.getMonth();
@@ -3686,6 +3785,8 @@
       placeholder,
       weekStart: clamp(Number(container.dataset.r8WeekStart || "0") || 0, 0, 6),
       weekdayLabels: buildWeekdayLabels(locale, container.dataset.r8WeekStart || "0"),
+      showWeekNumber: matchesTrue(container.dataset.r8ShowWeekNumber || "false"),
+      shortcuts: getDatePickerShortcutConfigs(container, messages),
       timeStep,
       timeSlots: buildTimeSlots(timeStep),
       minConstraint,
@@ -3747,6 +3848,16 @@
         return;
       }
 
+      const shortcutButton = event.target.closest("[data-r8-date-shortcut]");
+      if (shortcutButton instanceof HTMLButtonElement) {
+        const shortcut = state.shortcuts.find((entry) => entry.key === shortcutButton.dataset.r8DateShortcut);
+        const nextDate = shortcut?.resolve?.();
+        if (isValidDate(nextDate) && !isDateDisabled(state, nextDate)) {
+          setDatePickerValue(state, nextDate, { closeOnCommit: kind === "date" });
+        }
+        return;
+      }
+
       const dayButton = event.target.closest(".r8-date-picker__day");
       if (dayButton instanceof HTMLButtonElement && !dayButton.disabled) {
         const nextDate = parseDateValue(dayButton.dataset.r8Date || "");
@@ -3775,6 +3886,14 @@
 
     panel.addEventListener("keydown", (event) => {
       if (!(event.target instanceof HTMLElement)) {
+        return;
+      }
+
+      const shortcutButton = event.target.closest(".r8-date-picker__shortcut");
+      if (shortcutButton instanceof HTMLButtonElement && event.key === "Escape") {
+        event.preventDefault();
+        closeFloating(state.container);
+        state.trigger?.focus({ preventScroll: true });
         return;
       }
 

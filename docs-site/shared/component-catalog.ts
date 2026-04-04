@@ -2093,33 +2093,127 @@ const formComponents = [
     name: "Date Picker",
     group: "form",
     summary: l(
-      "Campo de data com trigger e painel retro para agendas, filtros e programacao.",
-      "Date field with a retro trigger and panel for schedules, filters and planning.",
+      "Campo de data com painel retro, locale configuravel, atalhos declarativos e suporte opcional a week numbers.",
+      "Date field with a retro panel, configurable locale, declarative shortcuts, and optional week numbers.",
     ),
     classes: [
       "r8-date-picker",
       "r8-date-picker__trigger",
       "r8-date-picker__panel",
       "r8-date-picker__calendar",
+      "r8-date-picker__shortcuts",
+      "r8-date-picker__shortcut",
       "r8-date-picker__header",
+      "r8-date-picker__weekdays",
+      "r8-date-picker__week-number",
       "r8-date-picker__grid",
       "r8-date-picker__day",
       "r8-date-picker__footer",
     ],
-    preview: `<div
+    preview: `<div class="docs-demo__stack docs-demo__stack--date-picker">
+  <div
+    class="r8-date-picker"
+    data-r8-value="2026-03-28"
+    data-r8-month="2026-03"
+    data-r8-placeholder="Select launch date"
+    data-r8-shortcuts="today,yesterday,week-ago"
+    data-r8-show-week-number="true"
+    data-r8-week-start="1"
+    data-r8-min="2026-03-05"
+    data-r8-max="2026-04-18"
+  >
+    <button class="r8-date-picker__trigger" type="button" aria-label="Select launch date">
+      <span data-r8-choice-display>Select launch date</span>
+      <span class="r8-badge r8-badge--info">Mon start</span>
+    </button>
+    <div class="r8-date-picker__panel"></div>
+  </div>
+</div>`,
+    code: `<div
   class="r8-date-picker"
   data-r8-value="2026-03-28"
   data-r8-month="2026-03"
   data-r8-placeholder="Select launch date"
+  data-r8-locale="en-US"
+  data-r8-week-start="1"
+  data-r8-shortcuts="today,yesterday,week-ago"
+  data-r8-show-week-number="true"
   data-r8-min="2026-03-05"
   data-r8-max="2026-04-18"
 >
-  <button class="r8-date-picker__trigger" type="button">
+  <button class="r8-date-picker__trigger" type="button" aria-label="Select launch date">
     <span data-r8-choice-display>Select launch date</span>
-    <span class="r8-badge r8-badge--info">UTC-3</span>
+    <span class="r8-badge r8-badge--info">Mon start</span>
   </button>
   <div class="r8-date-picker__panel"></div>
 </div>`,
+    anatomy: ll(
+      [
+        "`r8-date-picker` agrupa trigger e popup calendar em um shell unico para selecao de datas.",
+        "`r8-date-picker__trigger` e a surface clicavel que espelha o label final formatado pelo runtime.",
+        "`r8-date-picker__shortcuts` e `r8-date-picker__shortcut` criam atalhos recorrentes no topo do calendario sem wrappers extras.",
+        "`r8-date-picker__week-number`, quando ativado, adiciona contexto semanal sem interferir na grade principal de dias.",
+        "`r8-date-picker__footer` fecha o fluxo com resumo da data atual e acoes de hoje/clear.",
+      ],
+      [
+        "`r8-date-picker` groups the trigger and popup calendar into a single shell for date selection.",
+        "`r8-date-picker__trigger` is the clickable surface that mirrors the final label formatted by the runtime.",
+        "`r8-date-picker__shortcuts` and `r8-date-picker__shortcut` create recurring shortcut actions at the top of the calendar without extra wrappers.",
+        "`r8-date-picker__week-number`, when enabled, adds weekly context without interfering with the main day grid.",
+        "`r8-date-picker__footer` closes the flow with the current date summary and today/clear actions.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Use `aria-label` forte no trigger quando o contexto da data nao estiver evidente no texto ao redor.",
+        "Mantenha o valor textual visivel no trigger para nao depender apenas da posicao visual dentro do calendario.",
+        "Atalhos devem usar labels claras, porque eles aparecem como acoes e nao como dias na grade.",
+        "Se a data fizer parte de submit HTML, espelhe `data-r8-value` em um input real controlado pela aplicacao.",
+      ],
+      [
+        "Use a strong `aria-label` on the trigger when the date context is not already obvious in nearby copy.",
+        "Keep the textual value visible in the trigger so the choice does not rely only on the visual calendar position.",
+        "Shortcuts should use clear labels because they appear as actions rather than days inside the grid.",
+        "If the date must participate in HTML form submission, mirror `data-r8-value` into a real input controlled by the host app.",
+      ],
+    ),
+    api: [
+      {
+        name: "data-r8-locale / data-r8-week-start",
+        description: l(
+          "Controlam a linguagem dos labels e o dia inicial da semana sem acoplar o componente a um framework.",
+          "Control label language and which day starts the week without coupling the component to a framework.",
+        ),
+      },
+      {
+        name: "data-r8-shortcuts / r8-date-picker__shortcut",
+        description: l(
+          "Geram atalhos declarativos no topo do painel para saltar a datas recorrentes como hoje, ontem e uma semana atras.",
+          "Generate declarative shortcuts at the top of the panel for recurring dates such as today, yesterday, and a week ago.",
+        ),
+      },
+      {
+        name: "data-r8-show-week-number / r8-date-picker__week-number",
+        description: l(
+          "Adicionam o contexto de planejamento semanal sem mudar a logica principal de selecao de dia.",
+          "Add weekly planning context without changing the main day-selection logic.",
+        ),
+      },
+      {
+        name: "data-r8-min / data-r8-max / data-r8-month",
+        description: l(
+          "Limitam o intervalo disponivel e definem o mes inicialmente visivel quando o popup abre.",
+          "Limit the available range and define the initially visible month when the popup opens.",
+        ),
+      },
+      {
+        name: "r8:date-change",
+        description: l(
+          "Evento emitido quando a data muda, incluindo o valor de storage e o label formatado.",
+          "Event emitted when the date changes, including the storage value and formatted label.",
+        ),
+      },
+    ],
   },
   {
     id: "datetime-picker",

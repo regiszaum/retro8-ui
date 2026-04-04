@@ -643,6 +643,20 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
           row("data-r8-choice-display", "marker", "none", "Marca o node do trigger que recebe o label formatado.", "Marks the trigger node that receives the formatted label."),
           row("data-r8-locale", "BCP 47 locale", "document locale", "Controla month label e weekday labels sem acoplar framework.", "Controls the month label and weekday labels without coupling to a framework."),
           row("data-r8-week-start", "0-6", "0", "Define qual dia comeca a semana no calendar grid.", "Defines which day starts the week in the calendar grid."),
+          row(
+            "data-r8-shortcuts",
+            `"today,yesterday,week-ago"`,
+            "none",
+            "Gera atalhos declarativos no topo do calendario para saltar para datas recorrentes sem codigo extra.",
+            "Generates declarative shortcuts at the top of the calendar so recurring dates can be reached without extra code.",
+          ),
+          row(
+            "data-r8-show-week-number",
+            `"true" | "false"`,
+            `"false"`,
+            "Exibe uma coluna adicional com o numero da semana para fluxos mais orientados a planejamento.",
+            "Displays an extra column with the week number for flows that read the calendar as planning.",
+          ),
         ],
         methods: runtimeMethods,
         events: [

@@ -1419,6 +1419,7 @@
   .r8-color-picker__channel:focus-visible,
   .r8-date-picker__nav:focus-visible,
   .r8-date-picker__action:focus-visible,
+  .r8-date-picker__shortcut:focus-visible,
   .r8-date-picker__day:focus-visible,
   .r8-time-picker__slot:focus-visible,
   .r8-transfer__item:focus-visible,
@@ -2054,6 +2055,40 @@
     display: grid;
     gap: var(--r8-space-3);
   }
+.r8-date-picker__shortcuts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--r8-space-2);
+  }
+.r8-date-picker__shortcut {
+    align-items: center;
+    background: var(--r8-color-surface);
+    border: var(--r8-border-thin) solid var(--r8-color-border);
+    box-shadow: var(--r8-shadow-sm);
+    color: var(--r8-color-ink);
+    cursor: pointer;
+    display: inline-grid;
+    font-family: var(--r8-font-display);
+    font-size: 0.65rem;
+    min-height: 2rem;
+    padding: 0 var(--r8-space-3);
+    place-items: center;
+    text-transform: uppercase;
+  }
+.r8-date-picker__shortcut:hover {
+    transform: translate(-1px, -1px);
+  }
+.r8-date-picker__shortcut:active {
+    transform: translate(1px, 1px);
+  }
+.r8-date-picker__shortcut:disabled {
+    background: var(--r8-color-surface);
+    box-shadow: none;
+    color: var(--r8-color-ink-subtle);
+    cursor: not-allowed;
+    opacity: 0.7;
+    transform: none;
+  }
 .r8-date-picker__header {
     align-items: center;
     display: grid;
@@ -2118,6 +2153,9 @@
     gap: var(--r8-space-2);
     grid-template-columns: repeat(7, minmax(0, 1fr));
   }
+.r8-date-picker__weekdays.has-week-numbers {
+    grid-template-columns: minmax(2.35rem, 2.35rem) repeat(7, minmax(0, 1fr));
+  }
 .r8-date-picker__weekday {
     color: var(--r8-color-ink-muted);
     font-family: var(--r8-font-display);
@@ -2126,10 +2164,27 @@
     text-align: center;
     text-transform: uppercase;
   }
+.r8-date-picker__weekday--week {
+    color: var(--r8-color-ink-subtle);
+  }
 .r8-date-picker__grid {
     display: grid;
     gap: var(--r8-space-2);
     grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+.r8-date-picker__grid.has-week-numbers {
+    grid-template-columns: minmax(2.35rem, 2.35rem) repeat(7, minmax(0, 1fr));
+  }
+.r8-date-picker__week-number {
+    align-items: center;
+    background: var(--r8-color-surface);
+    border: var(--r8-border-thin) dashed var(--r8-color-border);
+    color: var(--r8-color-ink-subtle);
+    display: inline-grid;
+    font-family: var(--r8-font-display);
+    font-size: 0.65rem;
+    min-height: 3rem;
+    place-items: center;
   }
 .r8-date-picker__day {
     align-items: center;
