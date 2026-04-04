@@ -2286,51 +2286,283 @@ const formComponents = [
     name: "Input",
     group: "form",
     summary: l(
-      "Campo base para texto, select e textarea com foco visivel e sombra interna retro.",
-      "Base field for text, select and textarea with visible focus and an inset retro shadow.",
+      "Campo base para texto e textarea com shell opcional para clear, contador, toggle de senha e autosize.",
+      "Base text and textarea field with an optional shell for clear, counting, password toggle, and autosize.",
     ),
-    classes: ["r8-field", "r8-field--inline", "r8-label", "r8-help", "r8-input", "r8-input--invalid"],
+    classes: [
+      "r8-field",
+      "r8-field--inline",
+      "r8-label",
+      "r8-help",
+      "r8-input-shell",
+      "r8-input",
+      "r8-input__prefix",
+      "r8-input__suffix",
+      "r8-input__actions",
+      "r8-input__clear",
+      "r8-input__toggle",
+      "r8-input__count",
+      "r8-input--invalid",
+    ],
     preview: `<div class="docs-demo__stack">
   <label class="r8-field">
     <span class="r8-label">Pilot name</span>
-    <input class="r8-input" type="text" placeholder="PIX-07" />
-    <span class="r8-help">Use a short readable alias.</span>
+    <div class="r8-input-shell" data-r8-clearable="true" data-r8-word-limit="true">
+      <span class="r8-input__prefix">@</span>
+      <input class="r8-input" type="text" value="PIX-07 Vanguard" maxlength="18" placeholder="Enter callsign" />
+    </div>
+    <span class="r8-help">Clear and live count come from the optional shell runtime.</span>
   </label>
   <label class="r8-field">
-    <span class="r8-label">Notes</span>
-    <textarea class="r8-input" placeholder="No anomalies detected."></textarea>
+    <span class="r8-label">Access code</span>
+    <div class="r8-input-shell" data-r8-show-password="true">
+      <input class="r8-input" type="password" value="retro-88" placeholder="Enter access code" />
+    </div>
+  </label>
+  <label class="r8-field">
+    <span class="r8-label">Mission notes</span>
+    <textarea class="r8-input" data-r8-autosize="true" data-r8-min-rows="3" data-r8-max-rows="6" maxlength="96" placeholder="No anomalies detected.">No anomalies detected. Keep scanners warm and confirm route once the console sync finishes.</textarea>
   </label>
 </div>`,
+    code: `<label class="r8-field">
+  <span class="r8-label">Pilot name</span>
+  <div class="r8-input-shell" data-r8-clearable="true" data-r8-word-limit="true">
+    <span class="r8-input__prefix">@</span>
+    <input class="r8-input" type="text" maxlength="18" placeholder="Enter callsign" value="PIX-07 Vanguard" />
+  </div>
+  <span class="r8-help">Clear and live count come from the optional shell runtime.</span>
+</label>
+
+<label class="r8-field">
+  <span class="r8-label">Mission notes</span>
+  <textarea class="r8-input" data-r8-autosize="true" data-r8-min-rows="3" data-r8-max-rows="6" maxlength="96">No anomalies detected.</textarea>
+</label>`,
+    anatomy: ll(
+      [
+        "`r8-input` continua sendo a surface base para texto, senha, select e textarea.",
+        "`r8-input-shell` envolve o campo quando ele precisa de prefixo, sufixo, clear, contador ou toggle de senha.",
+        "`r8-input__prefix` e `r8-input__suffix` adicionam contexto curto sem trocar a semantica do input nativo.",
+        "`r8-input__actions` agrupa clear, toggle e contador no lado direito do shell.",
+        "`data-r8-autosize` deixa o textarea crescer com o conteudo sem um layout extra de framework.",
+      ],
+      [
+        "`r8-input` remains the base surface for text, password, select, and textarea fields.",
+        "`r8-input-shell` wraps the field when it needs prefix, suffix, clear, counting, or password reveal actions.",
+        "`r8-input__prefix` and `r8-input__suffix` add small context cues without changing the native input semantics.",
+        "`r8-input__actions` groups clear, reveal, and count affordances on the right side of the shell.",
+        "`data-r8-autosize` lets the textarea grow with its content without a framework-specific layout layer.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Mantenha `label` ou `aria-label` forte no campo, porque clear e toggle sao acoes auxiliares e nao substituem o nome acessivel principal.",
+        "Se usar contador, combine `maxlength` com texto de ajuda para que o limite nao apareca so como numero solto.",
+        "No modo senha, deixe o contexto do segredo claro no label para que o toggle nao fique ambiguo para teclado e leitores de tela.",
+        "Autosize melhora leitura, mas ainda vale limitar `max-rows` em blocos longos para o layout nao crescer sem controle.",
+      ],
+      [
+        "Keep a strong `label` or `aria-label` on the field because clear and reveal are helper actions, not the main accessible name.",
+        "When using a counter, pair `maxlength` with nearby help text so the limit does not appear as a stray number.",
+        "In password mode, make the secret context clear in the label so the toggle stays understandable to keyboard and screen-reader users.",
+        "Autosize improves reading, but it still helps to cap `max-rows` on longer blocks so the layout does not grow without control.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-input-shell / r8-input__prefix / r8-input__suffix",
+        description: l(
+          "Montam um shell opcional para adornos curtos e acoes auxiliares sem trocar o input nativo.",
+          "Build an optional shell for short adornments and helper actions without replacing the native input.",
+        ),
+      },
+      {
+        name: "data-r8-clearable / r8-input__clear",
+        description: l(
+          "Mostram um botao de clear quando o campo tem valor e o shell estiver habilitado para isso.",
+          "Show a clear button when the field has a value and the shell is configured for it.",
+        ),
+      },
+      {
+        name: "data-r8-show-password / r8-input__toggle",
+        description: l(
+          "Ativam o toggle declarativo de senha para alternar entre texto oculto e visivel.",
+          "Enable a declarative password toggle so the field can switch between hidden and visible text.",
+        ),
+      },
+      {
+        name: "data-r8-word-limit / r8-input__count",
+        description: l(
+          "Exibem o contador no shell quando `maxlength` estiver presente no input ou textarea.",
+          "Display a live counter inside the shell when `maxlength` is present on the input or textarea.",
+        ),
+      },
+      {
+        name: "data-r8-autosize / data-r8-min-rows / data-r8-max-rows",
+        description: l(
+          "Controlam o crescimento automatico do textarea sem depender de JS externo da aplicacao.",
+          "Control textarea autosizing without depending on extra app-side JavaScript.",
+        ),
+      },
+    ],
   },
   {
     id: "input-number",
     name: "Input Number",
     group: "form",
     summary: l(
-      "Controle numerico com botoes laterais e area central para contagens e quantidades.",
-      "Numeric control with side buttons and a central field for counts and quantities.",
+      "Controle numerico com limites, precision, step strictly e opcao de empilhar os controles na lateral direita.",
+      "Numeric control with limits, precision, step-strict behavior, and an option to stack controls on the right.",
     ),
     classes: ["r8-input-number", "r8-input-number__button", "r8-input-number__input"],
-    preview: `<div class="r8-input-number">
+    preview: `<div class="r8-input-number" data-r8-step-strictly="true" data-r8-precision="2" data-r8-controls-position="right">
   <button class="r8-input-number__button" type="button">-</button>
-  <input class="r8-input-number__input" type="number" value="8" />
+  <input class="r8-input-number__input" type="number" min="0" max="12" step="0.25" value="3.5" />
   <button class="r8-input-number__button" type="button">+</button>
 </div>`,
+    code: `<div class="r8-input-number" data-r8-step-strictly="true" data-r8-precision="2" data-r8-controls-position="right">
+  <button class="r8-input-number__button" type="button">-</button>
+  <input class="r8-input-number__input" type="number" min="0" max="12" step="0.25" value="3.5" />
+  <button class="r8-input-number__button" type="button">+</button>
+</div>`,
+    anatomy: ll(
+      [
+        "`r8-input-number` agrupa o campo nativo e os dois botoes de incremento sem esconder a semantica numerica original.",
+        "`r8-input-number__button` continua responsavel pelos passos declarativos e pelos limites min/max.",
+        "`r8-input-number__input` aceita digitacao manual e agora sincroniza melhor com precision e step strictly.",
+        "`data-r8-controls-position=\"right\"` reorganiza os botoes em uma coluna compacta, mais proxima do padrao de paines densos.",
+      ],
+      [
+        "`r8-input-number` groups the native field and both step buttons without hiding the original numeric semantics.",
+        "`r8-input-number__button` still owns the declarative stepping and min/max limits.",
+        "`r8-input-number__input` accepts manual typing and now syncs more cleanly with precision and step-strict alignment.",
+        "`data-r8-controls-position=\"right\"` rearranges the buttons into a compact column that fits denser panels.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Preserve `min`, `max` e `step` no input nativo para que teclado e validacao do browser continuem coerentes.",
+        "Quando usar precision, combine isso com texto de ajuda se os incrementos nao forem intuitivos no dominio do produto.",
+        "Se o numero tiver impacto critico, prefira limites estreitos e mensagens auxiliares em vez de depender so do bloqueio do botao.",
+      ],
+      [
+        "Preserve `min`, `max`, and `step` on the native input so keyboard behavior and browser validation stay coherent.",
+        "When using precision, pair it with nearby help text if the increment is not obvious in the product domain.",
+        "If the number is operationally sensitive, prefer tighter limits and helper copy instead of relying only on button blocking.",
+      ],
+    ),
+    api: [
+      {
+        name: "min / max / step",
+        description: l(
+          "Continuam definindo o intervalo nativo do campo e o tamanho de cada incremento lateral.",
+          "Still define the native field range and the size of each side-button increment.",
+        ),
+      },
+      {
+        name: "data-r8-precision",
+        description: l(
+          "Arredonda e formata o valor final com a quantidade declarativa de casas decimais.",
+          "Rounds and formats the final value with a declarative number of decimal places.",
+        ),
+      },
+      {
+        name: "data-r8-step-strictly",
+        description: l(
+          "Alinha a digitacao manual e os cliques ao grid do step, aproximando o comportamento do recorte mais util do Element Plus.",
+          "Aligns manual typing and button clicks to the step grid, matching the most useful slice of the Element Plus behavior.",
+        ),
+      },
+      {
+        name: "data-r8-controls-position",
+        description: l(
+          "Move os botoes para a lateral direita em uma coluna quando o layout pedir mais densidade.",
+          "Moves the buttons into a right-side column when the layout needs a denser control.",
+        ),
+      },
+    ],
   },
   {
     id: "input-tag",
     name: "Input Tag",
     group: "form",
     summary: l(
-      "Campo de tags para labels, filtros e chips curtos com remocao inline.",
-      "Tag entry field for labels, filters and short chips with inline removal.",
+      "Campo de tags com limite opcional, delimitadores configuraveis, clear all e remocao inline por clique ou backspace.",
+      "Tag entry field with optional limits, configurable delimiters, clear-all behavior, and inline removal by click or backspace.",
     ),
-    classes: ["r8-input-tag", "r8-input-tag__tag", "r8-input-tag__remove", "r8-input-tag__input"],
-    preview: `<div class="r8-input-tag">
-  <span class="r8-input-tag__tag">HUD <span class="r8-input-tag__remove">x</span></span>
-  <span class="r8-input-tag__tag">PIXEL <span class="r8-input-tag__remove">x</span></span>
-  <input class="r8-input-tag__input" type="text" value="add-tag" />
+    classes: [
+      "r8-input-tag",
+      "r8-input-tag__tag",
+      "r8-input-tag__label",
+      "r8-input-tag__remove",
+      "r8-input-tag__clear",
+      "r8-input-tag__input",
+    ],
+    preview: `<div class="r8-input-tag" data-r8-max-tags="5" data-r8-delimiters=",;" data-r8-clearable="true">
+  <span class="r8-input-tag__tag"><span class="r8-input-tag__label">HUD</span><button class="r8-input-tag__remove" type="button" aria-label="Remove HUD">x</button></span>
+  <span class="r8-input-tag__tag"><span class="r8-input-tag__label">PIXEL</span><button class="r8-input-tag__remove" type="button" aria-label="Remove PIXEL">x</button></span>
+  <input class="r8-input-tag__input" type="text" placeholder="Add tag and press Enter" />
 </div>`,
+    code: `<div class="r8-input-tag" data-r8-max-tags="5" data-r8-delimiters=",;" data-r8-clearable="true">
+  <span class="r8-input-tag__tag"><span class="r8-input-tag__label">HUD</span><button class="r8-input-tag__remove" type="button" aria-label="Remove HUD">x</button></span>
+  <span class="r8-input-tag__tag"><span class="r8-input-tag__label">PIXEL</span><button class="r8-input-tag__remove" type="button" aria-label="Remove PIXEL">x</button></span>
+  <input class="r8-input-tag__input" type="text" placeholder="Add tag and press Enter" />
+</div>`,
+    anatomy: ll(
+      [
+        "`r8-input-tag` continua sendo o container flexivel das chips e do input nativo para novas entradas.",
+        "`r8-input-tag__label` separa o texto da tag do affordance de remocao, deixando o DOM mais claro do que o markup anterior em string.",
+        "`r8-input-tag__remove` remove a chip focada e `r8-input-tag__clear` limpa o conjunto inteiro quando habilitado.",
+        "`data-r8-delimiters` permite transformar listas coladas ou digitadas em varias tags sem sair do proprio campo.",
+      ],
+      [
+        "`r8-input-tag` remains the flexible container for both chips and the native input used for new values.",
+        "`r8-input-tag__label` separates chip text from the removal affordance, making the DOM clearer than the older string-based markup.",
+        "`r8-input-tag__remove` removes the focused chip and `r8-input-tag__clear` clears the whole set when enabled.",
+        "`data-r8-delimiters` lets pasted or typed lists become multiple tags without leaving the field.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Use placeholder curto e contextual, porque a acao principal continua sendo adicionar itens ao conjunto e nao um campo de busca generico.",
+        "Cada botao de remocao deve manter `aria-label` com o valor da tag para nao soar como varios `x` identicos.",
+        "Quando limitar o total de tags, deixe esse contrato claro em texto de ajuda perto do campo.",
+      ],
+      [
+        "Use a short, contextual placeholder because the main action is adding items to a set, not entering a generic search.",
+        "Each removal button should keep an `aria-label` with the tag value so it does not sound like a row of identical `x` controls.",
+        "When limiting the total number of tags, make that contract visible in nearby helper copy.",
+      ],
+    ),
+    api: [
+      {
+        name: "data-r8-max-tags",
+        description: l(
+          "Limita o total de chips aceitas sem confundir esse teto com `maxlength` do input interno.",
+          "Limits the total accepted chips without confusing that cap with the inner input `maxlength`.",
+        ),
+      },
+      {
+        name: "data-r8-delimiters",
+        description: l(
+          "Define caracteres como `,` e `;` para quebrar uma entrada em varias tags no Enter, na digitacao ou no paste.",
+          "Defines characters such as `,` and `;` so a single entry can split into multiple tags on Enter, typing, or paste.",
+        ),
+      },
+      {
+        name: "data-r8-clearable / r8-input-tag__clear",
+        description: l(
+          "Mostram um botao de clear all no proprio campo quando houver tags para remover.",
+          "Show a clear-all button inside the field when there are tags to remove.",
+        ),
+      },
+      {
+        name: "r8:input-tag-change",
+        description: l(
+          "Emite o conjunto atualizado de valores depois de adicionar, remover ou limpar tags.",
+          "Emits the updated value set after adding, removing, or clearing tags.",
+        ),
+      },
+    ],
   },
   {
     id: "radio",
@@ -2378,15 +2610,17 @@ const formComponents = [
       "Choice list with a compact trigger and retro options inside a highlighted panel.",
     ),
     classes: ["r8-select", "r8-select__trigger", "r8-select__menu", "r8-select__option"],
-    preview: `<div class="r8-select">
-  <button class="r8-select__trigger" type="button">
-    <span data-r8-choice-display>Explorer</span>
-    <span class="r8-choice__caret" aria-hidden="true">&gt;</span>
-  </button>
-  <div class="r8-select__menu" hidden>
-    <button class="r8-select__option" type="button" data-r8-value="engineer">Engineer</button>
-    <button class="r8-select__option" type="button" data-r8-value="medic">Medic</button>
-    <button class="r8-select__option is-selected" type="button" data-r8-value="explorer">Explorer</button>
+    preview: `<div class="docs-demo__stack docs-demo__stack--select">
+  <div class="r8-select">
+    <button class="r8-select__trigger" type="button">
+      <span data-r8-choice-display>Explorer</span>
+      <span class="r8-choice__caret" aria-hidden="true">&gt;</span>
+    </button>
+    <div class="r8-select__menu" hidden>
+      <button class="r8-select__option" type="button" data-r8-value="engineer">Engineer</button>
+      <button class="r8-select__option" type="button" data-r8-value="medic">Medic</button>
+      <button class="r8-select__option is-selected" type="button" data-r8-value="explorer">Explorer</button>
+    </div>
   </div>
 </div>`,
     code: `<div class="r8-select">
@@ -2778,39 +3012,9 @@ const dataComponents = [
   </div>
 </div>`,
   },
-  {
-    id: "tree",
-    name: "Tree",
-    group: "data",
-    summary: l(
-      "Arvore visual para entidades hierarquicas, arquivos e menus de estrutura profunda.",
-      "Visual tree for hierarchical entities, files and deep-structure menus.",
-    ),
-    classes: ["r8-tree", "r8-tree__node", "r8-tree__node--child"],
-    preview: `<div class="r8-tree">
-  <div class="r8-tree__node">src</div>
-  <div class="r8-tree__node r8-tree__node--child">styles</div>
-  <div class="r8-tree__node r8-tree__node--child">components</div>
-</div>`,
-  },
 ] satisfies CatalogEntry[];
 
 const navigationComponents = [
-  {
-    id: "anchor",
-    name: "Anchor",
-    group: "navigation",
-    summary: l(
-      "Indice de links internos para navegar por secao dentro de paginas longas.",
-      "Internal link index for moving across sections inside long pages.",
-    ),
-    classes: ["r8-anchor", "r8-anchor__link"],
-    preview: `<nav class="r8-anchor">
-  <a class="r8-anchor__link" href="#installation">Installation</a>
-  <a class="r8-anchor__link" href="#usage">Usage</a>
-  <a class="r8-anchor__link" href="#api">API</a>
-</nav>`,
-  },
   {
     id: "breadcrumb",
     name: "Breadcrumb",

@@ -22,6 +22,18 @@
     min-height: 3rem;
   }
 
+  .r8-input[data-r8-size="sm"] {
+    min-height: 2.5rem;
+    padding: 0.625rem 0.75rem;
+    font-size: var(--r8-font-size-xs);
+  }
+
+  .r8-input[data-r8-size="lg"] {
+    min-height: 3.5rem;
+    padding: 0.9rem 1rem;
+    font-size: 1rem;
+  }
+
   .r8-input::placeholder {
     color: var(--r8-color-ink-muted);
     opacity: 1;
@@ -43,6 +55,108 @@
   .r8-input--invalid {
     border-color: var(--r8-color-danger);
     box-shadow: inset 0 0 0 var(--r8-border-thin) rgba(220, 38, 38, 0.18);
+  }
+
+  .r8-input-shell {
+    align-items: center;
+    background: var(--r8-color-surface-3);
+    border: var(--r8-border-thick) solid var(--r8-color-border);
+    box-shadow: var(--r8-shadow-inset);
+    display: flex;
+    gap: var(--r8-space-2);
+    min-height: 3rem;
+    padding: 0 var(--r8-space-3);
+    width: 100%;
+  }
+
+  .r8-input-shell[data-r8-size="sm"] {
+    min-height: 2.5rem;
+    padding: 0 var(--r8-space-2);
+  }
+
+  .r8-input-shell[data-r8-size="lg"] {
+    min-height: 3.5rem;
+    padding: 0 var(--r8-space-4);
+  }
+
+  .r8-input-shell:focus-within {
+    background-color: var(--r8-color-surface-raised);
+    outline: var(--r8-focus-width) solid var(--r8-color-focus);
+    outline-offset: var(--r8-focus-offset);
+  }
+
+  .r8-input-shell > .r8-input {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    min-height: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .r8-input-shell > .r8-input:focus-visible {
+    background: transparent;
+    outline: 0;
+  }
+
+  .r8-input__prefix,
+  .r8-input__suffix {
+    @apply font-display text-r8-xs uppercase tracking-r8;
+    color: var(--r8-color-ink-muted);
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .r8-input__actions {
+    align-items: center;
+    display: inline-flex;
+    flex: 0 0 auto;
+    gap: var(--r8-space-2);
+    margin-left: auto;
+  }
+
+  .r8-input__clear,
+  .r8-input__toggle {
+    @apply font-display text-r8-xs uppercase;
+    align-items: center;
+    background: var(--r8-color-surface-2);
+    border: var(--r8-border-thin) solid var(--r8-color-border);
+    color: var(--r8-color-ink);
+    cursor: pointer;
+    display: inline-grid;
+    min-height: 1.75rem;
+    min-width: 1.75rem;
+    padding: 0 0.45rem;
+    place-items: center;
+  }
+
+  .r8-input__clear:hover,
+  .r8-input__toggle:hover {
+    transform: translate(-1px, -1px);
+  }
+
+  .r8-input__clear:active,
+  .r8-input__toggle:active {
+    transform: translate(1px, 1px);
+  }
+
+  .r8-input__clear:disabled,
+  .r8-input__toggle:disabled {
+    background: var(--r8-color-disabled-bg);
+    color: var(--r8-color-ink-subtle);
+    cursor: not-allowed;
+    opacity: 0.75;
+    transform: none;
+  }
+
+  .r8-input__count {
+    @apply font-display text-r8-xs uppercase tracking-r8;
+    color: var(--r8-color-ink-muted);
+    white-space: nowrap;
+  }
+
+  .r8-input__count.is-limit {
+    color: var(--r8-color-warning);
   }
 
   :where(textarea.r8-input) {

@@ -234,8 +234,33 @@
     transform: translateX(-100%);
   }
 
-  .r8-drawer.is-open {
+  .r8-drawer--top,
+  .r8-drawer--bottom {
+    inset: auto auto auto 50%;
+    max-height: min(22rem, calc(100vh - 1rem));
+    max-width: min(42rem, calc(100vw - 1rem));
+    min-height: 12rem;
+    width: min(42rem, calc(100vw - 1rem));
+  }
+
+  .r8-drawer--top {
+    inset: 0 auto auto 50%;
+    transform: translate(-50%, -100%);
+  }
+
+  .r8-drawer--bottom {
+    inset: auto auto 0 50%;
+    transform: translate(-50%, 100%);
+  }
+
+  .r8-drawer--right.is-open,
+  .r8-drawer--left.is-open {
     transform: translateX(0);
+  }
+
+  .r8-drawer--top.is-open,
+  .r8-drawer--bottom.is-open {
+    transform: translate(-50%, 0);
   }
 
   [data-r8-overlay-scope] .r8-drawer {
@@ -243,6 +268,24 @@
     height: 100%;
     position: absolute;
     top: 0;
+  }
+
+  [data-r8-overlay-scope] .r8-drawer--top,
+  [data-r8-overlay-scope] .r8-drawer--bottom {
+    height: auto;
+    left: 50%;
+    max-height: calc(100% - 1rem);
+    right: auto;
+  }
+
+  [data-r8-overlay-scope] .r8-drawer--top {
+    bottom: auto;
+    top: 0;
+  }
+
+  [data-r8-overlay-scope] .r8-drawer--bottom {
+    bottom: 0;
+    top: auto;
   }
 
   .r8-drawer__header,
@@ -692,12 +735,16 @@
   }
 
   .r8-watermark {
+    --r8-watermark-color: rgba(36, 31, 49, 0.12);
+    --r8-watermark-rotate: -18deg;
+    --r8-watermark-size: 1rem;
+    --r8-watermark-stripe: rgba(36, 31, 49, 0.08);
     background:
       linear-gradient(transparent, transparent),
       repeating-linear-gradient(
         -25deg,
-        rgba(36, 31, 49, 0.08),
-        rgba(36, 31, 49, 0.08) 8px,
+        var(--r8-watermark-stripe),
+        var(--r8-watermark-stripe) 8px,
         transparent 8px,
         transparent 18px
       );
@@ -709,16 +756,16 @@
   }
 
   .r8-watermark::before {
-    color: rgba(36, 31, 49, 0.12);
+    color: var(--r8-watermark-color);
     content: attr(data-watermark);
     font-family: var(--r8-font-display);
-    font-size: 1rem;
+    font-size: var(--r8-watermark-size);
     left: 50%;
     letter-spacing: 0.08em;
     position: absolute;
     text-transform: uppercase;
     top: 50%;
-    transform: translate(-50%, -50%) rotate(-18deg);
+    transform: translate(-50%, -50%) rotate(var(--r8-watermark-rotate));
     white-space: nowrap;
   }
 }

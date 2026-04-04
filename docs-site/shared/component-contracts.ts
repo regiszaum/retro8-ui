@@ -1000,6 +1000,19 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
           row("required", "boolean", "false", "Integra com validacao nativa do browser.", "Integrates with native browser validation."),
           row("aria-invalid", "boolean", "false", "Ativa invalid feedback junto com `r8-input--invalid`.", "Enables invalid feedback together with `r8-input--invalid`."),
         ],
+        dataAttributes: [
+          row("data-r8-size", `"sm" | "md" | "lg"`, `"md"`, "Escala o campo base ou o shell opcional sem uma utility externa.", "Scales the base field or optional shell without an external utility."),
+          row("data-r8-clearable", `"true" | "false"`, `"false"`, "Exibe um botao de clear dentro de `r8-input-shell` quando houver valor.", "Shows a clear button inside `r8-input-shell` when a value is present."),
+          row("data-r8-show-password", `"true" | "false"`, `"false"`, "Ativa o toggle declarativo de senha para inputs do tipo password.", "Enables a declarative password toggle for password inputs."),
+          row("data-r8-word-limit", `"true" | "false"`, `"false"`, "Mostra um contador quando `maxlength` estiver presente.", "Shows a counter when `maxlength` is present."),
+          row("data-r8-autosize", `"true" | "false"`, `"false"`, "Liga o autosize de textarea no proprio runtime da Retro8 UI.", "Turns textarea autosizing on in the Retro8 UI runtime itself."),
+          row("data-r8-min-rows / data-r8-max-rows", "number", "rows / none", "Controlam o piso e o teto do autosize de textarea.", "Control the floor and ceiling of textarea autosizing."),
+        ],
+        methods: runtimeMethods,
+        events: [
+          event("r8:input-clear", `{ value }`, "Emitido quando o botao de clear zera o campo.", "Emitted when the clear button resets the field."),
+          event("r8:input-password-toggle", `{ revealed }`, "Emitido quando o toggle alterna a visibilidade da senha.", "Emitted when the toggle changes password visibility."),
+        ],
       });
       break;
     case "input-number":
@@ -1010,9 +1023,15 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
           row("step", "number", "1", "Incremento usado pelos Buttons laterais.", "Increment used by the side buttons."),
           row("value", "number", "0", "Valor inicial do input.", "Initial input value."),
         ],
+        dataAttributes: [
+          row("data-r8-size", `"sm" | "md" | "lg"`, `"md"`, "Escala a altura do controle numerico.", "Scales the numeric control height."),
+          row("data-r8-precision", "number", "step decimals", "Arredonda e formata o valor final com casas decimais declarativas.", "Rounds and formats the final value with declarative decimals."),
+          row("data-r8-step-strictly", `"true" | "false"`, `"false"`, "Alinha digitacao e clique ao grid do step.", "Aligns typing and button clicks to the step grid."),
+          row("data-r8-controls-position", `"default" | "right"`, `"default"`, "Move os botoes para uma coluna na lateral direita.", "Moves the buttons into a right-side column."),
+        ],
         methods: runtimeMethods,
         events: [
-          event("r8:input-number-change", `{ value }`, "Emitido depois que os Buttons alteram o numero.", "Emitted after the buttons change the number."),
+          event("r8:input-number-change", `{ value, source }`, "Emitido depois de cliques, teclado ou digitacao manual normalizada.", "Emitted after button clicks, keyboard stepping, or normalized manual typing."),
         ],
       });
       break;
@@ -1022,10 +1041,18 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
           row("placeholder", "string", "none", "Placeholder do input interno para novas tags.", "Placeholder for the inner input used for new tags."),
           row("maxlength", "number", "none", "Limita o tamanho de cada nova tag no input nativo.", "Limits the size of each new tag in the native input."),
         ],
+        dataAttributes: [
+          row("data-r8-size", `"sm" | "md" | "lg"`, `"md"`, "Escala altura, chips e area de digitacao do conjunto.", "Scales the height, chips, and entry area."),
+          row("data-r8-max-tags", "number", "none", "Limita o total de tags aceitas pelo campo.", "Limits the total accepted tags."),
+          row("data-r8-delimiters", "string", "none", "Define caracteres que quebram uma entrada em varias tags.", "Defines characters that split one entry into multiple tags."),
+          row("data-r8-clearable", `"true" | "false"`, `"false"`, "Mostra um botao de clear all quando houver tags ativas.", "Shows a clear-all button when there are active tags."),
+        ],
         methods: runtimeMethods,
         events: [
-          event("r8:input-tag-add", `{ value, tag }`, "Emitido quando uma tag nova e criada pelo Enter.", "Emitted when a new tag is created on Enter."),
-          event("r8:input-tag-remove", `{ value }`, "Emitido quando uma tag existente e removida.", "Emitted when an existing tag is removed."),
+          event("r8:input-tag-add", `{ value, tag, values, source }`, "Emitido quando uma ou mais tags novas entram no conjunto.", "Emitted when one or more new tags enter the set."),
+          event("r8:input-tag-remove", `{ value, values, source }`, "Emitido quando uma tag existente e removida.", "Emitted when an existing tag is removed."),
+          event("r8:input-tag-clear", `{ values, source }`, "Emitido quando o clear all remove o conjunto inteiro.", "Emitted when clear-all removes the whole set."),
+          event("r8:input-tag-change", `{ values }`, "Emitido depois de qualquer mudanca estrutural na lista de tags.", "Emitted after any structural change in the tag list."),
         ],
       });
       break;

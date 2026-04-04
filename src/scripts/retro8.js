@@ -102,6 +102,28 @@
     return Math.min(max, Math.max(min, value));
   }
 
+  function parseFiniteNumber(value) {
+    if (value === null || value === undefined || value === "") {
+      return null;
+    }
+
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  function roundToPrecision(value, precision) {
+    if (!Number.isFinite(value) || !Number.isInteger(precision) || precision < 0) {
+      return value;
+    }
+
+    const factor = 10 ** precision;
+    return Math.round(value * factor) / factor;
+  }
+
+  function escapeRegExpFragment(value) {
+    return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
   function ensureId(element, prefix) {
     if (!isElement(element)) {
       return "";
@@ -4301,6 +4323,29 @@
 
       const toggle = () => {
         const nextState = !isOpen(panel);
+        const container = item.closest(".r8-collapse");
+
+        if (
+          nextState &&
+          container instanceof HTMLElement &&
+          matchesTrue(container.dataset.r8Accordion || "false")
+        ) {
+          toArray(container.querySelectorAll(".r8-collapse__item")).forEach((sibling) => {
+            if (!(sibling instanceof HTMLElement) || sibling === item) {
+              return;
+            }
+
+            const siblingTrigger = sibling.querySelector(".r8-collapse__header");
+            const siblingPanel = sibling.querySelector(".r8-collapse__body");
+
+            if (siblingTrigger instanceof HTMLElement && siblingPanel instanceof HTMLElement) {
+              setHidden(siblingPanel, true);
+              setExpanded(siblingTrigger, false);
+              sibling.classList.remove("is-open");
+            }
+          });
+        }
+
         setHidden(panel, !nextState);
         setExpanded(trigger, nextState);
         item.classList.toggle("is-open", nextState);
@@ -4324,6 +4369,10 @@
       carousel.dataset.r8CarouselReady = "true";
       const slides = toArray(carousel.querySelectorAll(".r8-carousel__slide")).filter((item) => item instanceof HTMLElement);
       const dots = toArray(carousel.querySelectorAll(".r8-carousel__dot")).filter((item) => item instanceof HTMLElement);
+      const autoplayEnabled = matchesTrue(carousel.dataset.r8Autoplay || "false");
+      const autoplayInterval = clamp(Number(carousel.dataset.r8Interval || "3400") || 3400, 1200, 12000);
+      let activeIndex = 0;
+      let autoplayTimer = null;
 
       if (!slides.length) {
         return;
@@ -4345,6 +4394,8 @@
           dot.setAttribute("aria-current", dotIndex === safeIndex ? "true" : "false");
         });
 
+        activeIndex = safeIndex;
+
         if (!silent) {
           emitComponentEvent(carousel, "carousel-change", {
             index: safeIndex,
@@ -4352,6 +4403,25 @@
           });
         }
       }
+
+      const stopAutoplay = () => {
+        if (typeof autoplayTimer === "number") {
+          window.clearInterval(autoplayTimer);
+          autoplayTimer = null;
+        }
+      };
+
+      const startAutoplay = () => {
+        stopAutoplay();
+
+        if (!autoplayEnabled || slides.length < 2) {
+          return;
+        }
+
+        autoplayTimer = window.setInterval(() => {
+          activate((activeIndex + 1) % slides.length);
+        }, autoplayInterval);
+      };
 
       dots.forEach((dot, index) => {
         prepareActionLikeElement(dot);
@@ -4362,61 +4432,495 @@
       activate(dots.findIndex((dot) => dot.classList.contains("is-active")) >= 0 ? dots.findIndex((dot) => dot.classList.contains("is-active")) : 0, {
         silent: true,
       });
+
+      carousel.addEventListener("pointerenter", stopAutoplay);
+      carousel.addEventListener("pointerleave", startAutoplay);
+      carousel.addEventListener("focusin", stopAutoplay);
+      carousel.addEventListener("focusout", startAutoplay);
+      startAutoplay();
     });
+  }
+
+  function createInputControlButton(className, label, text) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = className;
+    button.textContent = text;
+    button.setAttribute("aria-label", label);
+    return button;
+  }
+
+  function updateAutosizeTextarea(textarea) {
+    if (!(textarea instanceof HTMLTextAreaElement)) {
+      return;
+    }
+
+    const shell = textarea.closest(".r8-input-shell");
+    const autosizeEnabled = matchesTrue(textarea.dataset.r8Autosize || shell?.dataset.r8Autosize || "false");
+    if (!autosizeEnabled) {
+      return;
+    }
+
+    const styles = window.getComputedStyle(textarea);
+    const lineHeight = parseFloat(styles.lineHeight) || parseFloat(styles.fontSize) * 1.4 || 22;
+    const padding =
+      (parseFloat(styles.paddingTop) || 0) +
+      (parseFloat(styles.paddingBottom) || 0) +
+      (parseFloat(styles.borderTopWidth) || 0) +
+      (parseFloat(styles.borderBottomWidth) || 0);
+    const fallbackRows = clamp(Number(textarea.getAttribute("rows") || "3") || 3, 1, 40);
+    const minRows = clamp(
+      Number(textarea.dataset.r8MinRows || shell?.dataset.r8MinRows || fallbackRows) || fallbackRows,
+      1,
+      40,
+    );
+    const rawMaxRows = Number(textarea.dataset.r8MaxRows || shell?.dataset.r8MaxRows || "0") || 0;
+    const maxRows = rawMaxRows > 0 ? clamp(rawMaxRows, minRows, 50) : null;
+    const minHeight = lineHeight * minRows + padding;
+    const maxHeight = maxRows !== null ? lineHeight * maxRows + padding : null;
+
+    textarea.style.height = "auto";
+    let nextHeight = Math.max(textarea.scrollHeight, minHeight);
+
+    if (maxHeight !== null) {
+      textarea.style.overflowY = nextHeight > maxHeight ? "auto" : "hidden";
+      nextHeight = Math.min(nextHeight, maxHeight);
+    } else {
+      textarea.style.overflowY = "hidden";
+    }
+
+    textarea.style.height = `${Math.ceil(nextHeight)}px`;
+  }
+
+  function initInputShell(shell) {
+    if (!(shell instanceof HTMLElement)) {
+      return;
+    }
+
+    const input = shell.querySelector(".r8-input");
+    if (!(input instanceof HTMLInputElement) && !(input instanceof HTMLTextAreaElement)) {
+      return;
+    }
+
+    const clearable = matchesTrue(shell.dataset.r8Clearable || input.dataset.r8Clearable || "false");
+    const showPassword =
+      input instanceof HTMLInputElement &&
+      (input.dataset.r8PasswordOriginalType === "password" || input.type === "password") &&
+      matchesTrue(shell.dataset.r8ShowPassword || input.dataset.r8ShowPassword || "false");
+    const showWordLimit =
+      input.maxLength > 0 && matchesTrue(shell.dataset.r8WordLimit || input.dataset.r8WordLimit || "false");
+    const baseReadonly = input.readOnly;
+    let actions = firstMatch(shell, ".r8-input__actions");
+    let clearButton = actions?.querySelector(".r8-input__clear") || null;
+    let toggleButton = actions?.querySelector(".r8-input__toggle") || null;
+    let counter = actions?.querySelector(".r8-input__count") || null;
+
+    if (showPassword && input instanceof HTMLInputElement && !input.dataset.r8PasswordOriginalType) {
+      input.dataset.r8PasswordOriginalType = input.type;
+    }
+
+    if ((clearable || showPassword || showWordLimit) && !(actions instanceof HTMLElement)) {
+      actions = document.createElement("div");
+      actions.className = "r8-input__actions";
+      shell.append(actions);
+    }
+
+    if (actions instanceof HTMLElement && clearable && !(clearButton instanceof HTMLElement)) {
+      clearButton = createInputControlButton("r8-input__clear", "Clear input", "x");
+      actions.append(clearButton);
+    }
+
+    if (actions instanceof HTMLElement && showPassword && !(toggleButton instanceof HTMLElement)) {
+      toggleButton = createInputControlButton("r8-input__toggle", "Show password", "show");
+      actions.append(toggleButton);
+    }
+
+    if (actions instanceof HTMLElement && showWordLimit && !(counter instanceof HTMLElement)) {
+      counter = document.createElement("span");
+      counter.className = "r8-input__count";
+      actions.append(counter);
+    }
+
+    const syncShellState = () => {
+      const hasValue = input.value.length > 0;
+
+      if (clearButton instanceof HTMLButtonElement) {
+        clearButton.hidden = !hasValue || input.disabled || input.readOnly;
+        clearButton.disabled = input.disabled || input.readOnly;
+      }
+
+      if (toggleButton instanceof HTMLButtonElement && input instanceof HTMLInputElement) {
+        const revealed = input.type === "text";
+        toggleButton.disabled = input.disabled;
+        toggleButton.textContent = revealed ? "hide" : "show";
+        toggleButton.setAttribute("aria-label", revealed ? "Hide password" : "Show password");
+        toggleButton.setAttribute("aria-pressed", revealed ? "true" : "false");
+      }
+
+      if (counter instanceof HTMLElement) {
+        counter.textContent = `${input.value.length}/${input.maxLength}`;
+        counter.classList.toggle("is-limit", input.maxLength > 0 && input.value.length >= input.maxLength);
+      }
+
+      if (actions instanceof HTMLElement) {
+        const hasVisibleItem = toArray(actions.children).some(
+          (item) => item instanceof HTMLElement && !item.hidden,
+        );
+        actions.hidden = !hasVisibleItem;
+      }
+    };
+
+    if (shell.dataset.r8InputShellReady === "true") {
+      syncShellState();
+      if (input instanceof HTMLTextAreaElement) {
+        updateAutosizeTextarea(input);
+      }
+      return;
+    }
+
+    shell.dataset.r8InputShellReady = "true";
+
+    if (clearButton instanceof HTMLButtonElement) {
+      clearButton.addEventListener("click", () => {
+        if (input.disabled || input.readOnly) {
+          return;
+        }
+
+        input.value = "";
+        if (input instanceof HTMLTextAreaElement) {
+          updateAutosizeTextarea(input);
+        }
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+        emitComponentEvent(shell, "input-clear", {
+          value: "",
+        });
+        input.focus({ preventScroll: true });
+        syncShellState();
+      });
+    }
+
+    if (toggleButton instanceof HTMLButtonElement && input instanceof HTMLInputElement) {
+      toggleButton.addEventListener("click", () => {
+        if (input.disabled) {
+          return;
+        }
+
+        const nextType = input.type === "password" ? "text" : "password";
+        input.type = nextType;
+        emitComponentEvent(shell, "input-password-toggle", {
+          revealed: nextType === "text",
+        });
+        syncShellState();
+        input.focus({ preventScroll: true });
+      });
+    }
+
+    shell.addEventListener("click", (event) => {
+      const target = event.target;
+      if (target instanceof HTMLElement && target.closest("button, .r8-input")) {
+        return;
+      }
+
+      input.focus({ preventScroll: true });
+    });
+
+    input.addEventListener("input", () => {
+      if (input instanceof HTMLTextAreaElement) {
+        updateAutosizeTextarea(input);
+      }
+      syncShellState();
+    });
+
+    input.addEventListener("change", syncShellState);
+
+    input.readOnly = baseReadonly;
+    syncShellState();
+    if (input instanceof HTMLTextAreaElement) {
+      updateAutosizeTextarea(input);
+    }
+  }
+
+  function initInputs(root) {
+    toArray(root.querySelectorAll(".r8-input-shell")).forEach((shell) => {
+      initInputShell(shell);
+    });
+
+    toArray(root.querySelectorAll("textarea.r8-input")).forEach((textarea) => {
+      if (!(textarea instanceof HTMLTextAreaElement)) {
+        return;
+      }
+
+      updateAutosizeTextarea(textarea);
+
+      if (textarea.dataset.r8AutosizeReady === "true") {
+        return;
+      }
+
+      textarea.dataset.r8AutosizeReady = "true";
+      textarea.addEventListener("input", () => updateAutosizeTextarea(textarea));
+    });
+  }
+
+  function getInputNumberSettings(component, input) {
+    const rawStep = String(input.step || component.dataset.r8Step || "1");
+    const step = Math.abs(parseFiniteNumber(rawStep) || 1);
+    const rawPrecision = parseFiniteNumber(component.dataset.r8Precision || input.dataset.r8Precision || "");
+    const stepDigits = rawStep.includes(".") ? rawStep.split(".")[1].length : 0;
+    return {
+      step,
+      min: parseFiniteNumber(input.min),
+      max: parseFiniteNumber(input.max),
+      precision:
+        rawPrecision !== null
+          ? clamp(Math.round(rawPrecision), 0, 6)
+          : stepDigits > 0
+            ? stepDigits
+            : null,
+      stepStrictly: matchesTrue(component.dataset.r8StepStrictly || "false"),
+      disabled:
+        input.disabled || component.hasAttribute("disabled") || component.getAttribute("aria-disabled") === "true",
+    };
+  }
+
+  function alignInputNumberToStep(value, settings) {
+    if (!settings.stepStrictly || !Number.isFinite(value)) {
+      return value;
+    }
+
+    const base = settings.min !== null ? settings.min : 0;
+    const offset = (value - base) / settings.step;
+    return base + Math.round(offset) * settings.step;
+  }
+
+  function formatInputNumberValue(value, precision) {
+    if (value === null || !Number.isFinite(value)) {
+      return "";
+    }
+
+    if (precision !== null) {
+      return value.toFixed(precision);
+    }
+
+    return String(roundToPrecision(value, 6));
+  }
+
+  function normalizeInputNumberValue(component, input, nextValue, options = {}) {
+    const settings = getInputNumberSettings(component, input);
+    let value = parseFiniteNumber(nextValue);
+
+    if (value === null) {
+      return options.allowEmpty ? null : settings.min !== null ? settings.min : 0;
+    }
+
+    value = alignInputNumberToStep(value, settings);
+    value = clamp(
+      value,
+      settings.min !== null ? settings.min : Number.NEGATIVE_INFINITY,
+      settings.max !== null ? settings.max : Number.POSITIVE_INFINITY,
+    );
+    value = settings.precision !== null ? roundToPrecision(value, settings.precision) : value;
+    value = alignInputNumberToStep(value, settings);
+    return settings.precision !== null ? roundToPrecision(value, settings.precision) : value;
+  }
+
+  function syncInputNumberState(component, input, buttons) {
+    const settings = getInputNumberSettings(component, input);
+    const currentValue = parseFiniteNumber(input.value);
+    const epsilon = settings.precision !== null ? 1 / 10 ** (settings.precision + 1) : settings.step / 1000;
+    const [decrementButton, incrementButton] = buttons;
+
+    component.classList.toggle("is-disabled", settings.disabled);
+
+    if (decrementButton instanceof HTMLButtonElement) {
+      decrementButton.disabled =
+        settings.disabled ||
+        (currentValue !== null && settings.min !== null && currentValue <= settings.min + epsilon);
+    }
+
+    if (incrementButton instanceof HTMLButtonElement) {
+      incrementButton.disabled =
+        settings.disabled ||
+        (currentValue !== null && settings.max !== null && currentValue >= settings.max - epsilon);
+    }
   }
 
   function initInputNumbers(root) {
     toArray(root.querySelectorAll(".r8-input-number")).forEach((component) => {
-      if (!(component instanceof HTMLElement) || component.dataset.r8InputNumberReady === "true") {
+      if (!(component instanceof HTMLElement)) {
         return;
       }
 
-      component.dataset.r8InputNumberReady = "true";
       const input = component.querySelector(".r8-input-number__input");
-      const buttons = toArray(component.querySelectorAll(".r8-input-number__button")).filter((item) => item instanceof HTMLElement);
+      const buttons = toArray(component.querySelectorAll(".r8-input-number__button")).filter(
+        (item) => item instanceof HTMLButtonElement,
+      );
       if (!(input instanceof HTMLInputElement) || buttons.length < 2) {
         return;
       }
 
-      buttons.forEach((button, index) => {
-        button.addEventListener("click", () => {
-          const step = Number(input.step || "1") || 1;
-          const min = input.min === "" ? Number.NEGATIVE_INFINITY : Number(input.min);
-          const max = input.max === "" ? Number.POSITIVE_INFINITY : Number(input.max);
-          const direction = index === 0 ? -1 : 1;
-          const nextValue = clamp((Number(input.value || "0") || 0) + step * direction, min, max);
-          input.value = String(nextValue);
+      const initialValue = input.value.trim() === ""
+        ? null
+        : normalizeInputNumberValue(component, input, input.value, { allowEmpty: true });
+      input.value = formatInputNumberValue(initialValue, getInputNumberSettings(component, input).precision);
+      syncInputNumberState(component, input, buttons);
+
+      if (component.dataset.r8InputNumberReady === "true") {
+        return;
+      }
+
+      component.dataset.r8InputNumberReady = "true";
+      let isInternalSync = false;
+
+      const commitValue = (nextValue, source, options = {}) => {
+        const allowEmpty = options.allowEmpty === true;
+        const normalizedValue = normalizeInputNumberValue(component, input, nextValue, { allowEmpty });
+        const settings = getInputNumberSettings(component, input);
+        input.value = formatInputNumberValue(normalizedValue, settings.precision);
+        syncInputNumberState(component, input, buttons);
+
+        if (options.dispatchNative !== false) {
+          isInternalSync = true;
           input.dispatchEvent(new Event("input", { bubbles: true }));
           input.dispatchEvent(new Event("change", { bubbles: true }));
+          isInternalSync = false;
+        }
+
+        if (options.silent !== true) {
           emitComponentEvent(component, "input-number-change", {
-            value: nextValue,
+            value: normalizedValue,
+            source,
           });
+        }
+
+        return normalizedValue;
+      };
+
+      const stepValue = (direction, source) => {
+        const settings = getInputNumberSettings(component, input);
+        if (settings.disabled) {
+          return;
+        }
+
+        const currentValue = parseFiniteNumber(input.value);
+        const baseValue = currentValue !== null ? currentValue : settings.min !== null ? settings.min : 0;
+        commitValue(baseValue + settings.step * direction, source);
+      };
+
+      buttons.forEach((button, index) => {
+        button.addEventListener("click", () => {
+          stepValue(index === 0 ? -1 : 1, "button");
         });
+      });
+
+      input.addEventListener("input", () => {
+        syncInputNumberState(component, input, buttons);
+      });
+
+      input.addEventListener("change", () => {
+        if (isInternalSync) {
+          return;
+        }
+
+        if (input.value.trim() === "") {
+          syncInputNumberState(component, input, buttons);
+          emitComponentEvent(component, "input-number-change", {
+            value: null,
+            source: "manual",
+          });
+          return;
+        }
+
+        commitValue(input.value, "manual", {
+          dispatchNative: false,
+        });
+      });
+
+      input.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowUp") {
+          event.preventDefault();
+          stepValue(1, "keyboard");
+          return;
+        }
+
+        if (event.key === "ArrowDown") {
+          event.preventDefault();
+          stepValue(-1, "keyboard");
+          return;
+        }
+
+        if (event.key === "Home" && input.min !== "") {
+          event.preventDefault();
+          commitValue(input.min, "keyboard");
+          return;
+        }
+
+        if (event.key === "End" && input.max !== "") {
+          event.preventDefault();
+          commitValue(input.max, "keyboard");
+        }
       });
     });
   }
 
-  function syncCheckboxModifiers(control) {
-    if (!(control instanceof HTMLElement) || !control.classList.contains("r8-checkbox")) {
+  function syncBinaryModifiers(control) {
+    if (!(control instanceof HTMLElement)) {
       return;
     }
 
     const sizeValue = control.dataset.r8Size || "";
     const hasSizeBinding = Object.prototype.hasOwnProperty.call(control.dataset, "r8Size");
     const hasBorderBinding = Object.prototype.hasOwnProperty.call(control.dataset, "r8Border");
+    const isCheckbox = control.classList.contains("r8-checkbox");
+    const isRadio = control.classList.contains("r8-radio");
+    const isSwitch = control.classList.contains("r8-switch");
+    const isThemeSwitch = control.classList.contains("r8-theme-switch");
 
     if (hasSizeBinding) {
-      control.classList.remove("r8-checkbox--sm", "r8-checkbox--lg");
+      control.classList.remove(
+        "r8-checkbox--sm",
+        "r8-checkbox--lg",
+        "r8-radio--sm",
+        "r8-radio--lg",
+        "r8-switch--sm",
+        "r8-switch--lg",
+        "r8-theme-switch--sm",
+        "r8-theme-switch--lg",
+      );
 
       if (sizeValue === "sm") {
-        control.classList.add("r8-checkbox--sm");
+        if (isCheckbox) {
+          control.classList.add("r8-checkbox--sm");
+        }
+        if (isRadio) {
+          control.classList.add("r8-radio--sm");
+        }
+        if (isSwitch) {
+          control.classList.add("r8-switch--sm");
+        }
+        if (isThemeSwitch) {
+          control.classList.add("r8-theme-switch--sm");
+        }
       } else if (sizeValue === "lg") {
-        control.classList.add("r8-checkbox--lg");
+        if (isCheckbox) {
+          control.classList.add("r8-checkbox--lg");
+        }
+        if (isRadio) {
+          control.classList.add("r8-radio--lg");
+        }
+        if (isSwitch) {
+          control.classList.add("r8-switch--lg");
+        }
+        if (isThemeSwitch) {
+          control.classList.add("r8-theme-switch--lg");
+        }
       }
     }
 
-    if (hasBorderBinding) {
-      control.classList.toggle("r8-checkbox--bordered", matchesTrue(control.dataset.r8Border || "false"));
+    if (hasBorderBinding && (isCheckbox || isRadio)) {
+      const enabled = matchesTrue(control.dataset.r8Border || "false");
+      control.classList.toggle("r8-checkbox--bordered", enabled && isCheckbox);
+      control.classList.toggle("r8-radio--bordered", enabled && isRadio);
     }
   }
 
@@ -4481,7 +4985,7 @@
           : "checkbox";
       const state = readBinaryState(control, kind);
 
-      syncCheckboxModifiers(control);
+      syncBinaryModifiers(control);
       setBinaryState(control, state.checked, { indeterminate: state.indeterminate });
 
       if (control.dataset.r8BinaryReady === "true") {
@@ -4904,52 +5408,254 @@
     });
   }
 
+  function getInputTagValue(tag) {
+    if (!(tag instanceof HTMLElement)) {
+      return "";
+    }
+
+    const label = tag.querySelector(".r8-input-tag__label");
+    if (label instanceof HTMLElement) {
+      return (label.textContent || "").trim();
+    }
+
+    return (tag.textContent || "").replace(/\s*x\s*$/i, "").trim();
+  }
+
+  function getInputTagValues(component) {
+    return toArray(component.querySelectorAll(".r8-input-tag__tag"))
+      .map((tag) => getInputTagValue(tag))
+      .filter(Boolean);
+  }
+
+  function getInputTagConfig(component, input) {
+    const maxTags = clamp(Number(component.dataset.r8MaxTags || "0") || 0, 0, 99);
+    const delimiters = Array.from(
+      new Set(
+        String(component.dataset.r8Delimiters || "")
+          .split("")
+          .filter(Boolean),
+      ),
+    );
+
+    return {
+      maxTags,
+      delimiters,
+      clearable: matchesTrue(component.dataset.r8Clearable || "false"),
+      disabled:
+        input.disabled || component.hasAttribute("disabled") || component.getAttribute("aria-disabled") === "true",
+    };
+  }
+
+  function splitInputTagTokens(value, delimiters) {
+    const source = String(value || "").trim();
+    if (!source) {
+      return [];
+    }
+
+    if (!Array.isArray(delimiters) || delimiters.length === 0) {
+      return [source];
+    }
+
+    const pattern = new RegExp(`[${delimiters.map((item) => escapeRegExpFragment(item)).join("")}]+`, "g");
+    return source.split(pattern).map((item) => item.trim()).filter(Boolean);
+  }
+
+  function createInputTagTag(value) {
+    const tag = document.createElement("span");
+    tag.className = "r8-input-tag__tag";
+
+    const label = document.createElement("span");
+    label.className = "r8-input-tag__label";
+    label.textContent = value;
+
+    const remove = document.createElement("button");
+    remove.type = "button";
+    remove.className = "r8-input-tag__remove";
+    remove.textContent = "x";
+    remove.setAttribute("aria-label", `Remove ${value}`);
+
+    tag.append(label, remove);
+    return tag;
+  }
+
   function initInputTags(root) {
     toArray(root.querySelectorAll(".r8-input-tag")).forEach((component) => {
-      if (!(component instanceof HTMLElement) || component.dataset.r8InputTagReady === "true") {
+      if (!(component instanceof HTMLElement)) {
         return;
       }
 
-      component.dataset.r8InputTagReady = "true";
       const input = component.querySelector(".r8-input-tag__input");
       if (!(input instanceof HTMLInputElement)) {
         return;
       }
 
-      component.addEventListener("click", (event) => {
-        const target = event.target;
-        if (!(target instanceof HTMLElement) || !target.closest(".r8-input-tag__remove")) {
-          return;
+      const basePlaceholder = input.getAttribute("placeholder") || "";
+      const baseReadonly = input.readOnly;
+      let clearButton = component.querySelector(".r8-input-tag__clear");
+
+      if (!(clearButton instanceof HTMLButtonElement) && matchesTrue(component.dataset.r8Clearable || "false")) {
+        clearButton = document.createElement("button");
+        clearButton.type = "button";
+        clearButton.className = "r8-input-tag__clear";
+        clearButton.textContent = "clr";
+        clearButton.setAttribute("aria-label", "Clear tags");
+        component.append(clearButton);
+      }
+
+      const emitChange = () => {
+        emitComponentEvent(component, "input-tag-change", {
+          values: getInputTagValues(component),
+        });
+      };
+
+      const syncInputTagState = () => {
+        const config = getInputTagConfig(component, input);
+        const values = getInputTagValues(component);
+        const maxReached = config.maxTags > 0 && values.length >= config.maxTags;
+        component.classList.toggle("is-disabled", config.disabled);
+        component.classList.toggle("is-maxed", maxReached);
+        input.readOnly = baseReadonly || maxReached || config.disabled;
+        input.placeholder = maxReached ? "" : basePlaceholder;
+
+        if (clearButton instanceof HTMLButtonElement) {
+          clearButton.hidden = !config.clearable || values.length === 0;
+          clearButton.disabled = config.disabled || values.length === 0;
         }
 
-        const tag = target.closest(".r8-input-tag__tag");
-        const value = (tag?.textContent || "").replace(/\s*x\s*$/i, "").trim();
+        toArray(component.querySelectorAll(".r8-input-tag__remove")).forEach((remove) => {
+          if (remove instanceof HTMLButtonElement) {
+            remove.disabled = config.disabled;
+          }
+        });
+      };
+
+      const addTagsFromValue = (value, source) => {
+        const config = getInputTagConfig(component, input);
+        const tokens = splitInputTagTokens(value, config.delimiters);
+        let lastTag = null;
+        let addedAny = false;
+
+        tokens.forEach((token) => {
+          if (!token) {
+            return;
+          }
+
+          const currentValues = getInputTagValues(component);
+          if (config.maxTags > 0 && currentValues.length >= config.maxTags) {
+            return;
+          }
+
+          lastTag = createInputTagTag(token);
+          component.insertBefore(lastTag, input);
+          emitComponentEvent(component, "input-tag-add", {
+            value: token,
+            tag: lastTag,
+            values: getInputTagValues(component).concat(token),
+            source,
+          });
+          addedAny = true;
+        });
+
+        if (addedAny) {
+          input.value = "";
+          emitChange();
+        }
+
+        syncInputTagState();
+        return lastTag;
+      };
+
+      const removeTag = (tag, source) => {
+        const value = getInputTagValue(tag);
         tag?.remove();
         emitComponentEvent(component, "input-tag-remove", {
           value,
+          values: getInputTagValues(component),
+          source,
         });
+        emitChange();
+        syncInputTagState();
+      };
+
+      const clearAllTags = (source) => {
+        toArray(component.querySelectorAll(".r8-input-tag__tag")).forEach((tag) => tag.remove());
+        emitComponentEvent(component, "input-tag-clear", {
+          values: [],
+          source,
+        });
+        emitChange();
+        syncInputTagState();
+      };
+
+      syncInputTagState();
+
+      if (component.dataset.r8InputTagReady === "true") {
+        return;
+      }
+
+      component.dataset.r8InputTagReady = "true";
+
+      component.addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) {
+          return;
+        }
+
+        const removeTrigger = target.closest(".r8-input-tag__remove");
+        if (removeTrigger instanceof HTMLElement) {
+          const tag = removeTrigger.closest(".r8-input-tag__tag");
+          if (tag instanceof HTMLElement) {
+            removeTag(tag, "button");
+          }
+          return;
+        }
+
+        if (target.closest(".r8-input-tag__clear")) {
+          clearAllTags("button");
+          input.focus({ preventScroll: true });
+          return;
+        }
+
+        if (!target.closest("input")) {
+          input.focus({ preventScroll: true });
+        }
       });
 
       input.addEventListener("keydown", (event) => {
-        if (event.key !== "Enter") {
+        const config = getInputTagConfig(component, input);
+        if (config.disabled) {
+          return;
+        }
+
+        if (event.key === "Backspace" && input.value === "") {
+          const tags = toArray(component.querySelectorAll(".r8-input-tag__tag"));
+          const lastTag = tags[tags.length - 1];
+          if (lastTag instanceof HTMLElement) {
+            event.preventDefault();
+            removeTag(lastTag, "keyboard");
+          }
+          return;
+        }
+
+        if (event.key === "Enter" || config.delimiters.includes(event.key)) {
+          event.preventDefault();
+          addTagsFromValue(input.value, "keyboard");
+        }
+      });
+
+      input.addEventListener("paste", (event) => {
+        const config = getInputTagConfig(component, input);
+        if (!config.delimiters.length) {
+          return;
+        }
+
+        const pastedText = event.clipboardData?.getData("text") || "";
+        if (!pastedText || !config.delimiters.some((delimiter) => pastedText.includes(delimiter))) {
           return;
         }
 
         event.preventDefault();
-        const value = input.value.trim();
-        if (!value) {
-          return;
-        }
-
-        const tag = document.createElement("span");
-        tag.className = "r8-input-tag__tag";
-        tag.innerHTML = `${value} <span class="r8-input-tag__remove">x</span>`;
-        component.insertBefore(tag, input);
-        input.value = "";
-        emitComponentEvent(component, "input-tag-add", {
-          value,
-          tag,
-        });
+        addTagsFromValue(pastedText, "paste");
       });
     });
   }
@@ -5075,8 +5781,16 @@
       return;
     }
 
-    const host = button.closest(".r8-alert, .r8-notification, .r8-message-box");
+    const host = button.closest(".r8-alert, .r8-notification, .r8-message-box, .r8-tag");
     if (host instanceof HTMLElement) {
+      if (host.classList.contains("r8-tag")) {
+        host.remove();
+        emitComponentEvent(host, "dismiss", {
+          target: host,
+        });
+        return;
+      }
+
       closeTarget(host);
       emitComponentEvent(host, "dismiss", {
         target: host,
@@ -5649,6 +6363,7 @@
     initTabs(scope);
     initCollapse(scope);
     initCarousels(scope);
+    initInputs(scope);
     initInputNumbers(scope);
     initBinaryControls(scope);
     initRates(scope);

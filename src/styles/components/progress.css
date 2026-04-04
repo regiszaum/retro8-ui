@@ -35,4 +35,8 @@
   .r8-progress--danger .r8-progress__bar {
     background-color: var(--r8-color-danger);
   }
+
+  .r8-progress--thin .r8-progress__track {
+    min-height: 0.7rem;
+  }
 }

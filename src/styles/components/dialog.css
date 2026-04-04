@@ -1,7 +1,12 @@
 @layer components {
   .r8-dialog {
     @apply w-full overflow-hidden border-r8 border-r8-border bg-r8-surface p-0 text-r8-ink shadow-r8-lg;
-    max-width: min(36rem, calc(100vw - 2rem));
+    max-width: min(var(--r8-dialog-width, 36rem), calc(100vw - 2rem));
+  }
+
+  .r8-dialog--fullscreen {
+    max-width: calc(100vw - 1rem);
+    min-height: calc(100vh - 1rem);
   }
 
   dialog.r8-dialog::backdrop {
