@@ -1183,7 +1183,7 @@ pre {
 }
 
 .docs-demo__stack--date-picker {
-  padding-bottom: 22rem;
+  padding-bottom: 0;
   justify-items: start;
 }
 
