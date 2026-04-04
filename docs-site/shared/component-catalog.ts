@@ -1932,26 +1932,161 @@ const formComponents = [
     name: "Color Picker",
     group: "form",
     summary: l(
-      "Trigger visual de cor com painel acoplado para themes, avatar accents e customizacao de UI.",
-      "Color trigger with an attached panel for themes, avatar accents and UI customization.",
+      "Seletor de cor com dois modos: swatches fixas para paletas controladas e picker dinamico com arraste para qualquer hue.",
+      "Color selector with two modes: fixed swatches for controlled palettes and a dynamic drag-based picker for any hue.",
     ),
-    classes: ["r8-color-picker", "r8-color-picker__trigger", "r8-color-picker__panel", "r8-color-picker__swatches", "r8-color-picker__swatch"],
-    preview: `<div class="r8-color-picker">
-  <div class="r8-color-picker__trigger">
-    <span>Primary color</span>
-    <span class="r8-badge r8-badge--primary" data-r8-choice-display>#2563eb</span>
-  </div>
-  <div class="r8-color-picker__panel">
-    <div class="r8-color-picker__swatches">
-      <div class="r8-color-picker__swatch is-selected" data-r8-value="#2563eb" style="background:#2563eb;"></div>
-      <div class="r8-color-picker__swatch" data-r8-value="#64748b" style="background:#64748b;"></div>
-      <div class="r8-color-picker__swatch" data-r8-value="#7c3aed" style="background:#7c3aed;"></div>
-      <div class="r8-color-picker__swatch" data-r8-value="#16a34a" style="background:#16a34a;"></div>
-      <div class="r8-color-picker__swatch" data-r8-value="#0891b2" style="background:#0891b2;"></div>
-      <div class="r8-color-picker__swatch" data-r8-value="#dc2626" style="background:#dc2626;"></div>
+    classes: [
+      "r8-color-picker",
+      "r8-color-picker__trigger",
+      "r8-color-picker__display",
+      "r8-color-picker__sample",
+      "r8-color-picker__panel",
+      "r8-color-picker__toolbar",
+      "r8-color-picker__clear",
+      "r8-color-picker__swatches",
+      "r8-color-picker__swatch",
+      "r8-color-picker__workspace",
+      "r8-color-picker__dynamic-shell",
+      "r8-color-picker__spectrum",
+      "r8-color-picker__channel",
+      "r8-color-picker__input",
+      "r8-color-picker__confirm",
+    ],
+    preview: `<div class="docs-demo__stack docs-demo__stack--color-picker">
+  <div
+    class="r8-color-picker"
+    data-r8-clearable="true"
+    data-r8-placeholder="Pick accent color"
+  >
+    <button class="r8-color-picker__trigger" type="button" aria-label="Pick accent color">
+      <span class="r8-color-picker__display">
+        <span class="r8-color-picker__sample" data-r8-color-sample aria-hidden="true"></span>
+        <span data-r8-choice-display>#2563eb</span>
+      </span>
+      <span class="r8-choice__caret" aria-hidden="true">&gt;</span>
+    </button>
+    <div class="r8-color-picker__panel" hidden>
+      <div class="r8-color-picker__toolbar">
+        <p class="r8-text r8-text--xs r8-text--muted">Core palette</p>
+        <button class="r8-color-picker__clear r8-btn r8-btn--sm r8-btn--secondary" type="button">Clear</button>
+      </div>
+      <div class="r8-color-picker__swatches">
+        <div class="r8-color-picker__swatch is-selected" data-r8-value="#2563eb" aria-label="Primary blue" style="background-color:#2563eb;"></div>
+        <div class="r8-color-picker__swatch" data-r8-value="#64748b" aria-label="Slate" style="background-color:#64748b;"></div>
+        <div class="r8-color-picker__swatch" data-r8-value="#7c3aed" aria-label="Violet" style="background-color:#7c3aed;"></div>
+        <div class="r8-color-picker__swatch" data-r8-value="#16a34a" aria-label="Green" style="background-color:#16a34a;"></div>
+        <div class="r8-color-picker__swatch" data-r8-value="#0891b2" aria-label="Cyan" style="background-color:#0891b2;"></div>
+        <div class="r8-color-picker__swatch" data-r8-value="#dc2626" aria-label="Red" style="background-color:#dc2626;"></div>
+      </div>
     </div>
   </div>
+
+  <div
+    class="r8-color-picker"
+    data-r8-mode="dynamic"
+    data-r8-clearable="true"
+    data-r8-size="lg"
+    data-r8-value="#409eff"
+    data-r8-placeholder="Pick any accent"
+  >
+    <button class="r8-color-picker__trigger" type="button" aria-label="Pick any accent">
+      <span class="r8-color-picker__display">
+        <span class="r8-color-picker__sample" data-r8-color-sample aria-hidden="true"></span>
+        <span data-r8-choice-display>#409eff</span>
+      </span>
+      <span class="r8-choice__caret" aria-hidden="true">&gt;</span>
+    </button>
+    <div class="r8-color-picker__panel" hidden></div>
+  </div>
 </div>`,
+    code: `<div
+  class="r8-color-picker"
+  data-r8-mode="dynamic"
+  data-r8-clearable="true"
+  data-r8-size="lg"
+  data-r8-show-alpha="true"
+  data-r8-value="rgba(64, 158, 255, 0.82)"
+  data-r8-placeholder="Pick accent color"
+>
+  <button class="r8-color-picker__trigger" type="button" aria-label="Pick accent color">
+    <span class="r8-color-picker__display">
+      <span class="r8-color-picker__sample" data-r8-color-sample aria-hidden="true"></span>
+      <span data-r8-choice-display>rgba(64, 158, 255, 0.82)</span>
+    </span>
+    <span class="r8-choice__caret" aria-hidden="true">&gt;</span>
+  </button>
+
+  <div class="r8-color-picker__panel" hidden></div>
+</div>`,
+    anatomy: ll(
+      [
+        "`r8-color-picker` continua sendo o shell unico do componente, agora com `data-r8-mode=\"fixed\"` para swatches ou `data-r8-mode=\"dynamic\"` para o picker livre.",
+        "`r8-color-picker__trigger` e a surface clicavel que abre o painel e espelha o valor atual no estado fechado.",
+        "`r8-color-picker__display` combina amostra visual e valor textual sem precisar improvisar badges soltas.",
+        "No modo fixo, `r8-color-picker__toolbar`, `r8-color-picker__clear`, `r8-color-picker__swatches` e `r8-color-picker__swatch` organizam presets curados.",
+        "No modo dinamico, `r8-color-picker__workspace`, `r8-color-picker__spectrum`, `r8-color-picker__channel`, `r8-color-picker__input` e `r8-color-picker__confirm` montam o fluxo de arraste, input e confirmacao.",
+      ],
+      [
+        "`r8-color-picker` stays the single shell for the component, now with `data-r8-mode=\"fixed\"` for swatches or `data-r8-mode=\"dynamic\"` for the free picker.",
+        "`r8-color-picker__trigger` is the clickable surface that opens the panel and mirrors the current value in the closed state.",
+        "`r8-color-picker__display` combines the visual sample and the textual value so you do not need loose badges.",
+        "In fixed mode, `r8-color-picker__toolbar`, `r8-color-picker__clear`, `r8-color-picker__swatches`, and `r8-color-picker__swatch` organize curated presets.",
+        "In dynamic mode, `r8-color-picker__workspace`, `r8-color-picker__spectrum`, `r8-color-picker__channel`, `r8-color-picker__input`, and `r8-color-picker__confirm` build the drag, input, and confirmation flow.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Mantenha `aria-label` ou um texto visivel forte no trigger para explicar o contexto da cor escolhida.",
+        "Cada swatch deve ter `aria-label` descritivo quando a diferenca entre as opcoes nao puder ser entendida so pela cor.",
+        "No modo dinamico, preserve o valor textual e o input para que a escolha nao dependa apenas do board visual.",
+        "Use `data-r8-show-alpha` com valor textual visivel para nao depender apenas da transparencia como significado.",
+        "Se a cor final precisar entrar em submit HTML, espelhe `data-r8-value` em um input real controlado pela aplicacao hospedeira.",
+      ],
+      [
+        "Keep an `aria-label` or strong visible trigger text so the chosen color has context beyond the swatch alone.",
+        "Each swatch should carry a descriptive `aria-label` when options cannot be understood by color alone.",
+        "In dynamic mode, keep the textual value and input visible so the choice does not rely on the visual board alone.",
+        "Use `data-r8-show-alpha` together with a visible textual value so transparency is not the only carrier of meaning.",
+        "If the final color must participate in HTML form submission, mirror `data-r8-value` into a real input controlled by the host app.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-color-picker__display / r8-color-picker__sample",
+        description: l(
+          "Par visual para mostrar a cor atual com texto legivel e uma amostra pequena dentro do trigger.",
+          "Visual pair for showing the current color with readable text and a compact sample inside the trigger.",
+        ),
+      },
+      {
+        name: "data-r8-mode / data-r8-clearable / data-r8-placeholder",
+        description: l(
+          "Escolhe entre a paleta fixa e o picker dinamico, liga a acao de limpar e define qual copy volta para o trigger quando nenhuma cor estiver ativa.",
+          "Chooses between the fixed palette and the dynamic picker, enables the clear action, and defines which copy returns to the trigger when no color is active.",
+        ),
+      },
+      {
+        name: "data-r8-size / data-r8-show-alpha",
+        description: l(
+          "Controlam densidade do trigger e do painel, alem do alpha slider no modo dinamico e do checkerboard nas amostras translucidas.",
+          "Control trigger and panel density, plus the alpha slider in dynamic mode and checkerboard treatment for translucent samples.",
+        ),
+      },
+      {
+        name: "r8-color-picker__toolbar / r8-color-picker__workspace / r8-color-picker__clear",
+        description: l(
+          "Organizam tanto os presets fixos quanto o workspace dinamico sem precisar criar wrappers paralelos fora do painel.",
+          "Organize both the fixed presets and the dynamic workspace without parallel wrappers outside the panel.",
+        ),
+      },
+      {
+        name: "r8:color-active-change / r8:color-change / r8:color-clear",
+        description: l(
+          "Eventos dedicados para preview ativo, confirmacao final e reset, alem do fallback generico `r8:choice-change`.",
+          "Dedicated events for active preview, final confirmation, and reset, alongside the generic `r8:choice-change` fallback.",
+        ),
+      },
+    ],
   },
   {
     id: "date-picker",

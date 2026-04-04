@@ -359,6 +359,127 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         ],
       });
       break;
+    case "color-picker":
+      mergeContract(contract, {
+        attributes: [
+          row(
+            "aria-label",
+            "string",
+            "none",
+            "Rotulo acessivel recomendado para o trigger quando o contexto da cor nao estiver claro no texto ao redor.",
+            "Recommended accessible label for the trigger when the color context is not already clear in nearby copy.",
+          ),
+        ],
+        dataAttributes: [
+          row(
+            "data-r8-mode",
+            `"fixed" | "dynamic"`,
+            `"fixed"`,
+            "Escolhe entre paleta fixa por swatches e o picker dinamico com board, sliders e confirmacao.",
+            "Switches between the fixed swatch palette and the dynamic picker with a board, sliders, and confirmation.",
+          ),
+          row(
+            "data-r8-clearable",
+            `"true" | "false"`,
+            `"false"`,
+            "Mostra e habilita a acao de limpar no panel quando existir um valor confirmado no componente.",
+            "Shows and enables the clear action inside the panel when the component currently has a committed value.",
+          ),
+          row(
+            "data-r8-placeholder",
+            "string",
+            `"Select color"`,
+            "Define o texto de fallback exibido no trigger quando nenhuma cor estiver ativa.",
+            "Defines the fallback text shown in the trigger when no color is active.",
+          ),
+          row(
+            "data-r8-size",
+            `"sm" | "md" | "lg"`,
+            `"md"`,
+            "Ajusta a densidade do trigger, da amostra, das swatches e do painel dinamico sem trocar o markup base.",
+            "Adjusts trigger, sample, swatch, and dynamic panel density without replacing the base markup.",
+          ),
+          row(
+            "data-r8-show-alpha",
+            `"true" | "false"`,
+            `"false"`,
+            "Liga o checkerboard nas amostras translucidas e revela o alpha slider quando o picker estiver em modo dinamico.",
+            "Enables the checkerboard treatment on translucent samples and reveals the alpha slider when the picker runs in dynamic mode.",
+          ),
+        ],
+        cssVariables: [
+          row(
+            "--r8-color-picker-columns",
+            "number",
+            "6",
+            "Controla quantas colunas o grid de swatches usa antes do breakpoint responsivo entrar em cena.",
+            "Controls how many columns the swatch grid uses before the responsive breakpoint kicks in.",
+          ),
+          row(
+            "--r8-color-picker-swatch-size",
+            "length",
+            "2.25rem",
+            "Define o footprint base das swatches e ajuda a equilibrar paletas mais densas ou mais generosas.",
+            "Defines the base swatch footprint so you can balance denser or roomier palettes.",
+          ),
+          row(
+            "--r8-color-picker-sample-size",
+            "length",
+            "1.1rem",
+            "Escala a amostra de cor dentro do trigger sem redesenhar a estrutura visual do componente.",
+            "Scales the color sample inside the trigger without redrawing the component structure.",
+          ),
+          row(
+            "--r8-color-picker-trigger-min-height",
+            "length",
+            "3rem",
+            "Ajusta a altura minima do trigger para dialogos compactos ou paines mais espaçados.",
+            "Adjusts the trigger minimum height for compact dialogs or roomier panels.",
+          ),
+          row(
+            "--r8-color-picker-panel-width",
+            "length",
+            "22rem",
+            "Controla a largura do painel dinamico sem afetar o shell externo do componente.",
+            "Controls the width of the dynamic panel without changing the component outer shell.",
+          ),
+          row(
+            "--r8-color-picker-spectrum-height",
+            "length",
+            "12rem",
+            "Define a altura do board principal usado para escolher saturacao e luminosidade no modo dinamico.",
+            "Defines the height of the main board used to choose saturation and value in dynamic mode.",
+          ),
+          row(
+            "--r8-color-picker-channel-width",
+            "length",
+            "1rem",
+            "Ajusta a largura dos sliders verticais de hue e alpha no modo dinamico.",
+            "Adjusts the width of the hue and alpha vertical sliders in dynamic mode.",
+          ),
+        ],
+        events: [
+          event(
+            "r8:color-active-change",
+            `{ value, text, swatch, alpha, mode, source }`,
+            "Emitido enquanto o valor ativo muda no board, nos sliders ou no input do modo dinamico.",
+            "Emitted while the active value changes through the dynamic mode board, sliders, or input.",
+          ),
+          event(
+            "r8:color-change",
+            `{ value, text, swatch, alpha, option, mode, source }`,
+            "Emitido quando uma nova cor e confirmada no Color Picker, seja por swatch fixa ou pelo modo dinamico.",
+            "Emitted when a new color is committed in the Color Picker, whether through fixed swatches or the dynamic mode.",
+          ),
+          event(
+            "r8:color-clear",
+            `{ value, text, kind, mode }`,
+            "Emitido quando o valor atual e limpo pelo botao de clear.",
+            "Emitted when the current value is cleared through the clear action.",
+          ),
+        ],
+      });
+      break;
     case "button":
       mergeContract(contract, {
         attributes: [

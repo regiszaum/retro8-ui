@@ -173,6 +173,7 @@ watch(
     <DocsCheckboxPlayground v-if="component.id === 'checkbox'" :site="site" />
     <DocsConfigProviderPlayground v-if="component.id === 'config-provider'" :site="site" />
     <DocsColorPlayground v-if="component.id === 'color'" :site="site" />
+    <DocsColorPickerPlayground v-if="component.id === 'color-picker'" :site="site" />
     <DocsIconPlayground v-if="component.id === 'icon'" :site="site" />
     <DocsLinkPlayground v-if="component.id === 'link'" :site="site" />
     <DocsLayoutContainerPlayground v-if="component.id === 'layout-container'" :site="site" />

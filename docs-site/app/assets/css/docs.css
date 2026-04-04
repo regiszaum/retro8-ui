@@ -1182,6 +1182,15 @@ pre {
   padding-bottom: 19rem;
 }
 
+.docs-demo__stack--color-picker {
+  padding-bottom: 23rem;
+  justify-items: start;
+}
+
+.docs-demo__stack--color-picker > .r8-color-picker {
+  width: min(100%, 28rem);
+}
+
 .docs-demo__stack--cascader > .r8-cascader {
   width: min(100%, 42rem);
 }
@@ -1222,6 +1231,7 @@ pre {
 .docs-checkbox-playground,
 .docs-config-provider-playground,
 .docs-color-playground,
+.docs-color-picker-playground,
 .docs-icon-playground,
 .docs-link-playground,
 .docs-splitter-playground,
@@ -1268,6 +1278,12 @@ pre {
 .docs-color-playground__controls,
 .docs-color-playground__preview,
 .docs-color-playground__markup,
+.docs-color-picker-playground__header,
+.docs-color-picker-playground__intro,
+.docs-color-picker-playground__controls,
+.docs-color-picker-playground__preview,
+.docs-color-picker-playground__events,
+.docs-color-picker-playground__markup,
 .docs-icon-playground__header,
 .docs-icon-playground__intro,
 .docs-icon-playground__controls,
@@ -1305,6 +1321,7 @@ pre {
 .docs-border-playground__header,
 .docs-config-provider-playground__header,
 .docs-color-playground__header,
+.docs-color-picker-playground__header,
 .docs-icon-playground__header,
 .docs-link-playground__header,
 .docs-typography-playground__header,
@@ -1321,6 +1338,7 @@ pre {
 .docs-border-playground__intro > .docs-panel__meta,
 .docs-config-provider-playground__intro > .docs-panel__meta,
 .docs-color-playground__intro > .docs-panel__meta,
+.docs-color-picker-playground__intro > .docs-panel__meta,
 .docs-icon-playground__intro > .docs-panel__meta,
 .docs-link-playground__intro > .docs-panel__meta,
 .docs-typography-playground__intro > .docs-panel__meta,
@@ -1336,6 +1354,7 @@ pre {
 .docs-border-playground__body,
 .docs-config-provider-playground__body,
 .docs-color-playground__body,
+.docs-color-picker-playground__body,
 .docs-icon-playground__body,
 .docs-link-playground__body,
 .docs-typography-playground__body,
@@ -1354,6 +1373,7 @@ pre {
 .docs-border-playground__field-grid,
 .docs-config-provider-playground__field-grid,
 .docs-color-playground__field-grid,
+.docs-color-picker-playground__field-grid,
 .docs-icon-playground__field-grid,
 .docs-link-playground__field-grid,
 .docs-typography-playground__field-grid,
@@ -1370,6 +1390,7 @@ pre {
 .docs-button-playground__toggles,
 .docs-border-playground__toggles,
 .docs-config-provider-playground__toggles,
+.docs-color-picker-playground__toggles,
 .docs-icon-playground__toggles,
 .docs-link-playground__toggles,
 .docs-typography-playground__toggles,
@@ -1387,6 +1408,7 @@ pre {
 .docs-border-playground__stage,
 .docs-config-provider-playground__stage,
 .docs-color-playground__stage,
+.docs-color-picker-playground__stage,
 .docs-icon-playground__stage,
 .docs-link-playground__stage,
 .docs-typography-playground__stage,
@@ -1435,6 +1457,7 @@ pre {
 .docs-border-playground__code,
 .docs-config-provider-playground__code,
 .docs-color-playground__code,
+.docs-color-picker-playground__code,
 .docs-icon-playground__code,
 .docs-link-playground__code,
 .docs-typography-playground__code,
@@ -1496,6 +1519,21 @@ pre {
   border: 2px solid var(--docs-panel-border);
 }
 
+.docs-color-picker-playground__surface {
+  width: min(100%, 29rem);
+  min-height: 22rem;
+  padding-bottom: 18rem;
+}
+
+.docs-color-picker-playground__surface > .r8-color-picker {
+  width: 100%;
+}
+
+.docs-color-picker-playground__helper {
+  margin: 0;
+  max-width: 30rem;
+}
+
 .docs-icon-playground__surface {
   width: min(100%, 14rem);
 }
@@ -1545,6 +1583,7 @@ pre {
 .docs-autocomplete-playground__event-log,
 .docs-cascader-playground__event-log,
 .docs-checkbox-playground__event-log,
+.docs-color-picker-playground__event-log,
 .docs-splitter-playground__event-log {
   display: grid;
   gap: 0.35rem;
@@ -1556,6 +1595,7 @@ pre {
 .docs-autocomplete-playground__event-log > .r8-text,
 .docs-cascader-playground__event-log > .r8-text,
 .docs-checkbox-playground__event-log > .r8-text,
+.docs-color-picker-playground__event-log > .r8-text,
 .docs-splitter-playground__event-log > .r8-text {
   margin: 0;
 }
@@ -1863,6 +1903,7 @@ dialog.r8-dialog {
   .docs-border-playground__body,
   .docs-config-provider-playground__body,
   .docs-color-playground__body,
+  .docs-color-picker-playground__body,
   .docs-icon-playground__body,
   .docs-link-playground__body,
   .docs-typography-playground__body,
