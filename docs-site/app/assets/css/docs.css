@@ -1178,6 +1178,32 @@ pre {
   gap: 1rem;
 }
 
+.docs-demo__stack--cascader {
+  padding-bottom: 19rem;
+}
+
+.docs-demo__stack--date-picker {
+  padding-bottom: 0;
+  justify-items: start;
+}
+
+.docs-demo__stack--color-picker {
+  padding-bottom: 23rem;
+  justify-items: start;
+}
+
+.docs-demo__stack--date-picker > .r8-date-picker {
+  width: min(100%, 28rem);
+}
+
+.docs-demo__stack--color-picker > .r8-color-picker {
+  width: min(100%, 28rem);
+}
+
+.docs-demo__stack--cascader > .r8-cascader {
+  width: min(100%, 42rem);
+}
+
 .docs-demo__actions {
   display: flex;
   flex-wrap: wrap;
@@ -1207,13 +1233,47 @@ pre {
   margin-top: 1rem;
 }
 
+.docs-autocomplete-playground,
 .docs-button-playground,
 .docs-border-playground,
+.docs-cascader-playground,
+.docs-checkbox-playground,
+.docs-config-provider-playground,
 .docs-color-playground,
+.docs-color-picker-playground,
+.docs-date-picker-playground,
+.docs-icon-playground,
+.docs-link-playground,
+.docs-splitter-playground,
+.docs-typography-playground,
 .docs-layout-container-playground {
   margin-bottom: 1rem;
 }
 
+.docs-autocomplete-playground__header,
+.docs-autocomplete-playground__intro,
+.docs-autocomplete-playground__controls,
+.docs-autocomplete-playground__preview,
+.docs-autocomplete-playground__events,
+.docs-autocomplete-playground__markup,
+.docs-cascader-playground__header,
+.docs-cascader-playground__intro,
+.docs-cascader-playground__controls,
+.docs-cascader-playground__preview,
+.docs-cascader-playground__events,
+.docs-cascader-playground__markup,
+.docs-date-picker-playground__header,
+.docs-date-picker-playground__intro,
+.docs-date-picker-playground__controls,
+.docs-date-picker-playground__preview,
+.docs-date-picker-playground__events,
+.docs-date-picker-playground__markup,
+.docs-checkbox-playground__header,
+.docs-checkbox-playground__intro,
+.docs-checkbox-playground__controls,
+.docs-checkbox-playground__preview,
+.docs-checkbox-playground__events,
+.docs-checkbox-playground__markup,
 .docs-button-playground__header,
 .docs-button-playground__intro,
 .docs-button-playground__controls,
@@ -1224,11 +1284,43 @@ pre {
 .docs-border-playground__controls,
 .docs-border-playground__preview,
 .docs-border-playground__markup,
+.docs-config-provider-playground__header,
+.docs-config-provider-playground__intro,
+.docs-config-provider-playground__controls,
+.docs-config-provider-playground__preview,
+.docs-config-provider-playground__markup,
 .docs-color-playground__header,
 .docs-color-playground__intro,
 .docs-color-playground__controls,
 .docs-color-playground__preview,
 .docs-color-playground__markup,
+.docs-color-picker-playground__header,
+.docs-color-picker-playground__intro,
+.docs-color-picker-playground__controls,
+.docs-color-picker-playground__preview,
+.docs-color-picker-playground__events,
+.docs-color-picker-playground__markup,
+.docs-icon-playground__header,
+.docs-icon-playground__intro,
+.docs-icon-playground__controls,
+.docs-icon-playground__preview,
+.docs-icon-playground__markup,
+.docs-link-playground__header,
+.docs-link-playground__intro,
+.docs-link-playground__controls,
+.docs-link-playground__preview,
+.docs-link-playground__markup,
+.docs-typography-playground__header,
+.docs-typography-playground__intro,
+.docs-typography-playground__controls,
+.docs-typography-playground__preview,
+.docs-typography-playground__markup,
+.docs-splitter-playground__header,
+.docs-splitter-playground__intro,
+.docs-splitter-playground__controls,
+.docs-splitter-playground__preview,
+.docs-splitter-playground__events,
+.docs-splitter-playground__markup,
 .docs-layout-container-playground__header,
 .docs-layout-container-playground__intro,
 .docs-layout-container-playground__controls,
@@ -1238,24 +1330,54 @@ pre {
   gap: 0.75rem;
 }
 
+.docs-autocomplete-playground__header,
+.docs-cascader-playground__header,
+.docs-date-picker-playground__header,
+.docs-checkbox-playground__header,
 .docs-button-playground__header,
 .docs-border-playground__header,
+.docs-config-provider-playground__header,
 .docs-color-playground__header,
+.docs-color-picker-playground__header,
+.docs-icon-playground__header,
+.docs-link-playground__header,
+.docs-typography-playground__header,
+.docs-splitter-playground__header,
 .docs-layout-container-playground__header {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: start;
 }
 
+.docs-autocomplete-playground__intro > .docs-panel__meta,
+.docs-cascader-playground__intro > .docs-panel__meta,
+.docs-date-picker-playground__intro > .docs-panel__meta,
+.docs-checkbox-playground__intro > .docs-panel__meta,
 .docs-button-playground__intro > .docs-panel__meta,
 .docs-border-playground__intro > .docs-panel__meta,
+.docs-config-provider-playground__intro > .docs-panel__meta,
 .docs-color-playground__intro > .docs-panel__meta,
+.docs-color-picker-playground__intro > .docs-panel__meta,
+.docs-icon-playground__intro > .docs-panel__meta,
+.docs-link-playground__intro > .docs-panel__meta,
+.docs-typography-playground__intro > .docs-panel__meta,
+.docs-splitter-playground__intro > .docs-panel__meta,
 .docs-layout-container-playground__intro > .docs-panel__meta {
   margin: 0;
 }
 
+.docs-autocomplete-playground__body,
+.docs-cascader-playground__body,
+.docs-date-picker-playground__body,
+.docs-checkbox-playground__body,
 .docs-button-playground__body,
 .docs-border-playground__body,
+.docs-config-provider-playground__body,
 .docs-color-playground__body,
+.docs-color-picker-playground__body,
+.docs-icon-playground__body,
+.docs-link-playground__body,
+.docs-typography-playground__body,
+.docs-splitter-playground__body,
 .docs-layout-container-playground__body {
   display: grid;
   grid-template-columns: minmax(18rem, 0.95fr) minmax(0, 1.05fr);
@@ -1263,26 +1385,56 @@ pre {
   align-items: start;
 }
 
+.docs-autocomplete-playground__field-grid,
+.docs-cascader-playground__field-grid,
+.docs-date-picker-playground__field-grid,
+.docs-checkbox-playground__field-grid,
 .docs-button-playground__field-grid,
 .docs-border-playground__field-grid,
+.docs-config-provider-playground__field-grid,
 .docs-color-playground__field-grid,
+.docs-color-picker-playground__field-grid,
+.docs-icon-playground__field-grid,
+.docs-link-playground__field-grid,
+.docs-typography-playground__field-grid,
+.docs-splitter-playground__field-grid,
 .docs-layout-container-playground__field-grid {
   display: grid;
   gap: 0.85rem;
   grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
 }
 
+.docs-autocomplete-playground__toggles,
+.docs-cascader-playground__toggles,
+.docs-date-picker-playground__toggles,
+.docs-checkbox-playground__toggles,
 .docs-button-playground__toggles,
 .docs-border-playground__toggles,
+.docs-config-provider-playground__toggles,
+.docs-color-picker-playground__toggles,
+.docs-icon-playground__toggles,
+.docs-link-playground__toggles,
+.docs-typography-playground__toggles,
+.docs-splitter-playground__toggles,
 .docs-layout-container-playground__toggles {
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem;
 }
 
+.docs-autocomplete-playground__stage,
+.docs-cascader-playground__stage,
+.docs-date-picker-playground__stage,
+.docs-checkbox-playground__stage,
 .docs-button-playground__stage,
 .docs-border-playground__stage,
+.docs-config-provider-playground__stage,
 .docs-color-playground__stage,
+.docs-color-picker-playground__stage,
+.docs-icon-playground__stage,
+.docs-link-playground__stage,
+.docs-typography-playground__stage,
+.docs-splitter-playground__stage,
 .docs-layout-container-playground__stage {
   display: grid;
   gap: 1rem;
@@ -1308,9 +1460,31 @@ pre {
   align-content: start;
 }
 
+.docs-config-provider-playground__surface {
+  width: min(100%, 34rem);
+}
+
+.docs-config-provider-playground__surface > .r8-config-provider {
+  width: 100%;
+}
+
+.docs-config-provider-playground__surface .r8-text {
+  margin: 0;
+}
+
+.docs-autocomplete-playground__code,
+.docs-cascader-playground__code,
+.docs-date-picker-playground__code,
+.docs-checkbox-playground__code,
 .docs-button-playground__code,
 .docs-border-playground__code,
+.docs-config-provider-playground__code,
 .docs-color-playground__code,
+.docs-color-picker-playground__code,
+.docs-icon-playground__code,
+.docs-link-playground__code,
+.docs-typography-playground__code,
+.docs-splitter-playground__code,
 .docs-layout-container-playground__code {
   margin: 0;
   padding: 0.9rem 1rem;
@@ -1324,6 +1498,57 @@ pre {
   white-space: pre-wrap;
 }
 
+.docs-autocomplete-playground__surface {
+  width: min(100%, 34rem);
+}
+
+.docs-autocomplete-playground__surface > .r8-autocomplete {
+  width: 100%;
+}
+
+.docs-autocomplete-playground__surface .r8-text {
+  margin: 0;
+}
+
+.docs-cascader-playground__surface {
+  width: min(100%, 42rem);
+}
+
+.docs-cascader-playground__surface > .r8-cascader {
+  width: 100%;
+}
+
+.docs-date-picker-playground__surface {
+  width: min(100%, 28rem);
+  min-height: 21rem;
+  padding-bottom: 16rem;
+}
+
+.docs-date-picker-playground__surface > .r8-date-picker {
+  width: 100%;
+}
+
+.docs-date-picker-playground__helper {
+  margin: 0;
+  max-width: 30rem;
+}
+
+.docs-checkbox-playground__surface {
+  display: grid;
+  gap: 0.85rem;
+  width: min(100%, 30rem);
+}
+
+.docs-checkbox-playground__surface > .r8-checkbox {
+  width: fit-content;
+  max-width: 100%;
+}
+
+.docs-checkbox-playground__helper {
+  margin: 0;
+  max-width: 28rem;
+}
+
 .docs-color-playground__surface {
   display: grid;
   align-items: center;
@@ -1332,7 +1557,86 @@ pre {
   border: 2px solid var(--docs-panel-border);
 }
 
+.docs-color-picker-playground__surface {
+  width: min(100%, 29rem);
+  min-height: 22rem;
+  padding-bottom: 18rem;
+}
+
+.docs-color-picker-playground__surface > .r8-color-picker {
+  width: 100%;
+}
+
+.docs-color-picker-playground__helper {
+  margin: 0;
+  max-width: 30rem;
+}
+
+.docs-icon-playground__surface {
+  width: min(100%, 14rem);
+}
+
+.docs-icon-playground__surface .r8-icon-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.docs-link-playground__surface {
+  display: grid;
+  align-items: center;
+  min-height: 10rem;
+  padding: 1rem;
+  border: 2px solid var(--docs-panel-border);
+}
+
+.docs-typography-playground__surface {
+  align-content: start;
+  border: 2px solid var(--docs-panel-border);
+  display: grid;
+  gap: 1rem;
+  min-height: 10rem;
+  padding: 1rem;
+  width: min(100%, 44rem);
+}
+
+.docs-typography-playground__surface > .r8-text {
+  margin: 0;
+}
+
+.docs-splitter-playground__surface {
+  width: 100%;
+}
+
+.docs-splitter-playground__surface > .r8-splitter {
+  width: 100%;
+}
+
 .docs-color-playground__surface > .r8-text {
+  margin: 0;
+}
+
+.docs-link-playground__surface > .r8-text {
+  margin: 0;
+}
+
+.docs-autocomplete-playground__event-log,
+.docs-cascader-playground__event-log,
+.docs-date-picker-playground__event-log,
+.docs-checkbox-playground__event-log,
+.docs-color-picker-playground__event-log,
+.docs-splitter-playground__event-log {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.85rem 1rem;
+  border: 2px solid var(--docs-inline-code-border);
+  background: color-mix(in srgb, var(--docs-panel-surface) 90%, var(--docs-panel-bg) 10%);
+}
+
+.docs-autocomplete-playground__event-log > .r8-text,
+.docs-cascader-playground__event-log > .r8-text,
+.docs-date-picker-playground__event-log > .r8-text,
+.docs-checkbox-playground__event-log > .r8-text,
+.docs-color-picker-playground__event-log > .r8-text,
+.docs-splitter-playground__event-log > .r8-text {
   margin: 0;
 }
 
@@ -1632,9 +1936,19 @@ dialog.r8-dialog {
     grid-template-columns: 1fr;
   }
 
+  .docs-autocomplete-playground__body,
+  .docs-cascader-playground__body,
+  .docs-date-picker-playground__body,
+  .docs-checkbox-playground__body,
   .docs-button-playground__body,
   .docs-border-playground__body,
+  .docs-config-provider-playground__body,
   .docs-color-playground__body,
+  .docs-color-picker-playground__body,
+  .docs-icon-playground__body,
+  .docs-link-playground__body,
+  .docs-typography-playground__body,
+  .docs-splitter-playground__body,
   .docs-layout-container-playground__body {
     grid-template-columns: 1fr;
   }
@@ -1708,16 +2022,32 @@ dialog.r8-dialog {
     text-align: left;
   }
 
+  .docs-autocomplete-playground__header,
+  .docs-cascader-playground__header,
+  .docs-checkbox-playground__header,
   .docs-button-playground__header,
   .docs-border-playground__header,
+  .docs-config-provider-playground__header,
   .docs-color-playground__header,
+  .docs-icon-playground__header,
+  .docs-link-playground__header,
+  .docs-typography-playground__header,
+  .docs-splitter-playground__header,
   .docs-layout-container-playground__header {
     grid-template-columns: 1fr;
   }
 
+  .docs-autocomplete-playground__field-grid,
+  .docs-cascader-playground__field-grid,
+  .docs-checkbox-playground__field-grid,
   .docs-button-playground__field-grid,
   .docs-border-playground__field-grid,
+  .docs-config-provider-playground__field-grid,
   .docs-color-playground__field-grid,
+  .docs-icon-playground__field-grid,
+  .docs-link-playground__field-grid,
+  .docs-typography-playground__field-grid,
+  .docs-splitter-playground__field-grid,
   .docs-layout-container-playground__field-grid {
     grid-template-columns: 1fr;
   }

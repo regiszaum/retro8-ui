@@ -267,10 +267,10 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
       attributes: [
         row(
           "aria-checked",
-          "boolean",
+          `"true" | "false" | "mixed"`,
           "false",
-          `State binario controlado pelo runtime de ${component.name}.`,
-          `Binary state controlled by the ${component.name} runtime.`,
+          `State binario controlado pelo runtime de ${component.name}; Checkbox tambem pode usar o valor misto.`,
+          `Binary state controlled by the ${component.name} runtime; Checkbox can also use the mixed value.`,
         ),
         row(
           "disabled",
@@ -284,15 +284,202 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
       events: [
         event(
           "r8:binary-change",
-          `{ checked, kind }`,
+          `{ checked, kind, indeterminate }`,
           "Emitido quando checkbox, radio, switch ou theme switch muda de state.",
-          "Emitted when a checkbox, radio, switch or theme switch changes state.",
+          "Emitted when a checkbox, radio, switch, or theme switch changes state.",
         ),
       ],
     });
   }
 
   switch (component.id) {
+    case "checkbox":
+      mergeContract(contract, {
+        attributes: [
+          row(
+            "aria-disabled",
+            "boolean",
+            "false",
+            "Use em hosts customizados quando o Checkbox nao for um input nativo e precisar expor bloqueio semanticamente.",
+            "Use it on custom hosts when Checkbox is not a native input and still needs to expose a blocked state semantically.",
+          ),
+        ],
+        dataAttributes: [
+          row(
+            "data-r8-size",
+            `"sm" | "md" | "lg"`,
+            `"md"`,
+            "Aplica escala compacta ou ampliada no Checkbox sem trocar a classe base.",
+            "Applies a compact or larger Checkbox scale without replacing the base class.",
+          ),
+          row(
+            "data-r8-border",
+            `"true" | "false"`,
+            `"false"`,
+            "Ativa um shell com borda em volta do controle, util para listas selecionaveis e cards curtos.",
+            "Turns on a bordered shell around the control, useful for selectable lists and short cards.",
+          ),
+          row(
+            "data-r8-indeterminate",
+            `"true" | "false"`,
+            `"false"`,
+            "Inicializa o Checkbox em estado misto e sincroniza `aria-checked=\"mixed\"` no host.",
+            "Boots Checkbox in a mixed state and keeps `aria-checked=\"mixed\"` in sync on the host.",
+          ),
+        ],
+        cssVariables: [
+          row(
+            "--r8-checkbox-box-size",
+            "length",
+            "1.25rem",
+            "Controla o tamanho da caixa pixelada antes dos modifiers `sm` e `lg` ajustarem a escala.",
+            "Controls the pixel box size before the `sm` and `lg` modifiers adjust the scale.",
+          ),
+          row(
+            "--r8-checkbox-mark-size",
+            "length",
+            "0.55rem",
+            "Define a escala visual do X e ajuda a equilibrar o dash do estado misto.",
+            "Defines the visual scale of the X mark and helps balance the mixed-state dash.",
+          ),
+          row(
+            "--r8-checkbox-gap",
+            "length",
+            "var(--r8-space-3)",
+            "Ajusta a distancia entre a caixa e o label sem alterar a estrutura do host.",
+            "Adjusts the distance between the box and the label without changing the host structure.",
+          ),
+          row(
+            "--r8-checkbox-shell-bg / --r8-checkbox-shell-padding / --r8-checkbox-shell-shadow",
+            "color | length | box-shadow",
+            "theme defaults",
+            "Permitem personalizar o shell do modifier `r8-checkbox--bordered` sem sobrescrever toda a regra.",
+            "Let you customize the `r8-checkbox--bordered` shell without overriding the whole rule.",
+          ),
+        ],
+      });
+      break;
+    case "color-picker":
+      mergeContract(contract, {
+        attributes: [
+          row(
+            "aria-label",
+            "string",
+            "none",
+            "Rotulo acessivel recomendado para o trigger quando o contexto da cor nao estiver claro no texto ao redor.",
+            "Recommended accessible label for the trigger when the color context is not already clear in nearby copy.",
+          ),
+        ],
+        dataAttributes: [
+          row(
+            "data-r8-mode",
+            `"fixed" | "dynamic"`,
+            `"fixed"`,
+            "Escolhe entre paleta fixa por swatches e o picker dinamico com board, sliders e confirmacao.",
+            "Switches between the fixed swatch palette and the dynamic picker with a board, sliders, and confirmation.",
+          ),
+          row(
+            "data-r8-clearable",
+            `"true" | "false"`,
+            `"false"`,
+            "Mostra e habilita a acao de limpar no panel quando existir um valor confirmado no componente.",
+            "Shows and enables the clear action inside the panel when the component currently has a committed value.",
+          ),
+          row(
+            "data-r8-placeholder",
+            "string",
+            `"Select color"`,
+            "Define o texto de fallback exibido no trigger quando nenhuma cor estiver ativa.",
+            "Defines the fallback text shown in the trigger when no color is active.",
+          ),
+          row(
+            "data-r8-size",
+            `"sm" | "md" | "lg"`,
+            `"md"`,
+            "Ajusta a densidade do trigger, da amostra, das swatches e do painel dinamico sem trocar o markup base.",
+            "Adjusts trigger, sample, swatch, and dynamic panel density without replacing the base markup.",
+          ),
+          row(
+            "data-r8-show-alpha",
+            `"true" | "false"`,
+            `"false"`,
+            "Liga o checkerboard nas amostras translucidas e revela o alpha slider quando o picker estiver em modo dinamico.",
+            "Enables the checkerboard treatment on translucent samples and reveals the alpha slider when the picker runs in dynamic mode.",
+          ),
+        ],
+        cssVariables: [
+          row(
+            "--r8-color-picker-columns",
+            "number",
+            "6",
+            "Controla quantas colunas o grid de swatches usa antes do breakpoint responsivo entrar em cena.",
+            "Controls how many columns the swatch grid uses before the responsive breakpoint kicks in.",
+          ),
+          row(
+            "--r8-color-picker-swatch-size",
+            "length",
+            "2.25rem",
+            "Define o footprint base das swatches e ajuda a equilibrar paletas mais densas ou mais generosas.",
+            "Defines the base swatch footprint so you can balance denser or roomier palettes.",
+          ),
+          row(
+            "--r8-color-picker-sample-size",
+            "length",
+            "1.1rem",
+            "Escala a amostra de cor dentro do trigger sem redesenhar a estrutura visual do componente.",
+            "Scales the color sample inside the trigger without redrawing the component structure.",
+          ),
+          row(
+            "--r8-color-picker-trigger-min-height",
+            "length",
+            "3rem",
+            "Ajusta a altura minima do trigger para dialogos compactos ou paines mais espaçados.",
+            "Adjusts the trigger minimum height for compact dialogs or roomier panels.",
+          ),
+          row(
+            "--r8-color-picker-panel-width",
+            "length",
+            "22rem",
+            "Controla a largura do painel dinamico sem afetar o shell externo do componente.",
+            "Controls the width of the dynamic panel without changing the component outer shell.",
+          ),
+          row(
+            "--r8-color-picker-spectrum-height",
+            "length",
+            "12rem",
+            "Define a altura do board principal usado para escolher saturacao e luminosidade no modo dinamico.",
+            "Defines the height of the main board used to choose saturation and value in dynamic mode.",
+          ),
+          row(
+            "--r8-color-picker-channel-width",
+            "length",
+            "1rem",
+            "Ajusta a largura dos sliders verticais de hue e alpha no modo dinamico.",
+            "Adjusts the width of the hue and alpha vertical sliders in dynamic mode.",
+          ),
+        ],
+        events: [
+          event(
+            "r8:color-active-change",
+            `{ value, text, swatch, alpha, mode, source }`,
+            "Emitido enquanto o valor ativo muda no board, nos sliders ou no input do modo dinamico.",
+            "Emitted while the active value changes through the dynamic mode board, sliders, or input.",
+          ),
+          event(
+            "r8:color-change",
+            `{ value, text, swatch, alpha, option, mode, source }`,
+            "Emitido quando uma nova cor e confirmada no Color Picker, seja por swatch fixa ou pelo modo dinamico.",
+            "Emitted when a new color is committed in the Color Picker, whether through fixed swatches or the dynamic mode.",
+          ),
+          event(
+            "r8:color-clear",
+            `{ value, text, kind, mode }`,
+            "Emitido quando o valor atual e limpo pelo botao de clear.",
+            "Emitted when the current value is cleared through the clear action.",
+          ),
+        ],
+      });
+      break;
     case "button":
       mergeContract(contract, {
         attributes: [
@@ -352,6 +539,61 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         ],
       });
       break;
+    case "autocomplete":
+      mergeContract(contract, {
+        dataAttributes: [
+          row(
+            "data-r8-clearable",
+            `"true" | "false"`,
+            `"false"`,
+            "Exibe `r8-autocomplete__clear` quando houver texto digitado, sem precisar de JS customizado no host app.",
+            "Shows `r8-autocomplete__clear` when the field has typed content, without needing custom host-app JS.",
+          ),
+          row(
+            "data-r8-trigger-on-focus",
+            `"true" | "false"`,
+            `"true"`,
+            "Define se o menu abre ao focar o input ou apenas depois da primeira digitacao.",
+            "Defines whether the menu opens on input focus or only after the first typed character.",
+          ),
+          row(
+            "data-r8-empty-label",
+            "string",
+            `"No matches found"`,
+            "Texto exibido em `r8-autocomplete__empty` quando nenhum item visivel combina com a busca atual.",
+            "Text shown inside `r8-autocomplete__empty` when no visible item matches the current query.",
+          ),
+          row(
+            "data-r8-loading",
+            `"true" | "false"`,
+            `"false"`,
+            "Forca o estado de loading, oculta as options temporariamente e prioriza o feedback de busca remota.",
+            "Forces the loading state, temporarily hides options, and prioritizes remote-search feedback.",
+          ),
+          row(
+            "data-r8-loading-label",
+            "string",
+            `"Loading suggestions..."`,
+            "Texto exibido em `r8-autocomplete__loading` enquanto o scope estiver em loading.",
+            "Text shown inside `r8-autocomplete__loading` while the scope remains in loading state.",
+          ),
+        ],
+        events: [
+          event(
+            "r8:autocomplete-select",
+            `{ value, text, option }`,
+            "Emitido quando o Autocomplete confirma uma sugestao e escreve o valor final no input.",
+            "Emitted when Autocomplete confirms a suggestion and writes the final value back to the input.",
+          ),
+          event(
+            "r8:autocomplete-clear",
+            `{ value, text }`,
+            "Emitido quando a action de clear limpa o campo e remove a sugestao selecionada.",
+            "Emitted when the clear action resets the field and removes the selected suggestion.",
+          ),
+        ],
+      });
+      break;
     case "cascader":
       mergeContract(contract, {
         attributes: [
@@ -365,7 +607,9 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
           row("data-r8-expand-trigger", `"click" | "hover"`, `"click"`, "Define se branches abrem por click ou hover.", "Defines whether branches expand on click or hover."),
           row("data-r8-check-strictly", `"true" | "false"`, `"false"`, "Permite selecionar parent nodes, nao apenas leaf nodes.", "Allows selecting parent nodes, not only leaf nodes."),
           row("data-r8-filterable", `"true" | "false"`, `"false"`, "Ativa o filtro textual do panel usando `r8-cascader__input`.", "Enables panel text filtering using `r8-cascader__input`."),
+          row("data-r8-filter-placeholder", "string", `"Filter options..."`, "Placeholder usado quando o runtime precisa gerar `r8-cascader__input` automaticamente.", "Placeholder used when the runtime needs to generate `r8-cascader__input` automatically."),
           row("data-r8-clearable", `"true" | "false"`, `"false"`, "Exibe `r8-cascader__clear` para limpar a escolha atual.", "Shows `r8-cascader__clear` to clear the current selection."),
+          row("data-r8-show-all-levels", `"true" | "false"`, `"true"`, "Controla se o trigger mostra o caminho completo ou apenas o ultimo label selecionado.", "Controls whether the trigger shows the full path or only the last selected label."),
           row("data-r8-separator", "string", `" / "`, "Separador usado para compor o label final do caminho.", "Separator used to compose the final path label."),
           row("data-r8-empty-label", "string", `"No matching routes"`, "Mensagem exibida quando o filtro nao encontra resultados.", "Message shown when the filter finds no results."),
           row("data-r8-label", "string", "required on `r8-cascader__node`", "Label semantico de cada node da arvore declarativa.", "Semantic label for each node inside the declarative tree."),
@@ -376,6 +620,7 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         methods: runtimeMethods,
         events: [
           event("r8:cascader-change", `{ value, label, labels, values, path, node, option, text }`, "Emitido quando o Cascader confirma uma selecao.", "Emitted when the Cascader commits a selection."),
+          event("r8:cascader-clear", `{ value, label, labels, values, path, node, option, text }`, "Emitido quando a action de clear remove a selecao atual.", "Emitted when the clear action removes the current selection."),
           event("r8:choice-change", `{ kind, value, label, labels, values, path, node, option, text }`, "Evento generico tambem emitido para manter compatibilidade com o choice runtime.", "Generic event also emitted to preserve compatibility with the choice runtime."),
         ],
       });
@@ -398,10 +643,65 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
           row("data-r8-choice-display", "marker", "none", "Marca o node do trigger que recebe o label formatado.", "Marks the trigger node that receives the formatted label."),
           row("data-r8-locale", "BCP 47 locale", "document locale", "Controla month label e weekday labels sem acoplar framework.", "Controls the month label and weekday labels without coupling to a framework."),
           row("data-r8-week-start", "0-6", "0", "Define qual dia comeca a semana no calendar grid.", "Defines which day starts the week in the calendar grid."),
+          row(
+            "data-r8-shortcuts",
+            `"today,yesterday,week-ago"`,
+            "none",
+            "Gera atalhos declarativos no topo do calendario para saltar para datas recorrentes sem codigo extra.",
+            "Generates declarative shortcuts at the top of the calendar so recurring dates can be reached without extra code.",
+          ),
+          row(
+            "data-r8-show-week-number",
+            `"true" | "false"`,
+            `"false"`,
+            "Exibe uma coluna adicional com o numero da semana para fluxos mais orientados a planejamento.",
+            "Displays an extra column with the week number for flows that read the calendar as planning.",
+          ),
         ],
         methods: runtimeMethods,
         events: [
           event("r8:date-change", `{ kind, value, label, date, panel, trigger }`, "Emitido quando o date selection muda.", "Emitted when the date selection changes."),
+        ],
+      });
+      break;
+    case "icon":
+      mergeContract(contract, {
+        cssVariables: [
+          row(
+            "--r8-icon-glyph-size",
+            "length",
+            "3rem",
+            "Controla a largura e a altura do quadrado que recebe o icone ou glyph.",
+            "Controls the width and height of the square that receives the icon or glyph.",
+          ),
+          row(
+            "--r8-icon-glyph-font-size",
+            "length",
+            "1.25rem",
+            "Ajusta o tamanho de glyphs textuais curtos dentro do frame.",
+            "Adjusts the size of short text glyphs inside the frame.",
+          ),
+          row(
+            "--r8-icon-glyph-bg",
+            "color",
+            "var(--r8-color-accent)",
+            "Troca o background do frame do icone sem alterar a estrutura do tile.",
+            "Changes the icon frame background without altering the tile structure.",
+          ),
+          row(
+            "--r8-icon-glyph-color",
+            "color",
+            "var(--r8-color-accent-contrast)",
+            "Define a cor do texto ou do SVG inline renderizado dentro do glyph.",
+            "Defines the color used by text or inline SVG rendered inside the glyph.",
+          ),
+          row(
+            "--r8-icon-glyph-border",
+            "color",
+            "var(--r8-color-border)",
+            "Permite ajustar o contorno do glyph para acompanhar superficies mais claras ou mais escuras.",
+            "Lets you tune the glyph outline to match lighter or darker surfaces.",
+          ),
         ],
       });
       break;
@@ -436,7 +736,73 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         attributes: [
           row("href", "string", "required", "Destino nativo do anchor quando `r8-link` e usado em `<a>`.", "Native anchor destination when `r8-link` is used on `<a>`."),
           row("target", `"_self" | "_blank" | "_parent" | "_top"`, `"_self"`, "Comportamento nativo de abertura do link.", "Native link opening behavior."),
+          row("rel", "string", "none", "Use com `target=\"_blank\"` para proteger contexto com `noreferrer noopener`.", "Use with `target=\"_blank\"` to protect context with `noreferrer noopener`."),
           row("aria-disabled", "boolean", "false", "Permite expor um link visualmente desabilitado sem trocar o elemento.", "Lets you expose a visually disabled link without changing the element."),
+        ],
+        cssVariables: [
+          row(
+            "--r8-link-color",
+            "color",
+            "var(--r8-color-primary-strong)",
+            "Controla a cor base do link no estado idle.",
+            "Controls the base link color in the idle state.",
+          ),
+          row(
+            "--r8-link-hover-color",
+            "color",
+            "var(--r8-link-color)",
+            "Permite trocar a cor do texto durante hover e focus sem criar um modifier novo.",
+            "Lets you change the text color on hover and focus without creating a new modifier.",
+          ),
+          row(
+            "--r8-link-opacity",
+            "number",
+            "1",
+            "Ajusta a opacidade base do link. Reduzir demais pode comprometer contraste.",
+            "Adjusts the base link opacity. Lower values may hurt contrast.",
+          ),
+          row(
+            "--r8-link-hover-opacity",
+            "number",
+            "1",
+            "Define a opacidade aplicada quando o link recebe hover ou focus visivel.",
+            "Defines the opacity applied when the link receives hover or visible focus.",
+          ),
+          row(
+            "--r8-link-underline-color",
+            "color",
+            "var(--r8-link-color)",
+            "Controla a cor do underline no estado base, independentemente do texto.",
+            "Controls the underline color in the base state independently from the text.",
+          ),
+          row(
+            "--r8-link-hover-underline-color",
+            "color",
+            "var(--r8-link-hover-color)",
+            "Permite destacar o underline no hover com uma cor diferente do texto base.",
+            "Lets the underline stand out on hover with a different color from the base text.",
+          ),
+          row(
+            "--r8-link-underline-opacity",
+            "percentage",
+            "0%",
+            "Ajusta quao visivel o underline fica antes do hover.",
+            "Adjusts how visible the underline is before hover.",
+          ),
+          row(
+            "--r8-link-hover-underline-opacity",
+            "percentage",
+            "100%",
+            "Define quao forte o underline aparece no hover e no focus visivel.",
+            "Defines how strong the underline appears on hover and visible focus.",
+          ),
+          row(
+            "--r8-link-underline-offset",
+            "length",
+            "0.18em",
+            "Controla a distancia entre o texto e o underline sem depender de utilities externas.",
+            "Controls the distance between the text and underline without relying on external utilities.",
+          ),
         ],
       });
       break;
@@ -481,23 +847,110 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         ],
       });
       break;
+    case "typography":
+      mergeContract(contract, {
+        cssVariables: [
+          row(
+            "--r8-text-font-family",
+            "font-family",
+            "var(--r8-font-body)",
+            "Permite trocar a familia tipografica de um trecho isolado sem mexer no token global.",
+            "Lets you swap the font family of an isolated snippet without changing the global token.",
+          ),
+          row(
+            "--r8-text-size",
+            "length",
+            "var(--r8-font-size-sm)",
+            "Controla a escala de um trecho `r8-text` ou de um paragrafo especifico dentro do bloco tipografico.",
+            "Controls the scale of an `r8-text` snippet or a specific paragraph inside the typography block.",
+          ),
+          row(
+            "--r8-text-line-height",
+            "number",
+            "1.7",
+            "Ajusta o line-height de uma linha ou paragrafo especifico sem alterar o restante do bloco.",
+            "Adjusts the line-height of a specific line or paragraph without changing the rest of the block.",
+          ),
+          row(
+            "--r8-typography-gap",
+            "length",
+            "var(--r8-space-4)",
+            "Controla o ritmo vertical entre headings, paragrafos, listas e blockquotes do bloco.",
+            "Controls the vertical rhythm between headings, paragraphs, lists, and blockquotes in the block.",
+          ),
+          row(
+            "--r8-typography-measure",
+            "length",
+            "100%",
+            "Define a largura maxima do bloco, util para texto longo, hero copy ou trechos editoriais.",
+            "Defines the block maximum width, useful for long text, hero copy, or editorial sections.",
+          ),
+          row(
+            "--r8-typography-heading-font",
+            "font-family",
+            "var(--r8-font-display)",
+            "Troca a familia dos headings apenas neste bloco, mantendo o resto da UI intacto.",
+            "Swaps the heading family only in this block while keeping the rest of the UI intact.",
+          ),
+          row(
+            "--r8-typography-body-font",
+            "font-family",
+            "var(--r8-font-body)",
+            "Troca a familia do corpo do texto para um bloco especifico sem acoplar utilitarios externos.",
+            "Swaps the body text family for a specific block without relying on external utilities.",
+          ),
+          row(
+            "--r8-typography-body-size",
+            "length",
+            "var(--r8-font-size-sm)",
+            "Permite elevar ou reduzir a escala base de paragrafos, listas e blockquotes do bloco inteiro.",
+            "Lets you raise or lower the base scale of paragraphs, lists, and blockquotes across the whole block.",
+          ),
+          row(
+            "--r8-typography-heading-line-height",
+            "number",
+            "1.2",
+            "Controla a compactacao dos headings sem reescrever os seletores internos.",
+            "Controls heading compactness without rewriting the internal selectors.",
+          ),
+          row(
+            "--r8-typography-body-line-height",
+            "number",
+            "1.7",
+            "Ajusta a legibilidade do corpo tipografico inteiro, inclusive listas e blockquotes.",
+            "Adjusts the readability of the full body copy, including lists and blockquotes.",
+          ),
+        ],
+      });
+      break;
     case "splitter":
       mergeContract(contract, {
         attributes: [
           row("aria-orientation", `"horizontal" | "vertical"`, "derived from class", "O runtime aplica a orientation do handle a partir da classe do Splitter.", "The runtime applies the handle orientation from the Splitter class."),
           row("aria-valuenow", "number", "50", "Reflete a posicao atual do handle durante resize.", "Reflects the current handle position during resize."),
+          row("aria-valuetext", "string", '"50%"', "Expone a posicao atual em formato textual para tecnologia assistiva.", "Exposes the current position as text for assistive technology."),
+          row("aria-disabled", "boolean", "false", "Marca quando o Splitter foi travado e o handle nao deve aceitar interacao.", "Marks when the Splitter is locked and the handle should not accept interaction."),
         ],
         dataAttributes: [
           row("data-r8-splitter-position", "number", "50", "Posicao inicial do handle em porcentagem.", "Initial handle position in percentage."),
           row("data-r8-splitter-min", "number", "20", "Limite minimo do primeiro pane em porcentagem.", "Minimum size of the first pane in percentage."),
           row("data-r8-splitter-max", "number", "80", "Limite maximo do primeiro pane em porcentagem.", "Maximum size of the first pane in percentage."),
+          row("data-r8-splitter-step", "number", "5", "Passo de teclado usado nas setas; com Shift o valor dobra.", "Keyboard step used by arrow keys; with Shift the value doubles."),
+          row("data-r8-splitter-disabled", `"true" | "false"`, `"false"`, "Bloqueia drag e resize por teclado mantendo a aparencia do Splitter visivel.", "Locks drag and keyboard resize while keeping the Splitter visible."),
         ],
         cssVariables: [
           row("--r8-splitter-position", "percentage", "50%", "Custom property usada pelo layout para distribuir os panes.", "Custom property used by the layout to distribute the panes."),
+          row("--r8-splitter-pane-bg", "color", "var(--r8-color-surface)", "Permite trocar o fundo base dos panes sem recriar o componente.", "Lets you change the base pane background without recreating the component."),
+          row("--r8-splitter-handle-size", "length", "0.875rem", "Controla a espessura visual do handle no eixo do resize.", "Controls the visual thickness of the handle on the resize axis."),
+          row("--r8-splitter-handle-surface", "color", "var(--r8-color-surface-2)", "Cor base usada nas faixas do handle.", "Base color used in the handle stripes."),
+          row("--r8-splitter-handle-accent", "color", "var(--r8-color-accent)", "Cor de destaque usada no grip pixelado do handle.", "Accent color used in the pixel grip on the handle."),
+          row("--r8-splitter-handle-border", "color", "var(--r8-color-border)", "Ajusta o contorno do handle para contextos claros ou escuros.", "Adjusts the handle outline for light or dark contexts."),
         ],
         methods: runtimeMethods,
         events: [
-          event("r8:splitter-change", `{ value, min, max, orientation }`, "Emitido a cada resize por pointer ou keyboard.", "Emitted on each resize through pointer or keyboard."),
+          event("r8:splitter-resize-start", `{ value, min, max, orientation, source }`, "Emitido quando o usuario inicia um resize por pointer ou teclado.", "Emitted when the user starts resizing through pointer or keyboard."),
+          event("r8:splitter-change", `{ value, min, max, orientation, source }`, "Emitido a cada resize por pointer ou keyboard.", "Emitted on each resize through pointer or keyboard."),
+          event("r8:splitter-resize-end", `{ value, min, max, orientation, source }`, "Emitido quando o resize termina e o Splitter estabiliza no valor final.", "Emitted when resizing ends and the Splitter settles on the final value."),
         ],
       });
       break;
@@ -745,13 +1198,22 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
       break;
     case "config-provider":
       mergeContract(contract, {
-        attributes: [
-          row("data-theme", "string", "none", "Opcional no host app quando quiser combinar `Config Provider` com theme switches externos.", "Optional in the host app when you want to pair `Config Provider` with external theme switches."),
+        dataAttributes: [
+          row("data-theme", `"night" | "terminal" | "danger"`, "none", "Opcional no host app quando quiser combinar `Config Provider` com theme switches externos ou estado vindo de CMS.", "Optional in the host app when you want to pair `Config Provider` with external theme switches or CMS-driven state."),
+          row("data-density", `"compact" | "comfortable"`, "none", "Permite controlar a densidade local do scope por atributo, sem depender de classes utilitarias adicionais.", "Lets you control local scope density through an attribute without relying on extra utility classes."),
         ],
         cssVariables: [
+          row("--r8-config-provider-padding", "length", "var(--r8-space-4)", "Ajusta o padding do shell do provider sem alterar os componentes internos diretamente.", "Adjusts the provider shell padding without directly altering inner components."),
+          row("--r8-config-provider-gap", "length", "var(--r8-space-4)", "Controla o espacamento entre os filhos imediatos do scope.", "Controls spacing between the scope immediate children."),
+          row("--r8-config-provider-surface", "color", "var(--r8-color-surface)", "Troca a superficie do wrapper local enquanto os descendants continuam herdando os tokens do scope.", "Changes the local wrapper surface while descendants continue inheriting the scope tokens."),
+          row("--r8-config-provider-border", "color", "var(--r8-color-border)", "Permite afinar o contorno do provider para shells mais claros, escuros ou tematicos.", "Lets you tune the provider outline for lighter, darker, or themed shells."),
+          row("--r8-config-provider-shadow", "shadow", "var(--r8-shadow-md)", "Controla a sombra estrutural do wrapper local.", "Controls the structural shadow of the local wrapper."),
+          row("--r8-config-provider-text", "color", "var(--r8-color-ink)", "Define a cor base do texto do wrapper sem quebrar a heranca de tokens.", "Defines the wrapper base text color without breaking token inheritance."),
           row("--r8-color-surface", "color", "theme default", "Superficie base reaplicada para todos os filhos dentro do scope.", "Base surface reapplied to all children inside the scope."),
           row("--r8-color-ink", "color", "theme default", "Texto principal dos descendants dentro do scope.", "Primary descendant text inside the scope."),
           row("--r8-color-primary", "color", "theme default", "Accent principal para Buttons, badges e controls no scope.", "Primary accent for Buttons, badges and controls inside the scope."),
+          row("--r8-font-size-sm", "length", "theme default", "Ajusta a escala media de texto dentro do scope, util para presets de densidade local.", "Adjusts the medium text scale inside the scope, useful for local density presets."),
+          row("--r8-space-4", "length", "theme default", "Ajusta o ritmo de espacamento usado por varios componentes dentro do scope.", "Adjusts the spacing rhythm used by many components inside the scope."),
           row("--r8-shadow-md", "shadow", "theme default", "Shadow principal usada pelas surfaces dentro do scope.", "Main shadow used by surfaces inside the scope."),
           row("--r8-dialog-backdrop", "color", "theme default", "Backdrop reaplicado para overlays renderizados dentro do scope.", "Backdrop reapplied to overlays rendered inside the scope."),
         ],

@@ -713,73 +713,438 @@ const basicComponents = [
     name: "Icon",
     group: "basic",
     summary: l(
-      "Grade de placeholders para combinar a UI com um pacote de icones pixelados externo.",
-      "Placeholder grid for pairing the UI with an external pixel-art icon pack.",
+      "Moldura visual para encaixar icones externos, cursores pixelados ou glyphs curtos sem acoplar um pacote de icones na library.",
+      "Visual frame for external icon packs, pixel cursor assets or short glyphs without coupling the library to a bundled icon set.",
     ),
     classes: ["r8-icon-grid", "r8-icon-tile", "r8-icon-tile__glyph", "r8-icon-tile__label"],
-    preview: `<div class="r8-icon-grid">
-  <div class="r8-icon-tile">
-    <span class="r8-icon-tile__glyph">HP</span>
-    <span class="r8-icon-tile__label">Health</span>
+    preview: `<div class="docs-demo__stack">
+  <div class="r8-icon-grid">
+    <div class="r8-icon-tile">
+      <span class="r8-icon-tile__glyph" aria-hidden="true">
+        <img src="/cursors/default.png" alt="" />
+      </span>
+      <span class="r8-icon-tile__label">Docs default cursor</span>
+    </div>
+    <div class="r8-icon-tile">
+      <span class="r8-icon-tile__glyph" aria-hidden="true">
+        <img src="/cursors/pointer.png" alt="" />
+      </span>
+      <span class="r8-icon-tile__label">Pointer state</span>
+    </div>
+    <div class="r8-icon-tile">
+      <span class="r8-icon-tile__glyph" aria-hidden="true">
+        <img src="/cursors/text.png" alt="" />
+      </span>
+      <span class="r8-icon-tile__label">Text input state</span>
+    </div>
+    <div class="r8-icon-tile">
+      <span class="r8-icon-tile__glyph" aria-hidden="true">
+        <img src="/cursors/grab.png" alt="" />
+      </span>
+      <span class="r8-icon-tile__label">Grab state</span>
+    </div>
   </div>
-  <div class="r8-icon-tile">
-    <span class="r8-icon-tile__glyph">XP</span>
-    <span class="r8-icon-tile__label">Experience</span>
-  </div>
-  <div class="r8-icon-tile">
-    <span class="r8-icon-tile__glyph">LV</span>
-    <span class="r8-icon-tile__label">Level</span>
+
+  <div class="r8-icon-grid">
+    <div class="r8-icon-tile">
+      <span class="r8-icon-tile__glyph" aria-hidden="true">HP</span>
+      <span class="r8-icon-tile__label">Short glyph fallback</span>
+    </div>
+    <div class="r8-icon-tile">
+      <span class="r8-icon-tile__glyph" aria-hidden="true">
+        <svg viewBox="0 0 16 16" aria-hidden="true">
+          <rect x="2" y="2" width="4" height="4"></rect>
+          <rect x="10" y="2" width="4" height="4"></rect>
+          <rect x="6" y="6" width="4" height="4"></rect>
+          <rect x="2" y="10" width="4" height="4"></rect>
+          <rect x="10" y="10" width="4" height="4"></rect>
+        </svg>
+      </span>
+      <span class="r8-icon-tile__label">Inline SVG drop-in</span>
+    </div>
+    <div class="r8-icon-tile">
+      <span
+        class="r8-icon-tile__glyph"
+        aria-hidden="true"
+        style="
+          --r8-icon-glyph-bg: var(--r8-color-dark);
+          --r8-icon-glyph-color: var(--r8-color-light);
+          --r8-icon-glyph-border: var(--r8-color-dark-strong);
+        "
+      >
+        <img src="/cursors/wait.png" alt="" />
+      </span>
+      <span class="r8-icon-tile__label">Waiting state</span>
+    </div>
   </div>
 </div>`,
+    code: `<div class="r8-icon-grid">
+  <div class="r8-icon-tile">
+    <span class="r8-icon-tile__glyph" aria-hidden="true">
+      <img src="/cursors/pointer.png" alt="" />
+    </span>
+    <span class="r8-icon-tile__label">Pointer cursor</span>
+  </div>
+
+  <div class="r8-icon-tile">
+    <span class="r8-icon-tile__glyph" aria-hidden="true">
+      <svg viewBox="0 0 16 16" aria-hidden="true">
+        <rect x="2" y="2" width="4" height="4"></rect>
+        <rect x="10" y="2" width="4" height="4"></rect>
+        <rect x="6" y="6" width="4" height="4"></rect>
+        <rect x="2" y="10" width="4" height="4"></rect>
+        <rect x="10" y="10" width="4" height="4"></rect>
+      </svg>
+    </span>
+    <span class="r8-icon-tile__label">Inline SVG</span>
+  </div>
+
+  <div class="r8-icon-tile">
+    <span
+      class="r8-icon-tile__glyph"
+      aria-hidden="true"
+      style="
+        --r8-icon-glyph-size: 3.5rem;
+        --r8-icon-glyph-bg: var(--r8-color-primary-strong);
+        --r8-icon-glyph-color: var(--r8-color-primary-contrast);
+      "
+    >
+      HP
+    </span>
+    <span class="r8-icon-tile__label">Short glyph fallback</span>
+  </div>
+</div>`,
+    anatomy: ll(
+      [
+        "`r8-icon-grid` organiza galerias de icones, cursores ou estados visuais em uma grade leve e responsiva.",
+        "`r8-icon-tile` emoldura cada item com a mesma surface retro usada em outros blocos da UI, mantendo consistencia com cards e samples.",
+        "`r8-icon-tile__glyph` aceita texto curto, `<img>` ou `<svg>` inline, entao voce pode encaixar assets externos sem trocar a estrutura.",
+        "`r8-icon-tile__label` nomeia o item e ajuda a explicar o significado do icone quando ele aparece fora de um contexto maior.",
+      ],
+      [
+        "`r8-icon-grid` organizes icon galleries, cursor assets or state markers in a light responsive grid.",
+        "`r8-icon-tile` frames each item with the same retro surface language used by other UI blocks, keeping it consistent with cards and samples.",
+        "`r8-icon-tile__glyph` accepts short text, `<img>` or inline `<svg>`, so external assets can drop in without changing the structure.",
+        "`r8-icon-tile__label` names the item and helps explain the icon meaning when it appears outside a larger context.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Se o icone for apenas decorativo, marque o glyph como `aria-hidden=\"true\"` e use `alt=\"\"` em imagens para evitar redundancia.",
+        "Quando o icone carregar significado proprio, mantenha label visivel ou um nome acessivel claro no elemento interativo hospedeiro.",
+        "O tile nao e interativo por si so; se o icone abrir uma acao ou navegacao, hospede a estrutura dentro de `<button>` ou `<a>` sem perder o label.",
+        "Nao dependa so do icone para comunicar estado importante; combine com texto, cor e contexto visivel.",
+      ],
+      [
+        "If the icon is purely decorative, mark the glyph as `aria-hidden=\"true\"` and use `alt=\"\"` on images to avoid redundancy.",
+        "When the icon carries meaning, keep a visible label or a clear accessible name on the interactive host element.",
+        "The tile is not interactive on its own; if the icon triggers an action or navigation, host the structure inside a `<button>` or `<a>` without losing the label.",
+        "Do not rely on the icon alone for important status; combine it with text, color and visible context.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-icon-grid",
+        description: l(
+          "Grid responsiva para listar opcoes de pacote, estados de cursor, acoes iconicas ou galerias curtas dentro da documentacao e do produto.",
+          "Responsive grid for listing package options, cursor states, icon actions or short galleries in docs and product surfaces.",
+        ),
+      },
+      {
+        name: "r8-icon-tile",
+        description: l(
+          "Tile base com moldura retro para agrupar um glyph e seu label sem precisar montar um card bespoke.",
+          "Base tile with a retro frame for grouping a glyph and its label without building a bespoke card.",
+        ),
+      },
+      {
+        name: "r8-icon-tile__glyph",
+        description: l(
+          "Janela visual do icone. Funciona com texto curto, `<img>` ou `<svg>` inline e aceita customizacao por CSS variables.",
+          "Visual icon frame. Works with short text, `<img>` or inline `<svg>` and accepts CSS variable overrides.",
+        ),
+      },
+      {
+        name: "r8-icon-tile__label",
+        description: l(
+          "Label em caixa alta para nomear o asset, estado ou significado do icone de forma previsivel.",
+          "Uppercase label for naming the asset, state or icon meaning predictably.",
+        ),
+      },
+      {
+        name: "--r8-icon-glyph-*",
+        description: l(
+          "Custom properties para ajustar tamanho, cor de frente, background e borda do glyph quando o contexto pedir outra enfase.",
+          "Custom properties for adjusting glyph size, foreground color, background and border when the context needs different emphasis.",
+        ),
+      },
+    ],
   },
   {
     id: "link",
     name: "Link",
     group: "basic",
     summary: l(
-      "Link textual curto com foco visivel e microdeslocamento ao passar o mouse.",
-      "Compact text link with visible focus and a tiny hover shift.",
+      "Link textual com tom semantico, controle de underline e opacidade suave para navegação inline e ações secundarias.",
+      "Text link with semantic tone, underline control and gentle opacity handling for inline navigation and secondary actions.",
     ),
-    classes: ["r8-link"],
-    preview: `<div class="r8-cluster">
-  <a class="r8-link" href="#0">Read docs</a>
-  <a class="r8-link" href="#0">Install package</a>
-  <a class="r8-link" href="#0" aria-disabled="true">Disabled state</a>
+    classes: [
+      "r8-link",
+      "r8-link--secondary",
+      "r8-link--tertiary",
+      "r8-link--success",
+      "r8-link--warning",
+      "r8-link--info",
+      "r8-link--danger",
+      "r8-link--dark",
+      "r8-link--muted",
+      "r8-link--quiet",
+      "r8-link--underline",
+    ],
+    preview: `<div class="docs-demo__stack">
+  <p class="r8-text">
+    Start with the <a class="r8-link" href="#0">installation guide</a> for the default inline action.
+  </p>
+  <p class="r8-text">
+    Open the <a class="r8-link r8-link--secondary r8-link--underline" href="#0">release notes</a> when the link should stay visible even before hover.
+  </p>
+  <p class="r8-text">
+    Keep supporting actions quieter with a <a class="r8-link r8-link--muted r8-link--quiet" href="#0">secondary docs trail</a>.
+  </p>
+  <p class="r8-text">
+    Use a <a class="r8-link r8-link--warning" href="#0" style="--r8-link-underline-opacity: 35%; --r8-link-underline-offset: 0.28em;">warning link</a> when the destination deserves extra care.
+  </p>
+  <p class="r8-text">
+    <a class="r8-link r8-link--dark" href="https://retro8-ui.dev" target="_blank" rel="noreferrer noopener">External docs</a>
+  </p>
+  <p class="r8-text">
+    <a class="r8-link" aria-disabled="true">Disabled state</a>
+  </p>
 </div>`,
+    code: `<div class="docs-demo__stack">
+  <p class="r8-text">
+    Read the <a class="r8-link" href="/getting-started">quick start</a>.
+  </p>
+
+  <p class="r8-text">
+    Open the
+    <a class="r8-link r8-link--secondary r8-link--underline" href="/release-notes">
+      release notes
+    </a>
+    for migration details.
+  </p>
+
+  <p class="r8-text">
+    Keep lower-priority actions subtle with
+    <a class="r8-link r8-link--muted r8-link--quiet" href="/changelog">
+      a quieter supporting link
+    </a>.
+  </p>
+
+  <a
+    class="r8-link r8-link--warning"
+    href="/migration"
+    style="
+      --r8-link-opacity: 0.75;
+      --r8-link-underline-opacity: 40%;
+      --r8-link-hover-underline-opacity: 100%;
+      --r8-link-underline-offset: 0.3em;
+    "
+  >
+    Migration guide
+  </a>
+</div>`,
+    anatomy: ll(
+      [
+        "`r8-link` e a base para anchors, `NuxtLink` e outras navegacoes textuais curtas que precisam manter a linguagem visual da Retro8 UI.",
+        "Modifiers de tom como `--secondary`, `--warning`, `--danger` e `--muted` mudam a cor sem perder foco visivel nem comportamento de hover.",
+        "`r8-link--quiet` reduz a presenca visual do link, enquanto `r8-link--underline` deixa o sublinhado sempre presente antes mesmo do hover.",
+        "CSS variables `--r8-link-*` refinam opacidade, cor e offset do underline sem multiplicar modifiers utilitarios.",
+      ],
+      [
+        "`r8-link` is the base for anchors, `NuxtLink`, and other short text navigation patterns that should stay within the Retro8 UI visual language.",
+        "Tone modifiers such as `--secondary`, `--warning`, `--danger`, and `--muted` change color without losing visible focus or hover behavior.",
+        "`r8-link--quiet` lowers visual presence, while `r8-link--underline` keeps the underline visible even before hover.",
+        "`--r8-link-*` CSS variables refine opacity, color, and underline offset without multiplying utility-like modifiers.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Mantenha texto de destino explicito; evite labels vagas como 'clique aqui' quando o link aparecer fora de contexto.",
+        "Se usar `target=\"_blank\"`, combine com `rel=\"noreferrer noopener\"` e deixe claro quando a navegacao abrir outra aba.",
+        "Opacidade mais baixa pode prejudicar contraste; use `r8-link--quiet` e overrides de opacity com moderacao, principalmente em texto corrido pequeno.",
+        "Para links indisponiveis, exponha `aria-disabled=\"true\"` e proteja ou remova o `href` para evitar navegacao acidental.",
+      ],
+      [
+        "Keep destination text explicit; avoid vague labels such as 'click here' when the link appears outside its surrounding context.",
+        "If you use `target=\"_blank\"`, pair it with `rel=\"noreferrer noopener\"` and make it clear when navigation opens a new tab.",
+        "Lower opacity can hurt contrast; use `r8-link--quiet` and opacity overrides sparingly, especially in small inline copy.",
+        "For unavailable links, expose `aria-disabled=\"true\"` and guard or remove the `href` to avoid accidental navigation.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-link",
+        description: l(
+          "Classe base para links textuais com foco visivel, hover com pixel shift e underline controlado por CSS variables.",
+          "Base class for text links with visible focus, pixel-shift hover, and underline driven by CSS variables.",
+        ),
+      },
+      {
+        name: "r8-link--secondary / --tertiary / --success / --warning / --info / --danger / --dark / --muted",
+        description: l(
+          "Modifiers semanticos para mudar o tom do link sem trocar a estrutura do anchor ou do router link.",
+          "Semantic modifiers for changing the link tone without changing the anchor or router-link structure.",
+        ),
+      },
+      {
+        name: "r8-link--quiet / --underline",
+        description: l(
+          "Presets seguros para reduzir a opacidade base do link ou manter o underline visivel desde o estado idle.",
+          "Safe presets for lowering the base link opacity or keeping the underline visible from the idle state.",
+        ),
+      },
+      {
+        name: "--r8-link-*",
+        description: l(
+          "Custom properties para ajustar cor, opacity, underline opacity e underline offset seguindo o contexto da tela.",
+          "Custom properties for tuning color, opacity, underline opacity, and underline offset to match the screen context.",
+        ),
+      },
+    ],
   },
   {
     id: "splitter",
     name: "Splitter",
     group: "basic",
     summary: l(
-      "Shell visual para layouts redimensionaveis com handle pixelado horizontal ou vertical.",
-      "Visual shell for resizable layouts with a pixelated horizontal or vertical handle.",
+      "Layout redimensionavel com handle pixelado, suporte horizontal ou vertical, disable drag e eventos de resize para apps mais densos.",
+      "Resizable layout with a pixelated handle, horizontal or vertical support, disable-drag mode, and resize events for denser app shells.",
     ),
-    classes: ["r8-splitter", "r8-splitter--vertical", "r8-splitter__pane", "r8-splitter__handle"],
+    classes: [
+      "r8-splitter",
+      "r8-splitter--vertical",
+      "r8-splitter__pane",
+      "r8-splitter__handle",
+      "is-disabled",
+    ],
     preview: `<div class="docs-demo__stack">
   <div class="r8-splitter" data-r8-splitter-position="42">
     <div class="r8-splitter__pane">Navigator pane</div>
     <div class="r8-splitter__handle" aria-label="Resize horizontal panes"></div>
     <div class="r8-splitter__pane">Viewport pane</div>
   </div>
-  <div class="r8-splitter r8-splitter--vertical" data-r8-splitter-position="58">
+  <div class="r8-splitter r8-splitter--vertical" data-r8-splitter-position="58" style="--r8-splitter-handle-size: 1rem;">
     <div class="r8-splitter__pane">Inspector pane</div>
     <div class="r8-splitter__handle" aria-label="Resize vertical panes"></div>
     <div class="r8-splitter__pane">Console pane</div>
   </div>
+  <div class="r8-splitter" data-r8-splitter-position="35" data-r8-splitter-disabled="true">
+    <div class="r8-splitter__pane">Locked navigation rail</div>
+    <div class="r8-splitter__handle" aria-label="Resize disabled panes"></div>
+    <div class="r8-splitter__pane">Pinned preview area</div>
+  </div>
 </div>`,
+    code: `<div
+  class="r8-splitter"
+  data-r8-splitter-position="42"
+  data-r8-splitter-min="24"
+  data-r8-splitter-max="76"
+  data-r8-splitter-step="4"
+  style="
+    --r8-splitter-handle-size: 1rem;
+    --r8-splitter-handle-accent: var(--r8-color-primary-strong);
+  "
+>
+  <section class="r8-splitter__pane">Navigator pane</section>
+  <div class="r8-splitter__handle" aria-label="Resize panes"></div>
+  <section class="r8-splitter__pane">Viewport pane</section>
+</div>
+
+<div class="r8-splitter r8-splitter--vertical" data-r8-splitter-position="58">
+  <section class="r8-splitter__pane">Inspector pane</section>
+  <div class="r8-splitter__handle" aria-label="Resize stacked panes"></div>
+  <section class="r8-splitter__pane">Console pane</section>
+</div>`,
+    anatomy: ll(
+      [
+        "`r8-splitter` e o shell base que distribui dois panes e um handle central governado pelo runtime.",
+        "`r8-splitter__pane` representa cada area redimensionavel e pode receber qualquer conteudo, de listas a paines de preview.",
+        "`r8-splitter__handle` e o separador focavel usado para pointer drag e ajuste por teclado.",
+        "`r8-splitter--vertical` troca o eixo do layout quando a divisao precisa acontecer em linhas, nao colunas.",
+      ],
+      [
+        "`r8-splitter` is the base shell that distributes two panes and a central handle governed by the runtime.",
+        "`r8-splitter__pane` represents each resizable area and can host anything from lists to preview panes.",
+        "`r8-splitter__handle` is the focusable separator used for pointer dragging and keyboard adjustment.",
+        "`r8-splitter--vertical` swaps the layout axis when the split should happen in rows rather than columns.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Mantenha um `aria-label` claro no handle para explicar o que esta sendo redimensionado.",
+        "O handle ja expoe `role=\"separator\"`, orientation e valores ARIA; preserve isso se voce personalizar o host.",
+        "Use `data-r8-splitter-disabled=\"true\"` quando o layout estiver travado para nao sugerir drag em um estado indisponivel.",
+        "Em areas criticas, deixe cada pane com headings ou landmarks claros para que a divisao espacial faca sentido tambem em leitores de tela.",
+      ],
+      [
+        "Keep a clear `aria-label` on the handle so it explains what is being resized.",
+        "The handle already exposes `role=\"separator\"`, orientation, and ARIA values; preserve that if you customize the host.",
+        "Use `data-r8-splitter-disabled=\"true\"` when the layout is locked so drag is not implied in an unavailable state.",
+        "In critical app areas, give each pane clear headings or landmarks so the spatial split also makes sense in screen readers.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-splitter / r8-splitter--vertical",
+        description: l(
+          "Shell base para o layout redimensionavel, com variant vertical quando a divisao precisa acontecer em linhas.",
+          "Base shell for the resizable layout, with a vertical variant when the split needs to happen in rows.",
+        ),
+      },
+      {
+        name: "r8-splitter__pane / r8-splitter__handle",
+        description: l(
+          "Os panes recebem o conteudo real e o handle fica responsavel pela interacao de resize via pointer e teclado.",
+          "The panes host the real content while the handle is responsible for resize interaction through pointer and keyboard.",
+        ),
+      },
+      {
+        name: "data-r8-splitter-position / -min / -max / -step / -disabled",
+        description: l(
+          "Controlam posicao inicial, limites, passo de teclado e bloqueio de interacao sem exigir JS customizado no host app.",
+          "Control initial position, limits, keyboard step, and interaction lock without requiring custom JS in the host app.",
+        ),
+      },
+      {
+        name: "--r8-splitter-*",
+        description: l(
+          "Custom properties para ajustar posicao, tamanho do handle, acento visual do grip e fundo dos panes.",
+          "Custom properties for adjusting position, handle size, grip accent, and pane background.",
+        ),
+      },
+    ],
   },
   {
     id: "typography",
     name: "Typography",
     group: "basic",
     summary: l(
-      "Sistema tipografico completo para blocos de conteudo, texto corrido e variantes semanticas de apoio.",
-      "Complete typographic system for content blocks, body copy and supporting semantic text variants.",
+      "Sistema tipografico para hierarquia retro, largura de leitura confortavel, escala de texto e tons semanticos de apoio.",
+      "Typographic system for retro hierarchy, comfortable reading measure, text scale, and supporting semantic tones.",
     ),
     classes: [
       "r8-typography",
+      "r8-typography--compact",
+      "r8-typography--loose",
+      "r8-typography--measure",
       "r8-text",
+      "r8-text--xs",
+      "r8-text--sm",
+      "r8-text--base",
+      "r8-text--lg",
+      "r8-text--compact",
+      "r8-text--loose",
       "r8-text--muted",
       "r8-text--subtle",
       "r8-text--primary",
@@ -792,98 +1157,126 @@ const basicComponents = [
       "r8-text--dark",
       "r8-text--light",
     ],
+    preview: `<div class="docs-demo__stack">
+  <article class="r8-typography r8-typography--measure">
+    <small>Mission log / readable measure</small>
+    <h1>Readable retro hierarchy</h1>
+    <p class="r8-text r8-text--base">
+      Build long-form UI copy with a display heading, comfortable measure and a body scale that still fits dense interfaces.
+    </p>
+    <blockquote>Keep the display font for hierarchy, not for full paragraphs.</blockquote>
+    <ul>
+      <li>Display font for headings only</li>
+      <li>Body scale driven by tokens</li>
+      <li>Optional readable measure for longer copy</li>
+    </ul>
+  </article>
+
+  <div class="docs-demo__stack">
+    <p class="r8-text r8-text--xs r8-text--muted">Extra-small helper copy for metadata and timestamps.</p>
+    <p class="r8-text">Default body size for compact interface copy.</p>
+    <p class="r8-text r8-text--base r8-text--primary">Base size gives intro copy and highlighted paragraphs more air.</p>
+    <p class="r8-text r8-text--lg r8-text--loose">Large relaxed copy helps banners, empty states and longer explanatory messages.</p>
+  </div>
+</div>`,
+    code: `<article class="r8-typography r8-typography--measure">
+  <small>Mission log / readable measure</small>
+  <h1>Readable retro hierarchy</h1>
+  <p class="r8-text r8-text--base">
+    Build long-form UI copy with a display heading, comfortable measure and a body scale that still fits dense interfaces.
+  </p>
+  <blockquote>Keep the display font for hierarchy, not for full paragraphs.</blockquote>
+  <ul>
+    <li>Display font for headings only</li>
+    <li>Body scale driven by tokens</li>
+    <li>Optional readable measure for longer copy</li>
+  </ul>
+</article>
+
+<p class="r8-text r8-text--xs r8-text--muted">Extra-small helper copy for metadata and timestamps.</p>
+<p class="r8-text r8-text--base r8-text--primary">Base size gives intro copy and highlighted paragraphs more air.</p>
+<p class="r8-text r8-text--lg r8-text--loose">Large relaxed copy helps banners, empty states and longer explanatory messages.</p>`,
+    anatomy: ll(
+      [
+        "`r8-typography` e o wrapper para headings, paragrafos, listas, code, blockquotes e pequenos apoios como `small`.",
+        "`r8-typography--measure` limita a largura da leitura para blocos mais longos sem criar um wrapper extra.",
+        "`r8-typography--compact` e `r8-typography--loose` ajustam gap e line-height do bloco inteiro para contextos mais densos ou mais relaxados.",
+        "`r8-text` funciona dentro ou fora do bloco tipografico quando voce precisa aplicar tom, escala ou line-height em um trecho especifico.",
+        "Os modifiers de escala `r8-text--xs / --sm / --base / --lg` usam os tokens da UI em vez de tamanhos arbitrarios soltos.",
+      ],
+      [
+        "`r8-typography` is the wrapper for headings, paragraphs, lists, code, blockquotes, and lighter support copy such as `small`.",
+        "`r8-typography--measure` limits reading width for longer blocks without needing an extra wrapper.",
+        "`r8-typography--compact` and `r8-typography--loose` adjust gap and line-height for denser or more relaxed reading contexts.",
+        "`r8-text` works inside or outside the main prose block whenever a specific line needs tone, scale, or line-height adjustments.",
+        "The `r8-text--xs / --sm / --base / --lg` scale modifiers stay tied to UI tokens instead of ad-hoc sizes.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Mantenha a ordem semantica de headings (`h1`, `h2`, `h3`) mesmo quando o visual parecer resolvido com apenas classes.",
+        "Use os tons semanticos como apoio, nao como unico canal para erro, sucesso ou alerta; sempre combine com contexto textual.",
+        "Prefira `r8-typography--measure` e line-heights mais relaxados quando houver paragrafos longos ou instrucoes importantes.",
+        "Use os modos compactos com parcimonia em areas densas; leitura longa com line-height apertado cansa mais rapido.",
+      ],
+      [
+        "Keep semantic heading order (`h1`, `h2`, `h3`) even when the visual hierarchy looks solved by classes alone.",
+        "Use semantic tones as support, not as the only signal for error, success, or warning states; always pair them with text context.",
+        "Prefer `r8-typography--measure` and looser line-heights for longer paragraphs or important instructions.",
+        "Use compact modes sparingly in dense UI areas; extended reading with tight line-height becomes tiring faster.",
+      ],
+    ),
     api: [
       {
         name: "r8-typography",
         description: l(
-          "Container para headings, paragrafos, listas, code e blockquotes com hierarquia retro consistente.",
-          "Container for headings, paragraphs, lists, code and blockquotes with consistent retro hierarchy.",
+          "Wrapper base para hierarquia tipografica, com headings retro, corpo em mono legivel e suporte a listas, blockquotes, code e small.",
+          "Base wrapper for typographic hierarchy, with retro headings, readable mono body copy, and support for lists, blockquotes, code, and small text.",
+        ),
+      },
+      {
+        name: "r8-typography--compact / --loose / --measure",
+        description: l(
+          "Modifiers para densidade vertical e largura de leitura sem precisar criar wrappers ou CSS local para cada bloco.",
+          "Modifiers for vertical density and reading width without creating extra wrappers or local CSS for every prose block.",
         ),
       },
       {
         name: "r8-text",
         description: l(
-          "Classe base para texto corrido curto, labels e copys de apoio fora de um bloco tipografico rico.",
-          "Base class for short body copy, labels and supporting text outside a rich typography block.",
+          "Classe base para copys curtas, labels e paragrafos que precisam de ajustes fora ou dentro de um bloco tipografico.",
+          "Base class for short copy, labels, and paragraphs that need adjustments outside or inside a prose block.",
         ),
       },
       {
-        name: "r8-text--muted",
-        description: l("Suaviza o contraste para texto secundario ou detalhes auxiliares.", "Softens contrast for secondary text or helper details."),
+        name: "r8-text--xs / --sm / --base / --lg",
+        description: l(
+          "Escala de texto baseada nos tokens da UI para metadata, corpo compacto, intros e mensagens de maior destaque.",
+          "Token-based text scale for metadata, compact body copy, intros, and more prominent messages.",
+        ),
       },
       {
-        name: "r8-text--subtle",
-        description: l("Reduz ainda mais o peso visual para metadata e labels de baixo destaque.", "Reduces visual weight further for metadata and low-emphasis labels."),
+        name: "r8-text--compact / --loose",
+        description: l(
+          "Ajustam line-height de um trecho especifico quando a densidade precisa fugir do valor padrao do bloco.",
+          "Adjust line-height for a specific line or paragraph when density needs to differ from the block default.",
+        ),
       },
       {
-        name: "r8-text--primary",
-        description: l("Aplica enfase com a cor primaria do sistema.", "Applies emphasis with the system primary color."),
+        name: "r8-text--muted / --subtle / --primary / --secondary / --tertiary / --success / --warning / --info / --danger / --dark / --light",
+        description: l(
+          "Tons semanticos para apoio visual, enfase contextual e contraste explicito em superficies mais claras ou escuras.",
+          "Semantic tones for visual support, contextual emphasis, and explicit contrast on lighter or darker surfaces.",
+        ),
       },
       {
-        name: "r8-text--secondary",
-        description: l("Usa o tom secundario para apoio visual e hierarquia complementar.", "Uses the secondary tone for supporting hierarchy."),
-      },
-      {
-        name: "r8-text--tertiary",
-        description: l("Destaca texto com a cor terciaria em contextos mais chamativos.", "Highlights text with the tertiary color in more expressive contexts."),
-      },
-      {
-        name: "r8-text--success",
-        description: l("Comunica estados positivos ou confirmacoes.", "Communicates positive states or confirmations."),
-      },
-      {
-        name: "r8-text--warning",
-        description: l("Comunica cautela, alerta moderado ou atencao preventiva.", "Communicates caution, moderate alerts or preventive attention."),
-      },
-      {
-        name: "r8-text--info",
-        description: l("Comunica contexto, ajuda ou informacoes neutras.", "Communicates context, help or neutral information."),
-      },
-      {
-        name: "r8-text--danger",
-        description: l("Comunica erros, risco ou estados criticos.", "Communicates errors, risk or critical states."),
-      },
-      {
-        name: "r8-text--dark / r8-text--light",
-        description: l("Ajustam contraste explicito em superfícies muito claras ou muito escuras.", "Adjust explicit contrast on very light or very dark surfaces."),
+        name: "--r8-text-* / --r8-typography-*",
+        description: l(
+          "Custom properties para trocar familia, escala, line-height, gap e largura de leitura sem abrir novos modifiers fixos.",
+          "Custom properties for swapping family, scale, line-height, gap, and reading width without expanding the modifier surface.",
+        ),
       },
     ],
-    preview: `<div class="docs-demo__stack">
-  <div class="r8-typography">
-    <h1>Retro heading</h1>
-    <p>Build framework-agnostic UI with compiled CSS and semantic classes.</p>
-    <ul>
-      <li>Consistent tokens</li>
-      <li>Strong hierarchy</li>
-      <li>Readable body copy</li>
-    </ul>
-  </div>
-
-  <div class="docs-demo__stack">
-    <p class="r8-text">Default body text for mission logs and dense UI labels.</p>
-    <p class="r8-text r8-text--muted">Muted helper copy for secondary details.</p>
-    <p class="r8-text r8-text--subtle">Subtle metadata for low-priority context.</p>
-    <p class="r8-text r8-text--primary">Primary text to highlight key information.</p>
-    <p class="r8-text r8-text--warning">Warning text for caution states.</p>
-    <p class="r8-text r8-text--success">Success text for positive states.</p>
-    <p class="r8-text r8-text--danger">Danger text for critical states.</p>
-  </div>
-</div>`,
-    code: `<div class="r8-typography">
-  <h1>Retro heading</h1>
-  <p>Build framework-agnostic UI with compiled CSS and semantic classes.</p>
-  <ul>
-    <li>Consistent tokens</li>
-    <li>Strong hierarchy</li>
-    <li>Readable body copy</li>
-  </ul>
-</div>
-
-<p class="r8-text">Default body text for mission logs and dense UI labels.</p>
-<p class="r8-text r8-text--muted">Muted helper copy for secondary details.</p>
-<p class="r8-text r8-text--subtle">Subtle metadata for low-priority context.</p>
-<p class="r8-text r8-text--primary">Primary text to highlight key information.</p>
-<p class="r8-text r8-text--warning">Warning text for caution states.</p>`,
   },
 ] satisfies CatalogEntry[];
 
@@ -893,11 +1286,13 @@ const configurationComponents = [
     name: "Config Provider",
     group: "configuration",
     summary: l(
-      "Theme scope local para trocar tokens, contraste e skin apenas em uma parte da interface.",
-      "Local theme scope for swapping tokens, contrast and skins in only one part of the interface.",
+      "Escopo local de tokens para trocar skin, densidade e acentos sem afetar o restante da interface.",
+      "Local token scope for swapping skin, density, and accents without affecting the rest of the interface.",
     ),
     classes: [
       "r8-config-provider",
+      "r8-config-provider--compact",
+      "r8-config-provider--comfortable",
       "r8-config-provider--night",
       "r8-config-provider--terminal",
       "r8-config-provider--danger",
@@ -911,15 +1306,17 @@ const configurationComponents = [
       <button class="r8-btn r8-btn--secondary" type="button">Review</button>
     </div>
   </section>
-  <section class="r8-config-provider r8-config-provider--night">
-    <span class="r8-badge">Night skin</span>
+
+  <section class="r8-config-provider r8-config-provider--night r8-config-provider--compact">
+    <span class="r8-badge">Night compact scope</span>
     <input class="r8-input" type="text" value="Night console" aria-label="Night scope input" />
     <div class="r8-cluster">
       <button class="r8-btn r8-btn--primary" type="button">Open console</button>
       <button class="r8-btn" type="button">Ping</button>
     </div>
   </section>
-  <section class="r8-config-provider r8-config-provider--terminal">
+
+  <section class="r8-config-provider" data-theme="terminal" data-density="comfortable">
     <span class="r8-badge r8-badge--primary">Terminal skin</span>
     <input class="r8-input" type="text" value="grep --color retro8" aria-label="Terminal scope input" />
     <div class="r8-cluster">
@@ -927,6 +1324,7 @@ const configurationComponents = [
       <button class="r8-btn r8-btn--secondary" type="button">Inspect</button>
     </div>
   </section>
+
   <section class="r8-config-provider r8-config-provider--danger">
     <span class="r8-badge r8-badge--danger">Danger zone</span>
     <input class="r8-input" type="text" value="Confirm shutdown" aria-label="Danger scope input" />
@@ -934,8 +1332,111 @@ const configurationComponents = [
       <button class="r8-btn r8-btn--danger" type="button">Shutdown</button>
       <button class="r8-btn r8-btn--light" type="button">Cancel</button>
     </div>
+
+    <section class="r8-config-provider" style="--r8-color-primary: var(--r8-color-warning); --r8-color-primary-strong: var(--r8-color-warning-strong); --r8-color-primary-contrast: var(--r8-color-warning-contrast);">
+      <span class="r8-badge r8-badge--warning">Nested override</span>
+      <button class="r8-btn r8-btn--primary" type="button">Require final confirmation</button>
+    </section>
   </section>
 </div>`,
+    code: `<section class="r8-config-provider r8-config-provider--night r8-config-provider--compact">
+  <span class="r8-badge">Night compact scope</span>
+  <input class="r8-input" type="text" value="Night console" aria-label="Night scope input" />
+  <div class="r8-cluster">
+    <button class="r8-btn r8-btn--primary" type="button">Open console</button>
+    <button class="r8-btn" type="button">Ping</button>
+  </div>
+</section>
+
+<section class="r8-config-provider" data-theme="terminal" data-density="comfortable">
+  <span class="r8-badge r8-badge--primary">Terminal skin</span>
+  <button class="r8-btn r8-btn--primary" type="button">Run</button>
+</section>
+
+<section
+  class="r8-config-provider"
+  style="
+    --r8-color-primary: var(--r8-color-warning);
+    --r8-color-primary-strong: var(--r8-color-warning-strong);
+    --r8-color-primary-contrast: var(--r8-color-warning-contrast);
+  "
+>
+  <button class="r8-btn r8-btn--primary" type="button">Warn inside local scope</button>
+</section>`,
+    anatomy: ll(
+      [
+        "`r8-config-provider` cria um escopo local de tokens; tudo dentro dele herda cores, sombras, spacing e tipografia desse contexto.",
+        "As variantes `--night`, `--terminal` e `--danger` trocam a skin local sem exigir um theme switch global no documento inteiro.",
+        "`--compact` e `--comfortable` ajustam densidade local ao reescrever tokens de spacing e escala tipografica dentro do scope.",
+        "Voce pode combinar classes com `data-theme` e `data-density` quando o host app controla estado por atributo.",
+        "Nested providers funcionam para sobrescrever apenas uma ilha da interface, mantendo o resto do shell intacto.",
+      ],
+      [
+        "`r8-config-provider` creates a local token scope; everything inside inherits colors, shadows, spacing, and typography from that context.",
+        "The `--night`, `--terminal`, and `--danger` variants swap the local skin without requiring a global theme switch on the whole document.",
+        "`--compact` and `--comfortable` adjust local density by rewriting spacing and type-scale tokens inside the scope.",
+        "You can combine classes with `data-theme` and `data-density` when the host app drives state through attributes.",
+        "Nested providers work for overriding a small island of UI while keeping the rest of the shell intact.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Use o `Config Provider` para contraste e densidade, mas mantenha labels, headings e estado textual visiveis mesmo quando o tema mudar.",
+        "Temas locais escuros ou danger precisam continuar respeitando contraste suficiente entre surface, texto e foco.",
+        "Se usar nested providers, preserve a ordem semantica da interface; o escopo visual nao deve confundir landmarks ou hierarquia real.",
+        "Atributos como `data-theme` ajudam quando a mudanca vem do host app, mas a experiencia acessivel continua dependendo do markup interno correto.",
+      ],
+      [
+        "Use `Config Provider` for contrast and density, but keep labels, headings, and state text visible even when the local theme changes.",
+        "Dark or danger local themes still need enough contrast between surface, text, and focus styles.",
+        "If you use nested providers, preserve the semantic order of the UI; the visual scope should not blur real landmarks or hierarchy.",
+        "Attributes such as `data-theme` help when the host app drives the change, but accessible behavior still depends on correct inner markup.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-config-provider",
+        description: l(
+          "Wrapper base do scope local, usado para reaplicar tokens de cor, sombra, spacing e tipografia apenas nos descendants.",
+          "Base local-scope wrapper used to reapply color, shadow, spacing, and typography tokens only to descendants.",
+        ),
+      },
+      {
+        name: "r8-config-provider--night / --terminal / --danger",
+        description: l(
+          "Presets de skin para trocar o visual local sem alterar o restante da aplicacao.",
+          "Skin presets for changing the local visual language without altering the rest of the application.",
+        ),
+      },
+      {
+        name: "r8-config-provider--compact / --comfortable",
+        description: l(
+          "Presets de densidade local, inspirados na ideia de configuracao global de tamanho, mas resolvidos via tokens em cascata.",
+          "Local density presets inspired by global size configuration, but solved through cascading tokens.",
+        ),
+      },
+      {
+        name: "data-theme / data-density",
+        description: l(
+          "Aliases por atributo para integrar o scope com switches externos, CMS ou shells que controlam estado sem tocar classes.",
+          "Attribute aliases for integrating the scope with external switches, CMS data, or shells that drive state without touching classes.",
+        ),
+      },
+      {
+        name: "--r8-color-* / --r8-shadow-* / --r8-font-size-* / --r8-space-*",
+        description: l(
+          "Tokens globais da Retro8 UI continuam sobrescreviveis localmente para criar acentos e densidades especificas dentro do scope.",
+          "Retro8 UI global tokens remain locally overridable so you can create scope-specific accents and density inside the provider.",
+        ),
+      },
+      {
+        name: "--r8-config-provider-*",
+        description: l(
+          "Custom properties do wrapper para ajustar padding, gap, surface, borda, sombra e cor base do proprio provider.",
+          "Wrapper custom properties for adjusting padding, gap, surface, border, shadow, and the provider shell base color.",
+        ),
+      },
+    ],
   },
 ] satisfies CatalogEntry[];
 
@@ -945,11 +1446,84 @@ const formComponents = [
     name: "Autocomplete",
     group: "form",
     summary: l(
-      "Campo com trigger e lista de sugestoes para busca rapida e escolha guiada.",
-      "Field with a trigger and suggestion list for quick search and guided selection.",
+      "Campo de busca com sugestoes locais, teclado, clear opcional e suporte a estados de loading, empty e templates mais ricos nas options.",
+      "Search field with local suggestions, keyboard support, optional clear, and support for loading, empty, and richer option templates.",
     ),
-    classes: ["r8-autocomplete", "r8-autocomplete__trigger", "r8-autocomplete__input", "r8-autocomplete__menu", "r8-autocomplete__option"],
-    preview: `<div class="r8-autocomplete">
+    classes: [
+      "r8-autocomplete",
+      "r8-autocomplete__trigger",
+      "r8-autocomplete__input",
+      "r8-autocomplete__clear",
+      "r8-autocomplete__menu",
+      "r8-autocomplete__option",
+      "r8-autocomplete__empty",
+      "r8-autocomplete__loading",
+    ],
+    preview: `<div class="docs-demo__stack">
+  <div
+    class="r8-autocomplete"
+    data-r8-clearable="true"
+    data-r8-empty-label="No pilots matched this query."
+  >
+    <div class="r8-autocomplete__trigger">
+      <input
+        class="r8-autocomplete__input"
+        type="text"
+        placeholder="Search pilot..."
+        aria-label="Search pilot"
+      />
+      <button class="r8-autocomplete__clear" type="button" aria-label="Clear search">X</button>
+      <span class="r8-badge" data-r8-autocomplete-count>4</span>
+    </div>
+    <div class="r8-autocomplete__menu" hidden>
+      <div class="r8-autocomplete__option" data-r8-search="pix-07 vanguard scout recon" data-r8-value="PIX-07 Vanguard">
+        <strong>PIX-07 Vanguard</strong>
+        <p class="r8-text r8-text--xs r8-text--muted">Recon pilot / scout division</p>
+      </div>
+      <div class="r8-autocomplete__option" data-r8-search="pix-11 sentinel support command" data-r8-value="PIX-11 Sentinel">
+        <strong>PIX-11 Sentinel</strong>
+        <p class="r8-text r8-text--xs r8-text--muted">Support wing / command relay</p>
+      </div>
+      <div class="r8-autocomplete__option" data-r8-search="pix-12 striker assault frontline" data-r8-value="PIX-12 Striker">
+        <strong>PIX-12 Striker</strong>
+        <p class="r8-text r8-text--xs r8-text--muted">Frontline assault / breach lead</p>
+      </div>
+      <div class="r8-autocomplete__option" data-r8-search="pix-21 oracle analyst intel" data-r8-value="PIX-21 Oracle">
+        <strong>PIX-21 Oracle</strong>
+        <p class="r8-text r8-text--xs r8-text--muted">Intel analyst / route prediction</p>
+      </div>
+      <div class="r8-autocomplete__empty" hidden>No pilots matched this query.</div>
+      <div class="r8-autocomplete__loading" hidden>Loading suggestions...</div>
+    </div>
+  </div>
+
+  <div
+    class="r8-autocomplete"
+    data-r8-trigger-on-focus="false"
+    data-r8-loading="true"
+    data-r8-loading-label="Syncing remote routes..."
+  >
+    <div class="r8-autocomplete__trigger">
+      <input
+        class="r8-autocomplete__input"
+        type="text"
+        placeholder="Search route..."
+        aria-label="Search route"
+      />
+      <span class="r8-badge" data-r8-autocomplete-count>0</span>
+    </div>
+    <div class="r8-autocomplete__menu" hidden>
+      <div class="r8-autocomplete__loading" hidden>Syncing remote routes...</div>
+      <div class="r8-autocomplete__empty" hidden>No routes available.</div>
+    </div>
+  </div>
+</div>`,
+    code: `<div
+  class="r8-autocomplete"
+  data-r8-clearable="true"
+  data-r8-trigger-on-focus="false"
+  data-r8-empty-label="No pilots matched this query."
+>
   <div class="r8-autocomplete__trigger">
     <input
       class="r8-autocomplete__input"
@@ -957,31 +1531,98 @@ const formComponents = [
       placeholder="Search pilot..."
       aria-label="Search pilot"
     />
+    <button class="r8-autocomplete__clear" type="button" aria-label="Clear search">X</button>
     <span class="r8-badge" data-r8-autocomplete-count>4</span>
   </div>
+
   <div class="r8-autocomplete__menu" hidden>
-    <div class="r8-autocomplete__option" data-r8-search="pix-07 vanguard scout recon">
-      PIX-07 Vanguard
+    <div class="r8-autocomplete__option" data-r8-value="PIX-07 Vanguard" data-r8-search="recon scout">
+      <strong>PIX-07 Vanguard</strong>
+      <p class="r8-text r8-text--xs r8-text--muted">Recon pilot / scout division</p>
     </div>
-    <div class="r8-autocomplete__option" data-r8-search="pix-11 sentinel support command">
-      PIX-11 Sentinel
+    <div class="r8-autocomplete__option" data-r8-value="PIX-11 Sentinel" data-r8-search="support command">
+      <strong>PIX-11 Sentinel</strong>
+      <p class="r8-text r8-text--xs r8-text--muted">Support wing / command relay</p>
     </div>
-    <div class="r8-autocomplete__option" data-r8-search="pix-12 striker assault frontline">
-      PIX-12 Striker
-    </div>
-    <div class="r8-autocomplete__option" data-r8-search="pix-21 oracle analyst intel">
-      PIX-21 Oracle
-    </div>
+    <div class="r8-autocomplete__empty" hidden>No pilots matched this query.</div>
+    <div class="r8-autocomplete__loading" hidden>Loading suggestions...</div>
   </div>
 </div>`,
+    anatomy: ll(
+      [
+        "`r8-autocomplete` e o wrapper raiz que conecta trigger, input, panel e options no mesmo scope do runtime.",
+        "`r8-autocomplete__trigger` agrupa o input, o clear opcional e um badge de contagem ou feedback curto.",
+        "`r8-autocomplete__option` aceita markup rico; use `data-r8-value` para controlar o texto que volta ao input e `data-r8-search` para indexacao extra.",
+        "`r8-autocomplete__empty` e `r8-autocomplete__loading` funcionam como feedback visual para busca vazia ou remota.",
+        "`r8-autocomplete__clear` e opcional e aparece apenas quando o scope estiver marcado como clearable e houver texto digitado.",
+      ],
+      [
+        "`r8-autocomplete` is the root wrapper that keeps trigger, input, panel, and options in the same runtime scope.",
+        "`r8-autocomplete__trigger` groups the input, optional clear action, and a count badge or short feedback token.",
+        "`r8-autocomplete__option` accepts richer markup; use `data-r8-value` to control the text written back to the input and `data-r8-search` for extra indexing.",
+        "`r8-autocomplete__empty` and `r8-autocomplete__loading` work as visual feedback for empty or remote states.",
+        "`r8-autocomplete__clear` is optional and only appears when the scope is marked as clearable and the field has typed text.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Mantenha `aria-label` ou um label visivel associado ao input, porque o campo atua como combobox e precisa de nome acessivel claro.",
+        "Quando usar markup rico nas options, preserve um `data-r8-value` curto e objetivo para o valor que volta ao input.",
+        "Use `data-r8-trigger-on-focus=\"false\"` quando a lista so fizer sentido depois da primeira digitacao, evitando ruído na abertura do campo.",
+        "Em loading remoto, prefira feedback textual visivel e atualize as options no DOM antes de chamar `Retro8UI.refresh()` no subtree.",
+      ],
+      [
+        "Keep `aria-label` or a visible associated label on the input, because the field behaves like a combobox and needs a clear accessible name.",
+        "When using richer option markup, keep a short `data-r8-value` for the value written back to the input.",
+        "Use `data-r8-trigger-on-focus=\"false\"` when the list only makes sense after the first keystroke, avoiding noisy open-on-focus behavior.",
+        "For remote loading, prefer visible textual feedback and update the options in the DOM before calling `Retro8UI.refresh()` on the subtree.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-autocomplete",
+        description: l(
+          "Wrapper base do combobox, com filtro local, teclado e selecao sincronizados pelo runtime.",
+          "Base combobox wrapper with local filtering, keyboard navigation, and selection synchronized by the runtime.",
+        ),
+      },
+      {
+        name: "r8-autocomplete__trigger / __input / __menu / __option",
+        description: l(
+          "Partes semanticas do componente para trigger, campo digitavel, lista e items selecionaveis.",
+          "Semantic parts for the trigger, typing field, list, and selectable items.",
+        ),
+      },
+      {
+        name: "r8-autocomplete__clear / __empty / __loading",
+        description: l(
+          "Elementos opcionais para limpar o campo e comunicar estados de vazio ou carregamento sem CSS ad-hoc.",
+          "Optional elements for clearing the field and communicating empty or loading states without ad-hoc CSS.",
+        ),
+      },
+      {
+        name: "data-r8-clearable / data-r8-trigger-on-focus / data-r8-empty-label / data-r8-loading / data-r8-loading-label",
+        description: l(
+          "Helpers declarativos para controlar abertura no foco, clear, feedback vazio e loading remoto pelo proprio markup.",
+          "Declarative helpers for controlling open-on-focus, clear behavior, empty feedback, and remote loading through markup itself.",
+        ),
+      },
+      {
+        name: "data-r8-value / data-r8-search",
+        description: l(
+          "Permitem separar o texto exibido no option do valor final e enriquecer a indexacao do filtro local.",
+          "Let you separate the visible option text from the final value and enrich local filter indexing.",
+        ),
+      },
+    ],
   },
   {
     id: "cascader",
     name: "Cascader",
     group: "form",
     summary: l(
-      "Selecao hierarquica para arvore de categorias, areas ou taxonomias em varias etapas.",
-      "Hierarchical selection for category trees, areas or taxonomies across multiple steps.",
+      "Selecao hierarquica para arvores de categorias, areas ou taxonomias, com filtro opcional, clear, hover expansion e controle entre caminho completo ou ultimo nivel no trigger.",
+      "Hierarchical selection for category trees, areas, or taxonomies, with optional filtering, clear, hover expansion, and control over full-path versus last-level trigger display.",
     ),
     classes: [
       "r8-cascader",
@@ -997,7 +1638,7 @@ const formComponents = [
       "r8-cascader__node",
       "r8-cascader__children",
     ],
-    preview: `<div class="docs-demo__stack">
+    preview: `<div class="docs-demo__stack docs-demo__stack--cascader">
   <div class="r8-cascader" data-r8-filterable="true" data-r8-clearable="true" data-r8-placeholder="Select outpost">
     <button class="r8-cascader__trigger" type="button" aria-label="Select outpost">
       <span data-r8-choice-display>Select outpost</span>
@@ -1045,9 +1686,15 @@ const formComponents = [
     </div>
   </div>
 
-  <div class="r8-cascader" data-r8-expand-trigger="hover" data-r8-check-strictly="true" data-r8-placeholder="Hover or select any level">
+  <div
+    class="r8-cascader"
+    data-r8-expand-trigger="hover"
+    data-r8-check-strictly="true"
+    data-r8-show-all-levels="false"
+    data-r8-placeholder="Hover or select any level"
+  >
     <button class="r8-cascader__trigger" type="button" aria-label="Hover or select any level">
-      <span data-r8-choice-display>Hover or select any level</span>
+      <span data-r8-choice-display>Research</span>
       <span class="r8-choice__caret" aria-hidden="true">&gt;</span>
     </button>
     <div class="r8-cascader__panel" hidden>
@@ -1060,7 +1707,7 @@ const formComponents = [
                 <div class="r8-cascader__node" data-r8-label="Tower East" data-r8-value="tower-east"></div>
               </div>
             </div>
-            <div class="r8-cascader__node" data-r8-label="Research" data-r8-value="research"></div>
+            <div class="r8-cascader__node" data-r8-label="Research" data-r8-value="research" data-r8-selected="true"></div>
           </div>
         </div>
         <div class="r8-cascader__node" data-r8-label="Outer Colonies" data-r8-value="outer-colonies">
@@ -1073,7 +1720,14 @@ const formComponents = [
     </div>
   </div>
 </div>`,
-    code: `<div class="r8-cascader" data-r8-filterable="true" data-r8-clearable="true" data-r8-placeholder="Select outpost">
+    code: `<div
+  class="r8-cascader"
+  data-r8-filterable="true"
+  data-r8-filter-placeholder="Filter routes..."
+  data-r8-clearable="true"
+  data-r8-show-all-levels="false"
+  data-r8-placeholder="Select outpost"
+>
   <button class="r8-cascader__trigger" type="button" aria-label="Select outpost">
     <span data-r8-choice-display>Select outpost</span>
     <span class="r8-choice__caret" aria-hidden="true">&gt;</span>
@@ -1113,12 +1767,14 @@ const formComponents = [
         "`r8-cascader__trigger` abre o floating panel e expoe o caminho selecionado.",
         "`r8-cascader__panel` abriga toolbar, generated menus e a source tree oculta.",
         "`r8-cascader__node` e `r8-cascader__children` definem a hierarquia declarativa.",
+        "`data-r8-show-all-levels=\"false\"` deixa o trigger mais compacto ao exibir apenas o ultimo label, sem perder `data-r8-path` no host.",
       ],
       [
         "`r8-cascader` is the root shell and receives `data-r8-*` behavior flags.",
         "`r8-cascader__trigger` opens the floating panel and exposes the selected path.",
         "`r8-cascader__panel` contains toolbar, generated menus and the hidden source tree.",
         "`r8-cascader__node` and `r8-cascader__children` define the declarative hierarchy.",
+        "`data-r8-show-all-levels=\"false\"` keeps the trigger more compact by showing only the last label while preserving `data-r8-path` on the host.",
       ],
     ),
     accessibility: ll(
@@ -1126,11 +1782,13 @@ const formComponents = [
         "Use `aria-label` no trigger quando o label visivel nao for descritivo o bastante.",
         "Marque disabled branches com `data-r8-disabled=\"true\"` para preservar keyboard semantics.",
         "Mantenha instances pesquisaveis com `r8-cascader__input` devidamente rotulado.",
+        "Quando optar por mostrar so o ultimo nivel no trigger, preserve contexto adicional no label visivel ao redor do campo.",
       ],
       [
         "Use `aria-label` on the trigger when the visible label is not descriptive enough.",
         "Mark disabled branches with `data-r8-disabled=\"true\"` to preserve keyboard semantics.",
         "Keep searchable instances with a labeled `r8-cascader__input` for screen-reader clarity.",
+        "When you choose a last-level-only trigger display, keep extra context in nearby visible copy around the field.",
       ],
     ),
     api: [
@@ -1143,8 +1801,19 @@ const formComponents = [
         description: l("Allows selecting parent nodes instead of leaves only.", "Allows selecting parent nodes instead of leaves only."),
       },
       {
+        name: "data-r8-show-all-levels / data-r8-filter-placeholder",
+        description: l(
+          "Controla se o trigger mostra o caminho inteiro ou so o ultimo nivel, e permite ajustar o placeholder do filtro gerado pelo runtime.",
+          "Controls whether the trigger shows the full path or only the last level, and lets you tune the placeholder of the runtime-generated filter input.",
+        ),
+      },
+      {
         name: "r8:cascader-change",
         description: l("Emits the final value, labels and full path after selection.", "Emits the final value, labels and full path after selection."),
+      },
+      {
+        name: "r8:cascader-clear",
+        description: l("Emits an empty payload when the current selection is cleared.", "Emits an empty payload when the current selection is cleared."),
       },
     ],
   },
@@ -1153,79 +1822,398 @@ const formComponents = [
     name: "Checkbox",
     group: "form",
     summary: l(
-      "Controle binario para multiplas selecoes com caixa retro e feedback visual imediato.",
-      "Binary control for multiple selections with a retro box and immediate visual feedback.",
+      "Controle binario para listas, preferencias e padroes de 'check all', com suporte a estado misto, tamanho e shell opcional com borda.",
+      "Binary control for lists, preferences, and 'check all' patterns, with support for mixed state, sizing, and an optional bordered shell.",
     ),
-    classes: ["r8-checkbox", "r8-checkbox__box"],
+    classes: [
+      "r8-checkbox",
+      "r8-checkbox__box",
+      "r8-checkbox--sm",
+      "r8-checkbox--lg",
+      "r8-checkbox--bordered",
+      "is-checked",
+      "is-indeterminate",
+    ],
     preview: `<div class="r8-stack">
   <label class="r8-checkbox is-checked">
     <span class="r8-checkbox__box" aria-hidden="true"></span>
     <span>Enable scanlines</span>
   </label>
-  <label class="r8-checkbox">
+  <label class="r8-checkbox" data-r8-border="true" data-r8-indeterminate="true" aria-checked="mixed">
     <span class="r8-checkbox__box" aria-hidden="true"></span>
-    <span>Mute sound effects</span>
+    <span>Sync selected modules only</span>
+  </label>
+  <label class="r8-checkbox" data-r8-size="lg" aria-disabled="true">
+    <span class="r8-checkbox__box" aria-hidden="true"></span>
+    <span>Locked by mission policy</span>
   </label>
 </div>`,
+    code: `<label
+  class="r8-checkbox"
+  data-r8-size="lg"
+  data-r8-border="true"
+  data-r8-indeterminate="true"
+  aria-checked="mixed"
+  aria-label="Partial module selection"
+>
+  <span class="r8-checkbox__box" aria-hidden="true"></span>
+  <span>Sync selected modules only</span>
+</label>`,
+    anatomy: ll(
+      [
+        "`r8-checkbox` e o host clicavel que recebe estado, foco e os helpers declarativos do componente.",
+        "`r8-checkbox__box` desenha a caixa pixelada, o checkmark e a barra do estado misto.",
+        "O texto ao lado do box funciona como label visivel e ajuda a ampliar a area de clique.",
+        "`data-r8-indeterminate=\"true\"` e `aria-checked=\"mixed\"` comunicam selecao parcial sem inventar markup extra.",
+        "`data-r8-size` e `data-r8-border` ajustam footprint e shell visual sem trocar a estrutura base.",
+      ],
+      [
+        "`r8-checkbox` is the clickable host that receives state, focus, and the component's declarative helpers.",
+        "`r8-checkbox__box` draws the pixel box, the checkmark, and the mixed-state dash.",
+        "The text beside the box acts as the visible label and enlarges the click target.",
+        "`data-r8-indeterminate=\"true\"` plus `aria-checked=\"mixed\"` communicate partial selection without extra markup.",
+        "`data-r8-size` and `data-r8-border` adjust footprint and shell styling without changing the base structure.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Mantenha texto visivel ou `aria-label` quando o copy ao lado do controle nao explicar a acao sozinho.",
+        "Use `aria-checked=\"mixed\"` apenas para estados parciais, como um parent control que resume um grupo.",
+        "Em hosts nao nativos, prefira `aria-disabled=\"true\"` para expor bloqueio sem perder semantica.",
+        "Se o state precisar participar de submit HTML tradicional, espelhe o valor em um input nativo ou hidden controlado pela aplicacao hospedeira.",
+      ],
+      [
+        "Keep visible text or an `aria-label` when the copy beside the control does not fully explain the action.",
+        "Use `aria-checked=\"mixed\"` only for partial states, such as a parent control summarizing a group.",
+        "On non-native hosts, prefer `aria-disabled=\"true\"` so the blocked state remains semantic.",
+        "If the state must participate in traditional HTML form submission, mirror it into a native or hidden input controlled by the host application.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-checkbox / r8-checkbox__box",
+        description: l(
+          "Root clicavel e caixa visual que sustentam o estado binario sem depender de wrappers extras.",
+          "Clickable root and visual box that carry the binary state without extra wrappers.",
+        ),
+      },
+      {
+        name: "r8-checkbox--sm / --lg / --bordered",
+        description: l(
+          "Modifiers para reduzir, ampliar ou envolver o controle em um shell com borda sem trocar o markup base.",
+          "Modifiers for compact, large, or bordered treatments without replacing the base markup.",
+        ),
+      },
+      {
+        name: "data-r8-size / data-r8-border / data-r8-indeterminate",
+        description: l(
+          "Helpers declarativos para tamanho, shell com borda e estado misto antes da primeira interacao do usuario.",
+          "Declarative helpers for size, bordered shell, and mixed state before the user's first interaction.",
+        ),
+      },
+      {
+        name: "aria-checked=\"mixed\" / aria-disabled=\"true\"",
+        description: l(
+          "Explicita estados parcial e desabilitado quando o host nao e um input nativo.",
+          "Makes partial and disabled states explicit when the host is not a native input.",
+        ),
+      },
+      {
+        name: "r8:binary-change",
+        description: l(
+          "Evento emitido quando o Checkbox muda de estado, incluindo o recorte de `indeterminate` no payload.",
+          "Event emitted when Checkbox changes state, including the `indeterminate` slice in the payload.",
+        ),
+      },
+    ],
   },
   {
     id: "color-picker",
     name: "Color Picker",
     group: "form",
     summary: l(
-      "Trigger visual de cor com painel acoplado para themes, avatar accents e customizacao de UI.",
-      "Color trigger with an attached panel for themes, avatar accents and UI customization.",
+      "Seletor de cor com dois modos: swatches fixas para paletas controladas e picker dinamico com arraste para qualquer hue.",
+      "Color selector with two modes: fixed swatches for controlled palettes and a dynamic drag-based picker for any hue.",
     ),
-    classes: ["r8-color-picker", "r8-color-picker__trigger", "r8-color-picker__panel", "r8-color-picker__swatches", "r8-color-picker__swatch"],
-    preview: `<div class="r8-color-picker">
-  <div class="r8-color-picker__trigger">
-    <span>Primary color</span>
-    <span class="r8-badge r8-badge--primary" data-r8-choice-display>#2563eb</span>
-  </div>
-  <div class="r8-color-picker__panel">
-    <div class="r8-color-picker__swatches">
-      <div class="r8-color-picker__swatch is-selected" data-r8-value="#2563eb" style="background:#2563eb;"></div>
-      <div class="r8-color-picker__swatch" data-r8-value="#64748b" style="background:#64748b;"></div>
-      <div class="r8-color-picker__swatch" data-r8-value="#7c3aed" style="background:#7c3aed;"></div>
-      <div class="r8-color-picker__swatch" data-r8-value="#16a34a" style="background:#16a34a;"></div>
-      <div class="r8-color-picker__swatch" data-r8-value="#0891b2" style="background:#0891b2;"></div>
-      <div class="r8-color-picker__swatch" data-r8-value="#dc2626" style="background:#dc2626;"></div>
+    classes: [
+      "r8-color-picker",
+      "r8-color-picker__trigger",
+      "r8-color-picker__display",
+      "r8-color-picker__sample",
+      "r8-color-picker__panel",
+      "r8-color-picker__toolbar",
+      "r8-color-picker__clear",
+      "r8-color-picker__swatches",
+      "r8-color-picker__swatch",
+      "r8-color-picker__workspace",
+      "r8-color-picker__dynamic-shell",
+      "r8-color-picker__spectrum",
+      "r8-color-picker__channel",
+      "r8-color-picker__input",
+      "r8-color-picker__confirm",
+    ],
+    preview: `<div class="docs-demo__stack docs-demo__stack--color-picker">
+  <div
+    class="r8-color-picker"
+    data-r8-clearable="true"
+    data-r8-placeholder="Pick accent color"
+  >
+    <button class="r8-color-picker__trigger" type="button" aria-label="Pick accent color">
+      <span class="r8-color-picker__display">
+        <span class="r8-color-picker__sample" data-r8-color-sample aria-hidden="true"></span>
+        <span data-r8-choice-display>#2563eb</span>
+      </span>
+      <span class="r8-choice__caret" aria-hidden="true">&gt;</span>
+    </button>
+    <div class="r8-color-picker__panel" hidden>
+      <div class="r8-color-picker__toolbar">
+        <p class="r8-text r8-text--xs r8-text--muted">Core palette</p>
+        <button class="r8-color-picker__clear r8-btn r8-btn--sm r8-btn--secondary" type="button">Clear</button>
+      </div>
+      <div class="r8-color-picker__swatches">
+        <div class="r8-color-picker__swatch is-selected" data-r8-value="#2563eb" aria-label="Primary blue" style="background-color:#2563eb;"></div>
+        <div class="r8-color-picker__swatch" data-r8-value="#64748b" aria-label="Slate" style="background-color:#64748b;"></div>
+        <div class="r8-color-picker__swatch" data-r8-value="#7c3aed" aria-label="Violet" style="background-color:#7c3aed;"></div>
+        <div class="r8-color-picker__swatch" data-r8-value="#16a34a" aria-label="Green" style="background-color:#16a34a;"></div>
+        <div class="r8-color-picker__swatch" data-r8-value="#0891b2" aria-label="Cyan" style="background-color:#0891b2;"></div>
+        <div class="r8-color-picker__swatch" data-r8-value="#dc2626" aria-label="Red" style="background-color:#dc2626;"></div>
+      </div>
     </div>
   </div>
+
+  <div
+    class="r8-color-picker"
+    data-r8-mode="dynamic"
+    data-r8-clearable="true"
+    data-r8-size="lg"
+    data-r8-value="#409eff"
+    data-r8-placeholder="Pick any accent"
+  >
+    <button class="r8-color-picker__trigger" type="button" aria-label="Pick any accent">
+      <span class="r8-color-picker__display">
+        <span class="r8-color-picker__sample" data-r8-color-sample aria-hidden="true"></span>
+        <span data-r8-choice-display>#409eff</span>
+      </span>
+      <span class="r8-choice__caret" aria-hidden="true">&gt;</span>
+    </button>
+    <div class="r8-color-picker__panel" hidden></div>
+  </div>
 </div>`,
+    code: `<div
+  class="r8-color-picker"
+  data-r8-mode="dynamic"
+  data-r8-clearable="true"
+  data-r8-size="lg"
+  data-r8-show-alpha="true"
+  data-r8-value="rgba(64, 158, 255, 0.82)"
+  data-r8-placeholder="Pick accent color"
+>
+  <button class="r8-color-picker__trigger" type="button" aria-label="Pick accent color">
+    <span class="r8-color-picker__display">
+      <span class="r8-color-picker__sample" data-r8-color-sample aria-hidden="true"></span>
+      <span data-r8-choice-display>rgba(64, 158, 255, 0.82)</span>
+    </span>
+    <span class="r8-choice__caret" aria-hidden="true">&gt;</span>
+  </button>
+
+  <div class="r8-color-picker__panel" hidden></div>
+</div>`,
+    anatomy: ll(
+      [
+        "`r8-color-picker` continua sendo o shell unico do componente, agora com `data-r8-mode=\"fixed\"` para swatches ou `data-r8-mode=\"dynamic\"` para o picker livre.",
+        "`r8-color-picker__trigger` e a surface clicavel que abre o painel e espelha o valor atual no estado fechado.",
+        "`r8-color-picker__display` combina amostra visual e valor textual sem precisar improvisar badges soltas.",
+        "No modo fixo, `r8-color-picker__toolbar`, `r8-color-picker__clear`, `r8-color-picker__swatches` e `r8-color-picker__swatch` organizam presets curados.",
+        "No modo dinamico, `r8-color-picker__workspace`, `r8-color-picker__spectrum`, `r8-color-picker__channel`, `r8-color-picker__input` e `r8-color-picker__confirm` montam o fluxo de arraste, input e confirmacao.",
+      ],
+      [
+        "`r8-color-picker` stays the single shell for the component, now with `data-r8-mode=\"fixed\"` for swatches or `data-r8-mode=\"dynamic\"` for the free picker.",
+        "`r8-color-picker__trigger` is the clickable surface that opens the panel and mirrors the current value in the closed state.",
+        "`r8-color-picker__display` combines the visual sample and the textual value so you do not need loose badges.",
+        "In fixed mode, `r8-color-picker__toolbar`, `r8-color-picker__clear`, `r8-color-picker__swatches`, and `r8-color-picker__swatch` organize curated presets.",
+        "In dynamic mode, `r8-color-picker__workspace`, `r8-color-picker__spectrum`, `r8-color-picker__channel`, `r8-color-picker__input`, and `r8-color-picker__confirm` build the drag, input, and confirmation flow.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Mantenha `aria-label` ou um texto visivel forte no trigger para explicar o contexto da cor escolhida.",
+        "Cada swatch deve ter `aria-label` descritivo quando a diferenca entre as opcoes nao puder ser entendida so pela cor.",
+        "No modo dinamico, preserve o valor textual e o input para que a escolha nao dependa apenas do board visual.",
+        "Use `data-r8-show-alpha` com valor textual visivel para nao depender apenas da transparencia como significado.",
+        "Se a cor final precisar entrar em submit HTML, espelhe `data-r8-value` em um input real controlado pela aplicacao hospedeira.",
+      ],
+      [
+        "Keep an `aria-label` or strong visible trigger text so the chosen color has context beyond the swatch alone.",
+        "Each swatch should carry a descriptive `aria-label` when options cannot be understood by color alone.",
+        "In dynamic mode, keep the textual value and input visible so the choice does not rely on the visual board alone.",
+        "Use `data-r8-show-alpha` together with a visible textual value so transparency is not the only carrier of meaning.",
+        "If the final color must participate in HTML form submission, mirror `data-r8-value` into a real input controlled by the host app.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-color-picker__display / r8-color-picker__sample",
+        description: l(
+          "Par visual para mostrar a cor atual com texto legivel e uma amostra pequena dentro do trigger.",
+          "Visual pair for showing the current color with readable text and a compact sample inside the trigger.",
+        ),
+      },
+      {
+        name: "data-r8-mode / data-r8-clearable / data-r8-placeholder",
+        description: l(
+          "Escolhe entre a paleta fixa e o picker dinamico, liga a acao de limpar e define qual copy volta para o trigger quando nenhuma cor estiver ativa.",
+          "Chooses between the fixed palette and the dynamic picker, enables the clear action, and defines which copy returns to the trigger when no color is active.",
+        ),
+      },
+      {
+        name: "data-r8-size / data-r8-show-alpha",
+        description: l(
+          "Controlam densidade do trigger e do painel, alem do alpha slider no modo dinamico e do checkerboard nas amostras translucidas.",
+          "Control trigger and panel density, plus the alpha slider in dynamic mode and checkerboard treatment for translucent samples.",
+        ),
+      },
+      {
+        name: "r8-color-picker__toolbar / r8-color-picker__workspace / r8-color-picker__clear",
+        description: l(
+          "Organizam tanto os presets fixos quanto o workspace dinamico sem precisar criar wrappers paralelos fora do painel.",
+          "Organize both the fixed presets and the dynamic workspace without parallel wrappers outside the panel.",
+        ),
+      },
+      {
+        name: "r8:color-active-change / r8:color-change / r8:color-clear",
+        description: l(
+          "Eventos dedicados para preview ativo, confirmacao final e reset, alem do fallback generico `r8:choice-change`.",
+          "Dedicated events for active preview, final confirmation, and reset, alongside the generic `r8:choice-change` fallback.",
+        ),
+      },
+    ],
   },
   {
     id: "date-picker",
     name: "Date Picker",
     group: "form",
     summary: l(
-      "Campo de data com trigger e painel retro para agendas, filtros e programacao.",
-      "Date field with a retro trigger and panel for schedules, filters and planning.",
+      "Campo de data com painel retro, locale configuravel, atalhos declarativos e suporte opcional a week numbers.",
+      "Date field with a retro panel, configurable locale, declarative shortcuts, and optional week numbers.",
     ),
     classes: [
       "r8-date-picker",
       "r8-date-picker__trigger",
       "r8-date-picker__panel",
       "r8-date-picker__calendar",
+      "r8-date-picker__shortcuts",
+      "r8-date-picker__shortcut",
       "r8-date-picker__header",
+      "r8-date-picker__weekdays",
+      "r8-date-picker__week-number",
       "r8-date-picker__grid",
       "r8-date-picker__day",
       "r8-date-picker__footer",
     ],
-    preview: `<div
+    preview: `<div class="docs-demo__stack docs-demo__stack--date-picker">
+  <div
+    class="r8-date-picker"
+    data-r8-value="2026-03-28"
+    data-r8-month="2026-03"
+    data-r8-placeholder="Select launch date"
+    data-r8-shortcuts="today,yesterday,week-ago"
+    data-r8-show-week-number="true"
+    data-r8-week-start="1"
+    data-r8-min="2026-03-05"
+    data-r8-max="2026-04-18"
+  >
+    <button class="r8-date-picker__trigger" type="button" aria-label="Select launch date">
+      <span data-r8-choice-display>Select launch date</span>
+      <span class="r8-badge r8-badge--info">Mon start</span>
+    </button>
+    <div class="r8-date-picker__panel"></div>
+  </div>
+</div>`,
+    code: `<div
   class="r8-date-picker"
   data-r8-value="2026-03-28"
   data-r8-month="2026-03"
   data-r8-placeholder="Select launch date"
+  data-r8-locale="en-US"
+  data-r8-week-start="1"
+  data-r8-shortcuts="today,yesterday,week-ago"
+  data-r8-show-week-number="true"
   data-r8-min="2026-03-05"
   data-r8-max="2026-04-18"
 >
-  <button class="r8-date-picker__trigger" type="button">
+  <button class="r8-date-picker__trigger" type="button" aria-label="Select launch date">
     <span data-r8-choice-display>Select launch date</span>
-    <span class="r8-badge r8-badge--info">UTC-3</span>
+    <span class="r8-badge r8-badge--info">Mon start</span>
   </button>
   <div class="r8-date-picker__panel"></div>
 </div>`,
+    anatomy: ll(
+      [
+        "`r8-date-picker` agrupa trigger e popup calendar em um shell unico para selecao de datas.",
+        "`r8-date-picker__trigger` e a surface clicavel que espelha o label final formatado pelo runtime.",
+        "`r8-date-picker__shortcuts` e `r8-date-picker__shortcut` criam atalhos recorrentes no topo do calendario sem wrappers extras.",
+        "`r8-date-picker__week-number`, quando ativado, adiciona contexto semanal sem interferir na grade principal de dias.",
+        "`r8-date-picker__footer` fecha o fluxo com resumo da data atual e acoes de hoje/clear.",
+      ],
+      [
+        "`r8-date-picker` groups the trigger and popup calendar into a single shell for date selection.",
+        "`r8-date-picker__trigger` is the clickable surface that mirrors the final label formatted by the runtime.",
+        "`r8-date-picker__shortcuts` and `r8-date-picker__shortcut` create recurring shortcut actions at the top of the calendar without extra wrappers.",
+        "`r8-date-picker__week-number`, when enabled, adds weekly context without interfering with the main day grid.",
+        "`r8-date-picker__footer` closes the flow with the current date summary and today/clear actions.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Use `aria-label` forte no trigger quando o contexto da data nao estiver evidente no texto ao redor.",
+        "Mantenha o valor textual visivel no trigger para nao depender apenas da posicao visual dentro do calendario.",
+        "Atalhos devem usar labels claras, porque eles aparecem como acoes e nao como dias na grade.",
+        "Se a data fizer parte de submit HTML, espelhe `data-r8-value` em um input real controlado pela aplicacao.",
+      ],
+      [
+        "Use a strong `aria-label` on the trigger when the date context is not already obvious in nearby copy.",
+        "Keep the textual value visible in the trigger so the choice does not rely only on the visual calendar position.",
+        "Shortcuts should use clear labels because they appear as actions rather than days inside the grid.",
+        "If the date must participate in HTML form submission, mirror `data-r8-value` into a real input controlled by the host app.",
+      ],
+    ),
+    api: [
+      {
+        name: "data-r8-locale / data-r8-week-start",
+        description: l(
+          "Controlam a linguagem dos labels e o dia inicial da semana sem acoplar o componente a um framework.",
+          "Control label language and which day starts the week without coupling the component to a framework.",
+        ),
+      },
+      {
+        name: "data-r8-shortcuts / r8-date-picker__shortcut",
+        description: l(
+          "Geram atalhos declarativos no topo do painel para saltar a datas recorrentes como hoje, ontem e uma semana atras.",
+          "Generate declarative shortcuts at the top of the panel for recurring dates such as today, yesterday, and a week ago.",
+        ),
+      },
+      {
+        name: "data-r8-show-week-number / r8-date-picker__week-number",
+        description: l(
+          "Adicionam o contexto de planejamento semanal sem mudar a logica principal de selecao de dia.",
+          "Add weekly planning context without changing the main day-selection logic.",
+        ),
+      },
+      {
+        name: "data-r8-min / data-r8-max / data-r8-month",
+        description: l(
+          "Limitam o intervalo disponivel e definem o mes inicialmente visivel quando o popup abre.",
+          "Limit the available range and define the initially visible month when the popup opens.",
+        ),
+      },
+      {
+        name: "r8:date-change",
+        description: l(
+          "Evento emitido quando a data muda, incluindo o valor de storage e o label formatado.",
+          "Event emitted when the date changes, including the storage value and formatted label.",
+        ),
+      },
+    ],
   },
   {
     id: "datetime-picker",

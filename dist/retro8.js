@@ -71,6 +71,7 @@
   const progressVariants = ["success", "warning", "danger"];
   const windowVariants = ["success", "danger"];
   const navbarVariants = ["dark"];
+  let colorParserContext = null;
 
   function toArray(value) {
     return Array.from(value || []);
@@ -534,6 +535,324 @@
     );
   }
 
+  function getColorChoiceSample(trigger) {
+    if (!isElement(trigger)) {
+      return null;
+    }
+
+    return trigger.querySelector("[data-r8-color-sample]");
+  }
+
+  function getColorChoicePlaceholder(container, state) {
+    if (typeof container?.dataset?.r8Placeholder === "string" && container.dataset.r8Placeholder.trim()) {
+      return container.dataset.r8Placeholder.trim();
+    }
+
+    const triggerLabel = state?.trigger?.getAttribute("aria-label");
+    if (triggerLabel?.trim()) {
+      return triggerLabel.trim();
+    }
+
+    return "Select color";
+  }
+
+  function getColorSwatchFill(option) {
+    if (!isElement(option)) {
+      return "";
+    }
+
+    const explicitSwatch = option.dataset.r8Swatch;
+    if (explicitSwatch?.trim()) {
+      return explicitSwatch.trim();
+    }
+
+    if (option.style?.backgroundColor?.trim()) {
+      return option.style.backgroundColor.trim();
+    }
+
+    if (option.style?.background?.trim()) {
+      return option.style.background.trim();
+    }
+
+    return option.dataset.r8Value?.trim() || "";
+  }
+
+  function colorValueHasAlpha(value) {
+    if (typeof value !== "string") {
+      return false;
+    }
+
+    const normalized = value.trim().toLowerCase();
+    return normalized.startsWith("rgba(") || normalized.startsWith("hsla(") || /^#(?:[0-9a-f]{4}|[0-9a-f]{8})$/i.test(normalized);
+  }
+
+  function getColorPickerMode(container) {
+    return container?.dataset?.r8Mode?.trim().toLowerCase() === "dynamic" ? "dynamic" : "fixed";
+  }
+
+  function cloneColorValue(color) {
+    if (!color) {
+      return null;
+    }
+
+    const alpha = Number(color.a);
+
+    return {
+      r: clamp(Math.round(Number(color.r) || 0), 0, 255),
+      g: clamp(Math.round(Number(color.g) || 0), 0, 255),
+      b: clamp(Math.round(Number(color.b) || 0), 0, 255),
+      a: Number.isFinite(alpha) ? clamp(alpha, 0, 1) : 1,
+    };
+  }
+
+  function getColorParserContext() {
+    if (colorParserContext) {
+      return colorParserContext;
+    }
+
+    const canvas = document.createElement("canvas");
+    canvas.width = 1;
+    canvas.height = 1;
+    colorParserContext = canvas.getContext("2d");
+    return colorParserContext;
+  }
+
+  function parseHexColor(value) {
+    const normalized = value.trim().replace(/^#/, "");
+    if (![3, 4, 6, 8].includes(normalized.length)) {
+      return null;
+    }
+
+    const expand = normalized.length <= 4
+      ? normalized
+          .split("")
+          .map((part) => `${part}${part}`)
+          .join("")
+      : normalized;
+
+    const hex = expand.padEnd(8, "f");
+    return {
+      r: parseInt(hex.slice(0, 2), 16),
+      g: parseInt(hex.slice(2, 4), 16),
+      b: parseInt(hex.slice(4, 6), 16),
+      a: Math.round((parseInt(hex.slice(6, 8), 16) / 255) * 1000) / 1000,
+    };
+  }
+
+  function parseRgbColor(value) {
+    const match = value.trim().match(/rgba?\((.+)\)/i);
+    if (!match) {
+      return null;
+    }
+
+    const parts = match[1]
+      .split(",")
+      .map((part) => part.trim())
+      .filter(Boolean);
+
+    if (parts.length < 3) {
+      return null;
+    }
+
+    return {
+      r: clamp(Math.round(parseFloat(parts[0]) || 0), 0, 255),
+      g: clamp(Math.round(parseFloat(parts[1]) || 0), 0, 255),
+      b: clamp(Math.round(parseFloat(parts[2]) || 0), 0, 255),
+      a: clamp(parts[3] === undefined ? 1 : parseFloat(parts[3]) || 0, 0, 1),
+    };
+  }
+
+  function parseCssColorValue(value) {
+    if (typeof value !== "string" || !value.trim()) {
+      return null;
+    }
+
+    const normalized = value.trim();
+    if (window.CSS?.supports && !window.CSS.supports("color", normalized)) {
+      return null;
+    }
+
+    const context = getColorParserContext();
+    if (!context) {
+      return null;
+    }
+
+    context.fillStyle = "#000000";
+    context.fillStyle = normalized;
+    const resolved = context.fillStyle;
+    if (typeof resolved !== "string" || !resolved.trim()) {
+      return null;
+    }
+
+    if (resolved.startsWith("#")) {
+      return parseHexColor(resolved);
+    }
+
+    if (resolved.startsWith("rgb")) {
+      return parseRgbColor(resolved);
+    }
+
+    return null;
+  }
+
+  function colorChannelToHex(value) {
+    return clamp(Math.round(Number(value) || 0), 0, 255).toString(16).padStart(2, "0");
+  }
+
+  function formatColorAlpha(value) {
+    const normalized = Math.round(clamp(Number(value), 0, 1) * 1000) / 1000;
+    if (Number.isInteger(normalized)) {
+      return String(normalized);
+    }
+
+    return normalized.toFixed(3).replace(/0+$/, "").replace(/\.$/, "");
+  }
+
+  function formatHexColor(color) {
+    const source = cloneColorValue(color);
+    if (!source) {
+      return "";
+    }
+
+    return `#${colorChannelToHex(source.r)}${colorChannelToHex(source.g)}${colorChannelToHex(source.b)}`;
+  }
+
+  function formatRgbaColor(color) {
+    const source = cloneColorValue(color);
+    if (!source) {
+      return "";
+    }
+
+    return `rgba(${source.r}, ${source.g}, ${source.b}, ${formatColorAlpha(source.a)})`;
+  }
+
+  function formatColorPickerValue(color, showAlpha) {
+    const source = cloneColorValue(color);
+    if (!source) {
+      return "";
+    }
+
+    return showAlpha ? formatRgbaColor(source) : formatHexColor(source);
+  }
+
+  function getDefaultColorPickerColor() {
+    return {
+      r: 64,
+      g: 158,
+      b: 255,
+      a: 1,
+    };
+  }
+
+  function rgbToHsv(color) {
+    const source = cloneColorValue(color) || getDefaultColorPickerColor();
+    const r = source.r / 255;
+    const g = source.g / 255;
+    const b = source.b / 255;
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    const delta = max - min;
+    let hue = 0;
+
+    if (delta !== 0) {
+      if (max === r) {
+        hue = ((g - b) / delta) % 6;
+      } else if (max === g) {
+        hue = (b - r) / delta + 2;
+      } else {
+        hue = (r - g) / delta + 4;
+      }
+    }
+
+    return {
+      h: ((hue * 60) + 360) % 360,
+      s: max === 0 ? 0 : delta / max,
+      v: max,
+      a: source.a,
+    };
+  }
+
+  function hsvToColor(h, s, v, alpha = 1) {
+    const hue = ((Number(h) % 360) + 360) % 360;
+    const saturation = clamp(Number(s), 0, 1);
+    const value = clamp(Number(v), 0, 1);
+    const chroma = value * saturation;
+    const segment = hue / 60;
+    const x = chroma * (1 - Math.abs((segment % 2) - 1));
+    let red = 0;
+    let green = 0;
+    let blue = 0;
+
+    if (segment >= 0 && segment < 1) {
+      red = chroma;
+      green = x;
+    } else if (segment < 2) {
+      red = x;
+      green = chroma;
+    } else if (segment < 3) {
+      green = chroma;
+      blue = x;
+    } else if (segment < 4) {
+      green = x;
+      blue = chroma;
+    } else if (segment < 5) {
+      red = x;
+      blue = chroma;
+    } else {
+      red = chroma;
+      blue = x;
+    }
+
+    const match = value - chroma;
+    return {
+      r: Math.round((red + match) * 255),
+      g: Math.round((green + match) * 255),
+      b: Math.round((blue + match) * 255),
+      a: clamp(Number(alpha), 0, 1),
+    };
+  }
+
+  function colorValuesMatch(first, second) {
+    const a = typeof first === "string" ? parseCssColorValue(first) : cloneColorValue(first);
+    const b = typeof second === "string" ? parseCssColorValue(second) : cloneColorValue(second);
+    if (!a || !b) {
+      return false;
+    }
+
+    return a.r === b.r && a.g === b.g && a.b === b.b && Math.abs(a.a - b.a) < 0.002;
+  }
+
+  function getColorValueFill(value) {
+    const parsed = parseCssColorValue(value);
+    if (!parsed) {
+      return value || "";
+    }
+
+    return parsed.a < 1 ? formatRgbaColor(parsed) : formatHexColor(parsed);
+  }
+
+  function buildColorPickerDetail(state, value, swatch, source, option = null) {
+    return {
+      kind: "color",
+      mode: state?.mode || "fixed",
+      option,
+      text: value,
+      value,
+      swatch,
+      alpha: colorValueHasAlpha(value || swatch),
+      source: source || "api",
+    };
+  }
+
+  function syncColorPickerClear(state) {
+    if (!(state?.clearButton instanceof HTMLElement)) {
+      return;
+    }
+
+    const hasValue = Boolean((state.selectedValue || "").trim() || state.selectedOption);
+    state.clearButton.hidden = !(state.clearable && hasValue);
+  }
+
   function setExpanded(trigger, expanded) {
     if (!isElement(trigger)) {
       return;
@@ -595,6 +914,10 @@
       resetCascaderQuery(state);
     }
 
+    if (typeof state.onClose === "function") {
+      state.onClose();
+    }
+
     setHidden(state.panel, true);
     state.panel.classList.remove("is-open");
     syncExpandedState(state, false);
@@ -623,6 +946,10 @@
     }
 
     floatingStates.add(container);
+
+    if (typeof state.onOpen === "function") {
+      state.onOpen();
+    }
   }
 
   function toggleFloating(container) {
@@ -637,6 +964,542 @@
     }
 
     openFloating(container);
+  }
+
+  function syncDynamicColorPickerSelection(state, value) {
+    if (!state?.options?.length) {
+      state.selectedOption = null;
+      return;
+    }
+
+    const match = state.options.find((option) => colorValuesMatch(getTextValue(option), value)) || null;
+    state.options.forEach((option) => {
+      const isSelected = option === match;
+      option.classList.toggle("is-selected", isSelected);
+      option.classList.toggle("is-active", false);
+      option.setAttribute("aria-selected", isSelected ? "true" : "false");
+      option.removeAttribute("data-r8-active");
+    });
+
+    state.selectedOption = match;
+    state.activeOption = match;
+  }
+
+  function syncDynamicColorPickerUi(state, options = {}) {
+    if (!state?.dynamicSpectrum || !state.dynamicSpectrumCursor || !state.dynamicHue || !state.dynamicHueThumb) {
+      return;
+    }
+
+    const color = cloneColorValue(state.dynamicDraftColor) || getDefaultColorPickerColor();
+    const hsv = state.dynamicHsv || rgbToHsv(color);
+    const hueColor = hsvToColor(hsv.h, 1, 1, 1);
+    const spectrumFill = formatHexColor(hueColor);
+    const alphaFill = formatRgbaColor({
+      r: color.r,
+      g: color.g,
+      b: color.b,
+      a: 1,
+    });
+    const draftValue = formatColorPickerValue(color, state.showAlpha);
+    const draftSwatch = state.showAlpha ? formatRgbaColor(color) : formatHexColor(color);
+
+    state.dynamicSpectrum.style.setProperty("--r8-color-picker-spectrum", spectrumFill);
+    state.dynamicSpectrumCursor.style.left = `${clamp(hsv.s, 0, 1) * 100}%`;
+    state.dynamicSpectrumCursor.style.top = `${(1 - clamp(hsv.v, 0, 1)) * 100}%`;
+
+    const huePosition = (((360 - hsv.h) % 360) / 360) * 100;
+    state.dynamicHueThumb.style.top = `${huePosition}%`;
+    state.dynamicHue.setAttribute("aria-valuenow", String(Math.round(hsv.h)));
+    state.dynamicHue.setAttribute("aria-valuetext", `${Math.round(hsv.h)}deg`);
+
+    if (state.dynamicAlpha instanceof HTMLElement && state.dynamicAlphaThumb instanceof HTMLElement) {
+      state.dynamicAlpha.hidden = !state.showAlpha;
+      state.dynamicAlpha.style.setProperty("--r8-color-picker-alpha", alphaFill);
+      state.dynamicAlphaThumb.style.top = `${(1 - clamp(color.a, 0, 1)) * 100}%`;
+      state.dynamicAlpha.setAttribute("aria-valuenow", String(Math.round(clamp(color.a, 0, 1) * 100)));
+      state.dynamicAlpha.setAttribute("aria-valuetext", `${Math.round(clamp(color.a, 0, 1) * 100)}%`);
+    }
+
+    if (state.dynamicPreviewSample instanceof HTMLElement) {
+      state.dynamicPreviewSample.style.backgroundColor = draftSwatch;
+      state.dynamicPreviewSample.classList.toggle("is-empty", !draftSwatch);
+    }
+
+    if (state.dynamicInput instanceof HTMLInputElement && options.preserveInput !== true) {
+      state.dynamicInput.value = options.inputValue || draftValue;
+      state.dynamicInput.setAttribute("aria-invalid", "false");
+    }
+  }
+
+  function updateDynamicColorPickerDraft(state, nextColor, options = {}) {
+    if (!state) {
+      return;
+    }
+
+    const color = cloneColorValue(nextColor) || getDefaultColorPickerColor();
+    const value = formatColorPickerValue(color, state.showAlpha);
+    const swatch = state.showAlpha ? formatRgbaColor(color) : formatHexColor(color);
+    const source = options.source || "pointer";
+
+    state.dynamicDraftColor = color;
+    state.dynamicHsv = rgbToHsv(color);
+    state.colorDisplayValue = value;
+    state.colorDisplaySwatch = swatch;
+
+    syncDynamicColorPickerUi(state, { preserveInput: options.preserveInput === true });
+    updateChoiceDisplay(state.container, null, state.family || { kind: "color" });
+
+    if (options.silent !== true) {
+      emitComponentEvent(state.container, "color-active-change", buildColorPickerDetail(state, value, swatch, source));
+    }
+  }
+
+  function commitDynamicColorPicker(state, options = {}) {
+    if (!state) {
+      return;
+    }
+
+    const color = cloneColorValue(state.dynamicDraftColor) || getDefaultColorPickerColor();
+    const value = formatColorPickerValue(color, state.showAlpha);
+    const swatch = state.showAlpha ? formatRgbaColor(color) : formatHexColor(color);
+    const silent = options.silent === true;
+    const source = options.source || "confirm";
+
+    state.dynamicCommittedColor = cloneColorValue(color);
+    state.dynamicCommitPending = true;
+    state.selectedValue = value;
+    state.colorDisplayValue = value;
+    state.colorDisplaySwatch = swatch;
+    state.container.dataset.r8Value = value;
+
+    syncDynamicColorPickerSelection(state, value);
+    syncDynamicColorPickerUi(state);
+    syncColorPickerClear(state);
+    updateChoiceDisplay(state.container, null, state.family || { kind: "color" });
+
+    if (!silent) {
+      const detail = buildColorPickerDetail(state, value, swatch, source);
+      emitComponentEvent(state.container, "color-change", detail);
+      emitComponentEvent(state.container, "choice-change", detail);
+    }
+
+    if (options.close !== false && state.panel && state.trigger && isOpen(state.panel)) {
+      closeFloating(state.container);
+      state.trigger.focus({ preventScroll: true });
+    }
+  }
+
+  function ensureDynamicColorPickerStructure(state) {
+    if (!state?.panel) {
+      return;
+    }
+
+    let workspace = firstMatch(state.panel, ".r8-color-picker__workspace");
+    if (!(workspace instanceof HTMLElement)) {
+      workspace = document.createElement("div");
+      workspace.className = "r8-color-picker__workspace";
+      state.panel.append(workspace);
+    }
+
+    let shell = firstMatch(workspace, ".r8-color-picker__dynamic-shell");
+    if (!(shell instanceof HTMLElement)) {
+      shell = document.createElement("div");
+      shell.className = "r8-color-picker__dynamic-shell";
+      workspace.append(shell);
+    }
+
+    let spectrum = firstMatch(shell, ".r8-color-picker__spectrum");
+    if (!(spectrum instanceof HTMLElement)) {
+      spectrum = document.createElement("div");
+      spectrum.className = "r8-color-picker__spectrum";
+      shell.append(spectrum);
+    }
+
+    let spectrumCursor = firstMatch(spectrum, ".r8-color-picker__spectrum-cursor");
+    if (!(spectrumCursor instanceof HTMLElement)) {
+      spectrumCursor = document.createElement("span");
+      spectrumCursor.className = "r8-color-picker__spectrum-cursor";
+      spectrum.append(spectrumCursor);
+    }
+
+    let channels = firstMatch(shell, ".r8-color-picker__channels");
+    if (!(channels instanceof HTMLElement)) {
+      channels = document.createElement("div");
+      channels.className = "r8-color-picker__channels";
+      shell.append(channels);
+    }
+
+    let hue = firstMatch(channels, ".r8-color-picker__channel--hue");
+    if (!(hue instanceof HTMLElement)) {
+      hue = document.createElement("div");
+      hue.className = "r8-color-picker__channel r8-color-picker__channel--hue";
+      channels.append(hue);
+    }
+
+    let hueThumb = firstMatch(hue, ".r8-color-picker__channel-thumb");
+    if (!(hueThumb instanceof HTMLElement)) {
+      hueThumb = document.createElement("span");
+      hueThumb.className = "r8-color-picker__channel-thumb";
+      hue.append(hueThumb);
+    }
+
+    let alpha = firstMatch(channels, ".r8-color-picker__channel--alpha");
+    if (!(alpha instanceof HTMLElement)) {
+      alpha = document.createElement("div");
+      alpha.className = "r8-color-picker__channel r8-color-picker__channel--alpha";
+      channels.append(alpha);
+    }
+
+    let alphaThumb = firstMatch(alpha, ".r8-color-picker__channel-thumb");
+    if (!(alphaThumb instanceof HTMLElement)) {
+      alphaThumb = document.createElement("span");
+      alphaThumb.className = "r8-color-picker__channel-thumb";
+      alpha.append(alphaThumb);
+    }
+
+    let field = firstMatch(workspace, ".r8-color-picker__field");
+    if (!(field instanceof HTMLElement)) {
+      field = document.createElement("label");
+      field.className = "r8-color-picker__field";
+      workspace.append(field);
+    }
+
+    let previewSample = firstMatch(field, ".r8-color-picker__sample--panel");
+    if (!(previewSample instanceof HTMLElement)) {
+      previewSample = document.createElement("span");
+      previewSample.className = "r8-color-picker__sample r8-color-picker__sample--panel";
+      previewSample.setAttribute("aria-hidden", "true");
+      field.prepend(previewSample);
+    }
+
+    let input = firstMatch(field, ".r8-color-picker__input");
+    if (!(input instanceof HTMLInputElement)) {
+      input = document.createElement("input");
+      input.className = "r8-color-picker__input r8-input";
+      input.type = "text";
+      input.autocomplete = "off";
+      input.spellcheck = false;
+      input.setAttribute("inputmode", "text");
+      field.append(input);
+    }
+
+    let actions = firstMatch(workspace, ".r8-color-picker__actions");
+    if (!(actions instanceof HTMLElement)) {
+      actions = document.createElement("div");
+      actions.className = "r8-color-picker__actions";
+      workspace.append(actions);
+    }
+
+    if (state.clearable) {
+      if (!(state.clearButton instanceof HTMLElement)) {
+        state.clearButton = document.createElement("button");
+        state.clearButton.type = "button";
+        state.clearButton.className = "r8-color-picker__clear r8-btn r8-btn--sm r8-btn--secondary";
+        state.clearButton.textContent = "Clear";
+      }
+
+      if (state.clearButton.parentElement !== actions) {
+        actions.prepend(state.clearButton);
+      }
+    }
+
+    let confirmButton = firstMatch(actions, ".r8-color-picker__confirm");
+    if (!(confirmButton instanceof HTMLButtonElement)) {
+      confirmButton = document.createElement("button");
+      confirmButton.type = "button";
+      confirmButton.className = "r8-color-picker__confirm r8-btn r8-btn--sm";
+      confirmButton.textContent = "OK";
+      actions.append(confirmButton);
+    }
+
+    spectrum.tabIndex = 0;
+    spectrum.setAttribute("role", "group");
+    spectrum.setAttribute("aria-label", state.trigger?.getAttribute("aria-label") || "Select color");
+    hue.tabIndex = 0;
+    hue.setAttribute("role", "slider");
+    hue.setAttribute("aria-label", "Hue");
+    hue.setAttribute("aria-valuemin", "0");
+    hue.setAttribute("aria-valuemax", "360");
+    alpha.tabIndex = 0;
+    alpha.setAttribute("role", "slider");
+    alpha.setAttribute("aria-label", "Alpha");
+    alpha.setAttribute("aria-valuemin", "0");
+    alpha.setAttribute("aria-valuemax", "100");
+    alpha.hidden = !state.showAlpha;
+    input.setAttribute("aria-label", state.showAlpha ? "RGBA color value" : "Hex color value");
+
+    state.dynamicWorkspace = workspace;
+    state.dynamicSpectrum = spectrum;
+    state.dynamicSpectrumCursor = spectrumCursor;
+    state.dynamicHue = hue;
+    state.dynamicHueThumb = hueThumb;
+    state.dynamicAlpha = alpha;
+    state.dynamicAlphaThumb = alphaThumb;
+    state.dynamicPreviewSample = previewSample;
+    state.dynamicInput = input;
+    state.dynamicConfirmButton = confirmButton;
+  }
+
+  function bindDynamicColorPickerInteractions(state) {
+    if (!state?.dynamicSpectrum || state.dynamicBindingsReady === true) {
+      return;
+    }
+
+    state.dynamicBindingsReady = true;
+
+    const setFromSpectrum = (clientX, clientY, source = "pointer") => {
+      const rect = state.dynamicSpectrum.getBoundingClientRect();
+      const saturation = rect.width === 0 ? 0 : clamp((clientX - rect.left) / rect.width, 0, 1);
+      const value = rect.height === 0 ? 0 : clamp(1 - (clientY - rect.top) / rect.height, 0, 1);
+      const alpha = state.showAlpha ? clamp(state.dynamicDraftColor?.a ?? state.dynamicCommittedColor?.a ?? 1, 0, 1) : 1;
+      updateDynamicColorPickerDraft(state, hsvToColor(state.dynamicHsv?.h ?? 0, saturation, value, alpha), {
+        source,
+      });
+    };
+
+    const bindPointerChannel = (target, onMove) => {
+      const handleMove = (event) => {
+        if ("clientX" in event && "clientY" in event) {
+          onMove(event.clientX, event.clientY);
+        }
+      };
+
+      const handleUp = () => {
+        window.removeEventListener("pointermove", handleMove);
+        window.removeEventListener("pointerup", handleUp);
+      };
+
+      target.addEventListener("pointerdown", (event) => {
+        event.preventDefault();
+        target.focus({ preventScroll: true });
+        target.setPointerCapture?.(event.pointerId);
+        onMove(event.clientX, event.clientY);
+        window.addEventListener("pointermove", handleMove);
+        window.addEventListener("pointerup", handleUp);
+      });
+    };
+
+    bindPointerChannel(state.dynamicSpectrum, (clientX, clientY) => {
+      setFromSpectrum(clientX, clientY, "spectrum");
+    });
+
+    bindPointerChannel(state.dynamicHue, (_clientX, clientY) => {
+      const rect = state.dynamicHue.getBoundingClientRect();
+      const ratio = rect.height === 0 ? 0 : clamp((clientY - rect.top) / rect.height, 0, 1);
+      const nextHue = ((1 - ratio) * 360) % 360;
+      const nextColor = hsvToColor(nextHue, state.dynamicHsv?.s ?? 1, state.dynamicHsv?.v ?? 1, state.dynamicDraftColor?.a ?? 1);
+      updateDynamicColorPickerDraft(state, nextColor, {
+        source: "hue",
+      });
+    });
+
+    if (state.dynamicAlpha instanceof HTMLElement) {
+      bindPointerChannel(state.dynamicAlpha, (_clientX, clientY) => {
+        if (!state.showAlpha) {
+          return;
+        }
+
+        const rect = state.dynamicAlpha.getBoundingClientRect();
+        const ratio = rect.height === 0 ? 1 : clamp(1 - (clientY - rect.top) / rect.height, 0, 1);
+        const nextColor = cloneColorValue(state.dynamicDraftColor) || getDefaultColorPickerColor();
+        nextColor.a = ratio;
+        updateDynamicColorPickerDraft(state, nextColor, {
+          source: "alpha",
+        });
+      });
+    }
+
+    state.dynamicSpectrum.addEventListener("keydown", (event) => {
+      const step = event.shiftKey ? 0.1 : 0.02;
+      const current = state.dynamicHsv || rgbToHsv(state.dynamicDraftColor || getDefaultColorPickerColor());
+      let nextS = current.s;
+      let nextV = current.v;
+
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        nextS -= step;
+      } else if (event.key === "ArrowRight") {
+        event.preventDefault();
+        nextS += step;
+      } else if (event.key === "ArrowUp") {
+        event.preventDefault();
+        nextV += step;
+      } else if (event.key === "ArrowDown") {
+        event.preventDefault();
+        nextV -= step;
+      } else {
+        return;
+      }
+
+      updateDynamicColorPickerDraft(state, hsvToColor(current.h, clamp(nextS, 0, 1), clamp(nextV, 0, 1), state.dynamicDraftColor?.a ?? 1), {
+        source: "keyboard",
+      });
+    });
+
+    state.dynamicHue.addEventListener("keydown", (event) => {
+      const step = event.shiftKey ? 30 : 6;
+      const current = state.dynamicHsv || rgbToHsv(state.dynamicDraftColor || getDefaultColorPickerColor());
+      let nextHue = current.h;
+
+      if (event.key === "ArrowUp" || event.key === "ArrowRight") {
+        event.preventDefault();
+        nextHue += step;
+      } else if (event.key === "ArrowDown" || event.key === "ArrowLeft") {
+        event.preventDefault();
+        nextHue -= step;
+      } else if (event.key === "Home") {
+        event.preventDefault();
+        nextHue = 0;
+      } else if (event.key === "End") {
+        event.preventDefault();
+        nextHue = 359;
+      } else {
+        return;
+      }
+
+      updateDynamicColorPickerDraft(state, hsvToColor(nextHue, current.s, current.v, state.dynamicDraftColor?.a ?? 1), {
+        source: "keyboard",
+      });
+    });
+
+    if (state.dynamicAlpha instanceof HTMLElement) {
+      state.dynamicAlpha.addEventListener("keydown", (event) => {
+        if (!state.showAlpha) {
+          return;
+        }
+
+        const step = event.shiftKey ? 0.1 : 0.02;
+        const current = cloneColorValue(state.dynamicDraftColor) || getDefaultColorPickerColor();
+        let nextAlpha = current.a;
+
+        if (event.key === "ArrowUp" || event.key === "ArrowRight") {
+          event.preventDefault();
+          nextAlpha += step;
+        } else if (event.key === "ArrowDown" || event.key === "ArrowLeft") {
+          event.preventDefault();
+          nextAlpha -= step;
+        } else if (event.key === "Home") {
+          event.preventDefault();
+          nextAlpha = 0;
+        } else if (event.key === "End") {
+          event.preventDefault();
+          nextAlpha = 1;
+        } else {
+          return;
+        }
+
+        current.a = clamp(nextAlpha, 0, 1);
+        updateDynamicColorPickerDraft(state, current, {
+          source: "keyboard",
+        });
+      });
+    }
+
+    if (state.dynamicInput instanceof HTMLInputElement) {
+      state.dynamicInput.addEventListener("input", () => {
+        const parsed = parseCssColorValue(state.dynamicInput.value);
+        if (!parsed) {
+          state.dynamicInput.setAttribute("aria-invalid", "true");
+          return;
+        }
+
+        if (!state.showAlpha) {
+          parsed.a = 1;
+        }
+
+        state.dynamicInput.setAttribute("aria-invalid", "false");
+        updateDynamicColorPickerDraft(state, parsed, {
+          source: "input",
+          preserveInput: true,
+        });
+      });
+
+      state.dynamicInput.addEventListener("blur", () => {
+        state.dynamicInput.setAttribute("aria-invalid", "false");
+        state.dynamicInput.value = state.colorDisplayValue || "";
+      });
+
+      state.dynamicInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          const parsed = parseCssColorValue(state.dynamicInput.value);
+          if (!parsed) {
+            state.dynamicInput.setAttribute("aria-invalid", "true");
+            return;
+          }
+
+          if (!state.showAlpha) {
+            parsed.a = 1;
+          }
+
+          updateDynamicColorPickerDraft(state, parsed, {
+            source: "input",
+            preserveInput: true,
+            silent: true,
+          });
+          commitDynamicColorPicker(state, {
+            source: "input",
+          });
+        }
+      });
+    }
+
+    if (state.dynamicConfirmButton instanceof HTMLButtonElement) {
+      state.dynamicConfirmButton.addEventListener("click", (event) => {
+        event.preventDefault();
+        commitDynamicColorPicker(state, {
+          source: "confirm",
+        });
+      });
+    }
+  }
+
+  function clearColorPicker(container, options = {}) {
+    const state = choiceStates.get(container);
+    if (!state) {
+      return;
+    }
+
+    const silent = options.silent === true;
+
+    if (state.options?.length) {
+      state.options.forEach((item) => {
+        item.classList.remove("is-selected", "is-active");
+        item.setAttribute("aria-selected", "false");
+        item.removeAttribute("data-r8-active");
+      });
+    }
+
+    state.selectedOption = null;
+    state.activeOption = null;
+    state.selectedValue = "";
+    state.colorDisplayValue = "";
+    state.colorDisplaySwatch = "";
+    delete container.dataset.r8Value;
+
+    if (state.mode === "dynamic") {
+      state.dynamicCommittedColor = null;
+      state.dynamicDraftColor = cloneColorValue(state.dynamicDraftColor) || getDefaultColorPickerColor();
+      state.dynamicCommitPending = false;
+      syncDynamicColorPickerUi(state);
+    }
+
+    updateChoiceDisplay(container, null, state.family || { kind: "color" });
+    syncColorPickerClear(state);
+
+    if (state.panel && state.trigger && isOpen(state.panel)) {
+      closeFloating(container);
+      state.trigger.focus({ preventScroll: true });
+    }
+
+    if (!silent) {
+      emitComponentEvent(container, "color-clear", {
+        kind: "color",
+        mode: state.mode || "fixed",
+        value: "",
+        text: "",
+      });
+    }
   }
 
   function updateChoiceDisplay(container, option, family) {
@@ -656,15 +1519,23 @@
     }
 
     if (family.kind === "color") {
+      const sample = getColorChoiceSample(state.trigger);
+      const placeholder = getColorChoicePlaceholder(container, state);
+      const colorValue = option ? getTextValue(option) : state.colorDisplayValue || state.selectedValue || container.dataset.r8Value?.trim() || "";
+      const fill = option ? getColorSwatchFill(option) : state.colorDisplaySwatch || getColorValueFill(colorValue);
+
       if (display) {
-        display.textContent = value || "#3dc2ff";
-        if (isElement(option)) {
-          const colorValue = option.dataset.r8Value || option.style.background || option.style.backgroundColor;
-          if (colorValue) {
-            display.style.background = colorValue;
-          }
-        }
+        display.textContent = colorValue || placeholder;
+        display.classList.toggle("is-placeholder", !colorValue);
       }
+
+      if (sample instanceof HTMLElement) {
+        sample.style.backgroundColor = fill || "transparent";
+        sample.classList.toggle("is-empty", !fill);
+      } else if (display) {
+        display.style.backgroundColor = fill || "transparent";
+      }
+
       return;
     }
 
@@ -829,6 +1700,29 @@
     }
   }
 
+  function handleDynamicColorPickerTriggerKeydown(container, event) {
+    const state = choiceStates.get(container);
+    if (!state?.panel) {
+      return;
+    }
+
+    if (event.key === "ArrowDown" || event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      if (!isOpen(state.panel)) {
+        openFloating(container);
+      } else if (state.dynamicSpectrum instanceof HTMLElement) {
+        state.dynamicSpectrum.focus({ preventScroll: true });
+      }
+      return;
+    }
+
+    if (event.key === "Escape" && isOpen(state.panel)) {
+      event.preventDefault();
+      closeFloating(container);
+      state.trigger?.focus({ preventScroll: true });
+    }
+  }
+
   function handleChoiceOptionKeydown(container, option, family, event) {
     const state = choiceStates.get(container);
     if (!state) {
@@ -902,6 +1796,8 @@
       state.activeOption = option;
       state.selectedOption = option;
       updateChoiceDisplay(container, option, family);
+      syncAutocompleteClear(state);
+      syncAutocompleteFeedback(state, state.input instanceof HTMLInputElement ? state.input.value.trim().toLowerCase() : "");
 
       if (state.input instanceof HTMLInputElement) {
         state.input.setAttribute("aria-activedescendant", ensureId(option, "r8-autocomplete-option"));
@@ -912,6 +1808,11 @@
       }
 
       if (!silent) {
+        emitComponentEvent(container, "autocomplete-select", {
+          option,
+          text: getTextValue(option),
+          value: getTextValue(option),
+        });
         emitComponentEvent(container, "choice-change", {
           kind: family.kind,
           option,
@@ -954,6 +1855,47 @@
           text: getTextValue(option),
           value: getTextValue(option),
         });
+      }
+
+      return;
+    }
+
+    if (family.kind === "color") {
+      state.options.forEach((item) => {
+        const isSelected = item === option;
+        item.classList.toggle("is-selected", isSelected);
+        item.classList.toggle("is-active", false);
+        item.setAttribute("aria-selected", isSelected ? "true" : "false");
+        item.removeAttribute("data-r8-active");
+      });
+
+      state.selectedOption = option;
+      state.activeOption = option;
+      const selectedValue = getTextValue(option);
+      const swatch = getColorSwatchFill(option) || getColorValueFill(selectedValue);
+      state.selectedValue = selectedValue;
+      state.colorDisplayValue = selectedValue;
+      state.colorDisplaySwatch = swatch;
+      updateChoiceDisplay(container, option, family);
+
+      if (selectedValue) {
+        container.dataset.r8Value = selectedValue;
+      } else {
+        delete container.dataset.r8Value;
+      }
+
+      syncColorPickerClear(state);
+
+      if (family.closeOnSelect !== false && state.panel && state.trigger) {
+        closeFloating(container);
+        state.trigger.focus({ preventScroll: true });
+      }
+
+      if (!silent) {
+        const detail = buildColorPickerDetail(state, selectedValue, swatch, "swatch", option);
+
+        emitComponentEvent(container, "color-change", detail);
+        emitComponentEvent(container, "choice-change", detail);
       }
 
       return;
@@ -1029,6 +1971,53 @@
     state.count.textContent = String(visibleCount);
   }
 
+  function ensureAutocompleteFeedbackNode(panel, selector, className, text) {
+    if (!(panel instanceof HTMLElement)) {
+      return null;
+    }
+
+    const existing = panel.querySelector(selector);
+    if (existing instanceof HTMLElement) {
+      return existing;
+    }
+
+    const element = document.createElement("div");
+    element.className = className;
+    element.hidden = true;
+    element.textContent = text;
+    panel.appendChild(element);
+    return element;
+  }
+
+  function syncAutocompleteClear(state) {
+    if (!(state?.clearButton instanceof HTMLElement)) {
+      return;
+    }
+
+    const hasValue = state.input instanceof HTMLInputElement && state.input.value.trim().length > 0;
+    state.clearButton.hidden = !(state.clearable && hasValue);
+  }
+
+  function syncAutocompleteFeedback(state, query = "") {
+    if (!state?.panel) {
+      return;
+    }
+
+    const isLoading = state.container?.dataset.r8Loading === "true";
+    const visibleOptions = getVisibleOptions(state);
+    const shouldShowEmpty = !isLoading && visibleOptions.length === 0 && (query.length > 0 || state.triggerOnFocus);
+
+    if (state.emptyState instanceof HTMLElement) {
+      state.emptyState.hidden = !shouldShowEmpty;
+      state.emptyState.textContent = state.container?.dataset.r8EmptyLabel?.trim() || "No matches found";
+    }
+
+    if (state.loadingState instanceof HTMLElement) {
+      state.loadingState.hidden = !isLoading;
+      state.loadingState.textContent = state.container?.dataset.r8LoadingLabel?.trim() || "Loading suggestions...";
+    }
+  }
+
   function setAutocompleteActiveOption(state, option) {
     if (!state?.options?.length) {
       return;
@@ -1051,14 +2040,25 @@
 
   function filterAutocompleteOptions(container) {
     const state = choiceStates.get(container);
-    if (!state?.options?.length || !(state.input instanceof HTMLInputElement)) {
+    if (!state || !(state.input instanceof HTMLInputElement)) {
       return;
     }
 
     const query = state.input.value.trim().toLowerCase();
+    const isLoading = container.dataset.r8Loading === "true";
+
+    if (isLoading) {
+      state.options.forEach((option) => option.setAttribute("hidden", ""));
+      setAutocompleteActiveOption(state, null);
+      syncAutocompleteCount(state);
+      syncAutocompleteClear(state);
+      syncAutocompleteFeedback(state, query);
+      return;
+    }
+
     state.options.forEach((option) => {
       const searchValue = `${option.dataset.r8Search || ""} ${getTextValue(option)} ${(option.textContent || "").trim()}`.toLowerCase();
-      const shouldShow = !query || searchValue.includes(query);
+      const shouldShow = query ? searchValue.includes(query) : state.triggerOnFocus;
       if (shouldShow) {
         option.removeAttribute("hidden");
       } else {
@@ -1074,6 +2074,45 @@
 
     setAutocompleteActiveOption(state, nextActive);
     syncAutocompleteCount(state);
+    syncAutocompleteClear(state);
+    syncAutocompleteFeedback(state, query);
+  }
+
+  function clearAutocomplete(container, options = {}) {
+    const state = choiceStates.get(container);
+    if (!state || !(state.input instanceof HTMLInputElement)) {
+      return;
+    }
+
+    const silent = options.silent === true;
+    state.input.value = "";
+    state.selectedOption = null;
+    state.activeOption = null;
+    container.dataset.r8Value = "";
+
+    state.options.forEach((option) => {
+      option.classList.remove("is-selected", "is-active");
+      option.setAttribute("aria-selected", "false");
+      option.removeAttribute("data-r8-active");
+    });
+
+    state.input.removeAttribute("aria-activedescendant");
+    filterAutocompleteOptions(container);
+
+    if (state.triggerOnFocus) {
+      openFloating(container);
+    } else {
+      closeFloating(container);
+    }
+
+    state.input.focus({ preventScroll: true });
+
+    if (!silent) {
+      emitComponentEvent(container, "autocomplete-clear", {
+        value: "",
+        text: "",
+      });
+    }
   }
 
   function initAutocomplete(container, family) {
@@ -1081,28 +2120,46 @@
     const panel = firstMatch(container, family.panel);
     const input = container.querySelector(".r8-autocomplete__input");
     const count = trigger?.querySelector("[data-r8-autocomplete-count]") || trigger?.querySelector(".r8-badge") || null;
+    const clearButton = trigger?.querySelector(".r8-autocomplete__clear") || null;
     const options = toArray(container.querySelectorAll(family.option)).filter((item) => item instanceof HTMLElement);
 
     if (!(trigger instanceof HTMLElement) || !(panel instanceof HTMLElement) || !(input instanceof HTMLInputElement)) {
       return;
     }
 
+    const emptyState =
+      firstMatch(panel, ".r8-autocomplete__empty") ||
+      ensureAutocompleteFeedbackNode(panel, ".r8-autocomplete__empty", "r8-autocomplete__empty", container.dataset.r8EmptyLabel?.trim() || "No matches found");
+    const loadingState =
+      firstMatch(panel, ".r8-autocomplete__loading") ||
+      ensureAutocompleteFeedbackNode(panel, ".r8-autocomplete__loading", "r8-autocomplete__loading", container.dataset.r8LoadingLabel?.trim() || "Loading suggestions...");
+    const triggerOnFocus = container.dataset.r8TriggerOnFocus !== "false";
+    const clearable = container.dataset.r8Clearable === "true" || clearButton instanceof HTMLElement;
+
     ensureId(panel, "r8-autocomplete-listbox");
     panel.setAttribute("role", "listbox");
 
     input.setAttribute("role", "combobox");
     input.setAttribute("aria-autocomplete", "list");
+    input.setAttribute("aria-haspopup", "listbox");
     input.setAttribute("aria-controls", panel.id);
     input.setAttribute("aria-expanded", "false");
     input.setAttribute("autocomplete", input.getAttribute("autocomplete") || "off");
     input.setAttribute("spellcheck", input.getAttribute("spellcheck") || "false");
 
     choiceStates.set(container, {
+      container,
+      kind: family.kind,
       trigger,
       panel,
       options,
       input,
       count,
+      clearButton,
+      emptyState,
+      loadingState,
+      triggerOnFocus,
+      clearable,
       activeOption: null,
       selectedOption: null,
     });
@@ -1112,17 +2169,26 @@
 
     trigger.addEventListener("click", () => {
       input.focus();
-      openFloating(container);
       filterAutocompleteOptions(container);
+      if (triggerOnFocus) {
+        openFloating(container);
+      }
     });
 
     input.addEventListener("focus", () => {
-      openFloating(container);
       filterAutocompleteOptions(container);
+      if (triggerOnFocus) {
+        openFloating(container);
+      }
     });
 
     input.addEventListener("input", () => {
       filterAutocompleteOptions(container);
+      if (triggerOnFocus || input.value.trim()) {
+        openFloating(container);
+      } else {
+        closeFloating(container);
+      }
     });
 
     input.addEventListener("keydown", (event) => {
@@ -1163,6 +2229,22 @@
         return;
       }
 
+      if (event.key === "Home" || event.key === "PageUp") {
+        event.preventDefault();
+        const firstOption = visibleOptions[0] || null;
+        setAutocompleteActiveOption(state, firstOption);
+        firstOption?.scrollIntoView({ block: "nearest" });
+        return;
+      }
+
+      if (event.key === "End" || event.key === "PageDown") {
+        event.preventDefault();
+        const lastOption = visibleOptions[visibleOptions.length - 1] || null;
+        setAutocompleteActiveOption(state, lastOption);
+        lastOption?.scrollIntoView({ block: "nearest" });
+        return;
+      }
+
       if (event.key === "Enter" && state.activeOption) {
         event.preventDefault();
         markChoiceSelection(container, state.activeOption, family);
@@ -1182,6 +2264,18 @@
       option.addEventListener("click", () => markChoiceSelection(container, option, family));
       bindKeyboardActivation(option, () => markChoiceSelection(container, option, family));
     });
+
+    if (clearButton instanceof HTMLElement) {
+      clearButton.hidden = true;
+      clearButton.addEventListener("mousedown", (event) => {
+        event.preventDefault();
+      });
+      clearButton.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        clearAutocomplete(container);
+      });
+    }
 
     const initialOption = options.find((option) => option.classList.contains("is-selected")) || null;
     if (initialOption) {
@@ -1268,6 +2362,14 @@
     return getCascaderNodeLabels(node).join(state.separator);
   }
 
+  function formatCascaderDisplayValue(state, node) {
+    if (!node) {
+      return "";
+    }
+
+    return state?.showAllLevels === false ? node.label : formatCascaderPath(state, node);
+  }
+
   function findCascaderNode(state, matcher) {
     if (!state?.allNodes?.length || typeof matcher !== "function") {
       return null;
@@ -1282,7 +2384,7 @@
     }
 
     const hasValue = Boolean(state.selectedNode);
-    state.display.textContent = hasValue ? formatCascaderPath(state, state.selectedNode) : state.placeholder;
+    state.display.textContent = hasValue ? formatCascaderDisplayValue(state, state.selectedNode) : state.placeholder;
     state.display.classList.toggle("is-placeholder", !hasValue);
     state.container.dataset.r8Value = hasValue ? state.selectedNode.value : "";
     state.container.dataset.r8Path = hasValue ? getCascaderNodeValues(state.selectedNode).join("/") : "";
@@ -1551,6 +2653,7 @@
       };
       emitComponentEvent(state.container, "choice-change", detail);
       emitComponentEvent(state.container, "cascader-change", detail);
+      emitComponentEvent(state.container, "cascader-clear", detail);
     }
   }
 
@@ -1838,6 +2941,7 @@
       placeholder,
       emptyLabel: container.dataset.r8EmptyLabel || "No matching routes",
       separator: container.dataset.r8Separator || " / ",
+      showAllLevels: container.dataset.r8ShowAllLevels !== "false",
       expandTrigger: container.dataset.r8ExpandTrigger === "hover" ? "hover" : "click",
       filterable,
       clearable,
@@ -1955,7 +3059,11 @@
       return {
         previousMonth: "Mes anterior",
         nextMonth: "Proximo mes",
+        weekNumber: "Sem",
+        shortcuts: "Atalhos",
         today: "Hoje",
+        yesterday: "Ontem",
+        weekAgo: "1 semana atras",
         now: "Agora",
         clear: "Clear",
         calendar: "Calendario",
@@ -1968,7 +3076,11 @@
     return {
       previousMonth: "Previous month",
       nextMonth: "Next month",
+      weekNumber: "Wk",
+      shortcuts: "Shortcuts",
       today: "Today",
+      yesterday: "Yesterday",
+      weekAgo: "A week ago",
       now: "Now",
       clear: "Clear",
       calendar: "Calendar",
@@ -1976,6 +3088,60 @@
       empty: "Select a date",
       emptyDateTime: "Select date and time",
     };
+  }
+
+  function getCalendarWeekNumber(date, weekStart = 0) {
+    if (!isValidDate(date)) {
+      return "";
+    }
+
+    const safeWeekStart = clamp(Number(weekStart) || 0, 0, 6);
+    const currentWeek = startOfWeek(date, safeWeekStart) || date;
+    const yearStart = createCalendarDate(currentWeek.getFullYear(), 0, 1);
+    const firstWeek = startOfWeek(yearStart, safeWeekStart) || yearStart;
+    const diffInDays = Math.round((currentWeek.getTime() - firstWeek.getTime()) / 86400000);
+    return String(Math.floor(diffInDays / 7) + 1).padStart(2, "0");
+  }
+
+  function getDatePickerShortcutConfigs(container, messages) {
+    const rawValue = container?.dataset?.r8Shortcuts || "";
+    if (!rawValue.trim()) {
+      return [];
+    }
+
+    const aliases = {
+      today: "today",
+      yesterday: "yesterday",
+      "week-ago": "week-ago",
+      "a-week-ago": "week-ago",
+      "last-week": "week-ago",
+    };
+
+    const catalog = {
+      today: {
+        key: "today",
+        label: messages.today,
+        resolve: () => createCalendarDate(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()),
+      },
+      yesterday: {
+        key: "yesterday",
+        label: messages.yesterday,
+        resolve: () => addCalendarDays(createCalendarDate(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()), -1),
+      },
+      "week-ago": {
+        key: "week-ago",
+        label: messages.weekAgo,
+        resolve: () => addCalendarDays(createCalendarDate(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()), -7),
+      },
+    };
+
+    const seen = new Set();
+    return rawValue
+      .split(",")
+      .map((token) => token.trim().toLowerCase())
+      .map((token) => aliases[token] || "")
+      .filter((token) => token && catalog[token] && !seen.has(token) && seen.add(token))
+      .map((token) => catalog[token]);
   }
 
   function isDateDisabled(state, date) {
@@ -2289,8 +3455,34 @@
     header.append(previousButton, title, nextButton);
     calendar.append(header);
 
+    if (state.shortcuts.length) {
+      const shortcuts = document.createElement("div");
+      shortcuts.className = "r8-date-picker__shortcuts";
+      shortcuts.setAttribute("aria-label", state.messages.shortcuts);
+
+      state.shortcuts.forEach((shortcut) => {
+        const shortcutDate = shortcut.resolve?.();
+        const shortcutButton = document.createElement("button");
+        shortcutButton.className = "r8-date-picker__shortcut";
+        shortcutButton.type = "button";
+        shortcutButton.dataset.r8DateShortcut = shortcut.key;
+        shortcutButton.textContent = shortcut.label;
+        shortcutButton.disabled = !isValidDate(shortcutDate) || isDateDisabled(state, shortcutDate);
+        shortcuts.append(shortcutButton);
+      });
+
+      calendar.append(shortcuts);
+    }
+
     const weekdays = document.createElement("div");
     weekdays.className = "r8-date-picker__weekdays";
+    if (state.showWeekNumber) {
+      weekdays.classList.add("has-week-numbers");
+      const weekHeader = document.createElement("span");
+      weekHeader.className = "r8-date-picker__weekday r8-date-picker__weekday--week";
+      weekHeader.textContent = state.messages.weekNumber;
+      weekdays.append(weekHeader);
+    }
     state.weekdayLabels.forEach((label) => {
       const weekday = document.createElement("span");
       weekday.className = "r8-date-picker__weekday";
@@ -2301,6 +3493,9 @@
 
     const grid = document.createElement("div");
     grid.className = "r8-date-picker__grid";
+    if (state.showWeekNumber) {
+      grid.classList.add("has-week-numbers");
+    }
     grid.setAttribute("role", "grid");
     grid.setAttribute("aria-label", `${state.messages.calendar} ${formatMonthTitle(visibleMonth, state.locale)}`);
 
@@ -2309,6 +3504,14 @@
 
     for (let index = 0; index < 42; index += 1) {
       const dayDate = addCalendarDays(gridStart, index) || visibleMonth;
+      if (state.showWeekNumber && index % 7 === 0) {
+        const weekNumber = document.createElement("span");
+        weekNumber.className = "r8-date-picker__week-number";
+        weekNumber.textContent = getCalendarWeekNumber(dayDate, state.weekStart);
+        weekNumber.setAttribute("aria-hidden", "true");
+        grid.append(weekNumber);
+      }
+
       const dayButton = document.createElement("button");
       const dateKey = toDateKey(dayDate);
       const isCurrentMonth = dayDate.getMonth() === visibleMonth.getMonth();
@@ -2582,6 +3785,8 @@
       placeholder,
       weekStart: clamp(Number(container.dataset.r8WeekStart || "0") || 0, 0, 6),
       weekdayLabels: buildWeekdayLabels(locale, container.dataset.r8WeekStart || "0"),
+      showWeekNumber: matchesTrue(container.dataset.r8ShowWeekNumber || "false"),
+      shortcuts: getDatePickerShortcutConfigs(container, messages),
       timeStep,
       timeSlots: buildTimeSlots(timeStep),
       minConstraint,
@@ -2643,6 +3848,16 @@
         return;
       }
 
+      const shortcutButton = event.target.closest("[data-r8-date-shortcut]");
+      if (shortcutButton instanceof HTMLButtonElement) {
+        const shortcut = state.shortcuts.find((entry) => entry.key === shortcutButton.dataset.r8DateShortcut);
+        const nextDate = shortcut?.resolve?.();
+        if (isValidDate(nextDate) && !isDateDisabled(state, nextDate)) {
+          setDatePickerValue(state, nextDate, { closeOnCommit: kind === "date" });
+        }
+        return;
+      }
+
       const dayButton = event.target.closest(".r8-date-picker__day");
       if (dayButton instanceof HTMLButtonElement && !dayButton.disabled) {
         const nextDate = parseDateValue(dayButton.dataset.r8Date || "");
@@ -2674,6 +3889,14 @@
         return;
       }
 
+      const shortcutButton = event.target.closest(".r8-date-picker__shortcut");
+      if (shortcutButton instanceof HTMLButtonElement && event.key === "Escape") {
+        event.preventDefault();
+        closeFloating(state.container);
+        state.trigger?.focus({ preventScroll: true });
+        return;
+      }
+
       const dayButton = event.target.closest(".r8-date-picker__day");
       if (dayButton instanceof HTMLButtonElement) {
         handleDatePickerDayKeydown(state, event, dayButton);
@@ -2689,6 +3912,201 @@
     ensureDateTimeDefaults(state);
     renderDatePicker(state);
     syncDatePickerDisplay(state);
+  }
+
+  function initColorPicker(container, family) {
+    const trigger = family.trigger ? firstMatch(container, family.trigger) : null;
+    const panel = firstMatch(container, family.panel);
+    const options = toArray(container.querySelectorAll(family.option)).filter((item) => item instanceof HTMLElement);
+    const mode = getColorPickerMode(container);
+    const showAlpha = matchesTrue(container.dataset.r8ShowAlpha || "false");
+    let toolbar = firstMatch(container, ".r8-color-picker__toolbar");
+    let clearButton = firstMatch(container, ".r8-color-picker__clear");
+    const clearable = matchesTrue(container.dataset.r8Clearable || "false") || clearButton instanceof HTMLElement;
+
+    if (mode !== "dynamic" && panel instanceof HTMLElement && clearable && !(toolbar instanceof HTMLElement)) {
+      toolbar = document.createElement("div");
+      toolbar.className = "r8-color-picker__toolbar";
+      panel.prepend(toolbar);
+    }
+
+    if (mode !== "dynamic" && panel instanceof HTMLElement && clearable && !(clearButton instanceof HTMLElement)) {
+      clearButton = document.createElement("button");
+      clearButton.type = "button";
+      clearButton.className = "r8-color-picker__clear r8-btn r8-btn--sm r8-btn--secondary";
+      clearButton.textContent = "Clear";
+      toolbar?.append(clearButton);
+    }
+
+    choiceStates.set(container, {
+      container,
+      kind: family.kind,
+      family,
+      trigger,
+      panel,
+      options,
+      mode,
+      showAlpha,
+      clearButton,
+      clearable,
+      activeOption: null,
+      selectedOption: null,
+      selectedValue: container.dataset.r8Value?.trim() || "",
+      colorDisplayValue: container.dataset.r8Value?.trim() || "",
+      colorDisplaySwatch: getColorValueFill(container.dataset.r8Value?.trim() || ""),
+    });
+
+    const state = choiceStates.get(container);
+    if (!state) {
+      return;
+    }
+
+    if (mode === "dynamic") {
+      ensureDynamicColorPickerStructure(state);
+      bindDynamicColorPickerInteractions(state);
+      if (state.clearButton instanceof HTMLElement) {
+        clearButton = state.clearButton;
+      }
+    }
+
+    if (trigger) {
+      prepareActionLikeElement(trigger);
+      setExpanded(trigger, false);
+
+      if (panel) {
+        ensureId(panel, "r8-choice-panel");
+        setHidden(panel, true);
+        panel.setAttribute("role", mode === "dynamic" ? "dialog" : "listbox");
+        if (mode === "dynamic") {
+          panel.setAttribute("aria-label", trigger?.getAttribute("aria-label") || "Color picker");
+        }
+        trigger.setAttribute("aria-controls", panel.id);
+        trigger.setAttribute("aria-haspopup", mode === "dynamic" ? "dialog" : "listbox");
+      }
+
+      trigger.addEventListener("click", (event) => {
+        event.preventDefault();
+        toggleFloating(container);
+      });
+
+      trigger.addEventListener("keydown", (event) => {
+        if (mode === "dynamic") {
+          handleDynamicColorPickerTriggerKeydown(container, event);
+          return;
+        }
+
+        handleChoiceTriggerKeydown(container, family, event);
+      });
+    }
+
+    options.forEach((option) => {
+      prepareActionLikeElement(option, "option");
+      ensureId(option, "r8-choice-option");
+      option.setAttribute("role", "option");
+      option.setAttribute("aria-selected", option.classList.contains("is-selected") ? "true" : "false");
+      option.addEventListener("pointerenter", () => {
+        const state = choiceStates.get(container);
+        if (state) {
+          setChoiceActiveOption(state, option);
+        }
+      });
+      option.addEventListener("click", () => markChoiceSelection(container, option, family));
+      option.addEventListener("keydown", (event) => handleChoiceOptionKeydown(container, option, family, event));
+    });
+
+    if (mode === "dynamic") {
+      state.onOpen = () => {
+        const committedValue = state.selectedValue || container.dataset.r8Value?.trim() || "";
+        const committedColor = parseCssColorValue(committedValue);
+        const draftColor = cloneColorValue(committedColor) || getDefaultColorPickerColor();
+        if (!showAlpha) {
+          draftColor.a = 1;
+        }
+
+        state.dynamicCommitPending = false;
+        state.dynamicCommittedColor = committedColor ? cloneColorValue(committedColor) : null;
+        state.dynamicDraftColor = draftColor;
+        state.dynamicHsv = rgbToHsv(draftColor);
+        state.colorDisplayValue = committedValue;
+        state.colorDisplaySwatch = getColorValueFill(committedValue);
+        syncDynamicColorPickerUi(state);
+
+        requestAnimationFrame(() => {
+          state.dynamicSpectrum?.focus({ preventScroll: true });
+        });
+      };
+
+      state.onClose = () => {
+        if (state.dynamicCommitPending) {
+          state.dynamicCommitPending = false;
+          return;
+        }
+
+        const committedValue = state.selectedValue || container.dataset.r8Value?.trim() || "";
+        state.colorDisplayValue = committedValue;
+        state.colorDisplaySwatch = getColorValueFill(committedValue);
+        updateChoiceDisplay(container, null, family);
+
+        const fallbackColor = parseCssColorValue(committedValue) || getDefaultColorPickerColor();
+        if (!showAlpha) {
+          fallbackColor.a = 1;
+        }
+
+        state.dynamicDraftColor = cloneColorValue(fallbackColor);
+        state.dynamicHsv = rgbToHsv(fallbackColor);
+        syncDynamicColorPickerUi(state);
+      };
+    }
+
+    if (clearButton instanceof HTMLElement) {
+      clearButton.hidden = true;
+      clearButton.addEventListener("mousedown", (event) => {
+        event.preventDefault();
+      });
+      clearButton.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        clearColorPicker(container);
+      });
+    }
+
+    const initialValue = container.dataset.r8Value?.trim() || "";
+    const initialOption =
+      options.find((option) => option.classList.contains("is-selected")) ||
+      options.find((option) => initialValue && colorValuesMatch(getTextValue(option), initialValue)) ||
+      null;
+
+    if (mode === "dynamic") {
+      const parsedInitialColor = parseCssColorValue(initialValue);
+      const initialColor = parsedInitialColor || getDefaultColorPickerColor();
+      if (!showAlpha) {
+        initialColor.a = 1;
+      }
+
+      state.dynamicCommittedColor = parsedInitialColor ? cloneColorValue(initialColor) : null;
+      state.dynamicDraftColor = cloneColorValue(initialColor);
+      state.dynamicHsv = rgbToHsv(initialColor);
+      state.selectedValue = parsedInitialColor ? formatColorPickerValue(initialColor, showAlpha) : "";
+      state.colorDisplayValue = state.selectedValue;
+      state.colorDisplaySwatch = getColorValueFill(state.selectedValue);
+
+      if (state.selectedValue) {
+        container.dataset.r8Value = state.selectedValue;
+      }
+
+      updateChoiceDisplay(container, null, family);
+      syncDynamicColorPickerUi(state);
+      syncColorPickerClear(state);
+      return;
+    }
+
+    if (initialOption) {
+      markChoiceSelection(container, initialOption, family, { silent: true });
+      return;
+    }
+
+    updateChoiceDisplay(container, null, family);
+    syncColorPickerClear(choiceStates.get(container));
   }
 
   function initDatePickers(root) {
@@ -2725,6 +4143,11 @@
 
         if (family.kind === "cascader") {
           initCascader(container, family);
+          return;
+        }
+
+        if (family.kind === "color") {
+          initColorPicker(container, family);
           return;
         }
 
@@ -2973,9 +4396,64 @@
     });
   }
 
-  function setBinaryState(control, checked) {
-    control.classList.toggle("is-checked", checked);
-    control.setAttribute("aria-checked", checked ? "true" : "false");
+  function syncCheckboxModifiers(control) {
+    if (!(control instanceof HTMLElement) || !control.classList.contains("r8-checkbox")) {
+      return;
+    }
+
+    const sizeValue = control.dataset.r8Size || "";
+    const hasSizeBinding = Object.prototype.hasOwnProperty.call(control.dataset, "r8Size");
+    const hasBorderBinding = Object.prototype.hasOwnProperty.call(control.dataset, "r8Border");
+
+    if (hasSizeBinding) {
+      control.classList.remove("r8-checkbox--sm", "r8-checkbox--lg");
+
+      if (sizeValue === "sm") {
+        control.classList.add("r8-checkbox--sm");
+      } else if (sizeValue === "lg") {
+        control.classList.add("r8-checkbox--lg");
+      }
+    }
+
+    if (hasBorderBinding) {
+      control.classList.toggle("r8-checkbox--bordered", matchesTrue(control.dataset.r8Border || "false"));
+    }
+  }
+
+  function readBinaryState(control, kind) {
+    const ariaState = control.getAttribute("aria-checked");
+    const indeterminate =
+      kind === "checkbox" &&
+      (matchesTrue(control.dataset.r8Indeterminate || "false") ||
+        control.classList.contains("is-indeterminate") ||
+        ariaState === "mixed");
+    const checked = !indeterminate && (control.classList.contains("is-checked") || ariaState === "true");
+
+    return {
+      checked,
+      indeterminate,
+    };
+  }
+
+  function isBinaryDisabled(control) {
+    return (
+      isElement(control) &&
+      (control.hasAttribute("disabled") ||
+        control.getAttribute("aria-disabled") === "true" ||
+        control.classList.contains("is-disabled"))
+    );
+  }
+
+  function setBinaryState(control, checked, options = {}) {
+    const indeterminate = control.classList.contains("r8-checkbox") && options.indeterminate === true;
+
+    control.classList.toggle("is-indeterminate", indeterminate);
+    control.classList.toggle("is-checked", checked && !indeterminate);
+    control.setAttribute("aria-checked", indeterminate ? "mixed" : checked ? "true" : "false");
+
+    if (control.classList.contains("r8-checkbox") && Object.prototype.hasOwnProperty.call(control.dataset, "r8Indeterminate")) {
+      control.dataset.r8Indeterminate = indeterminate ? "true" : "false";
+    }
   }
 
   function findRadioGroup(control) {
@@ -2990,11 +4468,10 @@
 
   function initBinaryControls(root) {
     toArray(root.querySelectorAll(".r8-checkbox, .r8-radio, .r8-switch, .r8-theme-switch")).forEach((control) => {
-      if (!(control instanceof HTMLElement) || control.dataset.r8BinaryReady === "true") {
+      if (!(control instanceof HTMLElement)) {
         return;
       }
 
-      control.dataset.r8BinaryReady = "true";
       const kind = control.classList.contains("r8-radio")
         ? "radio"
         : control.classList.contains("r8-theme-switch")
@@ -3002,24 +4479,41 @@
           : control.classList.contains("r8-switch")
           ? "switch"
           : "checkbox";
+      const state = readBinaryState(control, kind);
+
+      syncCheckboxModifiers(control);
+      setBinaryState(control, state.checked, { indeterminate: state.indeterminate });
+
+      if (control.dataset.r8BinaryReady === "true") {
+        return;
+      }
+
+      control.dataset.r8BinaryReady = "true";
 
       prepareActionLikeElement(control, kind === "switch" || kind === "theme-switch" ? "switch" : kind);
-      setBinaryState(control, control.classList.contains("is-checked") || control.getAttribute("aria-checked") === "true");
 
       const toggle = () => {
+        if (isBinaryDisabled(control)) {
+          return;
+        }
+
         if (kind === "radio") {
-          findRadioGroup(control).forEach((item) => setBinaryState(item, item === control));
+          findRadioGroup(control).forEach((item) => setBinaryState(item, item === control, { indeterminate: false }));
           emitComponentEvent(control, "binary-change", {
             checked: true,
             kind,
+            indeterminate: false,
           });
           return;
         }
 
-        setBinaryState(control, !control.classList.contains("is-checked"));
+        const nextChecked = control.classList.contains("is-indeterminate") ? true : !control.classList.contains("is-checked");
+
+        setBinaryState(control, nextChecked, { indeterminate: false });
         emitComponentEvent(control, "binary-change", {
           checked: control.classList.contains("is-checked"),
           kind,
+          indeterminate: false,
         });
       };
 
@@ -3094,16 +4588,20 @@
     }
 
     const silent = options.silent === true;
+    const source = options.source || "programmatic";
     const value = clamp(Number(nextValue) || 50, state.min, state.max);
+    state.value = value;
     component.style.setProperty("--r8-splitter-position", `${value}%`);
     component.dataset.r8SplitterPosition = String(value);
     state.handle.setAttribute("aria-valuenow", String(Math.round(value)));
+    state.handle.setAttribute("aria-valuetext", `${Math.round(value)}%`);
     if (!silent) {
       emitComponentEvent(component, "splitter-change", {
         value,
         min: state.min,
         max: state.max,
         orientation: state.isVertical ? "horizontal" : "vertical",
+        source,
       });
     }
   }
@@ -3126,6 +4624,8 @@
       const min = clamp(Number(component.dataset.r8SplitterMin || "20") || 20, 5, 95);
       const max = clamp(Number(component.dataset.r8SplitterMax || "80") || 80, min + 1, 95);
       const initialValue = clamp(Number(component.dataset.r8SplitterPosition || "50") || 50, min, max);
+      const keyboardStep = clamp(Number(component.dataset.r8SplitterStep || "5") || 5, 1, 25);
+      const isDisabled = component.dataset.r8SplitterDisabled === "true";
 
       panes.forEach((pane, index) => ensureId(pane, `r8-splitter-pane-${index + 1}`));
 
@@ -3143,9 +4643,25 @@
         isVertical,
         min,
         max,
+        step: keyboardStep,
+        disabled: isDisabled,
+        value: initialValue,
       });
 
       updateSplitter(component, initialValue, { silent: true });
+      component.classList.toggle("is-disabled", isDisabled);
+      handle.setAttribute("aria-disabled", isDisabled ? "true" : "false");
+      handle.tabIndex = isDisabled ? -1 : 0;
+
+      const emitLifecycle = (name, source, value) => {
+        emitComponentEvent(component, name, {
+          value,
+          min,
+          max,
+          orientation: isVertical ? "horizontal" : "vertical",
+          source,
+        });
+      };
 
       const setFromPointer = (clientX, clientY) => {
         const rect = component.getBoundingClientRect();
@@ -3157,7 +4673,7 @@
             ? 0
             : (clientX - rect.left) / rect.width;
 
-        updateSplitter(component, Math.round(clamp(ratio, 0, 1) * 100));
+        updateSplitter(component, Math.round(clamp(ratio, 0, 1) * 100), { source: "pointer" });
       };
 
       const onPointerMove = (event) => {
@@ -3173,57 +4689,64 @@
         document.body.style.cursor = "";
         window.removeEventListener("pointermove", onPointerMove);
         window.removeEventListener("pointerup", onPointerUp);
+        emitLifecycle("splitter-resize-end", "pointer", Number(component.dataset.r8SplitterPosition || initialValue));
       };
 
       handle.addEventListener("pointerdown", (event) => {
+        if (isDisabled) {
+          return;
+        }
+
         event.preventDefault();
         component.classList.add("is-resizing");
         document.body.style.cursor = isVertical
           ? "var(--r8-runtime-cursor-row-resize, row-resize)"
           : "var(--r8-runtime-cursor-col-resize, col-resize)";
         handle.setPointerCapture?.(event.pointerId);
+        emitLifecycle("splitter-resize-start", "pointer", Number(component.dataset.r8SplitterPosition || initialValue));
         setFromPointer(event.clientX, event.clientY);
         window.addEventListener("pointermove", onPointerMove);
         window.addEventListener("pointerup", onPointerUp);
       });
 
       handle.addEventListener("keydown", (event) => {
-        const step = event.shiftKey ? 10 : 5;
+        if (isDisabled) {
+          return;
+        }
+
+        const step = keyboardStep * (event.shiftKey ? 2 : 1);
         const current = Number(component.dataset.r8SplitterPosition || initialValue);
+        let nextValue = null;
 
         if (!isVertical && event.key === "ArrowLeft") {
-          event.preventDefault();
-          updateSplitter(component, current - step);
-          return;
+          nextValue = current - step;
         }
 
         if (!isVertical && event.key === "ArrowRight") {
-          event.preventDefault();
-          updateSplitter(component, current + step);
-          return;
+          nextValue = current + step;
         }
 
         if (isVertical && event.key === "ArrowUp") {
-          event.preventDefault();
-          updateSplitter(component, current - step);
-          return;
+          nextValue = current - step;
         }
 
         if (isVertical && event.key === "ArrowDown") {
-          event.preventDefault();
-          updateSplitter(component, current + step);
-          return;
+          nextValue = current + step;
         }
 
         if (event.key === "Home") {
-          event.preventDefault();
-          updateSplitter(component, min);
-          return;
+          nextValue = min;
         }
 
         if (event.key === "End") {
+          nextValue = max;
+        }
+
+        if (nextValue !== null) {
           event.preventDefault();
-          updateSplitter(component, max);
+          emitLifecycle("splitter-resize-start", "keyboard", current);
+          updateSplitter(component, nextValue, { source: "keyboard" });
+          emitLifecycle("splitter-resize-end", "keyboard", Number(component.dataset.r8SplitterPosition || initialValue));
         }
       });
     });

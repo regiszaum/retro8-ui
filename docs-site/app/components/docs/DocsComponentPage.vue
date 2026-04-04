@@ -166,10 +166,20 @@ watch(
       </div>
     </div>
 
+    <DocsAutocompletePlayground v-if="component.id === 'autocomplete'" :site="site" />
     <DocsButtonPlayground v-if="component.id === 'button'" :site="site" />
     <DocsBorderPlayground v-if="component.id === 'border'" :site="site" />
+    <DocsCascaderPlayground v-if="component.id === 'cascader'" :site="site" />
+    <DocsCheckboxPlayground v-if="component.id === 'checkbox'" :site="site" />
+    <DocsConfigProviderPlayground v-if="component.id === 'config-provider'" :site="site" />
     <DocsColorPlayground v-if="component.id === 'color'" :site="site" />
+    <DocsColorPickerPlayground v-if="component.id === 'color-picker'" :site="site" />
+    <DocsDatePickerPlayground v-if="component.id === 'date-picker'" :site="site" />
+    <DocsIconPlayground v-if="component.id === 'icon'" :site="site" />
+    <DocsLinkPlayground v-if="component.id === 'link'" :site="site" />
     <DocsLayoutContainerPlayground v-if="component.id === 'layout-container'" :site="site" />
+    <DocsSplitterPlayground v-if="component.id === 'splitter'" :site="site" />
+    <DocsTypographyPlayground v-if="component.id === 'typography'" :site="site" />
 
     <DocsCodeBlock
       :title="`${component.name} ${site.componentPage.htmlTitleSuffix}`"
