@@ -4640,10 +4640,33 @@ const feedbackComponents = [
     name: "Drawer",
     group: "feedback",
     summary: l(
-      "Painel lateral para filtros, settings e detalhes contextuais sem trocar de pagina.",
-      "Side panel for filters, settings and contextual details without leaving the page.",
+      "Painel deslizante para settings, filtros e fluxos laterais mais longos, com controle de backdrop, escape e scroll lock.",
+      "Sliding panel for settings, filters, and longer side flows, with backdrop, escape, and scroll-lock controls.",
     ),
-    classes: ["r8-drawer", "r8-drawer--right", "r8-drawer--left", "r8-drawer__header", "r8-drawer__title", "r8-drawer__body", "r8-drawer__footer", "r8-drawer-backdrop"],
+    classes: [
+      "r8-drawer",
+      "r8-drawer--right",
+      "r8-drawer--left",
+      "r8-drawer--top",
+      "r8-drawer--bottom",
+      "r8-drawer__header",
+      "r8-drawer__copy",
+      "r8-drawer__title",
+      "r8-drawer__meta",
+      "r8-drawer__close",
+      "r8-drawer__body",
+      "r8-drawer__footer",
+      "r8-drawer-backdrop",
+      "data-r8-modal",
+      "data-r8-close-on-backdrop",
+      "data-r8-close-on-escape",
+      "data-r8-lock-scroll",
+      "--r8-drawer-size",
+      "--r8-drawer-min-size",
+      "--r8-drawer-header-surface",
+      "--r8-drawer-footer-surface",
+      "--r8-drawer-body-padding",
+    ],
     preview: `<div class="docs-demo__stack">
   <div class="docs-demo__actions">
     <button
@@ -4659,13 +4682,22 @@ const feedbackComponents = [
     <p class="docs-demo__stage-copy">
       This preview uses the same runtime as the library package: backdrop, escape close, outside click, and button helpers are all active.
     </p>
-    <aside id="docs-drawer-preview" class="r8-drawer r8-drawer--right" hidden>
+    <aside
+      id="docs-drawer-preview"
+      class="r8-drawer r8-drawer--right"
+      style="--r8-drawer-size: 27rem;"
+      aria-labelledby="docs-drawer-preview-title"
+      hidden
+    >
       <div class="r8-drawer__header">
-        <strong class="r8-drawer__title">Quick settings</strong>
-        <button class="r8-btn r8-btn--sm" type="button" data-r8-close="#docs-drawer-preview">Close</button>
+        <div class="r8-drawer__copy">
+          <strong id="docs-drawer-preview-title" class="r8-drawer__title">Quick settings</strong>
+          <p class="r8-drawer__meta">Backdrops, escape close and local overlay scopes are all handled by the runtime.</p>
+        </div>
+        <button class="r8-drawer__close" type="button" data-r8-close="#docs-drawer-preview" aria-label="Close drawer">x</button>
       </div>
       <div class="r8-drawer__body">
-        <p class="r8-text">Tune the active color palette and HUD density.</p>
+        <p class="r8-text">Tune the active color palette, HUD density and quick mission toggles without leaving the current surface.</p>
         <label class="r8-checkbox is-checked">
           <span class="r8-checkbox__box" aria-hidden="true"></span>
           <span>Show minimap</span>
@@ -4673,6 +4705,10 @@ const feedbackComponents = [
         <label class="r8-checkbox">
           <span class="r8-checkbox__box" aria-hidden="true"></span>
           <span>Enable scanlines</span>
+        </label>
+        <label class="r8-checkbox is-checked">
+          <span class="r8-checkbox__box" aria-hidden="true"></span>
+          <span>Compact density</span>
         </label>
       </div>
       <div class="r8-drawer__footer">
@@ -4693,10 +4729,20 @@ const feedbackComponents = [
   </button>
 
   <div data-r8-overlay-scope style="min-height: 20rem;">
-    <aside id="settings-drawer" class="r8-drawer r8-drawer--right" hidden>
+    <aside
+      id="settings-drawer"
+      class="r8-drawer r8-drawer--right"
+      style="--r8-drawer-size: 28rem;"
+      data-r8-close-on-backdrop="false"
+      aria-labelledby="settings-drawer-title"
+      hidden
+    >
       <div class="r8-drawer__header">
-        <strong class="r8-drawer__title">Quick settings</strong>
-        <button class="r8-btn r8-btn--sm" type="button" data-r8-close="#settings-drawer">Close</button>
+        <div class="r8-drawer__copy">
+          <strong id="settings-drawer-title" class="r8-drawer__title">Quick settings</strong>
+          <p class="r8-drawer__meta">Keep the panel open during multi-step edits and close it only through explicit actions.</p>
+        </div>
+        <button class="r8-drawer__close" type="button" data-r8-close="#settings-drawer" aria-label="Close drawer">x</button>
       </div>
 
       <div class="r8-drawer__body">
@@ -4709,6 +4755,10 @@ const feedbackComponents = [
           <span class="r8-checkbox__box" aria-hidden="true"></span>
           <span>Enable scanlines</span>
         </label>
+        <label class="r8-checkbox is-checked">
+          <span class="r8-checkbox__box" aria-hidden="true"></span>
+          <span>Keep help panel visible</span>
+        </label>
       </div>
 
       <div class="r8-drawer__footer">
@@ -4718,6 +4768,62 @@ const feedbackComponents = [
     </aside>
   </div>
 </div>`,
+    anatomy: ll(
+      [
+        "`r8-drawer` define o shell do painel e combina com `r8-drawer--right`, `--left`, `--top` ou `--bottom` para a direcao de entrada.",
+        "`r8-drawer__header` pode receber um bloco `r8-drawer__copy` com `r8-drawer__title` e `r8-drawer__meta`, alem de um `r8-drawer__close` opcional.",
+        "`r8-drawer__body` concentra o conteudo rolavel; `r8-drawer__footer` fecha o fluxo com acoes persistentes quando houver formulario ou confirmacao.",
+        "`data-r8-modal`, `data-r8-close-on-backdrop`, `data-r8-close-on-escape` e `data-r8-lock-scroll` ajustam o comportamento sem exigir JS customizado.",
+      ],
+      [
+        "`r8-drawer` defines the panel shell and pairs with `r8-drawer--right`, `--left`, `--top`, or `--bottom` for entry direction.",
+        "`r8-drawer__header` can host a `r8-drawer__copy` block with `r8-drawer__title` and `r8-drawer__meta`, plus an optional `r8-drawer__close` button.",
+        "`r8-drawer__body` holds the scrollable content; `r8-drawer__footer` closes the flow with persistent actions when a form or confirmation is involved.",
+        "`data-r8-modal`, `data-r8-close-on-backdrop`, `data-r8-close-on-escape`, and `data-r8-lock-scroll` tune behavior without requiring custom JS.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Prefira dar nome acessivel ao painel com `aria-labelledby` apontando para `r8-drawer__title`; se remover o header, use `aria-label` direto no host.",
+        "Mantenha sempre uma forma explicita de fechar o Drawer quando desabilitar clique no backdrop ou fechamento por `Esc`.",
+        "Quando o corpo trouxer formularios longos, preserve a ordem logica do foco e deixe as acoes principais no footer ou no topo do painel.",
+      ],
+      [
+        "Prefer giving the panel an accessible name with `aria-labelledby` pointing to `r8-drawer__title`; if you remove the header, use `aria-label` on the host.",
+        "Always keep an explicit way to close the Drawer when backdrop click or `Esc` closing is disabled.",
+        "When the body contains long forms, preserve logical focus order and keep primary actions in the footer or near the top of the panel.",
+      ],
+    ),
+    api: [
+      {
+        name: "data-r8-modal / data-r8-close-on-backdrop / data-r8-close-on-escape / data-r8-lock-scroll",
+        description: l(
+          "Controlam backdrop, clique fora, tecla Escape e bloqueio do scroll global sem sair da API declarativa.",
+          "Control backdrop, outside click, Escape handling, and global scroll lock without leaving the declarative API.",
+        ),
+      },
+      {
+        name: "r8-drawer--right / --left / --top / --bottom",
+        description: l(
+          "Definem a direcao do painel para filtros laterais, trays superiores ou folhas curtas vindas da base.",
+          "Set the panel direction for side filters, top trays, or shorter sheets entering from the bottom.",
+        ),
+      },
+      {
+        name: "r8-drawer__copy / __meta / __close",
+        description: l(
+          "Estruturam headers mais ricos sem depender de slots: copy, contexto secundario e close action dedicada.",
+          "Structure richer headers without slots: copy, secondary context, and a dedicated close action.",
+        ),
+      },
+      {
+        name: "--r8-drawer-size / --r8-drawer-min-size / --r8-drawer-body-padding",
+        description: l(
+          "Permitem ajustar tamanho e densidade do painel para flows compactos, forms longos ou drawers de conteudo mais denso.",
+          "Let you tune panel size and density for compact flows, longer forms, or denser drawers.",
+        ),
+      },
+    ],
   },
   {
     id: "loading",

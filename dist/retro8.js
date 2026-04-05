@@ -6781,6 +6781,22 @@
     return target instanceof HTMLElement && target.classList.contains("r8-drawer");
   }
 
+  function drawerUsesModal(target) {
+    return !isDrawerTarget(target) || target.dataset.r8Modal !== "false";
+  }
+
+  function drawerClosesOnBackdrop(target) {
+    return !isDrawerTarget(target) || target.dataset.r8CloseOnBackdrop !== "false";
+  }
+
+  function drawerClosesOnEscape(target) {
+    return !isDrawerTarget(target) || target.dataset.r8CloseOnEscape !== "false";
+  }
+
+  function drawerLocksScroll(target) {
+    return !isDrawerTarget(target) || target.dataset.r8LockScroll !== "false";
+  }
+
   function isAlertTarget(target) {
     return target instanceof HTMLElement && target.classList.contains("r8-alert");
   }
@@ -6984,7 +7000,8 @@
       (drawer) =>
         drawer instanceof HTMLElement &&
         !drawer.hasAttribute("hidden") &&
-        !drawer.closest("[data-r8-overlay-scope]"),
+        !drawer.closest("[data-r8-overlay-scope]") &&
+        drawerLocksScroll(drawer),
     );
 
     document.body.style.overflow = hasOpenDrawer ? "hidden" : "";
@@ -7019,6 +7036,11 @@
       return;
     }
 
+    if (!drawerUsesModal(target)) {
+      removeDrawerBackdrop(target);
+      return;
+    }
+
     const targetId = ensureId(target, "r8-drawer");
     removeDrawerBackdrop(target);
 
@@ -7027,7 +7049,9 @@
     backdrop.dataset.r8DrawerBackdrop = targetId;
     backdrop.setAttribute("aria-hidden", "true");
     backdrop.addEventListener("click", () => {
-      closeTarget(target, trigger);
+      if (drawerClosesOnBackdrop(target)) {
+        closeTarget(target, trigger);
+      }
     });
 
     const scope = target.closest("[data-r8-overlay-scope]") || document.body;
@@ -7051,7 +7075,16 @@
     }
 
     if (isDrawerTarget(target)) {
+      const wasOpen = isOpen(target) || target.classList.contains("is-open");
       clearOverlayTimer(target);
+
+      if (wasOpen) {
+        emitComponentEvent(target, "drawer-close", {
+          target,
+          trigger,
+        });
+      }
+
       target.classList.remove("is-open");
       setDrawerBackdropOpen(target, false);
       collapseGenericTargetTriggers(target);
@@ -7059,6 +7092,14 @@
       const closeTimer = window.setTimeout(() => {
         setHidden(target, true);
         removeDrawerBackdrop(target);
+
+        if (wasOpen) {
+          emitComponentEvent(target, "drawer-closed", {
+            target,
+            trigger,
+          });
+        }
+
         emitComponentEvent(target, "target-close", {
           target,
           trigger,
@@ -7103,10 +7144,22 @@
       ensureDrawerBackdrop(target, trigger);
       setHidden(target, false);
       setExpanded(trigger, true);
+      emitComponentEvent(target, "drawer-open", {
+        target,
+        trigger,
+      });
+
       requestAnimationFrame(() => {
-        setDrawerBackdropOpen(target, true);
+        if (drawerUsesModal(target)) {
+          setDrawerBackdropOpen(target, true);
+        }
+
         target.classList.add("is-open");
         syncDrawerBodyLock();
+        emitComponentEvent(target, "drawer-opened", {
+          target,
+          trigger,
+        });
       });
       emitComponentEvent(target, "target-open", {
         target,
@@ -7245,6 +7298,10 @@
         return;
       }
 
+      if (isDrawerTarget(entry.target) && !drawerClosesOnBackdrop(entry.target)) {
+        return;
+      }
+
       const clickedInsideTrigger = entry.trigger.contains(target);
       const clickedInsideTarget = entry.target.contains(target);
       if (!clickedInsideTrigger && !clickedInsideTarget) {
@@ -7286,6 +7343,10 @@
 
       floatingStates.forEach((container) => closeFloating(container));
       genericTargets.forEach((entry) => {
+        if (isDrawerTarget(entry.target) && !drawerClosesOnEscape(entry.target)) {
+          return;
+        }
+
         if (isOpen(entry.target) && !isAlertTarget(entry.target)) {
           closeTarget(entry.target);
         }

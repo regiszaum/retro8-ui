@@ -4801,6 +4801,11 @@ dialog.r8-dialog::backdrop {
     position: absolute;
   }
 .r8-drawer {
+    --r8-drawer-size: 24rem;
+    --r8-drawer-min-size: 18rem;
+    --r8-drawer-header-surface: var(--r8-color-surface-2);
+    --r8-drawer-footer-surface: var(--r8-color-surface-3);
+    --r8-drawer-body-padding: var(--r8-space-4);
     background: var(--r8-color-surface);
     border: var(--r8-border-thick) solid var(--r8-color-border);
     box-shadow: var(--r8-shadow-lg);
@@ -4808,8 +4813,9 @@ dialog.r8-dialog::backdrop {
     gap: var(--r8-space-3);
     grid-template-rows: auto minmax(0, 1fr) auto;
     inset: 0 0 0 auto;
-    max-width: min(24rem, calc(100vw - 1rem));
-    min-height: 18rem;
+    max-width: min(var(--r8-drawer-size), calc(100vw - 1rem));
+    min-height: var(--r8-drawer-min-size);
+    min-width: min(var(--r8-drawer-min-size), calc(100vw - 1rem));
     overflow: auto;
     padding: 0;
     position: fixed;
@@ -4818,7 +4824,7 @@ dialog.r8-dialog::backdrop {
       transform calc(var(--r8-motion-step) * 3) cubic-bezier(0.22, 1, 0.36, 1),
       box-shadow calc(var(--r8-motion-step) * 3) ease;
     will-change: transform;
-    width: min(24rem, calc(100vw - 1rem));
+    width: min(var(--r8-drawer-size), calc(100vw - 1rem));
     z-index: 72;
   }
 .r8-drawer--right {
@@ -4831,9 +4837,9 @@ dialog.r8-dialog::backdrop {
 .r8-drawer--top,
   .r8-drawer--bottom {
     inset: auto auto auto 50%;
-    max-height: min(22rem, calc(100vh - 1rem));
+    max-height: min(var(--r8-drawer-size), calc(100vh - 1rem));
     max-width: min(42rem, calc(100vw - 1rem));
-    min-height: 12rem;
+    min-height: min(var(--r8-drawer-min-size), calc(100vh - 1rem));
     width: min(42rem, calc(100vw - 1rem));
   }
 .r8-drawer--top {
@@ -4876,12 +4882,13 @@ dialog.r8-dialog::backdrop {
 .r8-drawer__header,
   .r8-drawer__footer {
     align-items: center;
-    background: var(--r8-color-surface-2);
+    background: var(--r8-drawer-header-surface);
     border-bottom: var(--r8-border-thin) solid var(--r8-color-border);
+    justify-content: space-between;
     padding: var(--r8-space-3) var(--r8-space-4);
   }
 .r8-drawer__footer {
-    background: var(--r8-color-surface-3);
+    background: var(--r8-drawer-footer-surface);
     border-bottom: 0;
     border-top: var(--r8-border-thin) solid var(--r8-color-border);
   }
@@ -4890,10 +4897,47 @@ dialog.r8-dialog::backdrop {
     gap: var(--r8-space-3);
     min-height: 0;
     overflow: auto;
-    padding: var(--r8-space-4);
+    padding: var(--r8-drawer-body-padding);
   }
 .r8-drawer__header .r8-drawer__title {
     flex: 1 1 auto;
+  }
+.r8-drawer__copy {
+    display: grid;
+    gap: 0.25rem;
+    min-width: 0;
+  }
+.r8-drawer__meta {
+    color: var(--r8-color-ink-muted);
+    font-size: var(--r8-font-size-xs);
+    line-height: 1.6;
+    margin: 0;
+  }
+.r8-drawer__close {
+    align-self: start;
+    background: transparent;
+    border: var(--r8-border-thick) solid var(--r8-color-border);
+    box-shadow: var(--r8-shadow-sm);
+    color: var(--r8-color-ink);
+    cursor: pointer;
+    display: inline-grid;
+    font-family: var(--r8-font-display);
+    font-size: var(--r8-font-size-xs);
+    height: 1.875rem;
+    line-height: 1;
+    min-width: 1.875rem;
+    padding: 0 var(--r8-space-2);
+    place-items: center;
+    text-transform: uppercase;
+    transition: transform calc(var(--r8-motion-step) * 1) steps(2, end);
+    width: auto;
+  }
+.r8-drawer__close:hover {
+    transform: translate(var(--r8-motion-lift), var(--r8-motion-lift));
+  }
+.r8-drawer__close:focus-visible {
+    outline: var(--r8-focus-width) solid var(--r8-color-focus);
+    outline-offset: var(--r8-focus-offset);
   }
 .r8-loading {
     align-items: center;

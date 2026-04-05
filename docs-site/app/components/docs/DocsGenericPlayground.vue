@@ -572,7 +572,18 @@ function getDefaults(id: string): Record<string, any> {
     case "dialog":
       return { fullscreen: false, tone: "default" };
     case "drawer":
-      return { placement: "right" };
+      return {
+        closeButton: true,
+        closeOnBackdrop: true,
+        closeOnEscape: true,
+        content: "settings",
+        footer: true,
+        header: true,
+        lockScroll: true,
+        modal: true,
+        placement: "right",
+        size: "md",
+      };
     case "loading":
       return { label: localize("Carregando assets...", "Loading assets..."), size: "md", variant: "pixels" };
     case "popover":
@@ -1794,8 +1805,85 @@ function buildConfig(id: string): PlaygroundConfig {
     }
 
     case "drawer": {
+      const size = String(state.size || "md");
       const placement = String(state.placement || "right");
+      const content = String(state.content || "settings");
       const targetId = "docs-generic-drawer-preview";
+      const title = localize("Configurações rápidas", "Quick settings");
+      const sizeValue = size === "sm" ? "18rem" : size === "lg" ? "32rem" : "24rem";
+      const closeButton = state.header && state.closeButton
+        ? `<button class="r8-drawer__close" type="button" data-r8-close="#${targetId}" aria-label="${escapeAttribute(localize("Fechar drawer", "Close drawer"))}">x</button>`
+        : "";
+
+      let bodyMarkup = "";
+      if (content === "form") {
+        bodyMarkup = `<div class="r8-stack">
+  <label class="r8-stack">
+    <span>${escapeHtml(localize("Nome da squad", "Squad name"))}</span>
+    <input class="r8-input" type="text" value="${escapeAttribute(localize("Exploradores alpha", "Alpha explorers"))}" />
+  </label>
+  <label class="r8-stack">
+    <span>${escapeHtml(localize("Região", "Region"))}</span>
+    <input class="r8-input" type="text" value="${escapeAttribute(localize("Setor gamma", "Gamma sector"))}" />
+  </label>
+  <label class="r8-stack">
+    <span>${escapeHtml(localize("Notas", "Notes"))}</span>
+    <textarea class="r8-input" rows="4">${escapeHtml(localize("Levar kits extras e manter o canal de suporte ativo.", "Bring extra kits and keep the support channel active."))}</textarea>
+  </label>
+</div>`;
+      } else if (content === "table") {
+        bodyMarkup = `<div class="r8-table-wrap r8-table-wrap--sticky">
+  <table class="r8-table r8-table--striped r8-table--hover">
+    <thead>
+      <tr>
+        <th>${escapeHtml(localize("Item", "Item"))}</th>
+        <th>${escapeHtml(localize("Status", "Status"))}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>${escapeHtml(localize("Mapa local", "Local map"))}</td>
+        <td>${escapeHtml(localize("Sincronizado", "Synced"))}</td>
+      </tr>
+      <tr>
+        <td>${escapeHtml(localize("Slots de equipe", "Crew slots"))}</td>
+        <td>${escapeHtml(localize("4 livres", "4 free"))}</td>
+      </tr>
+      <tr>
+        <td>${escapeHtml(localize("Canal de rádio", "Radio channel"))}</td>
+        <td>${escapeHtml(localize("Seguro", "Secure"))}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>`;
+      } else {
+        bodyMarkup = `<p class="r8-text">${escapeHtml(localize("Ajuste a paleta ativa, a densidade visual e os atalhos rapidos sem sair da tela atual.", "Tune the active palette, visual density, and quick shortcuts without leaving the current screen."))}</p>
+<label class="r8-checkbox is-checked">
+  <span class="r8-checkbox__box" aria-hidden="true"></span>
+  <span>${escapeHtml(localize("Mostrar minimapa", "Show minimap"))}</span>
+</label>
+<label class="r8-checkbox">
+  <span class="r8-checkbox__box" aria-hidden="true"></span>
+  <span>${escapeHtml(localize("Ativar scanlines", "Enable scanlines"))}</span>
+</label>
+<label class="r8-checkbox is-checked">
+  <span class="r8-checkbox__box" aria-hidden="true"></span>
+  <span>${escapeHtml(localize("Modo compacto", "Compact mode"))}</span>
+</label>`;
+      }
+
+      const drawerAttributes = [
+        `class="${classList("r8-drawer", `r8-drawer--${placement}`)}"`,
+        `style="--r8-drawer-size: ${sizeValue};"`,
+        state.header ? `aria-labelledby="${targetId}-title"` : `aria-label="${escapeAttribute(title)}"`,
+        !state.modal && `data-r8-modal="false"`,
+        !state.closeOnBackdrop && `data-r8-close-on-backdrop="false"`,
+        !state.closeOnEscape && `data-r8-close-on-escape="false"`,
+        !state.lockScroll && `data-r8-lock-scroll="false"`,
+      ]
+        .filter(Boolean)
+        .join(" ");
+
       return {
         defaults: getDefaults(id),
         fields: [
@@ -1805,31 +1893,46 @@ function buildConfig(id: string): PlaygroundConfig {
             options: [option("right", "Direita", "Right"), option("left", "Esquerda", "Left"), option("top", "Topo", "Top"), option("bottom", "Base", "Bottom")],
             type: "select",
           },
+          {
+            key: "size",
+            label: localize("Tamanho", "Size"),
+            options: [option("sm", "Pequeno", "Small"), option("md", "Médio", "Medium"), option("lg", "Grande", "Large")],
+            type: "select",
+          },
+          {
+            key: "content",
+            label: localize("Conteúdo", "Content"),
+            options: [option("settings", "Settings", "Settings"), option("form", "Formulário", "Form"), option("table", "Tabela", "Table")],
+            type: "select",
+          },
         ],
         surface: "overlay",
-        toggles: [],
+        toggles: [
+          { key: "header", label: localize("Header", "Header") },
+          { key: "closeButton", label: localize("Botão fechar", "Close button") },
+          { key: "footer", label: localize("Footer", "Footer") },
+          { key: "modal", label: localize("Com backdrop", "With backdrop") },
+          { key: "closeOnBackdrop", label: localize("Fecha no backdrop", "Close on backdrop") },
+          { key: "closeOnEscape", label: localize("Fecha no Esc", "Close on Esc") },
+          { key: "lockScroll", label: localize("Trava scroll", "Lock scroll") },
+        ],
         render: () => `<div class="r8-stack" data-r8-overlay-scope>
   <button class="r8-btn r8-btn--primary" type="button" data-r8-toggle="drawer" data-r8-target="#${targetId}">${escapeHtml(localize("Abrir drawer", "Open drawer"))}</button>
-  <aside id="${targetId}" class="${classList("r8-drawer", `r8-drawer--${placement}`)}" hidden>
-    <div class="r8-drawer__header">
-      <strong class="r8-drawer__title">${escapeHtml(localize("Configurações rápidas", "Quick settings"))}</strong>
-      <button class="r8-btn r8-btn--sm" type="button" data-r8-close="#${targetId}">${escapeHtml(localize("Fechar", "Close"))}</button>
-    </div>
+  <aside id="${targetId}" ${drawerAttributes} hidden>
+    ${state.header ? `<div class="r8-drawer__header">
+      <div class="r8-drawer__copy">
+        <strong id="${targetId}-title" class="r8-drawer__title">${escapeHtml(title)}</strong>
+        <p class="r8-drawer__meta">${escapeHtml(localize("Teste posição, tamanho e regras de fechamento sem sair do preview.", "Test placement, size, and closing rules without leaving the preview."))}</p>
+      </div>
+      ${closeButton}
+    </div>` : ""}
     <div class="r8-drawer__body">
-      <p class="r8-text">${escapeHtml(localize("Ajuste a paleta ativa e a densidade visual.", "Tune the active palette and the visual density."))}</p>
-      <label class="r8-checkbox is-checked">
-        <span class="r8-checkbox__box" aria-hidden="true"></span>
-        <span>${escapeHtml(localize("Mostrar minimapa", "Show minimap"))}</span>
-      </label>
-      <label class="r8-checkbox">
-        <span class="r8-checkbox__box" aria-hidden="true"></span>
-        <span>${escapeHtml(localize("Ativar scanlines", "Enable scanlines"))}</span>
-      </label>
+      ${bodyMarkup}
     </div>
-    <div class="r8-drawer__footer">
+    ${state.footer ? `<div class="r8-drawer__footer">
       <button class="r8-btn r8-btn--sm" type="button" data-r8-close="#${targetId}">${escapeHtml(localize("Cancelar", "Cancel"))}</button>
       <button class="r8-btn r8-btn--sm r8-btn--primary" type="button" data-r8-close="#${targetId}">${escapeHtml(localize("Aplicar", "Apply"))}</button>
-    </div>
+    </div>` : ""}
   </aside>
 </div>`,
       };

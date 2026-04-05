@@ -1360,13 +1360,31 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
       break;
     case "drawer":
       mergeContract(contract, {
+        attributes: [
+          row("aria-labelledby | aria-label", "string", "recommended", `Nome acessivel recomendado para ${component.name}, especialmente quando houver titulo visual no header.`, `Recommended accessible name for ${component.name}, especially when there is a visual title in the header.`),
+          row("hidden", "boolean", "true before open", `Mantem ${component.name} fora do fluxo ate o helper declarativo ou a aplicacao hospedeira abrirem o painel.`, `Keeps ${component.name} out of flow until the declarative helper or the host application opens the panel.`),
+        ],
         dataAttributes: [
           row("data-r8-toggle", `"true"`, `"true"`, `Trigger declarativo para abrir ${component.name}.`, `Declarative trigger used to open ${component.name}.`),
           row("data-r8-target", "CSS selector", "required", `Target controlado por ${component.name}.`, `Target controlled by ${component.name}.`),
           row("data-r8-close", "CSS selector | empty", "nearest host", `Fecha ${component.name} pelo helper do runtime.`, `Closes ${component.name} through the runtime helper.`),
+          row("data-r8-modal", `"true" | "false"`, `"true"`, "Controla se o Drawer cria backdrop proprio ao abrir.", "Controls whether the Drawer creates its own backdrop when opening."),
+          row("data-r8-close-on-backdrop", `"true" | "false"`, `"true"`, "Quando `false`, impede fechamento por clique fora ou no backdrop.", "When `false`, prevents closing through outside click or backdrop click."),
+          row("data-r8-close-on-escape", `"true" | "false"`, `"true"`, "Quando `false`, mantem o painel aberto mesmo ao pressionar Escape.", "When `false`, keeps the panel open even when Escape is pressed."),
+          row("data-r8-lock-scroll", `"true" | "false"`, `"true"`, "Permite desligar o bloqueio de scroll do `body` em drawers globais.", "Lets you disable `body` scroll locking for global drawers."),
+        ],
+        cssVariables: [
+          row("--r8-drawer-size", "length", "24rem", "Controla a largura dos drawers laterais e a altura dos drawers verticais.", "Controls the width of side drawers and the height of vertical drawers."),
+          row("--r8-drawer-min-size", "length", "18rem", "Define o tamanho minimo do painel antes dos limites do viewport entrarem em acao.", "Defines the panel minimum size before viewport limits kick in."),
+          row("--r8-drawer-header-surface / --r8-drawer-footer-surface", "color", "surface-2 / surface-3", "Permitem alinhar header e footer a shells claros, escuros ou mais tematicos.", "Let you tune the header and footer for lighter, darker, or more thematic shells."),
+          row("--r8-drawer-body-padding", "length", "var(--r8-space-4)", "Ajusta a densidade do corpo sem alterar a estrutura interna do painel.", "Adjusts body density without changing the panel's internal structure."),
         ],
         methods: runtimeMethods,
         events: [
+          event("r8:drawer-open", `{ target, trigger }`, `Emitido quando ${component.name} entra no ciclo de abertura.`, `Emitted when ${component.name} enters its opening cycle.`),
+          event("r8:drawer-opened", `{ target, trigger }`, `Emitido apos a transicao principal de abertura do ${component.name}.`, `Emitted after the main ${component.name} opening transition.`),
+          event("r8:drawer-close", `{ target, trigger }`, `Emitido quando ${component.name} inicia o fechamento.`, `Emitted when ${component.name} starts closing.`),
+          event("r8:drawer-closed", `{ target, trigger }`, `Emitido apos a transicao principal de fechamento do ${component.name}.`, `Emitted after the main ${component.name} closing transition.`),
           event("r8:target-open", `{ target, trigger }`, `Emitido quando ${component.name} abre pelo helper declarativo.`, `Emitted when ${component.name} opens through the declarative helper.`),
           event("r8:target-close", `{ target, trigger }`, `Emitido quando ${component.name} fecha pelo helper declarativo.`, `Emitted when ${component.name} closes through the declarative helper.`),
         ],
