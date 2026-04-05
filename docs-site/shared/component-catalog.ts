@@ -3594,93 +3594,527 @@ const dataComponents = [
     name: "Pagination",
     group: "data",
     summary: l(
-      "Controle de paginas com botoes pixelados e estado ativo facil de escanear.",
-      "Paging control with pixelated buttons and an easy-to-scan active state.",
+      "Navegação de páginas com prev/next, pager dinâmico, resumo total e jumper opcional para listas maiores.",
+      "Page navigation with prev/next controls, dynamic pagers, total summary, and an optional jumper for larger lists.",
     ),
-    classes: ["r8-pagination", "r8-pagination__item", "r8-pagination__more"],
-    preview: `<div class="r8-pagination">
-  <span class="r8-pagination__item">1</span>
-  <span class="r8-pagination__item is-active">2</span>
-  <span class="r8-pagination__item">3</span>
-  <span class="r8-pagination__more">...</span>
-  <span class="r8-pagination__item">9</span>
+    classes: ["r8-pagination", "r8-pagination__summary", "r8-pagination__nav", "r8-pagination__pages", "r8-pagination__item", "r8-pagination__more", "r8-pagination__jumper", "r8-pagination__jump-input"],
+    preview: `<div class="r8-pagination" data-r8-total-pages="9" data-r8-current-page="4" data-r8-pager-count="7">
+  <span class="r8-pagination__summary">Total 9</span>
+  <button class="r8-pagination__nav" type="button" data-r8-page-action="prev" aria-label="Previous page">&lt;</button>
+  <div class="r8-pagination__pages">
+    <button class="r8-pagination__item" type="button" data-r8-page="1">1</button>
+    <button class="r8-pagination__item" type="button" data-r8-page="2">2</button>
+    <button class="r8-pagination__item" type="button" data-r8-page="3">3</button>
+    <button class="r8-pagination__item is-active" type="button" data-r8-page="4" aria-current="true">4</button>
+    <button class="r8-pagination__item" type="button" data-r8-page="5">5</button>
+    <span class="r8-pagination__more" aria-hidden="true">...</span>
+    <button class="r8-pagination__item" type="button" data-r8-page="9">9</button>
+  </div>
+  <button class="r8-pagination__nav" type="button" data-r8-page-action="next" aria-label="Next page">&gt;</button>
+  <label class="r8-pagination__jumper">
+    <span>Go to</span>
+    <input class="r8-pagination__jump-input r8-input" type="number" min="1" max="9" value="4" data-r8-page-jump-input />
+    <button class="r8-btn r8-btn--sm" type="button" data-r8-page-action="jump">OK</button>
+  </label>
 </div>`,
+    code: `<div class="r8-pagination r8-pagination--background" data-r8-total-pages="18" data-r8-current-page="6" data-r8-pager-count="7" data-r8-hide-on-single-page="true">
+  <span class="r8-pagination__summary">Total 18</span>
+  <button class="r8-pagination__nav" type="button" data-r8-page-action="prev" aria-label="Previous page">&lt;</button>
+  <div class="r8-pagination__pages">
+    <button class="r8-pagination__item" type="button" data-r8-page="1">1</button>
+    <button class="r8-pagination__item" type="button" data-r8-page="2">2</button>
+    <button class="r8-pagination__item" type="button" data-r8-page="3">3</button>
+    <button class="r8-pagination__item is-active" type="button" data-r8-page="6" aria-current="true">6</button>
+    <span class="r8-pagination__more" aria-hidden="true">...</span>
+    <button class="r8-pagination__item" type="button" data-r8-page="18">18</button>
+  </div>
+  <button class="r8-pagination__nav" type="button" data-r8-page-action="next" aria-label="Next page">&gt;</button>
+  <label class="r8-pagination__jumper">
+    <span>Go to</span>
+    <input class="r8-pagination__jump-input r8-input" type="number" min="1" max="18" value="6" data-r8-page-jump-input />
+    <button class="r8-btn r8-btn--sm" type="button" data-r8-page-action="jump">OK</button>
+  </label>
+</div>`,
+    anatomy: ll(
+      [
+        "`r8-pagination` é o shell base e aceita `data-r8-total-pages`, `data-r8-current-page` e `data-r8-pager-count` para o runtime desenhar o pager.",
+        "`r8-pagination__nav` cobre anterior e próxima página, enquanto `r8-pagination__pages` segura os botões numerados e elipses.",
+        "`r8-pagination__summary` mostra o total do conjunto e `r8-pagination__jumper` cria a área de salto rápido com input numérico.",
+        "`data-r8-hide-on-single-page=\"true\"` esconde o bloco quando existir apenas uma página, no mesmo espírito do Element Plus.",
+      ],
+      [
+        "`r8-pagination` is the base shell and accepts `data-r8-total-pages`, `data-r8-current-page`, and `data-r8-pager-count` so the runtime can draw the pager.",
+        "`r8-pagination__nav` covers previous and next page controls, while `r8-pagination__pages` holds numbered buttons and ellipses.",
+        "`r8-pagination__summary` shows the set total and `r8-pagination__jumper` creates a quick-jump area with a numeric input.",
+        "`data-r8-hide-on-single-page=\"true\"` hides the whole block when there is only one page, in the same spirit as Element Plus.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Use `aria-label` claro nos botões de navegação lateral e mantenha `aria-current=\"true\"` na página ativa.",
+        "Quando houver jumper, limite o input ao intervalo válido de páginas para evitar ambiguidade na navegação.",
+        "Evite esconder paginação em contextos onde a pessoa ainda precisa entender quantas páginas existem; o resumo total ajuda nisso.",
+      ],
+      [
+        "Use a clear `aria-label` on side navigation buttons and keep `aria-current=\"true\"` on the active page.",
+        "When a jumper is present, constrain the input to the valid page range to avoid ambiguity in navigation.",
+        "Avoid hiding pagination when people still need to understand how many pages exist; the total summary helps with that.",
+      ],
+    ),
+    api: [
+      {
+        name: "data-r8-total-pages / data-r8-current-page",
+        description: l(
+          "Definem o total e a página ativa controlados pelo runtime.",
+          "Define the total and current page handled by the runtime.",
+        ),
+      },
+      {
+        name: "data-r8-pager-count",
+        description: l(
+          "Controla quantos pagers numéricos aparecem antes do colapso com elipses.",
+          "Controls how many numeric pagers appear before collapsing with ellipses.",
+        ),
+      },
+      {
+        name: "data-r8-hide-on-single-page",
+        description: l(
+          "Esconde o componente quando o total de páginas for igual a 1.",
+          "Hides the component when the total page count is 1.",
+        ),
+      },
+      {
+        name: "r8-pagination__summary / __jumper",
+        description: l(
+          "Blocos opcionais para mostrar total e salto rápido sem sair do mesmo componente.",
+          "Optional blocks for showing the total and a quick jumper without leaving the same component.",
+        ),
+      },
+    ],
   },
   {
     id: "progress",
     name: "Progress",
     group: "data",
     summary: l(
-      "Barra de progresso com fill retro listrado e valor controlado por custom property ou `data-r8-value`.",
-      "Progress bar with a retro striped fill and a value controlled through a custom property or `data-r8-value`.",
+      "Indicador de progresso com barra linear ou dial circular, label opcional dentro do track e modo indeterminado para fluxos ainda sem percentual final.",
+      "Progress indicator with a linear bar or circular dial, an optional in-track label, and an indeterminate mode for flows without a final percentage yet.",
     ),
-    classes: ["r8-progress", "r8-progress__label", "r8-progress__track", "r8-progress__bar", "--r8-progress-value", "r8-progress--success", "r8-progress--warning", "r8-progress--danger"],
+    classes: [
+      "r8-progress",
+      "r8-progress__label",
+      "r8-progress__track",
+      "r8-progress__bar",
+      "r8-progress__value",
+      "r8-progress__inside-value",
+      "r8-progress__dial",
+      "r8-progress__content",
+      "r8-progress__meta",
+      "r8-progress--circle",
+      "r8-progress--inside",
+      "r8-progress--indeterminate",
+      "r8-progress--success",
+      "r8-progress--warning",
+      "r8-progress--danger",
+      "--r8-progress-value",
+      "--r8-progress-height",
+      "--r8-progress-dial-size",
+      "--r8-progress-bar-color",
+    ],
     preview: `<div class="docs-demo__stack">
   <div class="r8-progress" data-r8-value="32">
     <div class="r8-progress__label">
       <span>Upload</span>
-      <span>32%</span>
+      <span class="r8-progress__value" data-r8-progress-value-output>32%</span>
     </div>
     <div class="r8-progress__track">
       <div class="r8-progress__bar"></div>
     </div>
   </div>
-  <div class="r8-progress r8-progress--success" data-r8-value="84">
+  <div class="r8-progress" data-r8-value="72" data-r8-variant="warning" data-r8-label-position="inside">
     <div class="r8-progress__label">
-      <span>Shield sync</span>
-      <span>84%</span>
+      <span>Queue sync</span>
+      <span class="r8-progress__value" data-r8-progress-value-output>72%</span>
     </div>
     <div class="r8-progress__track">
       <div class="r8-progress__bar"></div>
+      <span class="r8-progress__inside-value" data-r8-progress-value-output>72%</span>
+    </div>
+  </div>
+  <div class="r8-progress" data-r8-value="84" data-r8-variant="success" data-r8-shape="circle">
+    <div class="r8-progress__dial">
+      <div class="r8-progress__content">
+        <strong class="r8-progress__value" data-r8-progress-value-output>84%</strong>
+        <span class="r8-progress__meta">stable</span>
+      </div>
+    </div>
+    <div class="r8-progress__label">
+      <span>Shield sync</span>
     </div>
   </div>
 </div>`,
+    code: `<div class="docs-demo__stack">
+  <div class="r8-progress" data-r8-value="48" style="--r8-progress-height: 1rem;">
+    <div class="r8-progress__label">
+      <span>Indexing assets</span>
+      <span class="r8-progress__value" data-r8-progress-value-output>48%</span>
+    </div>
+    <div class="r8-progress__track">
+      <div class="r8-progress__bar"></div>
+    </div>
+  </div>
+
+  <div class="r8-progress" data-r8-value="76" data-r8-label-position="inside" data-r8-variant="warning">
+    <div class="r8-progress__label">
+      <span>Queue sync</span>
+      <span class="r8-progress__value" data-r8-progress-value-output>76%</span>
+    </div>
+    <div class="r8-progress__track">
+      <div class="r8-progress__bar"></div>
+      <span class="r8-progress__inside-value" data-r8-progress-value-output>76%</span>
+    </div>
+  </div>
+
+  <div class="r8-progress" data-r8-value="84" data-r8-shape="circle" data-r8-variant="success" style="--r8-progress-dial-size: 7rem;">
+    <div class="r8-progress__dial">
+      <div class="r8-progress__content">
+        <strong class="r8-progress__value" data-r8-progress-value-output>84%</strong>
+        <span class="r8-progress__meta">stable</span>
+      </div>
+    </div>
+    <div class="r8-progress__label">
+      <span>Shield sync</span>
+    </div>
+  </div>
+</div>`,
+    anatomy: ll(
+      [
+        "`r8-progress` é o wrapper base e aceita valor, shape, tom, label interna e modo indeterminado pela mesma API pública.",
+        "`r8-progress__label` agrupa o título e a leitura percentual externa, enquanto `r8-progress__inside-value` cobre a versão compacta dentro do track.",
+        "`r8-progress__track` e `r8-progress__bar` formam a barra linear; `r8-progress__dial` e `r8-progress__content` cobrem o modo circular.",
+        "As custom properties ajustam altura, tamanho do dial, cor do preenchimento, trilha e velocidade da animação sem multiplicar classes.",
+      ],
+      [
+        "`r8-progress` is the base wrapper and accepts value, shape, tone, inside label, and indeterminate mode through the same public API.",
+        "`r8-progress__label` groups the title and the external percentage readout, while `r8-progress__inside-value` covers the compact version inside the track.",
+        "`r8-progress__track` and `r8-progress__bar` build the linear bar; `r8-progress__dial` and `r8-progress__content` cover the circular mode.",
+        "Custom properties adjust height, dial size, fill color, track color, and animation speed without multiplying classes.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Mantenha um nome claro perto do componente ou use `aria-label` quando o título visível não existir; o runtime já expõe `role=\"progressbar\"` e os limites de valor.",
+        "Não dependa só da cor para comunicar estado. A leitura textual do percentual e o rótulo do processo continuam importantes para contraste e legibilidade.",
+        "Use o modo indeterminado apenas quando ainda não houver um número confiável; quando o percentual existir, sincronize `data-r8-value` para manter a interface e a tecnologia assistiva alinhadas.",
+      ],
+      [
+        "Keep a clear name near the component or use `aria-label` when there is no visible title; the runtime already exposes `role=\"progressbar\"` and value bounds.",
+        "Do not rely on color alone to communicate state. The textual percentage readout and process label still matter for contrast and readability.",
+        "Use the indeterminate mode only when there is no reliable number yet; once a percentage exists, sync `data-r8-value` to keep the interface and assistive tech aligned.",
+      ],
+    ),
+    api: [
+      {
+        name: "data-r8-value / data-r8-variant",
+        description: l(
+          "Controlam o percentual e o tom sem precisar manipular a custom property diretamente.",
+          "Control the percentage and tone without having to manipulate the custom property directly.",
+        ),
+      },
+      {
+        name: "data-r8-shape / data-r8-label-position / data-r8-indeterminate",
+        description: l(
+          "Alternam entre barra linear, dial circular, label interna e animação contínua.",
+          "Switch between a linear bar, a circular dial, an inside label, and continuous animation.",
+        ),
+      },
+      {
+        name: "data-r8-progress-value-output",
+        description: l(
+          "Marca os nodes que devem receber a leitura textual atualizada pelo runtime.",
+          "Marks the nodes that should receive the textual readout updated by the runtime.",
+        ),
+      },
+      {
+        name: "--r8-progress-height / --r8-progress-dial-size / --r8-progress-bar-color",
+        description: l(
+          "Ajustam espessura, escala circular e cor local do preenchimento sem trocar a estrutura.",
+          "Adjust thickness, circular scale, and the local fill color without replacing the structure.",
+        ),
+      },
+    ],
   },
   {
     id: "skeleton",
     name: "Skeleton",
     group: "data",
     summary: l(
-      "Placeholders animados para carregamento de cards, listas e paines de dados.",
-      "Animated placeholders for loading cards, lists and data panels.",
+      "Placeholder estrutural para loading de cards, listas e perfis, com avatar, media, linhas e animacao opcional no mesmo sistema visual.",
+      "Structural loading placeholder for cards, lists, and profiles, with avatar, media, lines, and optional animation in the same visual system.",
     ),
-    classes: ["r8-skeleton", "r8-skeleton__block", "r8-skeleton__line"],
-    preview: `<div class="r8-skeleton">
-  <div class="r8-skeleton__block"></div>
+    classes: [
+      "r8-skeleton",
+      "r8-skeleton--card",
+      "r8-skeleton__block",
+      "r8-skeleton__header",
+      "r8-skeleton__text",
+      "r8-skeleton__footer",
+      "r8-skeleton__media",
+      "r8-skeleton__avatar",
+      "r8-skeleton__title",
+      "r8-skeleton__line",
+      "r8-skeleton__line--medium",
+      "r8-skeleton__line--short",
+      "r8-skeleton__button",
+    ],
+    preview: `<div class="r8-skeleton r8-skeleton--card">
+  <div class="r8-skeleton__media"></div>
+  <div class="r8-skeleton__title"></div>
   <div class="r8-skeleton__line"></div>
-  <div class="r8-skeleton__line"></div>
+  <div class="r8-skeleton__line r8-skeleton__line--medium"></div>
+  <div class="r8-skeleton__footer">
+    <div class="r8-skeleton__line r8-skeleton__line--short"></div>
+    <div class="r8-skeleton__button"></div>
+  </div>
 </div>`,
+    code: `<div class="docs-demo__stack">
+  <div class="r8-skeleton r8-skeleton--card">
+    <div class="r8-skeleton__media"></div>
+    <div class="r8-skeleton__title"></div>
+    <div class="r8-skeleton__line"></div>
+    <div class="r8-skeleton__line r8-skeleton__line--medium"></div>
+    <div class="r8-skeleton__footer">
+      <div class="r8-skeleton__line r8-skeleton__line--short"></div>
+      <div class="r8-skeleton__button"></div>
+    </div>
+  </div>
+
+  <div class="r8-skeleton" style="--r8-skeleton-avatar-size: 2.75rem;">
+    <div class="r8-skeleton__header">
+      <div class="r8-skeleton__avatar"></div>
+      <div class="r8-skeleton__text">
+        <div class="r8-skeleton__title"></div>
+        <div class="r8-skeleton__line"></div>
+        <div class="r8-skeleton__line r8-skeleton__line--short"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="r8-skeleton" data-r8-animated="false">
+    <div class="r8-skeleton__title"></div>
+    <div class="r8-skeleton__line"></div>
+    <div class="r8-skeleton__line r8-skeleton__line--medium"></div>
+    <div class="r8-skeleton__line r8-skeleton__line--short"></div>
+  </div>
+</div>`,
+    anatomy: ll(
+      [
+        "`r8-skeleton` e o wrapper base. Ele organiza as pecas falsas e aceita variaveis para espacamento, alturas e velocidade do shimmer.",
+        "`r8-skeleton__media`, `__avatar`, `__title`, `__line` e `__button` permitem aproximar o placeholder do layout real sem inventar markup aleatorio.",
+        "`r8-skeleton--card` adiciona moldura e padding quando o loading precisa reservar o mesmo volume de um card real.",
+        "As variantes de largura como `r8-skeleton__line--medium` e `--short` ajudam a quebrar a repeticao e deixam a leitura mais natural.",
+      ],
+      [
+        "`r8-skeleton` is the base wrapper. It arranges the fake pieces and accepts variables for spacing, heights, and shimmer speed.",
+        "`r8-skeleton__media`, `__avatar`, `__title`, `__line`, and `__button` let you match the placeholder to the real layout without inventing random markup.",
+        "`r8-skeleton--card` adds frame and padding when loading needs to reserve the same footprint as a real card.",
+        "Width variants such as `r8-skeleton__line--medium` and `--short` help break repetition and make the placeholder feel more natural.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Use skeleton apenas como feedback temporario. Quando os dados chegarem, troque pelo conteudo real em vez de deixar a UI em estado ambiguo por muito tempo.",
+        "Desative ou reduza a animacao em contextos sensiveis a movimento; `data-r8-animated=\"false\"` cobre esse caso sem trocar classes.",
+        "O ideal e que o placeholder reserve dimensoes proximas das do DOM final para evitar saltos visuais grandes quando o conteudo carregar.",
+      ],
+      [
+        "Use skeletons only as temporary feedback. Once data arrives, swap them for real content instead of leaving the UI in an ambiguous state for too long.",
+        "Disable or reduce animation in motion-sensitive contexts; `data-r8-animated=\"false\"` covers that without changing classes.",
+        "Ideally the placeholder should reserve dimensions close to the final DOM to avoid large visual jumps when content loads.",
+      ],
+    ),
+    api: [
+      {
+        name: "data-r8-animated",
+        description: l(
+          "Liga ou pausa o shimmer do skeleton sem precisar remover a estrutura inteira.",
+          "Turns the skeleton shimmer on or off without removing the whole structure.",
+        ),
+      },
+      {
+        name: "r8-skeleton__media / __avatar / __title / __button",
+        description: l(
+          "Pecas estruturais para aproximar o loading de cards, perfis, listas e CTAs reais.",
+          "Structural pieces for matching cards, profiles, lists, and real CTAs during loading.",
+        ),
+      },
+      {
+        name: "r8-skeleton__line--medium / --short",
+        description: l(
+          "Varia a largura das linhas para fugir de um bloco de texto artificialmente uniforme.",
+          "Varies line widths so the text block does not feel artificially uniform.",
+        ),
+      },
+      {
+        name: "--r8-skeleton-media-height / --r8-skeleton-avatar-size / --r8-skeleton-speed",
+        description: l(
+          "Ajusta altura da media, escala do avatar e ritmo da animacao sem sair da API publica.",
+          "Adjusts media height, avatar scale, and animation pace without leaving the public API.",
+        ),
+      },
+    ],
   },
   {
     id: "table",
     name: "Table",
     group: "data",
     summary: l(
-      "Tabela retro para dados tabulares com header forte e corpo altamente legivel.",
-      "Retro table for tabular data with a strong header and highly readable body.",
+      "Tabela retro mais flexivel para grades densas, com zebra, hover, status por linha, modo compacto e wrapper opcional para header fixo.",
+      "More flexible retro table for dense grids, with striping, hover, row status states, compact mode, and an optional fixed-header wrapper.",
     ),
-    classes: ["r8-table"],
-    preview: `<table class="r8-table">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Status</th>
-      <th>Role</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>PIX-07</td>
-      <td>Online</td>
-      <td>Engineer</td>
-    </tr>
-    <tr>
-      <td>PIX-11</td>
-      <td>Queued</td>
-      <td>Medic</td>
-    </tr>
-  </tbody>
-</table>`,
+    classes: [
+      "r8-table-wrap",
+      "r8-table-wrap--fixed",
+      "r8-table",
+      "r8-table--striped",
+      "r8-table--hover",
+      "r8-table--sm",
+      "r8-table__row--success",
+      "r8-table__row--warning",
+      "r8-table__row--danger",
+      "r8-table__row--info",
+      "r8-table__cell--truncate",
+      "r8-table__cell--numeric",
+      "--r8-table-max-height",
+    ],
+    preview: `<div class="r8-table-wrap r8-table-wrap--fixed" style="--r8-table-max-height: 13rem;">
+  <table class="r8-table r8-table--striped r8-table--hover">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Status</th>
+        <th>Role</th>
+        <th>Address</th>
+        <th>Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="r8-table__row--success">
+        <td>PIX-07</td>
+        <td>Stable</td>
+        <td>Engineer</td>
+        <td class="r8-table__cell--truncate">Orbital dock / maintenance corridor / west sector</td>
+        <td class="r8-table__cell--numeric">98</td>
+      </tr>
+      <tr class="r8-table__row--warning">
+        <td>PIX-11</td>
+        <td>Queued</td>
+        <td>Medic</td>
+        <td class="r8-table__cell--truncate">Forward wing / command relay / upper rail</td>
+        <td class="r8-table__cell--numeric">64</td>
+      </tr>
+      <tr>
+        <td>PIX-21</td>
+        <td>Review</td>
+        <td>Analyst</td>
+        <td class="r8-table__cell--truncate">Gamma gate / archive lane / checkpoint 04</td>
+        <td class="r8-table__cell--numeric">72</td>
+      </tr>
+    </tbody>
+  </table>
+</div>`,
+    code: `<div class="r8-table-wrap r8-table-wrap--fixed" style="--r8-table-max-height: 14rem;">
+  <table class="r8-table r8-table--striped r8-table--hover r8-table--sm">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Status</th>
+        <th>Role</th>
+        <th>Address</th>
+        <th>Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="r8-table__row--success">
+        <td>PIX-07</td>
+        <td>Stable</td>
+        <td>Engineer</td>
+        <td class="r8-table__cell--truncate">Orbital dock / maintenance corridor / west sector</td>
+        <td class="r8-table__cell--numeric">98</td>
+      </tr>
+      <tr class="r8-table__row--warning">
+        <td>PIX-11</td>
+        <td>Queued</td>
+        <td>Medic</td>
+        <td class="r8-table__cell--truncate">Forward wing / command relay / upper rail</td>
+        <td class="r8-table__cell--numeric">64</td>
+      </tr>
+      <tr class="r8-table__row--danger">
+        <td>PIX-42</td>
+        <td>Offline</td>
+        <td>Scout</td>
+        <td class="r8-table__cell--truncate">Dust line / sensor break / lower canyon</td>
+        <td class="r8-table__cell--numeric">12</td>
+      </tr>
+    </tbody>
+  </table>
+</div>`,
+    anatomy: ll(
+      [
+        "`r8-table-wrap` segura overflow horizontal e, com `r8-table-wrap--fixed`, habilita header sticky via `--r8-table-max-height`.",
+        "`r8-table` continua sendo a raiz semantica da grade e aceita modifiers como `--striped`, `--hover` e `--sm` para mudar leitura e densidade.",
+        "As classes `r8-table__row--success|warning|danger|info` destacam linhas sem depender de runtime.",
+        "`r8-table__cell--truncate` e `__cell--numeric` ajudam em colunas longas e valores alinhados a direita.",
+      ],
+      [
+        "`r8-table-wrap` handles horizontal overflow and, with `r8-table-wrap--fixed`, enables a sticky header through `--r8-table-max-height`.",
+        "`r8-table` remains the semantic grid root and accepts modifiers such as `--striped`, `--hover`, and `--sm` to change readability and density.",
+        "`r8-table__row--success|warning|danger|info` highlight rows without relying on runtime.",
+        "`r8-table__cell--truncate` and `__cell--numeric` help with long columns and right-aligned values.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Use `th scope=\"col\"` no header e mantenha a ordem das colunas previsivel, principalmente quando houver scroll horizontal.",
+        "Nao use cor sozinha para estados de linha. O texto da coluna de status ainda deve explicar o que mudou.",
+        "Se truncar conteudo longo, preserve o dado completo em `title` ou em um detalhe acessivel no fluxo real da aplicacao.",
+      ],
+      [
+        "Use `th scope=\"col\"` in the header and keep column order predictable, especially when horizontal scrolling is present.",
+        "Do not rely on color alone for row states. The status column text should still explain what changed.",
+        "If you truncate long content, preserve the full value in `title` or another accessible detail in the real application flow.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-table-wrap / r8-table-wrap--fixed",
+        description: l(
+          "Wrapper opcional para overflow horizontal e header fixo com scroll vertical.",
+          "Optional wrapper for horizontal overflow and a fixed header with vertical scrolling.",
+        ),
+      },
+      {
+        name: "r8-table--striped / --hover / --sm",
+        description: l(
+          "Controlam zebra, destaque no hover e densidade compacta sem tocar na estrutura do HTML.",
+          "Control striping, hover highlight, and compact density without touching the HTML structure.",
+        ),
+      },
+      {
+        name: "r8-table__row--success|warning|danger|info",
+        description: l(
+          "Aplica estados visuais por linha para tabelas operacionais, auditoria e filas.",
+          "Applies visual row states for operational tables, audits, and queues.",
+        ),
+      },
+      {
+        name: "--r8-table-max-height / r8-table__cell--truncate / r8-table__cell--numeric",
+        description: l(
+          "Ajustam altura do wrapper, truncamento de texto e alinhamento numerico de colunas.",
+          "Adjust wrapper height, text truncation, and numeric column alignment.",
+        ),
+      },
+    ],
   },
   {
     id: "tag",
@@ -3695,26 +4129,6 @@ const dataComponents = [
   <span class="r8-tag">default</span>
   <span class="r8-tag r8-tag--success">synced</span>
   <span class="r8-tag r8-tag--danger">error</span>
-</div>`,
-  },
-  {
-    id: "timeline",
-    name: "Timeline",
-    group: "data",
-    summary: l(
-      "Sequencia vertical de eventos para changelog, deploys e historico de atividade.",
-      "Vertical sequence of events for changelogs, deploys and activity history.",
-    ),
-    classes: ["r8-timeline", "r8-timeline__item", "r8-timeline__dot", "r8-timeline__content"],
-    preview: `<div class="r8-timeline">
-  <div class="r8-timeline__item">
-    <span class="r8-timeline__dot"></span>
-    <div class="r8-timeline__content">08:30 - Build finished</div>
-  </div>
-  <div class="r8-timeline__item">
-    <span class="r8-timeline__dot"></span>
-    <div class="r8-timeline__content">08:45 - Docs deployed</div>
-  </div>
 </div>`,
   },
 ] satisfies CatalogEntry[];

@@ -1804,8 +1804,8 @@ pre {
 .docs-generic-playground__surface > .r8-empty,
 .docs-generic-playground__surface > .r8-progress,
 .docs-generic-playground__surface > .r8-skeleton,
+.docs-generic-playground__surface > .r8-table-wrap,
 .docs-generic-playground__surface > .r8-table,
-.docs-generic-playground__surface > .r8-timeline,
 .docs-generic-playground__surface > .r8-steps,
 .docs-generic-playground__surface > .r8-tabs,
 .docs-generic-playground__surface > .r8-alert,
@@ -1817,6 +1817,12 @@ pre {
 
 .docs-generic-playground__surface > .r8-upload--avatar {
   width: min(100%, 14rem);
+}
+
+.docs-generic-playground__surface > .r8-progress[data-r8-shape="circle"],
+.docs-generic-playground__surface > .r8-progress.r8-progress--circle {
+  justify-self: center;
+  width: fit-content;
 }
 
 .docs-generic-playground__surface > .r8-image {

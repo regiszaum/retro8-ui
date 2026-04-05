@@ -1163,22 +1163,65 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         dataAttributes: [
           row("data-r8-value", "number", "0", "Shortcut declarativo para atualizar o fill e o `aria-valuenow`.", "Declarative shortcut for updating the fill and `aria-valuenow`."),
           row("data-r8-variant", `"default" | "success" | "warning" | "danger"`, "none", "Aplica a tone do Progress via runtime.", "Applies the Progress tone through the runtime."),
+          row("data-r8-shape", `"line" | "circle"`, `"line"`, "Alterna entre barra linear e dial circular sem trocar a estrutura principal do componente.", "Switches between a linear bar and a circular dial without replacing the main component structure."),
+          row("data-r8-label-position", `"outside" | "inside"`, `"outside"`, "Move a leitura percentual para dentro do track quando a barra precisa ficar mais compacta.", "Moves the percentage readout inside the track when the bar needs a more compact layout."),
+          row("data-r8-indeterminate", `"true" | "false"`, `"false"`, "Ativa animacao continua quando o fluxo ainda nao tem percentual definitivo.", "Turns on continuous animation when the flow does not have a definitive percentage yet."),
+          row("data-r8-progress-value-output", "marker", "none", "Marca os nodes que o runtime deve manter sincronizados com o valor percentual atual.", "Marks the nodes that the runtime should keep synchronized with the current percentage value."),
         ],
         cssVariables: [
           row("--r8-progress-value", "percentage", "0%", "Controla a largura visual da barra interna.", "Controls the visual width of the inner bar."),
+          row("--r8-progress-height", "length", "1.5rem", "Define a espessura do track linear sem trocar classes extras.", "Defines the linear track thickness without extra classes."),
+          row("--r8-progress-dial-size", "length", "6.5rem", "Escala o tamanho total do dial circular.", "Scales the full circular dial size."),
+          row("--r8-progress-dial-thickness", "length", "0.72rem", "Controla a espessura util do anel circular.", "Controls the usable thickness of the circular ring."),
+          row("--r8-progress-bar-color / --r8-progress-track-color", "color", "theme defaults", "Permite personalizar preenchimento e trilha sem sair da API publica.", "Lets you customize fill and track colors without leaving the public API."),
+          row("--r8-progress-duration", "time", "1.15s", "Ajusta o ritmo da animacao indeterminada.", "Adjusts the indeterminate animation pace."),
         ],
         methods: runtimeMethods,
       });
       mergeContract(contract, withVariantDataAttribute(component.name, `"success" | "warning" | "danger"`));
       break;
+    case "skeleton":
+      mergeContract(contract, {
+        dataAttributes: [
+          row("data-r8-animated", `"true" | "false"`, `"true"`, "Liga ou pausa o shimmer sem trocar a estrutura do placeholder.", "Turns the shimmer on or off without replacing the placeholder structure."),
+        ],
+        cssVariables: [
+          row("--r8-skeleton-gap", "length", "var(--r8-space-3)", "Controla o espacamento interno entre as pecas do esqueleto.", "Controls internal spacing between skeleton pieces."),
+          row("--r8-skeleton-block-height / --r8-skeleton-media-height", "length", "7rem / 9rem", "Ajustam a altura de blocos grandes e areas de media.", "Adjust the height of large blocks and media areas."),
+          row("--r8-skeleton-line-height / --r8-skeleton-title-width", "length", "1rem / 48%", "Permitem afinar linhas e controlar a largura visual do titulo.", "Let you slim down lines and control the visual title width."),
+          row("--r8-skeleton-avatar-size / --r8-skeleton-button-width", "length", "3rem / 5.5rem", "Escalam avatar e CTA falsa em templates de profile ou card.", "Scale the avatar and fake CTA in profile or card templates."),
+          row("--r8-skeleton-speed", "time", "1.2s", "Ajusta a velocidade da animacao do shimmer.", "Adjusts the shimmer animation speed."),
+        ],
+      });
+      break;
+    case "table":
+      mergeContract(contract, {
+        cssVariables: [
+          row("--r8-table-max-height", "length", "16rem", "Define a altura maxima do wrapper quando o header fica sticky.", "Defines the wrapper max height when the header becomes sticky."),
+          row("--r8-table-cell-padding-x / --r8-table-cell-padding-y", "length", "var(--r8-space-3)", "Ajustam a densidade horizontal e vertical das celulas.", "Adjust the horizontal and vertical density of table cells."),
+          row("--r8-table-header-bg / --r8-table-row-bg / --r8-table-row-alt-bg", "color", "theme defaults", "Permitem personalizar header, linhas base e zebra sem trocar a estrutura.", "Let you customize the header, base rows, and zebra striping without changing the structure."),
+          row("--r8-table-hover-bg", "color", "mixed primary surface", "Controla o destaque de hover nas linhas quando `r8-table--hover` estiver ativo.", "Controls row hover highlight when `r8-table--hover` is active."),
+        ],
+      });
+      break;
     case "pagination":
       mergeContract(contract, {
         attributes: [
           row("aria-current", "boolean", "false", "Marca a page ativa na lista de items.", "Marks the active page inside the item list."),
+          row("aria-label", "string", "recommended on prev/next", "Nome acessível para os botões de navegação lateral.", "Accessible name for the side navigation buttons."),
+        ],
+        dataAttributes: [
+          row("data-r8-total-pages", "number", "required for dynamic pager", "Total de páginas usadas para desenhar prev/next, pager e jumper.", "Total page count used to draw prev/next, pager, and jumper."),
+          row("data-r8-current-page", "number", "1", "Página atual controlada pelo runtime.", "Current page controlled by the runtime."),
+          row("data-r8-pager-count", "odd number", "7", "Quantidade de pagers visíveis antes de colapsar com elipses.", "Visible pager count before collapsing with ellipses."),
+          row("data-r8-hide-on-single-page", `"true" | "false"`, `"false"`, "Esconde o componente quando houver só uma página.", "Hides the component when there is only one page."),
+        ],
+        cssVariables: [
+          row("--r8-pagination-control-size", "length", "2rem", "Escala o tamanho dos botões numéricos e de navegação.", "Scales the numeric and navigation button size."),
         ],
         methods: runtimeMethods,
         events: [
-          event("r8:pagination-change", `{ item, index }`, "Emitido quando a page ativa muda.", "Emitted when the active page changes."),
+          event("r8:pagination-change", `{ page, totalPages, source }`, "Emitido quando a página ativa muda por clique, nav ou jumper.", "Emitted when the active page changes through page buttons, nav, or jumper."),
         ],
       });
       break;

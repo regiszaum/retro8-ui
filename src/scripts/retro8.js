@@ -5357,26 +5357,181 @@
       }
 
       component.dataset.r8PaginationReady = "true";
-      const items = toArray(component.querySelectorAll(".r8-pagination__item")).filter((item) => item instanceof HTMLElement);
+      const pagesContainer = firstMatch(component, ".r8-pagination__pages");
+      const prevButton = firstMatch(component, '[data-r8-page-action="prev"]');
+      const nextButton = firstMatch(component, '[data-r8-page-action="next"]');
+      const jumpButton = firstMatch(component, '[data-r8-page-action="jump"]');
+      const jumpInput = firstMatch(component, "[data-r8-page-jump-input]");
+      const summary = firstMatch(component, ".r8-pagination__summary");
+      const hideOnSinglePage = matchesTrue(component.dataset.r8HideOnSinglePage || "false");
+      const totalPages = clamp(Number(component.dataset.r8TotalPages || "0") || 0, 1, 999);
+      const configuredCurrent = clamp(Number(component.dataset.r8CurrentPage || "1") || 1, 1, totalPages || 1);
+      const configuredPagerCount = Number(component.dataset.r8PagerCount || "7") || 7;
+      const pagerCount = Math.max(5, Math.min(11, configuredPagerCount % 2 === 0 ? configuredPagerCount - 1 : configuredPagerCount));
+      let currentPage = configuredCurrent;
 
-      function activate(target) {
-        items.forEach((item) => {
-          const isActive = item === target;
-          item.classList.toggle("is-active", isActive);
-          item.setAttribute("aria-current", isActive ? "true" : "false");
-        });
+      function buildModel(total, current, count) {
+        if (total <= count) {
+          return Array.from({ length: total }, (_, index) => index + 1);
+        }
 
+        const innerCount = Math.max(1, count - 2);
+        let start = Math.max(2, current - Math.floor(innerCount / 2));
+        let end = start + innerCount - 1;
+
+        if (end > total - 1) {
+          end = total - 1;
+          start = Math.max(2, end - innerCount + 1);
+        }
+
+        const model = [1];
+        if (start > 2) {
+          model.push("more");
+        }
+
+        for (let page = start; page <= end; page += 1) {
+          model.push(page);
+        }
+
+        if (end < total - 1) {
+          model.push("more");
+        }
+
+        model.push(total);
+        return model;
+      }
+
+      function bindPageItem(item) {
+        if (!(item instanceof HTMLElement) || item.dataset.r8PaginationBound === "true") {
+          return;
+        }
+
+        item.dataset.r8PaginationBound = "true";
+        prepareActionLikeElement(item);
+        const activateItem = () => {
+          const page = clamp(Number(item.dataset.r8Page || item.textContent || "1") || 1, 1, totalPages || 1);
+          activatePage(page, "item");
+        };
+        item.addEventListener("click", activateItem);
+        bindKeyboardActivation(item, activateItem);
+      }
+
+      function render() {
+        const safeTotal = totalPages || Math.max(
+          1,
+          toArray(component.querySelectorAll(".r8-pagination__item")).filter((item) => item instanceof HTMLElement).length,
+        );
+        const safeCurrent = clamp(currentPage, 1, safeTotal);
+        currentPage = safeCurrent;
+        component.dataset.r8CurrentPage = String(safeCurrent);
+
+        if (hideOnSinglePage) {
+          component.hidden = safeTotal <= 1;
+        }
+
+        if (summary instanceof HTMLElement && summary.dataset.r8PaginationStatic !== "true") {
+          summary.textContent = `Total ${safeTotal}`;
+        }
+
+        if (pagesContainer instanceof HTMLElement && totalPages > 0) {
+          const model = buildModel(safeTotal, safeCurrent, pagerCount);
+          pagesContainer.innerHTML = model
+            .map((entry) => {
+              if (entry === "more") {
+                return '<span class="r8-pagination__more" aria-hidden="true">...</span>';
+              }
+
+              const page = Number(entry);
+              return `<button class="r8-pagination__item${page === safeCurrent ? " is-active" : ""}" type="button" data-r8-page="${page}" aria-current="${page === safeCurrent ? "true" : "false"}">${page}</button>`;
+            })
+            .join("");
+
+          toArray(pagesContainer.querySelectorAll(".r8-pagination__item")).forEach(bindPageItem);
+        } else {
+          const items = toArray(component.querySelectorAll(".r8-pagination__item")).filter((item) => item instanceof HTMLElement);
+          items.forEach((item, index) => {
+            if (!item.dataset.r8Page) {
+              item.dataset.r8Page = String(index + 1);
+            }
+
+            const page = clamp(Number(item.dataset.r8Page || index + 1) || index + 1, 1, safeTotal);
+            const isActive = page === safeCurrent;
+            item.classList.toggle("is-active", isActive);
+            item.setAttribute("aria-current", isActive ? "true" : "false");
+            bindPageItem(item);
+          });
+        }
+
+        if (prevButton instanceof HTMLElement) {
+          const disabled = safeCurrent <= 1;
+          prevButton.classList.toggle("is-disabled", disabled);
+          prevButton.setAttribute("aria-disabled", disabled ? "true" : "false");
+          if (prevButton instanceof HTMLButtonElement) {
+            prevButton.disabled = disabled;
+          }
+        }
+
+        if (nextButton instanceof HTMLElement) {
+          const disabled = safeCurrent >= safeTotal;
+          nextButton.classList.toggle("is-disabled", disabled);
+          nextButton.setAttribute("aria-disabled", disabled ? "true" : "false");
+          if (nextButton instanceof HTMLButtonElement) {
+            nextButton.disabled = disabled;
+          }
+        }
+
+        if (jumpInput instanceof HTMLInputElement) {
+          jumpInput.value = String(safeCurrent);
+          jumpInput.min = "1";
+          jumpInput.max = String(safeTotal);
+        }
+      }
+
+      function activatePage(nextPage, source = "api") {
+        const safeTotal = totalPages || Math.max(
+          1,
+          toArray(component.querySelectorAll(".r8-pagination__item")).filter((item) => item instanceof HTMLElement).length,
+        );
+        currentPage = clamp(Number(nextPage) || 1, 1, safeTotal);
+        render();
         emitComponentEvent(component, "pagination-change", {
-          item: target,
-          index: items.indexOf(target),
+          page: currentPage,
+          totalPages: safeTotal,
+          source,
         });
       }
 
-      items.forEach((item) => {
-        prepareActionLikeElement(item);
-        item.addEventListener("click", () => activate(item));
-        bindKeyboardActivation(item, () => activate(item));
-      });
+      if (prevButton instanceof HTMLElement) {
+        const goPrev = () => activatePage(currentPage - 1, "prev");
+        prevButton.addEventListener("click", goPrev);
+        bindKeyboardActivation(prevButton, goPrev);
+      }
+
+      if (nextButton instanceof HTMLElement) {
+        const goNext = () => activatePage(currentPage + 1, "next");
+        nextButton.addEventListener("click", goNext);
+        bindKeyboardActivation(nextButton, goNext);
+      }
+
+      if (jumpButton instanceof HTMLElement) {
+        const jumpToPage = () => {
+          const value = jumpInput instanceof HTMLInputElement ? Number(jumpInput.value || currentPage) : currentPage;
+          activatePage(value, "jumper");
+        };
+        jumpButton.addEventListener("click", jumpToPage);
+        bindKeyboardActivation(jumpButton, jumpToPage);
+      }
+
+      if (jumpInput instanceof HTMLInputElement) {
+        jumpInput.addEventListener("keydown", (event) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            activatePage(Number(jumpInput.value || currentPage), "jumper");
+          }
+        });
+      }
+
+      render();
     });
   }
 
@@ -5594,11 +5749,29 @@
       component.setAttribute("aria-valuemin", "0");
       component.setAttribute("aria-valuemax", "100");
 
-      if (component.dataset.r8Value) {
-        const value = clamp(Number(component.dataset.r8Value) || 0, 0, 100);
-        component.style.setProperty("--r8-progress-value", `${value}%`);
-        component.setAttribute("aria-valuenow", String(value));
+      const rawValue =
+        component.dataset.r8Value ||
+        component.getAttribute("aria-valuenow") ||
+        component.style.getPropertyValue("--r8-progress-value");
+      const parsedValue =
+        typeof rawValue === "string"
+          ? parseFloat(rawValue)
+          : Number(rawValue);
+      const value = clamp(Number.isFinite(parsedValue) ? parsedValue : 0, 0, 100);
+      component.style.setProperty("--r8-progress-value", `${value}%`);
+      component.style.setProperty("--r8-progress-ratio", String(value / 100));
+      component.dataset.r8Value = String(value);
+      component.setAttribute("aria-valuenow", String(value));
+      component.setAttribute("aria-valuetext", `${value}%`);
 
+      const outputs = toArray(component.querySelectorAll("[data-r8-progress-value-output]"));
+      if (outputs.length > 0) {
+        outputs.forEach((output) => {
+          if (output instanceof HTMLElement) {
+            output.textContent = `${value}%`;
+          }
+        });
+      } else {
         const label = component.querySelector(".r8-progress__label span:last-child");
         if (label instanceof HTMLElement) {
           label.textContent = `${value}%`;

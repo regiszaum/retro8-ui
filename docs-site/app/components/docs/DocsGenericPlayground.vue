@@ -244,65 +244,85 @@ function buildUploadFiles(count: number, statusValue: string) {
     .join("\n");
 }
 
-function buildTableRows(count: number) {
+function buildTableRows(
+  count: number,
+  options: {
+    statusRows?: boolean;
+    truncate?: boolean;
+  } = {},
+) {
   const rows = [
-    ["PIX-07", localize("Online", "Online"), localize("Engineer", "Engineer")],
-    ["PIX-11", localize("Queued", "Queued"), localize("Medic", "Medic")],
-    ["PIX-21", localize("Stable", "Stable"), localize("Analyst", "Analyst")],
-    ["PIX-42", localize("Offline", "Offline"), localize("Scout", "Scout")],
+    ["PIX-07", localize("Stable", "Stable"), localize("Engineer", "Engineer"), localize("Orbital dock / maintenance corridor / west sector", "Orbital dock / maintenance corridor / west sector"), "98"],
+    ["PIX-11", localize("Queued", "Queued"), localize("Medic", "Medic"), localize("Forward wing / command relay / upper rail", "Forward wing / command relay / upper rail"), "64"],
+    ["PIX-21", localize("Review", "Review"), localize("Analyst", "Analyst"), localize("Gamma gate / archive lane / checkpoint 04", "Gamma gate / archive lane / checkpoint 04"), "72"],
+    ["PIX-42", localize("Offline", "Offline"), localize("Scout", "Scout"), localize("Dust line / sensor break / lower canyon", "Dust line / sensor break / lower canyon"), "12"],
+    ["PIX-55", localize("Synced", "Synced"), localize("Navigator", "Navigator"), localize("Hangar 09 / route board / central path", "Hangar 09 / route board / central path"), "88"],
+    ["PIX-77", localize("Muted", "Muted"), localize("Pilot", "Pilot"), localize("North ridge / fallback route / node B", "North ridge / fallback route / node B"), "41"],
   ].slice(0, count);
 
   return rows
-    .map(
-      (row) => `<tr>
+    .map((row, index) => {
+      const rowTone =
+        options.statusRows
+          ? ["r8-table__row--success", "r8-table__row--warning", "", "r8-table__row--danger", "r8-table__row--info", ""][index] || ""
+          : "";
+
+      return `<tr class="${rowTone}">
       <td>${escapeHtml(row[0])}</td>
       <td>${escapeHtml(row[1])}</td>
       <td>${escapeHtml(row[2])}</td>
-    </tr>`,
-    )
+      <td class="${options.truncate ? "r8-table__cell--truncate" : ""}"${options.truncate ? ` title="${escapeAttribute(row[3])}"` : ""}>${escapeHtml(row[3])}</td>
+      <td class="r8-table__cell--numeric">${escapeHtml(row[4])}</td>
+    </tr>`;
+    })
     .join("\n");
 }
 
-function buildTimelineItems(count: number) {
-  const items = [
-    localize("08:30 - Build finalizado", "08:30 - Build finished"),
-    localize("08:45 - Docs publicadas", "08:45 - Docs deployed"),
-    localize("09:10 - Cache aquecido", "09:10 - Cache warmed"),
-    localize("09:25 - Release estável", "09:25 - Stable release"),
-  ].slice(0, count);
+function buildPaginationItems(total: number, active: number, pagerCount: number) {
+  const safeTotal = clamp(total, 1, 99);
+  const safeActive = clamp(active, 1, safeTotal);
+  const normalizedCount = Math.max(5, Math.min(11, pagerCount % 2 === 0 ? pagerCount - 1 : pagerCount));
 
-  return items
-    .map(
-      (item) => `<div class="r8-timeline__item">
-    <span class="r8-timeline__dot"></span>
-    <div class="r8-timeline__content">${escapeHtml(item)}</div>
-  </div>`,
-    )
+  const buildModel = () => {
+    if (safeTotal <= normalizedCount) {
+      return Array.from({ length: safeTotal }, (_, index) => index + 1);
+    }
+
+    const innerCount = Math.max(1, normalizedCount - 2);
+    let start = Math.max(2, safeActive - Math.floor(innerCount / 2));
+    let end = start + innerCount - 1;
+
+    if (end > safeTotal - 1) {
+      end = safeTotal - 1;
+      start = Math.max(2, end - innerCount + 1);
+    }
+
+    const model: Array<number | "more"> = [1];
+    if (start > 2) {
+      model.push("more");
+    }
+
+    for (let page = start; page <= end; page += 1) {
+      model.push(page);
+    }
+
+    if (end < safeTotal - 1) {
+      model.push("more");
+    }
+
+    model.push(safeTotal);
+    return model;
+  };
+
+  return buildModel()
+    .map((entry) => {
+      if (entry === "more") {
+        return '<span class="r8-pagination__more" aria-hidden="true">...</span>';
+      }
+
+      return `<button class="${classList("r8-pagination__item", entry === safeActive && "is-active")}" type="button" data-r8-page="${entry}" aria-current="${entry === safeActive ? "true" : "false"}">${entry}</button>`;
+    })
     .join("\n");
-}
-
-function buildPaginationItems(total: number, active: number) {
-  const safeActive = clamp(active, 1, total);
-
-  if (total <= 5) {
-    return Array.from({ length: total }, (_, index) => index + 1)
-      .map(
-        (page) =>
-          `<span class="${classList("r8-pagination__item", page === safeActive && "is-active")}">${page}</span>`,
-      )
-      .join("\n");
-  }
-
-  const pages = [1, 2, 3];
-  const tail = total;
-  return `${pages
-    .map(
-      (page) =>
-        `<span class="${classList("r8-pagination__item", page === safeActive && "is-active")}">${page}</span>`,
-    )
-    .join("\n")}
-  <span class="r8-pagination__more">...</span>
-  <span class="${classList("r8-pagination__item", tail === safeActive && "is-active")}">${tail}</span>`;
 }
 
 function buildLoadingVisual(variant: string, sizeClass: string, label: string) {
@@ -367,6 +387,68 @@ function buildLoadingVisual(variant: string, sizeClass: string, label: string) {
 </div>`;
 }
 
+function buildSkeletonLines(lines: number) {
+  const widths = ["", "", "r8-skeleton__line--medium", "r8-skeleton__line--short", "r8-skeleton__line--medium"];
+
+  return Array.from({ length: lines }, (_, index) => {
+    const widthClass = widths[index] || "r8-skeleton__line--short";
+    return `<div class="${classList("r8-skeleton__line", widthClass)}"></div>`;
+  }).join("\n  ");
+}
+
+function buildSkeletonTemplate(template: string, lines: number, animated: boolean, count: number) {
+  const animatedAttr = animated ? "" : ' data-r8-animated="false"';
+  const safeCount = clamp(count, 1, 4);
+
+  const buildOne = () => {
+    switch (template) {
+      case "profile":
+        return `<div class="r8-skeleton r8-skeleton--card"${animatedAttr}>
+  <div class="r8-skeleton__header">
+    <div class="r8-skeleton__avatar"></div>
+    <div class="r8-skeleton__text">
+      <div class="r8-skeleton__title"></div>
+      ${buildSkeletonLines(Math.max(2, lines))}
+    </div>
+  </div>
+  <div class="r8-skeleton__footer">
+    <div class="r8-skeleton__line r8-skeleton__line--medium"></div>
+    <div class="r8-skeleton__button"></div>
+  </div>
+</div>`;
+      case "card":
+        return `<div class="r8-skeleton r8-skeleton--card"${animatedAttr}>
+  <div class="r8-skeleton__media"></div>
+  <div class="r8-skeleton__title"></div>
+  ${buildSkeletonLines(lines)}
+  <div class="r8-skeleton__footer">
+    <div class="r8-skeleton__line r8-skeleton__line--short"></div>
+    <div class="r8-skeleton__button"></div>
+  </div>
+</div>`;
+      case "list":
+        return `<div class="r8-skeleton"${animatedAttr}>
+  <div class="r8-skeleton__header">
+    <div class="r8-skeleton__avatar"></div>
+    <div class="r8-skeleton__text">
+      <div class="r8-skeleton__title"></div>
+      <div class="r8-skeleton__line"></div>
+      <div class="r8-skeleton__line r8-skeleton__line--short"></div>
+    </div>
+  </div>
+</div>`;
+      default:
+        return `<div class="r8-skeleton"${animatedAttr}>
+  <div class="r8-skeleton__title"></div>
+  ${buildSkeletonLines(lines)}
+</div>`;
+    }
+  };
+
+  const items = Array.from({ length: safeCount }, () => buildOne()).join("\n");
+  return safeCount === 1 ? items : `<div class="docs-demo__stack">${items}</div>`;
+}
+
 function getDefaults(id: string): Record<string, any> {
   switch (id) {
     case "radio":
@@ -413,17 +495,25 @@ function getDefaults(id: string): Record<string, any> {
         status: "ready",
       };
     case "pagination":
-      return { active: 2, background: false, size: "md", total: 9 };
+      return { active: 2, background: false, hideSingle: false, jumper: false, pagerCount: 7, size: "md", summary: true, total: 9 };
     case "progress":
-      return { thin: false, tone: "default", value: 32 };
+      return {
+        customColor: false,
+        indeterminate: false,
+        inside: false,
+        label: localize("Upload", "Upload"),
+        shape: "line",
+        size: "md",
+        thin: false,
+        tone: "default",
+        value: 32,
+      };
     case "skeleton":
-      return { block: true, lines: 3 };
+      return { animated: true, count: 1, lines: 3, template: "card" };
     case "table":
-      return { rows: 3, striped: false };
+      return { compact: false, fixedHead: false, hover: true, rows: 4, statusRows: true, striped: true, truncate: true };
     case "tag":
       return { closable: false, text: "synced", tone: "success" };
-    case "timeline":
-      return { items: 3 };
     case "breadcrumb":
       return { current: "Button" };
     case "dropdown":
@@ -1153,20 +1243,41 @@ function buildConfig(id: string): PlaygroundConfig {
       };
 
     case "pagination": {
-      const active = clamp(asNumber(state.active, 2), 1, asNumber(state.total, 9));
-      const total = clamp(asNumber(state.total, 9), 5, 9);
+      const total = clamp(asNumber(state.total, 9), 1, 30);
+      const active = clamp(asNumber(state.active, 2), 1, total);
+      const pagerCount = clamp(asNumber(state.pagerCount, 7), 5, 11);
       const size = String(state.size || "md");
       return {
         defaults: getDefaults(id),
         fields: [
-          { key: "active", label: localize("Página ativa", "Active page"), max: 9, min: 1, type: "number" },
-          { key: "total", label: localize("Total de páginas", "Total pages"), options: [option("5", "5 páginas", "5 pages"), option("9", "9 páginas", "9 pages")], type: "select" },
+          { key: "active", label: localize("Página ativa", "Active page"), max: 30, min: 1, type: "number" },
+          { key: "total", label: localize("Total de páginas", "Total pages"), max: 30, min: 1, type: "number" },
+          { key: "pagerCount", label: localize("Pagers visíveis", "Visible pagers"), max: 11, min: 5, step: 2, type: "number" },
           { key: "size", label: localize("Tamanho", "Size"), options: [option("md", "Médio", "Medium"), option("sm", "Pequeno", "Small")], type: "select" },
         ],
         surface: "wide",
-        toggles: [{ key: "background", label: localize("Fundo", "Background") }],
-        render: () => `<div class="${classList("r8-pagination", size === "sm" && "r8-pagination--sm", state.background && "r8-pagination--background")}">
-  ${buildPaginationItems(total, active)}
+        toggles: [
+          { key: "background", label: localize("Fundo", "Background") },
+          { key: "summary", label: localize("Resumo total", "Total summary") },
+          { key: "jumper", label: localize("Jumper", "Jumper") },
+          { key: "hideSingle", label: localize("Ocultar com 1 página", "Hide on single page") },
+        ],
+        render: () => `<div class="${classList("r8-pagination", size === "sm" && "r8-pagination--sm", state.background && "r8-pagination--background")}" data-r8-total-pages="${total}" data-r8-current-page="${active}" data-r8-pager-count="${pagerCount}"${state.hideSingle ? ' data-r8-hide-on-single-page="true"' : ""}>
+  ${state.summary ? `<span class="r8-pagination__summary">Total ${total}</span>` : ""}
+  <button class="r8-pagination__nav" type="button" data-r8-page-action="prev" aria-label="${escapeHtml(localize("Página anterior", "Previous page"))}">&lt;</button>
+  <div class="r8-pagination__pages">
+    ${buildPaginationItems(total, active, pagerCount)}
+  </div>
+  <button class="r8-pagination__nav" type="button" data-r8-page-action="next" aria-label="${escapeHtml(localize("Próxima página", "Next page"))}">&gt;</button>
+  ${
+    state.jumper
+      ? `<label class="r8-pagination__jumper">
+    <span>${escapeHtml(localize("Ir para", "Go to"))}</span>
+    <input class="r8-pagination__jump-input r8-input" type="number" min="1" max="${total}" value="${active}" data-r8-page-jump-input />
+    <button class="r8-btn r8-btn--sm" type="button" data-r8-page-action="jump">${escapeHtml(localize("OK", "OK"))}</button>
+  </label>`
+      : ""
+  }
 </div>`,
       };
     }
@@ -1174,9 +1285,28 @@ function buildConfig(id: string): PlaygroundConfig {
     case "progress": {
       const value = clamp(asNumber(state.value, 32), 0, 100);
       const tone = String(state.tone || "default");
+      const shape = String(state.shape || "line");
+      const size = String(state.size || "md");
+      const label = String(state.label || localize("Upload", "Upload"));
+      const isCircle = shape === "circle";
+      const hasInsideLabel = Boolean(state.inside) && !Boolean(state.thin) && !isCircle;
+      const sizeStyle =
+        shape === "circle"
+          ? size === "sm"
+            ? "--r8-progress-dial-size: 5rem;"
+            : size === "lg"
+              ? "--r8-progress-dial-size: 8rem;"
+              : "--r8-progress-dial-size: 6.5rem;"
+          : size === "sm"
+            ? "--r8-progress-height: 0.9rem;"
+            : size === "lg"
+              ? "--r8-progress-height: 1.85rem;"
+              : "--r8-progress-height: 1.5rem;";
+      const customColorStyle = state.customColor ? " --r8-progress-bar-color: #7c3aed;" : "";
       return {
         defaults: getDefaults(id),
         fields: [
+          { key: "label", label: localize("Rótulo", "Label"), maxlength: 18, type: "text" },
           { key: "value", label: localize("Valor", "Value"), max: 100, min: 0, type: "number" },
           {
             key: "tone",
@@ -1189,16 +1319,47 @@ function buildConfig(id: string): PlaygroundConfig {
             ],
             type: "select",
           },
+          {
+            key: "shape",
+            label: localize("Forma", "Shape"),
+            options: [option("line", "Linha", "Line"), option("circle", "Circular", "Circle")],
+            type: "select",
+          },
+          {
+            key: "size",
+            label: localize("Tamanho", "Size"),
+            options: [option("sm", "Pequeno", "Small"), option("md", "Médio", "Medium"), option("lg", "Grande", "Large")],
+            type: "select",
+          },
         ],
-        surface: "default",
-        toggles: [{ key: "thin", label: localize("Fino", "Thin") }],
-        render: () => `<div class="${classList("r8-progress", tone !== "default" && `r8-progress--${tone}`, state.thin && "r8-progress--thin")}" data-r8-value="${value}">
+        surface: isCircle ? "compact" : "wide",
+        toggles: [
+          { key: "thin", label: localize("Fino", "Thin") },
+          { key: "inside", label: localize("Label interna", "Inside label") },
+          { key: "indeterminate", label: localize("Indeterminado", "Indeterminate") },
+          { key: "customColor", label: localize("Cor local", "Local color") },
+        ],
+        render: () =>
+          isCircle
+            ? `<div class="r8-progress" data-r8-value="${value}" data-r8-shape="circle"${tone !== "default" ? ` data-r8-variant="${tone}"` : ""} style="${sizeStyle}${customColorStyle}">
+  <div class="r8-progress__dial">
+    <div class="r8-progress__content">
+      <strong class="r8-progress__value" data-r8-progress-value-output>${value}%</strong>
+      <span class="r8-progress__meta">${escapeHtml(localize("complete", "complete"))}</span>
+    </div>
+  </div>
   <div class="r8-progress__label">
-    <span>${escapeHtml(localize("Upload", "Upload"))}</span>
-    <span>${value}%</span>
+    <span>${escapeHtml(label)}</span>
+  </div>
+</div>`
+            : `<div class="${classList("r8-progress", state.thin && "r8-progress--thin")}" data-r8-value="${value}"${tone !== "default" ? ` data-r8-variant="${tone}"` : ""}${hasInsideLabel ? ' data-r8-label-position="inside"' : ""}${state.indeterminate ? ' data-r8-indeterminate="true"' : ""} style="${sizeStyle}${customColorStyle}">
+  <div class="r8-progress__label">
+    <span>${escapeHtml(label)}</span>
+    <span class="r8-progress__value" data-r8-progress-value-output>${value}%</span>
   </div>
   <div class="r8-progress__track">
     <div class="r8-progress__bar"></div>
+    ${hasInsideLabel ? `<span class="r8-progress__inside-value" data-r8-progress-value-output>${value}%</span>` : ""}
   </div>
 </div>`,
       };
@@ -1206,37 +1367,65 @@ function buildConfig(id: string): PlaygroundConfig {
 
     case "skeleton": {
       const lines = clamp(asNumber(state.lines, 3), 2, 5);
+      const template = String(state.template || "card");
+      const count = clamp(asNumber(state.count, 1), 1, 4);
       return {
         defaults: getDefaults(id),
-        fields: [{ key: "lines", label: localize("Linhas", "Lines"), max: 5, min: 2, type: "number" }],
-        surface: "default",
-        toggles: [{ key: "block", label: localize("Bloco grande", "Large block") }],
-        render: () => `<div class="r8-skeleton">
-  ${state.block ? '<div class="r8-skeleton__block"></div>' : ""}
-  ${Array.from({ length: lines }, () => '<div class="r8-skeleton__line"></div>').join("\n  ")}
-</div>`,
+        fields: [
+          {
+            key: "template",
+            label: localize("Template", "Template"),
+            options: [
+              option("card", "Card", "Card"),
+              option("profile", "Perfil", "Profile"),
+              option("list", "Lista", "List"),
+              option("rows", "Linhas", "Rows"),
+            ],
+            type: "select",
+          },
+          { key: "lines", label: localize("Linhas", "Lines"), max: 5, min: 2, type: "number" },
+          { key: "count", label: localize("Quantidade", "Count"), max: 4, min: 1, type: "number" },
+        ],
+        surface: template === "card" || template === "profile" || count > 1 ? "wide" : "default",
+        toggles: [{ key: "animated", label: localize("Animado", "Animated") }],
+        render: () => buildSkeletonTemplate(template, lines, Boolean(state.animated), count),
       };
     }
 
     case "table": {
-      const rows = clamp(asNumber(state.rows, 3), 2, 5);
-      return {
-        defaults: getDefaults(id),
-        fields: [{ key: "rows", label: localize("Linhas", "Rows"), max: 5, min: 2, type: "number" }],
-        surface: "table",
-        toggles: [{ key: "striped", label: localize("Zebrada", "Striped") }],
-        render: () => `<table class="${classList("r8-table", state.striped && "r8-table--striped")}">
+      const rows = clamp(asNumber(state.rows, 4), 2, 6);
+      const tableMarkup = `<table class="${classList("r8-table", state.striped && "r8-table--striped", state.hover && "r8-table--hover", state.compact && "r8-table--sm")}">
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Status</th>
-      <th>Role</th>
+      <th scope="col">Name</th>
+      <th scope="col">Status</th>
+      <th scope="col">Role</th>
+      <th scope="col">Address</th>
+      <th scope="col">Score</th>
     </tr>
   </thead>
   <tbody>
-    ${buildTableRows(rows)}
+    ${buildTableRows(rows, { statusRows: Boolean(state.statusRows), truncate: Boolean(state.truncate) })}
   </tbody>
-</table>`,
+</table>`;
+      return {
+        defaults: getDefaults(id),
+        fields: [{ key: "rows", label: localize("Linhas", "Rows"), max: 6, min: 2, type: "number" }],
+        surface: "table",
+        toggles: [
+          { key: "striped", label: localize("Zebrada", "Striped") },
+          { key: "hover", label: localize("Hover", "Hover") },
+          { key: "compact", label: localize("Compacta", "Compact") },
+          { key: "fixedHead", label: localize("Header fixo", "Fixed header") },
+          { key: "statusRows", label: localize("Estados por linha", "Row states") },
+          { key: "truncate", label: localize("Truncar texto", "Truncate text") },
+        ],
+        render: () =>
+          state.fixedHead
+            ? `<div class="r8-table-wrap r8-table-wrap--fixed" style="--r8-table-max-height: 12rem;">
+  ${tableMarkup}
+</div>`
+            : tableMarkup,
       };
     }
 
@@ -1259,19 +1448,6 @@ function buildConfig(id: string): PlaygroundConfig {
   <span>${escapeHtml(String(state.text || ""))}</span>
   ${state.closable ? `<button class="r8-tag__close" type="button" data-r8-dismiss="true" aria-label="${escapeAttribute(localize("Remover tag", "Remove tag"))}">x</button>` : ""}
 </span>`,
-      };
-    }
-
-    case "timeline": {
-      const items = clamp(asNumber(state.items, 3), 2, 4);
-      return {
-        defaults: getDefaults(id),
-        fields: [{ key: "items", label: localize("Itens", "Items"), max: 4, min: 2, type: "number" }],
-        surface: "default",
-        toggles: [],
-        render: () => `<div class="r8-timeline">
-  ${buildTimelineItems(items)}
-</div>`,
       };
     }
 

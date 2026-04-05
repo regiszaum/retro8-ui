@@ -6,7 +6,7 @@ kicker: Components
 
 Cada component possui uma page propria dentro da docs.
 
-Agora o catalogo principal cobre **55 componentes core**, alem de alguns extras nativos da `retro8-ui`.
+Agora o catalogo principal cobre **54 componentes core**, alem de alguns extras nativos da `retro8-ui`.
 
 Essa estrutura melhora bastante a escalabilidade da biblioteca, porque cada rota pode crescer com:
 

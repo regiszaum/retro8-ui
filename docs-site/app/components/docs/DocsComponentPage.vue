@@ -40,7 +40,6 @@ const genericPlaygroundIds = new Set([
   "skeleton",
   "table",
   "tag",
-  "timeline",
   "breadcrumb",
   "dropdown",
   "menu",
