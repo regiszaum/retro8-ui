@@ -98,6 +98,36 @@ function classList(...parts: Array<string | false | null | undefined>) {
   return parts.filter(Boolean).join(" ");
 }
 
+function getSwitchColorToken(value: string) {
+  switch (value) {
+    case "surface":
+      return "var(--r8-color-surface)";
+    case "surface3":
+      return "var(--r8-color-surface-3)";
+    case "primary":
+      return "var(--r8-color-primary)";
+    case "secondary":
+      return "var(--r8-color-secondary)";
+    case "tertiary":
+      return "var(--r8-color-tertiary)";
+    case "success":
+      return "var(--r8-color-success)";
+    case "warning":
+      return "var(--r8-color-warning)";
+    case "danger":
+      return "var(--r8-color-danger)";
+    case "info":
+      return "var(--r8-color-info)";
+    case "dark":
+      return "var(--r8-color-dark)";
+    case "light":
+      return "var(--r8-color-light)";
+    case "surface2":
+    default:
+      return "var(--r8-color-surface-2)";
+  }
+}
+
 function asNumber(value: unknown, fallback: number) {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : fallback;
@@ -110,6 +140,7 @@ function isInteractiveComponent(id: string) {
     "switch",
     "theme-switch",
     "transfer",
+    "upload",
     "carousel",
     "collapse",
     "pagination",
@@ -154,18 +185,62 @@ function buildRateItems(count: number, value: number) {
   }).join("\n");
 }
 
-function buildUploadFiles(count: number) {
+function getUploadStatusLabel(value: string) {
+  switch (value) {
+    case "uploading":
+      return localize("Enviando", "Uploading");
+    case "success":
+      return localize("Pronto", "Ready");
+    case "error":
+      return localize("Falhou", "Failed");
+    default:
+      return localize("Na fila", "Queued");
+  }
+}
+
+function resolveUploadStatus(value: string, index: number) {
+  if (value !== "mixed") {
+    return value;
+  }
+
+  return ["uploading", "success", "error", "queued"][index % 4];
+}
+
+function buildUploadFiles(count: number, statusValue: string) {
   const files = [
-    ["retro8.css", "18 KB"],
-    ["sprite-sheet.png", "92 KB"],
-    ["deploy-log.txt", "4 KB"],
+    ["hero-banner.png", "2.4 MB", "PNG"],
+    ["release-bundle.zip", "18 MB", "ZIP"],
+    ["pilot-portrait.jpg", "1.1 MB", "JPG"],
+    ["voice-lines.wav", "7.8 MB", "WAV"],
   ].slice(0, count);
 
   return files
-    .map(
-      ([name, size]) =>
-        `<div class="r8-upload__file"><span>${escapeHtml(name)}</span><span>${escapeHtml(size)}</span></div>`,
-    )
+    .map(([name, size, thumb], index) => {
+      const status = resolveUploadStatus(statusValue, index);
+      const progress = status === "uploading" ? "68%" : status === "error" ? "24%" : status === "success" ? "100%" : "0%";
+      const primaryAction =
+        status === "error"
+          ? localize("Repetir", "Retry")
+          : status === "uploading"
+            ? localize("Pausar", "Pause")
+            : localize("Visualizar", "Preview");
+
+      return `<div class="r8-upload__file" data-r8-upload-state="${status}"${status === "uploading" ? ' aria-busy="true"' : ""}${status === "error" ? ' aria-invalid="true"' : ""} style="--r8-upload-progress: ${progress};">
+  <div class="r8-upload__thumb">${escapeHtml(thumb)}</div>
+  <div class="r8-upload__meta">
+    <strong class="r8-upload__name">${escapeHtml(name)}</strong>
+    <div class="r8-upload__details">
+      <span>${escapeHtml(size)}</span>
+      <span>${escapeHtml(getUploadStatusLabel(status))}</span>
+    </div>
+    ${status === "uploading" || status === "error" ? '<div class="r8-upload__progress"><span></span></div>' : ""}
+  </div>
+  <div class="r8-upload__actions">
+    <button class="r8-upload__action" type="button">${escapeHtml(primaryAction)}</button>
+    <button class="r8-upload__action" type="button">${escapeHtml(localize("Remover", "Remove"))}</button>
+  </div>
+</div>`;
+    })
     .join("\n");
 }
 
@@ -303,27 +378,40 @@ function getDefaults(id: string): Record<string, any> {
     case "slider":
       return { label: localize("Volume", "Volume"), value: 68 };
     case "switch":
-      return { checked: true, disabled: false, size: "md" };
+      return { checked: true, disabled: false, size: "md", enabledTone: "success", disabledTone: "surface2" };
     case "theme-switch":
       return { checked: true, disabled: false, size: "md" };
     case "transfer":
       return { selectedSource: "scanner" };
     case "upload":
-      return { disabled: false, files: 2, multiple: true };
+      return { disabled: false, dragActive: false, files: 2, layout: "default", multiple: true, status: "mixed", tip: true };
     case "avatar":
-      return { round: false, size: "md", text: "PX" };
+      return { fallback: "PX", mode: "text", round: false, size: "md", fit: "cover" };
     case "badge":
       return { dot: false, text: "new", tone: "primary" };
     case "card":
       return { shadow: "default", title: localize("Resumo da missão", "Mission summary") };
     case "carousel":
-      return { active: "1", autoplay: false };
+      return { active: "1", arrows: "always", autoplay: false, captions: true, fit: "cover", interval: 3200 };
     case "collapse":
-      return { accordion: false, open: "display" };
+      return { accordion: false, disabledItem: false, icon: ">", iconPosition: "right", meta: true, open: "display" };
     case "empty":
-      return { action: true, title: localize("Nada por aqui", "Nothing here yet") };
+      return {
+        action: true,
+        align: "center",
+        description: localize("Tente outro filtro ou crie um novo registro.", "Try another filter or create a new record."),
+        mediaSize: 128,
+        title: localize("Nada por aqui", "Nothing here yet"),
+        visual: "icon",
+      };
     case "image":
-      return { caption: localize("Prévia do sprite", "Sprite preview"), tall: false };
+      return {
+        caption: localize("Prévia da rota da floresta", "Forest route preview"),
+        fit: "cover",
+        loading: "lazy",
+        ratio: "wide",
+        status: "ready",
+      };
     case "pagination":
       return { active: 2, background: false, size: "md", total: 9 };
     case "progress":
@@ -485,17 +573,56 @@ function buildConfig(id: string): PlaygroundConfig {
 
     case "switch": {
       const size = String(state.size || "md");
+      const enabledTone = String(state.enabledTone || "success");
+      const disabledTone = String(state.disabledTone || "surface2");
+      const switchStyle = escapeAttribute(
+        `--r8-switch-enabled-bg: ${getSwitchColorToken(enabledTone)}; --r8-switch-disabled-bg: ${getSwitchColorToken(disabledTone)};`,
+      );
       return {
         defaults: getDefaults(id),
         fields: [
           { key: "size", label: localize("Tamanho", "Size"), options: [option("sm", "Pequeno", "Small"), option("md", "Médio", "Medium"), option("lg", "Grande", "Large")], type: "select" },
+          {
+            key: "enabledTone",
+            label: localize("Cor ligada", "On color"),
+            options: [
+              option("success", "Sucesso", "Success"),
+              option("primary", "Primário", "Primary"),
+              option("secondary", "Secundário", "Secondary"),
+              option("tertiary", "Terciário", "Tertiary"),
+              option("warning", "Aviso", "Warning"),
+              option("danger", "Perigo", "Danger"),
+              option("info", "Info", "Info"),
+              option("dark", "Escuro", "Dark"),
+              option("light", "Claro", "Light"),
+            ],
+            type: "select",
+          },
+          {
+            key: "disabledTone",
+            label: localize("Cor desligada", "Off color"),
+            options: [
+              option("surface2", "Superfície 2", "Surface 2"),
+              option("surface", "Superfície", "Surface"),
+              option("surface3", "Superfície 3", "Surface 3"),
+              option("light", "Claro", "Light"),
+              option("dark", "Escuro", "Dark"),
+              option("primary", "Primário", "Primary"),
+              option("secondary", "Secundário", "Secondary"),
+              option("tertiary", "Terciário", "Tertiary"),
+              option("warning", "Aviso", "Warning"),
+              option("danger", "Perigo", "Danger"),
+              option("info", "Info", "Info"),
+            ],
+            type: "select",
+          },
         ],
         surface: "compact",
         toggles: [
           { key: "checked", label: localize("Ligado", "Checked") },
           { key: "disabled", label: localize("Desabilitado", "Disabled") },
         ],
-        render: () => `<label class="${classList("r8-switch", size !== "md" && `r8-switch--${size}`, state.checked && "is-checked", state.disabled && "is-disabled")}"${state.disabled ? ' aria-disabled="true"' : ""}>
+        render: () => `<label class="${classList("r8-switch", size !== "md" && `r8-switch--${size}`, state.checked && "is-checked", state.disabled && "is-disabled")}" style="${switchStyle}"${state.disabled ? ' aria-disabled="true"' : ""}>
   <span class="r8-switch__track"><span class="r8-switch__thumb"></span></span>
   <span>${escapeHtml(localize("Energia principal", "Main power"))}</span>
 </label>`,
@@ -560,37 +687,144 @@ function buildConfig(id: string): PlaygroundConfig {
     }
 
     case "upload": {
-      const files = clamp(asNumber(state.files, 2), 0, 3);
+      const layout = String(state.layout || "default");
+      const files = clamp(asNumber(state.files, 2), 0, layout === "avatar" ? 1 : 4);
+      const status = String(state.status || "mixed");
+      const chooseLabel =
+        layout === "avatar"
+          ? localize("Escolher avatar", "Choose avatar")
+          : state.multiple
+            ? localize("Escolher arquivos", "Choose files")
+            : localize("Escolher arquivo", "Choose file");
+      const dropLabel =
+        layout === "avatar"
+          ? files > 0
+            ? localize("Trocar avatar", "Replace avatar")
+            : localize("Enviar avatar", "Upload avatar")
+          : state.multiple
+            ? localize("Arraste arquivos aqui", "Drop files here")
+            : localize("Arraste um arquivo aqui", "Drop a file here");
+      const hintLabel =
+        layout === "avatar"
+          ? localize("PNG ou JPG quadrado até 2 MB.", "Square PNG or JPG up to 2 MB.")
+          : localize("PNG, JPG ou ZIP até 8 MB. O app host valida e envia os arquivos.", "PNG, JPG, or ZIP up to 8 MB. The host app validates and sends files.");
+      const classes = classList("r8-upload", layout === "picture" && "r8-upload--picture", layout === "avatar" && "r8-upload--avatar");
+
       return {
         defaults: getDefaults(id),
         fields: [
-          { key: "files", label: localize("Arquivos listados", "Listed files"), max: 3, min: 0, type: "number" },
+          { key: "files", label: localize("Arquivos listados", "Listed files"), max: 4, min: 0, type: "number" },
+          {
+            key: "layout",
+            label: localize("Layout", "Layout"),
+            options: [
+              option("default", "Lista", "List"),
+              option("picture", "Thumbs", "Thumbnails"),
+              option("avatar", "Avatar", "Avatar"),
+            ],
+            type: "select",
+          },
+          {
+            key: "status",
+            label: localize("Estado", "State"),
+            options: [
+              option("mixed", "Misturado", "Mixed"),
+              option("queued", "Na fila", "Queued"),
+              option("uploading", "Enviando", "Uploading"),
+              option("success", "Pronto", "Ready"),
+              option("error", "Falhou", "Failed"),
+            ],
+            type: "select",
+          },
         ],
         surface: "wide",
         toggles: [
           { key: "multiple", label: localize("Múltiplos", "Multiple") },
+          { key: "dragActive", label: localize("Drag ativo", "Active drag") },
           { key: "disabled", label: localize("Desabilitado", "Disabled") },
+          { key: "tip", label: localize("Mostrar dica", "Show hint") },
         ],
-        render: () => `<div class="r8-upload"${state.disabled ? ' aria-disabled="true"' : ""}>
-  <div class="r8-upload__dropzone"${state.disabled ? ' aria-disabled="true"' : ""}>${escapeHtml(localize("Arraste arquivos aqui", "Drop files here"))}</div>
-  <div class="r8-upload__list">
-    ${buildUploadFiles(files)}
+        render: () =>
+          layout === "avatar"
+            ? `<div class="${classes}" accept=".png,.jpg,.jpeg"${state.disabled ? ' aria-disabled="true"' : ""}${state.dragActive ? ' data-r8-drag-active="true"' : ""} data-r8-upload-preview-label="${escapeAttribute(localize("Visualizar", "Preview"))}" data-r8-upload-remove-label="${escapeAttribute(localize("Remover", "Remove"))}" data-r8-upload-selected-label="${escapeAttribute(localize("Selecionado", "Selected"))}" data-r8-upload-empty-label="${escapeAttribute(localize("Nenhum arquivo ainda", "No file yet"))}">
+  <div class="r8-upload__toolbar">
+    <div class="r8-upload__copy">
+      <strong class="r8-upload__title">${escapeHtml(localize("Avatar da missão", "Mission avatar"))}</strong>
+      ${state.tip ? `<span class="r8-upload__tip">${escapeHtml(hintLabel)}</span>` : ""}
+    </div>
   </div>
+  <input class="r8-upload__input" type="file" accept=".png,.jpg,.jpeg" />
+  <div class="r8-upload__dropzone" role="button" tabindex="0"${state.disabled ? ' aria-disabled="true"' : ""}>
+    <div class="r8-upload__thumb">${escapeHtml(files > 0 ? "PX" : "+")}</div>
+    <strong>${escapeHtml(dropLabel)}</strong>
+    <div class="r8-upload__details">
+      <span>${escapeHtml(files > 0 ? "avatar-ready.png" : localize("Nenhum arquivo ainda", "No file yet"))}</span>
+      <span>${escapeHtml(files > 0 ? getUploadStatusLabel(resolveUploadStatus(status, 0)) : localize("Aguardando", "Waiting"))}</span>
+    </div>
+  </div>
+</div>`
+            : `<div class="${classes}" accept=".png,.jpg,.jpeg,.zip"${state.multiple ? " multiple" : ""}${state.disabled ? ' aria-disabled="true"' : ""}${state.dragActive ? ' data-r8-drag-active="true"' : ""} data-r8-upload-preview-label="${escapeAttribute(localize("Visualizar", "Preview"))}" data-r8-upload-remove-label="${escapeAttribute(localize("Remover", "Remove"))}" data-r8-upload-selected-label="${escapeAttribute(localize("Selecionado", "Selected"))}" data-r8-upload-empty-label="${escapeAttribute(localize("Nenhum arquivo ainda", "No file yet"))}">
+  <div class="r8-upload__toolbar">
+    <div class="r8-upload__copy">
+      <strong class="r8-upload__title">${escapeHtml(localize("Assets da missão", "Mission assets"))}</strong>
+      ${state.tip ? `<span class="r8-upload__tip">${escapeHtml(hintLabel)}</span>` : ""}
+    </div>
+    <input class="r8-upload__input" type="file" accept=".png,.jpg,.jpeg,.zip"${state.multiple ? " multiple" : ""} />
+    <button class="r8-btn r8-btn--sm r8-btn--primary" data-r8-upload-trigger="button" type="button"${state.disabled ? ' aria-disabled="true"' : ""}>${escapeHtml(chooseLabel)}</button>
+  </div>
+  <div class="r8-upload__dropzone" role="button" tabindex="0"${state.disabled ? ' aria-disabled="true"' : ""}>
+    <strong>${escapeHtml(dropLabel)}</strong>
+    <span class="r8-text r8-text--xs r8-text--muted">${escapeHtml(localize("Ou cole, navegue e reorganize a fila no host app.", "Or paste, browse, and reorder the queue in the host app."))}</span>
+  </div>
+  ${files > 0 ? `<div class="r8-upload__list">
+    ${buildUploadFiles(files, status)}
+  </div>` : ""}
 </div>`,
       };
     }
 
     case "avatar": {
       const size = String(state.size || "md");
+      const mode = String(state.mode || "text");
+      const fit = String(state.fit || "cover");
+      const fallback = String(state.fallback || "PX");
+      const src = mode === "image1" ? "/imgs/p1.png" : mode === "image2" ? "/imgs/p2.png" : mode === "broken" ? "/missing-avatar.png" : "";
       return {
         defaults: getDefaults(id),
         fields: [
-          { key: "text", label: localize("Conteúdo", "Content"), maxlength: 4, type: "text" },
+          { key: "fallback", label: localize("Fallback", "Fallback"), maxlength: 2, type: "text" },
+          {
+            key: "mode",
+            label: localize("Conteúdo", "Content"),
+            options: [
+              option("text", "Texto", "Text"),
+              option("image1", "Imagem 1", "Image 1"),
+              option("image2", "Imagem 2", "Image 2"),
+              option("broken", "Imagem quebrada", "Broken image"),
+            ],
+            type: "select",
+          },
           { key: "size", label: localize("Tamanho", "Size"), options: [option("sm", "Pequeno", "Small"), option("md", "Médio", "Medium"), option("lg", "Grande", "Large")], type: "select" },
+          {
+            key: "fit",
+            label: localize("Fit", "Fit"),
+            options: [
+              option("cover", "Cover", "Cover"),
+              option("contain", "Contain", "Contain"),
+              option("fill", "Fill", "Fill"),
+              option("scale-down", "Scale down", "Scale down"),
+            ],
+            type: "select",
+          },
         ],
         surface: "compact",
         toggles: [{ key: "round", label: localize("Redondo", "Round") }],
-        render: () => `<span class="${classList("r8-avatar", size === "sm" && "r8-avatar--sm", size === "lg" && "r8-avatar--lg", state.round && "r8-avatar--round")}">${escapeHtml(String(state.text || "PX"))}</span>`,
+        render: () =>
+          mode === "text"
+            ? `<span class="${classList("r8-avatar", size === "sm" && "r8-avatar--sm", size === "lg" && "r8-avatar--lg", state.round && "r8-avatar--round")}" data-r8-avatar-fallback="${escapeAttribute(fallback)}">${escapeHtml(fallback)}</span>`
+            : `<span class="${classList("r8-avatar", size === "sm" && "r8-avatar--sm", size === "lg" && "r8-avatar--lg", state.round && "r8-avatar--round")}" data-r8-avatar-fallback="${escapeAttribute(fallback)}" data-r8-fit="${escapeAttribute(fit)}">
+  <img src="${escapeAttribute(src)}" alt="${escapeAttribute(localize("Avatar de exemplo", "Sample avatar"))}" />
+</span>`,
       };
     }
 
@@ -651,25 +885,90 @@ function buildConfig(id: string): PlaygroundConfig {
 
     case "carousel": {
       const active = clamp(asNumber(state.active, 1), 1, 3);
+      const arrowMode = String(state.arrows || "always");
+      const fit = String(state.fit || "cover");
+      const interval = clamp(asNumber(state.interval, 3200), 1200, 12000);
+      const slides = [
+        {
+          alt: localize("Banner do centro de comando", "Command center banner"),
+          body: localize("Hero visual para destaques, covers e lancamentos em destaque.", "Hero visual for highlights, covers, and featured releases."),
+          src: "/imgs/carousel1.png",
+          title: localize("Mission control", "Mission control"),
+        },
+        {
+          alt: localize("Mostruario pixelado da interface", "Pixel interface showcase"),
+          body: localize("Slides de imagem continuam aceitando copy curta e contexto adicional.", "Image slides still support short copy and extra context."),
+          src: "/imgs/carousel2.png",
+          title: localize("Pixel showcase", "Pixel showcase"),
+        },
+        {
+          alt: localize("Banner de destaque do produto", "Product highlight banner"),
+          body: localize("Setas laterais e dots deixam a navegacao direta e leve.", "Side arrows and dots keep navigation direct and lightweight."),
+          src: "/imgs/carousel3.png",
+          title: localize("Product highlight", "Product highlight"),
+        },
+      ];
+
       return {
         defaults: getDefaults(id),
         fields: [
           { key: "active", label: localize("Slide inicial", "Initial slide"), options: [option("1", "Slide 1", "Slide 1"), option("2", "Slide 2", "Slide 2"), option("3", "Slide 3", "Slide 3")], type: "select" },
+          {
+            key: "arrows",
+            label: localize("Setas", "Arrows"),
+            options: [
+              option("always", "Sempre", "Always"),
+              option("hover", "No hover", "On hover"),
+              option("none", "Sem setas", "No arrows"),
+            ],
+            type: "select",
+          },
+          {
+            key: "fit",
+            label: localize("Encaixe da imagem", "Image fit"),
+            options: [
+              option("cover", "Cover", "Cover"),
+              option("contain", "Contain", "Contain"),
+              option("fill", "Fill", "Fill"),
+              option("scale-down", "Scale down", "Scale down"),
+            ],
+            type: "select",
+          },
+          { key: "interval", label: localize("Intervalo (ms)", "Interval (ms)"), max: 12000, min: 1200, type: "number" },
         ],
         surface: "wide",
-        toggles: [{ key: "autoplay", label: localize("Autoplay", "Autoplay") }],
-        render: () => `<div class="r8-carousel"${state.autoplay ? ' data-r8-autoplay="true" data-r8-interval="2600"' : ""}>
+        toggles: [
+          { key: "autoplay", label: localize("Autoplay", "Autoplay") },
+          { key: "captions", label: localize("Legendas", "Captions") },
+        ],
+        render: () => `<div class="r8-carousel" data-r8-arrows="${escapeHtml(arrowMode)}"${state.autoplay ? ` data-r8-autoplay="true" data-r8-interval="${interval}"` : ""} style="--r8-carousel-media-fit: ${escapeHtml(fit)};">
   <div class="r8-carousel__viewport">
+    <button class="r8-carousel__arrow r8-carousel__arrow--prev" data-r8-direction="prev" type="button" aria-label="${escapeHtml(localize("Slide anterior", "Previous slide"))}">&lt;</button>
+    <button class="r8-carousel__arrow r8-carousel__arrow--next" data-r8-direction="next" type="button" aria-label="${escapeHtml(localize("Próximo slide", "Next slide"))}">&gt;</button>
     <div class="r8-carousel__track">
-      <article class="r8-carousel__slide"${active === 1 ? "" : " hidden"}>${escapeHtml(localize("Slide 01", "Slide 01"))}</article>
-      <article class="r8-carousel__slide"${active === 2 ? "" : " hidden"}>${escapeHtml(localize("Slide 02", "Slide 02"))}</article>
-      <article class="r8-carousel__slide"${active === 3 ? "" : " hidden"}>${escapeHtml(localize("Slide 03", "Slide 03"))}</article>
+      ${slides
+        .map(
+          (slide, index) => `<article class="r8-carousel__slide"${active === index + 1 ? "" : " hidden"}>
+        <figure class="r8-carousel__media">
+          <img src="${slide.src}" alt="${escapeHtml(slide.alt)}" />
+        </figure>
+        ${
+          state.captions
+            ? `<div class="r8-carousel__caption">
+          <strong>${escapeHtml(slide.title)}</strong>
+          <span class="r8-text r8-text--sm r8-text--muted">${escapeHtml(slide.body)}</span>
+        </div>`
+            : ""
+        }
+      </article>`,
+        )
+        .join("\n      ")}
     </div>
   </div>
   <div class="r8-carousel__dots">
-    <span class="${classList("r8-carousel__dot", active === 1 && "is-active")}"></span>
-    <span class="${classList("r8-carousel__dot", active === 2 && "is-active")}"></span>
-    <span class="${classList("r8-carousel__dot", active === 3 && "is-active")}"></span>
+    <button class="${classList("r8-carousel__dot", active === 1 && "is-active")}" type="button" aria-label="${escapeHtml(localize("Ir para o slide 1", "Go to slide 1"))}"></button>
+    <button class="${classList("r8-carousel__dot", active === 2 && "is-active")}" type="button" aria-label="${escapeHtml(localize("Ir para o slide 2", "Go to slide 2"))}"></button>
+    <button class="${classList("r8-carousel__dot", active === 3 && "is-active")}" type="button" aria-label="${escapeHtml(localize("Ir para o slide 3", "Go to slide 3"))}"></button>
   </div>
 </div>`,
       };
@@ -677,13 +976,25 @@ function buildConfig(id: string): PlaygroundConfig {
 
     case "collapse": {
       const open = String(state.open || "display");
-      const renderItem = (key: string, titleText: string, bodyText: string) => `<section class="${classList("r8-collapse__item", open === key && "is-open")}">
-  <div class="r8-collapse__header">
-    <strong>${escapeHtml(titleText)}</strong>
-    <span>+</span>
-  </div>
-  <div class="r8-collapse__body"${open === key ? "" : " hidden"}>${escapeHtml(bodyText)}</div>
+      const icon = String(state.icon || ">").slice(0, 2) || ">";
+      const iconPosition = String(state.iconPosition || "right");
+      const renderItem = (key: string, titleText: string, metaText: string, bodyText: string, disabled = false) => {
+        const isOpen = open === key;
+        return `<section class="${classList("r8-collapse__item", isOpen && "is-open", disabled && "is-disabled")}"${disabled ? ' data-r8-disabled="true" aria-disabled="true"' : ""}>
+  <button class="r8-collapse__header" type="button" aria-expanded="${isOpen ? "true" : "false"}"${disabled ? ' aria-disabled="true"' : ""}>
+    <span class="r8-collapse__copy">
+      <span class="r8-collapse__title">${escapeHtml(titleText)}</span>
+      ${
+        state.meta
+          ? `<span class="r8-collapse__meta">${escapeHtml(metaText)}</span>`
+          : ""
+      }
+    </span>
+    <span class="r8-collapse__icon" aria-hidden="true">${escapeHtml(icon)}</span>
+  </button>
+  <div class="r8-collapse__body"${isOpen ? "" : " hidden"}>${escapeHtml(bodyText)}</div>
 </section>`;
+      };
 
       return {
         defaults: getDefaults(id),
@@ -698,13 +1009,43 @@ function buildConfig(id: string): PlaygroundConfig {
             ],
             type: "select",
           },
+          {
+            key: "iconPosition",
+            label: localize("Posição do ícone", "Icon position"),
+            options: [
+              option("right", "Direita", "Right"),
+              option("left", "Esquerda", "Left"),
+            ],
+            type: "select",
+          },
+          { key: "icon", label: localize("Ícone", "Icon"), maxlength: 2, type: "text" },
         ],
         surface: "wide",
-        toggles: [{ key: "accordion", label: localize("Accordion", "Accordion") }],
-        render: () => `<div class="r8-collapse"${state.accordion ? ' data-r8-accordion="true"' : ""}>
-  ${renderItem("display", localize("Display settings", "Display settings"), localize("Scanlines, palette and contrast controls.", "Scanlines, palette and contrast controls."))}
-  ${renderItem("accessibility", localize("Accessibility settings", "Accessibility settings"), localize("Focus rings, motion fallback and contrast presets.", "Focus rings, motion fallback and contrast presets."))}
-  ${renderItem("audio", localize("Audio settings", "Audio settings"), localize("Equalizer, alert volume and output channel.", "Equalizer, alert volume and output channel."))}
+        toggles: [
+          { key: "accordion", label: localize("Accordion", "Accordion") },
+          { key: "meta", label: localize("Meta no header", "Header meta") },
+          { key: "disabledItem", label: localize("3º item desabilitado", "3rd item disabled") },
+        ],
+        render: () => `<div class="r8-collapse"${state.accordion ? ' data-r8-accordion="true"' : ""} data-r8-icon-position="${escapeHtml(iconPosition)}">
+  ${renderItem(
+    "display",
+    localize("Display settings", "Display settings"),
+    localize("Palette, scanlines and contrast", "Palette, scanlines, and contrast"),
+    localize("Scanlines, palette and contrast controls.", "Scanlines, palette and contrast controls."),
+  )}
+  ${renderItem(
+    "accessibility",
+    localize("Accessibility settings", "Accessibility settings"),
+    localize("Readable copy and motion fallback", "Readable copy and motion fallback"),
+    localize("Focus rings, motion fallback and contrast presets.", "Focus rings, motion fallback and contrast presets."),
+  )}
+  ${renderItem(
+    "audio",
+    localize("Audio settings", "Audio settings"),
+    localize("Mixer and alert routing", "Mixer and alert routing"),
+    localize("Equalizer, alert volume and output channel.", "Equalizer, alert volume and output channel."),
+    Boolean(state.disabledItem),
+  )}
 </div>`,
       };
     }
@@ -712,25 +1053,101 @@ function buildConfig(id: string): PlaygroundConfig {
     case "empty":
       return {
         defaults: getDefaults(id),
-        fields: [{ key: "title", label: localize("Título", "Title"), maxlength: 24, type: "text" }],
+        fields: [
+          { key: "title", label: localize("Título", "Title"), maxlength: 24, type: "text" },
+          { key: "description", label: localize("Descrição", "Description"), maxlength: 56, type: "text" },
+          {
+            key: "visual",
+            label: localize("Visual", "Visual"),
+            options: [
+              option("icon", "Ícone", "Icon"),
+              option("image", "Imagem", "Image"),
+            ],
+            type: "select",
+          },
+          {
+            key: "align",
+            label: localize("Alinhamento", "Alignment"),
+            options: [
+              option("center", "Centro", "Center"),
+              option("left", "Esquerda", "Left"),
+            ],
+            type: "select",
+          },
+          { key: "mediaSize", label: localize("Tamanho da mídia", "Media size"), max: 180, min: 72, type: "number" },
+        ],
         surface: "default",
         toggles: [{ key: "action", label: localize("Com ação", "With action") }],
-        render: () => `<div class="r8-empty">
-  <div class="r8-empty__icon">NO-DATA</div>
-  <div class="r8-empty__title">${escapeHtml(String(state.title || ""))}</div>
-  <p class="r8-text r8-text--muted">${escapeHtml(localize("Tente outro filtro ou crie um novo registro.", "Try another filter or create a new record."))}</p>
-  ${state.action ? `<button class="r8-btn r8-btn--sm r8-btn--primary" type="button">${escapeHtml(localize("Criar item", "Create item"))}</button>` : ""}
+        render: () => `<div class="r8-empty" data-r8-align="${escapeHtml(String(state.align || "center"))}" style="--r8-empty-media-size: ${clamp(asNumber(state.mediaSize, 128), 72, 180)}px;">
+  ${
+    state.visual === "image"
+      ? `<div class="r8-empty__media">
+    <img src="/imgs/carousel2.png" alt="" />
+  </div>`
+      : `<div class="r8-empty__icon">NO-DATA</div>`
+  }
+  <div class="r8-empty__copy">
+    <div class="r8-empty__title">${escapeHtml(String(state.title || ""))}</div>
+    <p class="r8-empty__description">${escapeHtml(String(state.description || ""))}</p>
+  </div>
+  ${state.action ? `<div class="r8-empty__actions"><button class="r8-btn r8-btn--sm r8-btn--primary" type="button">${escapeHtml(localize("Criar item", "Create item"))}</button></div>` : ""}
 </div>`,
       };
 
     case "image":
       return {
         defaults: getDefaults(id),
-        fields: [{ key: "caption", label: localize("Legenda", "Caption"), maxlength: 28, type: "text" }],
+        fields: [
+          { key: "caption", label: localize("Legenda", "Caption"), maxlength: 28, type: "text" },
+          {
+            key: "status",
+            label: localize("Estado", "State"),
+            options: [
+              option("ready", "Carregada", "Loaded"),
+              option("broken", "Com erro", "Broken"),
+            ],
+            type: "select",
+          },
+          {
+            key: "fit",
+            label: localize("Encaixe", "Fit"),
+            options: [
+              option("cover", "Cover", "Cover"),
+              option("contain", "Contain", "Contain"),
+              option("fill", "Fill", "Fill"),
+              option("scale-down", "Scale down", "Scale down"),
+            ],
+            type: "select",
+          },
+          {
+            key: "ratio",
+            label: localize("Proporção", "Ratio"),
+            options: [
+              option("wide", "Wide", "Wide"),
+              option("landscape", "Landscape", "Landscape"),
+              option("square", "Square", "Square"),
+              option("portrait", "Portrait", "Portrait"),
+            ],
+            type: "select",
+          },
+          {
+            key: "loading",
+            label: localize("Loading", "Loading"),
+            options: [
+              option("lazy", "Lazy", "Lazy"),
+              option("eager", "Eager", "Eager"),
+            ],
+            type: "select",
+          },
+        ],
         surface: "default",
-        toggles: [{ key: "tall", label: localize("Formato alto", "Tall format") }],
-        render: () => `<figure class="r8-image">
-  <div class="r8-image__frame" style="${state.tall ? "min-height:14rem;" : ""}">PIXEL PREVIEW</div>
+        toggles: [],
+        render: () => `<figure class="r8-image" data-r8-fit="${escapeHtml(String(state.fit || "cover"))}" data-r8-ratio="${escapeHtml(String(state.ratio || "wide"))}">
+  <div class="r8-image__frame">
+    <img src="${state.status === "broken" ? "/missing-image.png" : "/imgs/carousel1.png"}" alt="${escapeHtml(localize("Prévia da rota da floresta", "Forest route preview"))}" loading="${escapeHtml(String(state.loading || "lazy"))}" />
+    <div class="r8-image__placeholder">LOADING...</div>
+    <div class="r8-image__error">FILE LOST</div>
+  </div>
   <figcaption class="r8-image__caption">${escapeHtml(String(state.caption || ""))}</figcaption>
 </figure>`,
       };

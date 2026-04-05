@@ -46,6 +46,7 @@
 
   const choiceStates = new WeakMap();
   const splitterStates = new WeakMap();
+  const uploadStates = new WeakMap();
   const overlayTimers = new WeakMap();
   const floatingStates = new Set();
   const genericTargets = new Set();
@@ -400,6 +401,71 @@
         detail,
       }),
     );
+  }
+
+  function formatFileSize(size) {
+    const amount = Number(size);
+    if (!Number.isFinite(amount) || amount < 0) {
+      return "0 B";
+    }
+
+    if (amount < 1024) {
+      return `${Math.round(amount)} B`;
+    }
+
+    if (amount < 1024 * 1024) {
+      return `${Math.round(amount / 102.4) / 10} KB`;
+    }
+
+    if (amount < 1024 * 1024 * 1024) {
+      return `${Math.round(amount / (1024 * 102.4)) / 10} MB`;
+    }
+
+    return `${Math.round(amount / (1024 * 1024 * 102.4)) / 10} GB`;
+  }
+
+  function sanitizeAvatarFallback(value) {
+    const normalized = String(value || "").replace(/\s+/g, "").slice(0, 2).toUpperCase();
+    return normalized || "??";
+  }
+
+  function getFileExtension(name) {
+    const text = String(name || "");
+    const index = text.lastIndexOf(".");
+    if (index === -1 || index === text.length - 1) {
+      return "FILE";
+    }
+
+    return text.slice(index + 1).toUpperCase();
+  }
+
+  function isImageFile(file) {
+    return file instanceof File && typeof file.type === "string" && file.type.startsWith("image/");
+  }
+
+  function createUploadEntry(file) {
+    const image = isImageFile(file);
+    const objectUrl = image ? URL.createObjectURL(file) : "";
+
+    return {
+      file,
+      id: nextId("r8-upload-file"),
+      name: file?.name || "file",
+      sizeLabel: formatFileSize(file?.size || 0),
+      status: "queued",
+      objectUrl,
+      previewable: Boolean(objectUrl),
+      thumbLabel: image ? "" : getFileExtension(file?.name || ""),
+    };
+  }
+
+  function revokeUploadEntry(entry) {
+    if (!entry?.objectUrl) {
+      return;
+    }
+
+    URL.revokeObjectURL(entry.objectUrl);
+    entry.objectUrl = "";
   }
 
   function matchesTrue(value) {
@@ -1982,6 +2048,160 @@
 
   function getVisibleOptions(state) {
     return (state?.options || []).filter((item) => item instanceof HTMLElement && !item.hasAttribute("hidden"));
+  }
+
+  function resolveAvatarFallback(component) {
+    if (!isElement(component)) {
+      return "??";
+    }
+
+    const explicit = component.dataset.r8AvatarFallback;
+    if (explicit) {
+      return sanitizeAvatarFallback(explicit);
+    }
+
+    const textContent = toArray(component.childNodes)
+      .filter((node) => node.nodeType === Node.TEXT_NODE)
+      .map((node) => node.textContent || "")
+      .join("")
+      .trim();
+
+    return sanitizeAvatarFallback(textContent);
+  }
+
+  function ensureAvatarFallbackNode(component, text) {
+    if (!isElement(component)) {
+      return null;
+    }
+
+    let fallback = firstMatch(component, ".r8-avatar__fallback");
+    if (!(fallback instanceof HTMLElement)) {
+      fallback = document.createElement("span");
+      fallback.className = "r8-avatar__fallback";
+      component.append(fallback);
+    }
+
+    fallback.textContent = sanitizeAvatarFallback(text);
+    fallback.setAttribute("aria-hidden", "true");
+    return fallback;
+  }
+
+  function syncAvatarState(component) {
+    if (!isElement(component)) {
+      return;
+    }
+
+    const fallback = ensureAvatarFallbackNode(component, resolveAvatarFallback(component));
+    const image = firstMatch(component, "img");
+    const hasImage = image instanceof HTMLImageElement && Boolean(image.getAttribute("src"));
+    const ready = hasImage && image.complete && image.naturalWidth > 0 && image.dataset.r8AvatarError !== "true";
+
+    toArray(component.childNodes).forEach((node) => {
+      if (node.nodeType === Node.TEXT_NODE && (node.textContent || "").trim()) {
+        node.textContent = "";
+      }
+    });
+
+    if (image instanceof HTMLImageElement) {
+      image.decoding = image.decoding || "async";
+      if (!image.alt && fallback instanceof HTMLElement) {
+        image.alt = fallback.textContent || "";
+      }
+      image.hidden = !ready;
+    }
+
+    component.classList.toggle("is-ready", ready);
+    component.classList.toggle("is-fallback", !ready);
+    component.classList.toggle("is-image", hasImage);
+  }
+
+  function initAvatars(root) {
+    toArray(root.querySelectorAll(".r8-avatar")).forEach((component) => {
+      if (!(component instanceof HTMLElement)) {
+        return;
+      }
+
+      const image = firstMatch(component, "img");
+      if (image instanceof HTMLImageElement && image.dataset.r8AvatarBound !== "true") {
+        image.dataset.r8AvatarBound = "true";
+
+        image.addEventListener("load", () => {
+          delete image.dataset.r8AvatarError;
+          syncAvatarState(component);
+        });
+
+        image.addEventListener("error", () => {
+          image.dataset.r8AvatarError = "true";
+          syncAvatarState(component);
+          emitComponentEvent(component, "avatar-fallback", {
+            alt: image.alt || "",
+            fallback: resolveAvatarFallback(component),
+            src: image.currentSrc || image.src || "",
+          });
+        });
+      }
+
+      syncAvatarState(component);
+    });
+  }
+
+  function syncImageState(component) {
+    if (!isElement(component)) {
+      return;
+    }
+
+    const frame = firstMatch(component, ".r8-image__frame");
+    const image = frame instanceof HTMLElement ? firstMatch(frame, "img") : null;
+    const hasImage = image instanceof HTMLImageElement && Boolean((image.getAttribute("src") || "").trim());
+    const errored =
+      hasImage &&
+      (image.dataset.r8ImageError === "true" || (image.complete && image.naturalWidth === 0 && Boolean(image.currentSrc || image.src)));
+    const ready = hasImage && image.complete && image.naturalWidth > 0 && !errored;
+    const loading = hasImage && !ready && !errored;
+
+    if (image instanceof HTMLImageElement) {
+      image.decoding = image.decoding || "async";
+      image.hidden = errored;
+    }
+
+    component.classList.toggle("is-image", hasImage);
+    component.classList.toggle("is-loading", loading);
+    component.classList.toggle("is-ready", ready);
+    component.classList.toggle("is-error", errored);
+  }
+
+  function initImages(root) {
+    toArray(root.querySelectorAll(".r8-image")).forEach((component) => {
+      if (!(component instanceof HTMLElement)) {
+        return;
+      }
+
+      const frame = firstMatch(component, ".r8-image__frame");
+      const image = frame instanceof HTMLElement ? firstMatch(frame, "img") : null;
+      if (image instanceof HTMLImageElement && image.dataset.r8ImageBound !== "true") {
+        image.dataset.r8ImageBound = "true";
+
+        image.addEventListener("load", () => {
+          delete image.dataset.r8ImageError;
+          syncImageState(component);
+          emitComponentEvent(component, "image-load", {
+            alt: image.alt || "",
+            src: image.currentSrc || image.src || "",
+          });
+        });
+
+        image.addEventListener("error", () => {
+          image.dataset.r8ImageError = "true";
+          syncImageState(component);
+          emitComponentEvent(component, "image-error", {
+            alt: image.alt || "",
+            src: image.currentSrc || image.src || "",
+          });
+        });
+      }
+
+      syncImageState(component);
+    });
   }
 
   function syncAutocompleteCount(state) {
@@ -4317,11 +4537,32 @@
       }
 
       prepareActionLikeElement(trigger);
+      if (trigger instanceof HTMLButtonElement && !trigger.hasAttribute("type")) {
+        trigger.type = "button";
+      }
+
+      const triggerId = ensureId(trigger, "r8-collapse-trigger");
+      const panelId = ensureId(panel, "r8-collapse-panel");
+      trigger.setAttribute("aria-controls", panelId);
+      panel.setAttribute("aria-labelledby", triggerId);
+      panel.setAttribute("role", "region");
+
+      const disabled =
+        item.classList.contains("is-disabled") ||
+        matchesTrue(item.dataset.r8Disabled || "false") ||
+        item.getAttribute("aria-disabled") === "true";
+      trigger.setAttribute("aria-disabled", disabled ? "true" : "false");
+
       const initiallyOpen = !panel.hasAttribute("hidden");
       setHidden(panel, !initiallyOpen);
       setExpanded(trigger, initiallyOpen);
+      item.classList.toggle("is-open", initiallyOpen);
 
       const toggle = () => {
+        if (disabled) {
+          return;
+        }
+
         const nextState = !isOpen(panel);
         const container = item.closest(".r8-collapse");
 
@@ -4369,6 +4610,7 @@
       carousel.dataset.r8CarouselReady = "true";
       const slides = toArray(carousel.querySelectorAll(".r8-carousel__slide")).filter((item) => item instanceof HTMLElement);
       const dots = toArray(carousel.querySelectorAll(".r8-carousel__dot")).filter((item) => item instanceof HTMLElement);
+      const arrows = toArray(carousel.querySelectorAll(".r8-carousel__arrow")).filter((item) => item instanceof HTMLElement);
       const autoplayEnabled = matchesTrue(carousel.dataset.r8Autoplay || "false");
       const autoplayInterval = clamp(Number(carousel.dataset.r8Interval || "3400") || 3400, 1200, 12000);
       let activeIndex = 0;
@@ -4378,15 +4620,27 @@
         return;
       }
 
+      function normalizeIndex(index) {
+        if (!slides.length) {
+          return 0;
+        }
+
+        const total = slides.length;
+        return ((index % total) + total) % total;
+      }
+
       function activate(index, options = {}) {
         const silent = options.silent === true;
-        const safeIndex = clamp(index, 0, slides.length - 1);
+        const safeIndex = normalizeIndex(index);
         slides.forEach((slide, slideIndex) => {
+          const isActive = slideIndex === safeIndex;
           if (slideIndex === safeIndex) {
             slide.removeAttribute("hidden");
           } else {
             slide.setAttribute("hidden", "");
           }
+
+          slide.setAttribute("aria-hidden", isActive ? "false" : "true");
         });
 
         dots.forEach((dot, dotIndex) => {
@@ -4425,11 +4679,52 @@
 
       dots.forEach((dot, index) => {
         prepareActionLikeElement(dot);
+        if (!dot.hasAttribute("aria-label")) {
+          dot.setAttribute("aria-label", `Go to slide ${index + 1}`);
+        }
         dot.addEventListener("click", () => activate(index));
         bindKeyboardActivation(dot, () => activate(index));
       });
 
-      activate(dots.findIndex((dot) => dot.classList.contains("is-active")) >= 0 ? dots.findIndex((dot) => dot.classList.contains("is-active")) : 0, {
+      arrows.forEach((arrow) => {
+        prepareActionLikeElement(arrow);
+        const direction = arrow.dataset.r8Direction === "prev" ? -1 : 1;
+        if (!arrow.hasAttribute("aria-label")) {
+          arrow.setAttribute("aria-label", direction < 0 ? "Previous slide" : "Next slide");
+        }
+
+        const move = () => activate(activeIndex + direction);
+        arrow.addEventListener("click", move);
+        bindKeyboardActivation(arrow, move);
+      });
+
+      carousel.addEventListener("keydown", (event) => {
+        if (!(event instanceof KeyboardEvent)) {
+          return;
+        }
+
+        if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") {
+          return;
+        }
+
+        const target = event.target;
+        if (
+          target instanceof HTMLInputElement ||
+          target instanceof HTMLTextAreaElement ||
+          target instanceof HTMLSelectElement
+        ) {
+          return;
+        }
+
+        event.preventDefault();
+        activate(activeIndex + (event.key === "ArrowLeft" ? -1 : 1));
+      });
+
+      const initialDotIndex = dots.findIndex((dot) => dot.classList.contains("is-active"));
+      const initialSlideIndex = slides.findIndex((slide) => !slide.hasAttribute("hidden"));
+      const initialIndex = initialDotIndex >= 0 ? initialDotIndex : initialSlideIndex >= 0 ? initialSlideIndex : 0;
+
+      activate(initialIndex, {
         silent: true,
       });
 
@@ -5709,6 +6004,465 @@
     });
   }
 
+  function getUploadLabels(component) {
+    if (!isElement(component)) {
+      return {
+        empty: "No file selected",
+        preview: "Preview",
+        remove: "Remove",
+        selected: "Selected",
+      };
+    }
+
+    return {
+      empty: component.dataset.r8UploadEmptyLabel || "No file selected",
+      preview: component.dataset.r8UploadPreviewLabel || "Preview",
+      remove: component.dataset.r8UploadRemoveLabel || "Remove",
+      selected: component.dataset.r8UploadSelectedLabel || "Selected",
+    };
+  }
+
+  function isUploadDisabled(component) {
+    return (
+      isElement(component) &&
+      (component.hasAttribute("disabled") || component.getAttribute("aria-disabled") === "true")
+    );
+  }
+
+  function syncUploadConfig(state) {
+    if (!state?.component || !(state.input instanceof HTMLInputElement)) {
+      return;
+    }
+
+    const accept = state.component.getAttribute("accept") || state.input.getAttribute("accept") || "";
+    const multiple =
+      (state.component.hasAttribute("multiple") || state.input.hasAttribute("multiple")) &&
+      !state.component.classList.contains("r8-upload--avatar");
+    const disabled = isUploadDisabled(state.component) || state.input.disabled;
+
+    state.accept = accept;
+    state.multiple = multiple;
+    state.disabled = disabled;
+    state.input.accept = accept;
+    state.input.multiple = multiple;
+    state.input.disabled = disabled;
+
+    state.triggers.forEach((trigger) => {
+      if (!isElement(trigger)) {
+        return;
+      }
+
+      trigger.setAttribute("aria-disabled", disabled ? "true" : "false");
+      if (trigger instanceof HTMLButtonElement) {
+        trigger.disabled = disabled;
+      }
+    });
+  }
+
+  function ensureUploadList(state) {
+    if (!state?.component) {
+      return null;
+    }
+
+    if (state.list instanceof HTMLElement) {
+      return state.list;
+    }
+
+    const list = document.createElement("div");
+    list.className = "r8-upload__list";
+    state.component.append(list);
+    state.list = list;
+    return list;
+  }
+
+  function buildUploadFileNode(state, entry) {
+    const labels = state.labels || getUploadLabels(state.component);
+    const item = document.createElement("div");
+    item.className = "r8-upload__file";
+    item.dataset.r8UploadState = entry.status;
+    item.dataset.r8UploadId = entry.id;
+
+    const thumb = document.createElement("div");
+    thumb.className = "r8-upload__thumb";
+    if (entry.objectUrl) {
+      const image = document.createElement("img");
+      image.src = entry.objectUrl;
+      image.alt = entry.name;
+      thumb.append(image);
+    } else {
+      thumb.textContent = entry.thumbLabel;
+    }
+
+    const meta = document.createElement("div");
+    meta.className = "r8-upload__meta";
+
+    const name = document.createElement("strong");
+    name.className = "r8-upload__name";
+    name.textContent = entry.name;
+    meta.append(name);
+
+    const details = document.createElement("div");
+    details.className = "r8-upload__details";
+    const size = document.createElement("span");
+    size.textContent = entry.sizeLabel;
+    const status = document.createElement("span");
+    status.textContent = labels.selected;
+    details.append(size, status);
+    meta.append(details);
+
+    const actions = document.createElement("div");
+    actions.className = "r8-upload__actions";
+
+    if (entry.previewable) {
+      const previewButton = document.createElement("button");
+      previewButton.type = "button";
+      previewButton.className = "r8-upload__action";
+      previewButton.dataset.r8UploadAction = "preview";
+      previewButton.textContent = labels.preview;
+      actions.append(previewButton);
+    }
+
+    const removeButton = document.createElement("button");
+    removeButton.type = "button";
+    removeButton.className = "r8-upload__action";
+    removeButton.dataset.r8UploadAction = "remove";
+    removeButton.textContent = labels.remove;
+    actions.append(removeButton);
+
+    item.append(thumb, meta, actions);
+    return item;
+  }
+
+  function renderUploadAvatar(state) {
+    if (!state?.dropzone || !state.isAvatar) {
+      return;
+    }
+
+    const entry = state.entries[0] || null;
+    state.dropzone.innerHTML = "";
+
+    if (!entry) {
+      state.dropzone.innerHTML = state.avatarTemplate;
+      return;
+    }
+
+    const thumb = document.createElement("div");
+    thumb.className = "r8-upload__thumb";
+    if (entry.objectUrl) {
+      const image = document.createElement("img");
+      image.src = entry.objectUrl;
+      image.alt = entry.name;
+      thumb.append(image);
+    } else {
+      thumb.textContent = entry.thumbLabel;
+    }
+
+    const title = document.createElement("strong");
+    title.textContent = entry.name;
+
+    const details = document.createElement("div");
+    details.className = "r8-upload__details";
+    const size = document.createElement("span");
+    size.textContent = entry.sizeLabel;
+    const status = document.createElement("span");
+    status.textContent = state.labels.selected;
+    details.append(size, status);
+
+    state.dropzone.append(thumb, title, details);
+  }
+
+  function renderUploadEntries(state) {
+    if (!state?.component) {
+      return;
+    }
+
+    if (state.isAvatar) {
+      renderUploadAvatar(state);
+      return;
+    }
+
+    const list = ensureUploadList(state);
+    if (!(list instanceof HTMLElement)) {
+      return;
+    }
+
+    list.innerHTML = "";
+    state.entries.forEach((entry) => {
+      list.append(buildUploadFileNode(state, entry));
+    });
+  }
+
+  function clearUploadEntries(state) {
+    if (!state?.entries?.length) {
+      return;
+    }
+
+    state.entries.forEach((entry) => revokeUploadEntry(entry));
+    state.entries = [];
+    renderUploadEntries(state);
+  }
+
+  function emitUploadChange(state, source) {
+    emitComponentEvent(state.component, "upload-change", {
+      files: state.entries.map((entry) => entry.file),
+      items: state.entries.map((entry) => ({
+        id: entry.id,
+        name: entry.name,
+        size: entry.file?.size || 0,
+        type: entry.file?.type || "",
+        status: entry.status,
+        url: entry.objectUrl || "",
+      })),
+      source,
+    });
+  }
+
+  function applyUploadFiles(state, files, source) {
+    if (!state?.component || !Array.isArray(files) || !files.length) {
+      return;
+    }
+
+    const nextEntries = files
+      .filter((file) => file instanceof File)
+      .map((file) => createUploadEntry(file));
+
+    if (!nextEntries.length) {
+      return;
+    }
+
+    state.managed = true;
+
+    if (!state.multiple || state.isAvatar) {
+      clearUploadEntries(state);
+      state.entries = nextEntries.slice(0, 1);
+    } else {
+      state.entries = state.entries.concat(nextEntries);
+    }
+
+    renderUploadEntries(state);
+    emitUploadChange(state, source);
+  }
+
+  function removeUploadEntry(state, id, source) {
+    if (!state?.entries?.length) {
+      return;
+    }
+
+    const index = state.entries.findIndex((entry) => entry.id === id);
+    if (index === -1) {
+      return;
+    }
+
+    const [entry] = state.entries.splice(index, 1);
+    revokeUploadEntry(entry);
+    renderUploadEntries(state);
+    emitComponentEvent(state.component, "upload-remove", {
+      file: entry.file,
+      files: state.entries.map((item) => item.file),
+      index,
+      source,
+    });
+    emitUploadChange(state, source);
+  }
+
+  function openUploadPreview(state, id, source) {
+    const entry = state?.entries?.find((item) => item.id === id);
+    if (!entry?.objectUrl) {
+      return;
+    }
+
+    window.open(entry.objectUrl, "_blank", "noopener");
+    emitComponentEvent(state.component, "upload-preview", {
+      file: entry.file,
+      id: entry.id,
+      source,
+      url: entry.objectUrl,
+    });
+  }
+
+  function clearUploadDragState(state) {
+    if (!state?.component) {
+      return;
+    }
+
+    state.dragDepth = 0;
+    delete state.component.dataset.r8DragActive;
+  }
+
+  function initUploads(root) {
+    toArray(root.querySelectorAll(".r8-upload")).forEach((component) => {
+      if (!(component instanceof HTMLElement)) {
+        return;
+      }
+
+      let state = uploadStates.get(component);
+      if (!state) {
+        let input = firstMatch(component, ".r8-upload__input");
+        if (!(input instanceof HTMLInputElement) || input.type !== "file") {
+          input = document.createElement("input");
+          input.type = "file";
+          input.className = "r8-upload__input";
+          component.prepend(input);
+        }
+
+        let list = firstMatch(component, ".r8-upload__list");
+        if (!(list instanceof HTMLElement)) {
+          list = null;
+        }
+
+        const dropzone = firstMatch(component, ".r8-upload__dropzone");
+        const triggerCandidates = toArray(component.querySelectorAll("[data-r8-upload-trigger], .r8-upload__dropzone, .r8-upload__toolbar .r8-btn"))
+          .filter((item) => item instanceof HTMLElement);
+
+        state = {
+          accept: "",
+          avatarTemplate: dropzone instanceof HTMLElement ? dropzone.innerHTML : "",
+          component,
+          disabled: false,
+          dragDepth: 0,
+          dropzone: dropzone instanceof HTMLElement ? dropzone : null,
+          entries: [],
+          input,
+          isAvatar: component.classList.contains("r8-upload--avatar"),
+          labels: getUploadLabels(component),
+          list,
+          managed: false,
+          multiple: false,
+          triggers: triggerCandidates,
+        };
+        uploadStates.set(component, state);
+      }
+
+      syncUploadConfig(state);
+
+      if (component.dataset.r8UploadReady === "true") {
+        return;
+      }
+
+      component.dataset.r8UploadReady = "true";
+
+      prepareActionLikeElement(state.dropzone);
+      bindKeyboardActivation(state.dropzone, () => {
+        if (state.disabled) {
+          return;
+        }
+
+        state.input.value = "";
+        state.input.click();
+      });
+
+      state.triggers.forEach((trigger) => {
+        if (!(trigger instanceof HTMLElement)) {
+          return;
+        }
+
+        if (trigger === state.dropzone) {
+          return;
+        }
+
+        trigger.addEventListener("click", (event) => {
+          if (state.disabled) {
+            event.preventDefault();
+            return;
+          }
+
+          state.input.value = "";
+          state.input.click();
+        });
+      });
+
+      if (state.dropzone instanceof HTMLElement) {
+        state.dropzone.addEventListener("click", (event) => {
+          if (state.disabled) {
+            event.preventDefault();
+            return;
+          }
+
+          state.input.value = "";
+          state.input.click();
+        });
+
+        state.dropzone.addEventListener("dragenter", (event) => {
+          if (state.disabled) {
+            return;
+          }
+
+          event.preventDefault();
+          state.dragDepth += 1;
+          state.component.dataset.r8DragActive = "true";
+        });
+
+        state.dropzone.addEventListener("dragover", (event) => {
+          if (state.disabled) {
+            return;
+          }
+
+          event.preventDefault();
+          state.component.dataset.r8DragActive = "true";
+        });
+
+        state.dropzone.addEventListener("dragleave", (event) => {
+          if (state.disabled) {
+            return;
+          }
+
+          event.preventDefault();
+          state.dragDepth = Math.max(0, state.dragDepth - 1);
+          if (state.dragDepth === 0) {
+            clearUploadDragState(state);
+          }
+        });
+
+        state.dropzone.addEventListener("drop", (event) => {
+          if (state.disabled) {
+            return;
+          }
+
+          event.preventDefault();
+          clearUploadDragState(state);
+          const files = toArray(event.dataTransfer?.files || []);
+          applyUploadFiles(state, files, "drop");
+        });
+      }
+
+      state.input.addEventListener("change", () => {
+        applyUploadFiles(state, toArray(state.input.files || []), "input");
+        state.input.value = "";
+      });
+
+      component.addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement) || state.disabled) {
+          return;
+        }
+
+        const action = target.closest("[data-r8-upload-action]");
+        if (!(action instanceof HTMLElement)) {
+          return;
+        }
+
+        const file = action.closest(".r8-upload__file");
+        const id = file instanceof HTMLElement ? file.dataset.r8UploadId || "" : "";
+        const kind = action.dataset.r8UploadAction || "";
+
+        if (kind === "remove") {
+          event.preventDefault();
+          if (id) {
+            removeUploadEntry(state, id, "button");
+          } else if (file instanceof HTMLElement) {
+            file.remove();
+          }
+          return;
+        }
+
+        if (kind === "preview" && id) {
+          event.preventDefault();
+          openUploadPreview(state, id, "button");
+        }
+      });
+    });
+  }
+
   function resolveTarget(trigger) {
     const selector = trigger.getAttribute("data-r8-target");
     if (!selector) {
@@ -6363,15 +7117,18 @@
     initTabs(scope);
     initCollapse(scope);
     initCarousels(scope);
+    initImages(scope);
     initInputs(scope);
     initInputNumbers(scope);
     initBinaryControls(scope);
     initRates(scope);
     initPagination(scope);
+    initAvatars(scope);
     initSplitters(scope);
     initSliders(scope);
     initInputTags(scope);
     initTransfers(scope);
+    initUploads(scope);
     initGenericToggles(scope);
     attachGlobalListeners();
 

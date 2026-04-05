@@ -159,6 +159,7 @@ button:not(:disabled),
 .r8-navbar__brand,
 .r8-navbar__item,
 .r8-btn:not(:disabled):not([aria-disabled="true"]),
+.r8-carousel__arrow,
 .r8-carousel__dot,
 .r8-tabs__tab,
 .r8-collapse__header,
@@ -1196,6 +1197,10 @@ pre {
   justify-items: start;
 }
 
+.docs-demo__stack--upload {
+  justify-items: start;
+}
+
 .docs-demo__stack--select > .r8-select {
   width: min(100%, 28rem);
 }
@@ -1206,6 +1211,10 @@ pre {
 
 .docs-demo__stack--color-picker > .r8-color-picker {
   width: min(100%, 28rem);
+}
+
+.docs-demo__stack--upload > .r8-upload {
+  width: min(100%, 46rem);
 }
 
 .docs-demo__stack--cascader > .r8-cascader {
@@ -1591,6 +1600,20 @@ pre {
   width: 100%;
 }
 
+.docs-datetime-picker-playground .docs-date-picker-playground__surface {
+  width: min(100%, 36rem);
+  min-height: 24rem;
+  padding-bottom: 19rem;
+}
+
+.docs-datetime-picker-playground .docs-date-picker-playground__surface > .r8-datetime-picker {
+  width: 100%;
+}
+
+.docs-datetime-picker-playground .docs-date-picker-playground__helper {
+  max-width: 34rem;
+}
+
 .docs-date-picker-playground__helper {
   margin: 0;
   max-width: 30rem;
@@ -1779,7 +1802,6 @@ pre {
 .docs-generic-playground__surface > .r8-carousel,
 .docs-generic-playground__surface > .r8-collapse,
 .docs-generic-playground__surface > .r8-empty,
-.docs-generic-playground__surface > .r8-image,
 .docs-generic-playground__surface > .r8-progress,
 .docs-generic-playground__surface > .r8-skeleton,
 .docs-generic-playground__surface > .r8-table,
@@ -1788,8 +1810,22 @@ pre {
 .docs-generic-playground__surface > .r8-tabs,
 .docs-generic-playground__surface > .r8-alert,
 .docs-generic-playground__surface > .r8-loading,
+.docs-generic-playground__surface > .r8-upload,
 .docs-generic-playground__surface > .r8-watermark {
   width: 100%;
+}
+
+.docs-generic-playground__surface > .r8-upload--avatar {
+  width: min(100%, 14rem);
+}
+
+.docs-generic-playground__surface > .r8-image {
+  justify-self: center;
+  width: min(100%, 24rem);
+}
+
+.docs-generic-playground__surface > .r8-image .r8-image__caption {
+  overflow-wrap: anywhere;
 }
 
 .docs-generic-playground__surface .r8-stack,

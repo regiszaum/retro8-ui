@@ -971,11 +971,35 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
       mergeContract(contract, {
         attributes: [
           row("aria-expanded", "boolean", "false", "State exposto no header interativo de cada item.", "State exposed on each interactive item header."),
+          row("aria-controls / aria-labelledby", "string", "managed by runtime", "Conecta header e body para leitura assistiva.", "Connects header and body for assistive reading."),
+          row("aria-disabled", "boolean", "false", "Marca headers e itens bloqueados sem remover o bloco da tela.", "Marks blocked headers and items without removing the section from the UI."),
           row("hidden", "boolean", "true on closed body", "Esconde o body fechado com semantica nativa.", "Hides the closed body with native semantics."),
+        ],
+        dataAttributes: [
+          row("data-r8-accordion", `"true" | "false"`, `"false"`, "Mantem apenas um item aberto por vez dentro do mesmo grupo.", "Keeps only one item open at a time within the same group."),
+          row("data-r8-icon-position", `"left" | "right"`, `"right"`, "Move o icone de expansao para o lado esquerdo ou direito do header.", "Moves the expand icon to the left or right side of the header."),
+          row("data-r8-disabled", `"true" | "false"`, `"false"`, "Bloqueia a abertura de um item especifico.", "Blocks opening for a specific item."),
+        ],
+        cssVariables: [
+          row("--r8-collapse-icon-size", "length", "1.25rem", "Escala a area reservada para o icone do header.", "Scales the area reserved for the header icon."),
         ],
         methods: runtimeMethods,
         events: [
           event("r8:collapse-toggle", `{ open, item }`, "Emitido quando um item abre ou fecha.", "Emitted when an item opens or closes."),
+        ],
+      });
+      break;
+    case "empty":
+      mergeContract(contract, {
+        attributes: [
+          row("alt", "string", "recommended on custom images", "Texto alternativo da imagem usada em `r8-empty__media` quando ela carrega contexto relevante.", "Alternative text for the image used in `r8-empty__media` when it carries relevant context."),
+        ],
+        dataAttributes: [
+          row("data-r8-align", `"center" | "left"`, `"center"`, "Controla o alinhamento geral do bloco vazio.", "Controls the overall alignment of the empty block."),
+        ],
+        cssVariables: [
+          row("--r8-empty-media-size", "length", "8rem", "Escala a área reservada para imagem ou ilustração.", "Scales the area reserved for the image or illustration."),
+          row("--r8-empty-copy-width", "length", "28rem", "Limita a largura de leitura da cópia do estado vazio.", "Limits the reading width of the empty-state copy."),
         ],
       });
       break;
@@ -984,6 +1008,18 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         attributes: [
           row("hidden", "boolean", "true on inactive slides", "Somente o slide ativo fica exposto pelo runtime.", "Only the active slide stays exposed by the runtime."),
           row("aria-current", "boolean", "false", "Marca o dot atualmente ativo.", "Marks the currently active dot."),
+          row("aria-label", "string", "recommended on arrows and dots", "Rotula setas e dots para navegacao assistiva.", "Labels arrows and dots for assistive navigation."),
+        ],
+        dataAttributes: [
+          row("data-r8-autoplay", `"true" | "false"`, `"false"`, "Liga a troca automatica entre slides.", "Turns on automatic slide rotation."),
+          row("data-r8-interval", "number", "3400", "Define o tempo entre trocas quando o autoplay estiver ativo.", "Defines the delay between transitions when autoplay is active."),
+          row("data-r8-arrows", `"always" | "hover" | "none"`, `"always"`, "Controla quando as setas laterais ficam visiveis.", "Controls when the side arrows stay visible."),
+          row("data-r8-direction", `"prev" | "next"`, "none", "Marca a seta como navegacao para tras ou para frente.", "Marks an arrow as backward or forward navigation."),
+        ],
+        cssVariables: [
+          row("--r8-carousel-height", "length", "16rem", "Ajusta a altura util do viewport e dos slides.", "Adjusts the usable height of the viewport and slides."),
+          row("--r8-carousel-arrow-size", "length", "2.5rem", "Escala as setas laterais sem trocar o markup.", "Scales the side arrows without changing markup."),
+          row("--r8-carousel-media-fit", "string", `"cover"`, "Controla o `object-fit` das imagens dentro de `r8-carousel__media`.", "Controls the image `object-fit` inside `r8-carousel__media`."),
         ],
         methods: runtimeMethods,
         events: [
@@ -1056,12 +1092,49 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         ],
       });
       break;
+    case "avatar":
+      mergeContract(contract, {
+        attributes: [
+          row("alt", "string", "none", "Texto alternativo da imagem interna quando o avatar carrega midia relevante.", "Alternative text for the inner image when the avatar loads meaningful media."),
+        ],
+        dataAttributes: [
+          row("data-r8-avatar-fallback", "string", '"??"', "Define ate 2 caracteres para o fallback quando a imagem falha, esta vazia ou nao existe.", "Defines up to 2 characters for the fallback when the image fails, is empty, or does not exist."),
+          row("data-r8-fit", `"cover" | "contain" | "fill" | "none" | "scale-down"`, `"cover"`, "Controla como a imagem ocupa a moldura do avatar.", "Controls how the image fills the avatar frame."),
+        ],
+        cssVariables: [
+          row("--r8-avatar-fit", "keyword", '"cover"', "Custom property que ajusta o `object-fit` da imagem interna.", "Custom property that adjusts the inner image `object-fit`."),
+        ],
+        methods: runtimeMethods,
+        events: [
+          event("r8:avatar-fallback", `{ alt, fallback, src }`, "Emitido quando a imagem falha e o runtime troca o avatar para o fallback textual.", "Emitted when the image fails and the runtime switches the avatar to the text fallback."),
+        ],
+      });
+      break;
     case "upload":
       mergeContract(contract, {
         attributes: [
           row("accept", "string", "none", "Tipos de arquivo aceitos pelo input nativo do host app.", "Accepted file types for the host app native input."),
           row("multiple", "boolean", "false", "Permite selecao multipla no input nativo.", "Allows multi-file selection in the native input."),
           row("disabled", "boolean", "false", "Desativa dropzone e trigger do upload control.", "Disables the upload dropzone and trigger."),
+          row("aria-describedby", "idref", "none", "Conecta a dropzone ou o input a texto auxiliar com limite, formato ou feedback.", "Connects the dropzone or input to helper copy with limits, formats, or feedback."),
+        ],
+        dataAttributes: [
+          row("data-r8-drag-active", `"true" | "false"`, `"false"`, "Ativa o destaque visual da dropzone enquanto o host app acompanha dragover.", "Turns on the dropzone highlight while the host app tracks dragover."),
+          row("data-r8-upload-state", `"queued" | "uploading" | "success" | "error"`, `"queued"`, "Aplicado em `r8-upload__file` para colorir cada item conforme o estado do envio.", "Applied on `r8-upload__file` to color each item according to transfer state."),
+          row("data-r8-upload-trigger", "marker", "none", "Marca um CTA opcional que deve abrir o input nativo escondido.", "Marks an optional CTA that should open the hidden native input."),
+          row("data-r8-upload-preview-label / data-r8-upload-remove-label / data-r8-upload-selected-label / data-r8-upload-empty-label", "string", "English defaults", "Sobrescreve os labels usados pelo runtime local para preview, remove, selecionado e vazio.", "Overrides the labels used by the local runtime for preview, remove, selected, and empty states."),
+        ],
+        cssVariables: [
+          row("--r8-upload-accent", "color", "var(--r8-color-primary)", "Accent local usado na dropzone ativa e nos estados principais do shell.", "Local accent used by the active dropzone and key shell states."),
+          row("--r8-upload-min-height", "length", "9rem", "Altura minima da dropzone antes do app hospedeiro preencher a area com thumbs ou instrucoes.", "Minimum dropzone height before the host app fills the area with thumbnails or instructions."),
+          row("--r8-upload-thumb-size", "length", "3rem", "Tamanho base dos previews quadrados em lista ou avatar.", "Base size for square previews in list or avatar layouts."),
+          row("--r8-upload-progress", "percentage", "0%", "Percentual usado por `r8-upload__progress` para mostrar fila, envio parcial ou retry.", "Percentage used by `r8-upload__progress` to show queued, partial upload, or retry states."),
+        ],
+        methods: runtimeMethods,
+        events: [
+          event("r8:upload-change", `{ files, items, source }`, "Emitido quando input nativo ou dropzone recebem arquivos e a fila local e sincronizada.", "Emitted when the native input or dropzone receives files and the local queue is synchronized."),
+          event("r8:upload-remove", `{ file, files, index, source }`, "Emitido quando um item gerenciado pelo runtime local e removido da fila.", "Emitted when an item managed by the local runtime is removed from the queue."),
+          event("r8:upload-preview", `{ file, id, source, url }`, "Emitido quando uma acao de preview abre um arquivo local com object URL.", "Emitted when a preview action opens a local file through an object URL."),
         ],
       });
       break;
@@ -1246,6 +1319,17 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         ],
       });
       break;
+    case "switch":
+      mergeContract(contract, {
+        cssVariables: [
+          row("--r8-switch-enabled-bg", "color", "var(--r8-color-success)", "Cor do track quando o Switch estiver ligado ou com `aria-checked=\"true\"`.", "Track color when the Switch is on or using `aria-checked=\"true\"`."),
+          row("--r8-switch-disabled-bg", "color", "var(--r8-color-surface-2)", "Cor do track quando o Switch estiver desligado, mas ainda interativo.", "Track color when the Switch is off but still interactive."),
+          row("--r8-switch-blocked-bg", "color", "var(--r8-color-disabled-bg)", "Cor do track quando o controle em si estiver desabilitado e sem interacao.", "Track color when the control itself is disabled and non-interactive."),
+          row("--r8-switch-thumb-bg", "color", "var(--r8-color-surface-raised)", "Cor base do thumb enquanto o Switch estiver interativo.", "Base thumb color while the Switch remains interactive."),
+          row("--r8-switch-thumb-blocked-bg", "color", "var(--r8-color-surface)", "Cor do thumb quando o Switch estiver em estado desabilitado.", "Thumb color when the Switch is in a disabled state."),
+        ],
+      });
+      break;
     case "theme-switch":
       mergeContract(contract, {
         attributes: [
@@ -1266,6 +1350,20 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         attributes: [
           row("alt", "string", "recommended", "Texto alternativo quando a media real for um `<img>` no frame.", "Alternative text when the real media is an `<img>` inside the frame."),
           row("loading", `"lazy" | "eager"`, `"lazy"`, "Comportamento nativo de carregamento do asset visual.", "Native loading behavior for the visual asset."),
+          row("src", "string", "required on real `<img>`", "Fonte da imagem real dentro do frame.", "Source for the real image inside the frame."),
+        ],
+        dataAttributes: [
+          row("data-r8-fit", `"cover" | "contain" | "fill" | "none" | "scale-down"`, `"cover"`, "Controla como a imagem ocupa a moldura.", "Controls how the image fills the frame."),
+          row("data-r8-ratio", `"square" | "landscape" | "wide" | "portrait"`, "none", "Aplica proporções rápidas para thumbnails, cards ou hero previews.", "Applies quick ratios for thumbnails, cards, or hero previews."),
+        ],
+        cssVariables: [
+          row("--r8-image-height", "length", "12rem", "Define a altura útil quando nenhuma proporção pronta estiver ativa.", "Defines the usable height when no preset ratio is active."),
+          row("--r8-image-fit", "keyword", `"cover"`, "Custom property que ajusta o `object-fit` da mídia.", "Custom property that adjusts the media `object-fit`."),
+        ],
+        methods: runtimeMethods,
+        events: [
+          event("r8:image-load", `{ alt, src }`, "Emitido quando a imagem termina de carregar com sucesso.", "Emitted when the image finishes loading successfully."),
+          event("r8:image-error", `{ alt, src }`, "Emitido quando a mídia falha e o componente entra em estado de erro.", "Emitted when the media fails and the component enters its error state."),
         ],
       });
       break;
