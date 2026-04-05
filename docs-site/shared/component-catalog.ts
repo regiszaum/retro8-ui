@@ -5153,53 +5153,93 @@ const feedbackComponents = [
     ],
   },
   {
-    id: "popover",
-    name: "Popover",
+    id: "poptip",
+    name: "Poptip",
     group: "feedback",
     summary: l(
-      "Conteudo flutuante com titulo opcional para detalhes, acoes rapidas e metadata.",
-      "Floating content with an optional title for details, quick actions and metadata.",
+      "Overlay flutuante unificado para dicas breves ou paineis curtos, com trigger por clique, hover ou foco.",
+      "Unified floating overlay for short hints or compact panels, with click, hover, or focus triggers.",
     ),
-    classes: ["r8-popover", "r8-popover__title"],
-    preview: `<div class="docs-demo__stack">
+    classes: ["r8-poptip", "r8-poptip__title", "r8-poptip__body", "r8-poptip__actions"],
+    preview: `<div class="docs-demo__stack docs-demo__stack--poptip" data-r8-overlay-scope>
   <button
     class="r8-btn r8-btn--secondary"
     type="button"
-    data-r8-toggle="popover"
-    data-r8-target="#docs-popover-preview"
+    data-r8-toggle="poptip"
+    data-r8-target="#docs-poptip-panel-preview"
     data-r8-placement="bottom-start"
   >
-    Toggle popover
+    Open control panel
   </button>
-  <section id="docs-popover-preview" class="r8-popover" data-r8-placement="bottom-start" hidden>
-    <strong class="r8-popover__title">Shortcut panel</strong>
-    <p class="r8-text">Press G to open the grid overlay.</p>
+  <section id="docs-poptip-panel-preview" class="r8-poptip" data-r8-placement="bottom-start" hidden>
+    <strong class="r8-poptip__title">Shortcut panel</strong>
+    <div class="r8-poptip__body">
+      <p class="r8-text">Press G to open the grid overlay and jump to layout guides.</p>
+      <div class="r8-poptip__actions">
+        <button class="r8-btn r8-btn--sm r8-btn--secondary" type="button" data-r8-close>Close</button>
+        <button class="r8-btn r8-btn--sm" type="button">Open docs</button>
+      </div>
+    </div>
   </section>
 </div>`,
-  },
-  {
-    id: "tooltip",
-    name: "Tooltip",
-    group: "feedback",
-    summary: l(
-      "Dica breve para explicar icones, acoes compactas e controles densos.",
-      "Short hint for explaining icons, compact actions and dense controls.",
+    anatomy: ll(
+      [
+        "`r8-poptip` e o shell flutuante reutilizavel para modos panel e hint sem duplicar a API.",
+        "`r8-poptip__title` apresenta um heading curto quando o conteudo precisa de contexto adicional.",
+        "`r8-poptip__body` organiza texto, badges, metadata e blocos mais ricos com espaco previsivel.",
+        "`r8-poptip__actions` fecha o painel com acoes compactas, incluindo botao com `data-r8-close` quando fizer sentido.",
+      ],
+      [
+        "`r8-poptip` is the reusable floating shell for both panel and hint modes without duplicating the API.",
+        "`r8-poptip__title` adds a short heading when the content needs extra context.",
+        "`r8-poptip__body` organizes text, badges, metadata, and richer content blocks with predictable spacing.",
+        "`r8-poptip__actions` closes the panel with compact actions, including a `data-r8-close` button when needed.",
+      ],
     ),
-    classes: ["r8-tooltip"],
-    preview: `<div class="docs-demo__stack">
-  <button
-    class="r8-btn"
-    type="button"
-    data-r8-toggle="tooltip"
-    data-r8-target="#docs-tooltip-preview"
-    data-r8-placement="top"
-  >
-    Hover or focus
-  </button>
-  <div id="docs-tooltip-preview" class="r8-tooltip" data-r8-placement="top" role="tooltip" hidden>
-    Hold Shift to toggle precision mode.
-  </div>
-</div>`,
+    accessibility: ll(
+      [
+        "Use trigger focavel para que modos `hover` e `focus` continuem acessiveis no teclado.",
+        "Para hints curtos, prefira `data-r8-variant=\"hint\"` e mantenha o texto direto o bastante para leitura rapida.",
+        "Em paineis clicaveis, inclua acao clara de fechar quando o conteudo trouxer varias escolhas ou instrucoes.",
+        "Evite depender apenas da posicao do overlay; o label do trigger deve continuar explicando a acao principal.",
+      ],
+      [
+        "Use a focusable trigger so `hover` and `focus` modes remain keyboard-accessible.",
+        "For short hints, prefer `data-r8-variant=\"hint\"` and keep the copy direct enough for quick reading.",
+        "For clickable panels, add a clear close action when the content contains multiple choices or instructions.",
+        "Do not rely only on overlay position; the trigger label should still explain the main action.",
+      ],
+    ),
+    api: [
+      {
+        name: "data-r8-trigger",
+        description: l(
+          "Escolhe entre interacao por clique, hover ou foco sem trocar a estrutura base do componente.",
+          "Chooses between click, hover, or focus interaction without changing the component's base structure.",
+        ),
+      },
+      {
+        name: "data-r8-variant / r8-poptip__title",
+        description: l(
+          "Alternam entre um painel mais rico (`panel`) e um hint compacto (`hint`) com titulo opcional.",
+          "Switch between a richer panel (`panel`) and a compact hint (`hint`) with an optional title.",
+        ),
+      },
+      {
+        name: "data-r8-placement / --r8-poptip-width",
+        description: l(
+          "Controlam a ancoragem e a largura maxima do overlay em relacao ao trigger.",
+          "Control anchoring and the overlay's maximum width relative to the trigger.",
+        ),
+      },
+      {
+        name: "data-r8-close / r8-poptip__actions",
+        description: l(
+          "Permitem fechar o painel por helper declarativo e acomodar acoes curtas dentro do proprio overlay.",
+          "Let you close the panel through the declarative helper and place short actions inside the overlay itself.",
+        ),
+      },
+    ],
   },
 ] satisfies CatalogEntry[];
 
@@ -5305,22 +5345,154 @@ const retroExtraComponents = [
     group: "retro-extras",
     core: false,
     summary: l(
-      "Barra superior pronta para docs, landing pages e dashboards com brand, links e acoes.",
-      "Top bar ready for docs, landing pages and dashboards with brand, links and actions.",
+      "Barra superior responsiva com brand, nav, texto, acoes e colapso declarativo para cabecalhos de app, docs e landing pages.",
+      "Responsive top bar with brand, nav, text, actions, and declarative collapse for app headers, docs, and landing pages.",
     ),
-    classes: ["r8-navbar", "r8-navbar__brand", "r8-navbar__menu", "r8-navbar__item", "r8-navbar__actions", "r8-navbar--dark"],
-    preview: `<nav class="r8-navbar">
-  <a class="r8-navbar__brand" href="#0">retro8-ui</a>
-  <ul class="r8-navbar__menu">
-    <li><a class="r8-navbar__item" aria-current="page" href="#0">Docs</a></li>
-    <li><a class="r8-navbar__item" href="#0">Components</a></li>
-    <li><a class="r8-navbar__item" href="#0">Examples</a></li>
-  </ul>
-  <div class="r8-navbar__actions">
-    <span class="r8-badge r8-badge--info">v1</span>
-    <button class="r8-btn r8-btn--sm r8-btn--primary" type="button">Install</button>
+    classes: [
+      "r8-navbar",
+      "r8-navbar__container",
+      "r8-navbar__brand",
+      "r8-navbar__toggle",
+      "r8-navbar__toggle-icon",
+      "r8-navbar__collapse",
+      "r8-navbar__menu",
+      "r8-navbar__menu--scroll",
+      "r8-navbar__item",
+      "r8-navbar__text",
+      "r8-navbar__form",
+      "r8-navbar__actions",
+      "r8-navbar--dark",
+    ],
+    preview: `<div class="docs-demo__stack docs-demo__stack--navbar">
+  <nav class="r8-navbar" data-r8-expand="never" data-r8-open="true" aria-label="Primary navigation">
+    <div class="r8-navbar__container">
+      <a class="r8-navbar__brand" href="#0">
+        <img src="/brand/logo-ui.png" alt="Retro8 UI" />
+        <span>retro8-ui</span>
+      </a>
+      <button class="r8-navbar__toggle" type="button" aria-label="Toggle navigation">
+        <span class="r8-navbar__toggle-icon" aria-hidden="true"></span>
+      </button>
+      <div class="r8-navbar__collapse">
+        <ul class="r8-navbar__menu">
+          <li><a class="r8-navbar__item" aria-current="page" href="#0">Docs</a></li>
+          <li><a class="r8-navbar__item" href="#0">Components</a></li>
+          <li><a class="r8-navbar__item" href="#0">Tokens</a></li>
+        </ul>
+        <p class="r8-navbar__text">Build 0.3 synced</p>
+        <form class="r8-navbar__form" role="search">
+          <input class="r8-input" type="search" placeholder="Search docs" aria-label="Search docs" />
+          <button class="r8-btn r8-btn--sm r8-btn--primary" type="button">Search</button>
+        </form>
+        <div class="r8-navbar__actions">
+          <span class="r8-badge r8-badge--info">v1</span>
+          <button class="r8-btn r8-btn--sm" type="button">Install</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+</div>`,
+    code: `<nav class="r8-navbar r8-navbar--dark" data-r8-expand="lg" aria-label="Primary navigation">
+  <div class="r8-navbar__container">
+    <a class="r8-navbar__brand" href="/">
+      <img src="/brand/logo-ui.png" alt="Retro8 UI" />
+      <span>retro8-ui</span>
+    </a>
+
+    <button class="r8-navbar__toggle" type="button" aria-label="Toggle navigation">
+      <span class="r8-navbar__toggle-icon" aria-hidden="true"></span>
+    </button>
+
+    <div class="r8-navbar__collapse">
+      <ul class="r8-navbar__menu">
+        <li><a class="r8-navbar__item" aria-current="page" href="/docs">Docs</a></li>
+        <li><a class="r8-navbar__item" href="/components">Components</a></li>
+        <li><a class="r8-navbar__item" href="/tokens">Tokens</a></li>
+        <li><a class="r8-navbar__item" href="/guides">Guides</a></li>
+      </ul>
+
+      <span class="r8-navbar__text">Stable channel</span>
+
+      <form class="r8-navbar__form" role="search">
+        <input class="r8-input" type="search" placeholder="Search docs" aria-label="Search docs" />
+        <button class="r8-btn r8-btn--sm r8-btn--primary" type="submit">Search</button>
+      </form>
+
+      <div class="r8-navbar__actions">
+        <button class="r8-btn r8-btn--sm" type="button">Install</button>
+      </div>
+    </div>
   </div>
 </nav>`,
+    anatomy: ll(
+      [
+        "`r8-navbar` e a shell principal e aceita brand, nav, texto, form e acoes sem exigir wrappers extras.",
+        "`r8-navbar__container` agrupa o miolo quando voce quiser um inner wrapper previsivel, mas o componente continua funcionando sem ele.",
+        "`r8-navbar__toggle` + `r8-navbar__collapse` cuidam do colapso responsivo em conjunto com `data-r8-expand`.",
+        "`r8-navbar__menu` organiza os links principais; use `r8-navbar__menu--scroll` quando a coluna colapsada puder crescer demais.",
+        "`r8-navbar__text`, `r8-navbar__form` e `r8-navbar__actions` ocupam slots opcionais, como no padrao do Bootstrap.",
+      ],
+      [
+        "`r8-navbar` is the main shell and accepts brand, nav, text, form, and actions without requiring extra wrappers.",
+        "`r8-navbar__container` groups the inner layout when you want a predictable inner wrapper, but the component still works without it.",
+        "`r8-navbar__toggle` + `r8-navbar__collapse` handle responsive collapsing together with `data-r8-expand`.",
+        "`r8-navbar__menu` organizes the primary links; use `r8-navbar__menu--scroll` when the collapsed column could grow too tall.",
+        "`r8-navbar__text`, `r8-navbar__form`, and `r8-navbar__actions` fill optional slots, much like the Bootstrap pattern.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Prefira `<nav>` para expor o componente como landmark; se usar outro host, adicione `role=\"navigation\"`.",
+        "O toggle precisa de nome acessivel claro, como `Toggle navigation`, e deve controlar uma area identificavel por `aria-controls`.",
+        "Marque o link atual com `aria-current=\"page\"` para manter o contexto da navegacao.",
+        "Se houver busca no header, use `role=\"search\"` no form e preserve labels explicitos no campo.",
+        "Nao esconda informacao importante apenas dentro do menu colapsado; brand e acao principal devem continuar claras mesmo fechado.",
+      ],
+      [
+        "Prefer `<nav>` so the component is exposed as a landmark; if you use another host, add `role=\"navigation\"`.",
+        "The toggle needs a clear accessible name such as `Toggle navigation`, and it should control an identifiable region through `aria-controls`.",
+        "Mark the current link with `aria-current=\"page\"` to preserve navigation context.",
+        "If the header includes search, use `role=\"search\"` on the form and keep explicit labels on the field.",
+        "Do not hide critical information only inside the collapsed menu; brand and the main action should remain clear even when closed.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-navbar / data-r8-expand",
+        description: l(
+          "Base do header e ponto de entrada para o comportamento responsivo, com breakpoints no estilo navbar-expand do Bootstrap.",
+          "Header base and entry point for the responsive behavior, with Bootstrap-like navbar-expand breakpoints.",
+        ),
+      },
+      {
+        name: "r8-navbar__toggle / r8-navbar__collapse",
+        description: l(
+          "Par declarativo para abrir e fechar a navegacao colapsada sem JS de aplicacao.",
+          "Declarative pair used to open and close the collapsed navigation without app-level JS.",
+        ),
+      },
+      {
+        name: "r8-navbar__brand / r8-navbar__menu / r8-navbar__item",
+        description: l(
+          "Blocos para brand textual ou com imagem e para a lista principal de links.",
+          "Building blocks for text or image brands and for the main list of links.",
+        ),
+      },
+      {
+        name: "r8-navbar__text / r8-navbar__form / r8-navbar__actions",
+        description: l(
+          "Slots opcionais para copy curta, busca e CTAs auxiliares dentro da mesma barra.",
+          "Optional slots for short copy, search, and secondary CTAs inside the same bar.",
+        ),
+      },
+      {
+        name: "r8-navbar--dark / data-r8-variant=\"dark\"",
+        description: l(
+          "Ativa o tema escuro do navbar sem duplicar a estrutura do markup.",
+          "Enables the dark navbar theme without duplicating the markup structure.",
+        ),
+      },
+    ],
   },
 ] satisfies CatalogEntry[];
 

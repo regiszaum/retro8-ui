@@ -144,13 +144,13 @@ function isInteractiveComponent(id: string) {
     "carousel",
     "collapse",
     "dropdown",
+    "navbar",
     "pagination",
     "tabs",
     "alert",
     "dialog",
     "drawer",
-    "popover",
-    "tooltip",
+    "poptip",
     "tag",
   ]).has(id);
 }
@@ -586,6 +586,17 @@ function getDefaults(id: string): Record<string, any> {
       return { closable: false, text: "synced", tone: "success" };
     case "breadcrumb":
       return { compact: false, current: "Breadcrumb", links: true, levels: 4, nowrap: false, separator: "chevron" };
+    case "navbar":
+      return {
+        actions: true,
+        brand: "combo",
+        dark: false,
+        expand: "lg",
+        open: false,
+        scroll: false,
+        search: true,
+        text: true,
+      };
     case "dropdown":
       return { danger: true, divided: true, end: false, keepOpen: false, selected: "archive", split: false };
     case "steps":
@@ -620,10 +631,20 @@ function getDefaults(id: string): Record<string, any> {
       };
     case "loading":
       return { label: localize("Carregando assets...", "Loading assets..."), size: "md", variant: "pixels" };
-    case "popover":
-      return { placement: "bottom-start", title: localize("Painel de atalhos", "Shortcut panel") };
-    case "tooltip":
-      return { label: localize("Segure Shift para precisão.", "Hold Shift for precision."), placement: "top" };
+    case "poptip":
+      return {
+        actions: true,
+        message: localize(
+          "Pressione G para abrir o grid overlay e ir direto para os guias de layout.",
+          "Press G to open the grid overlay and jump straight to the layout guides.",
+        ),
+        placement: "bottom-start",
+        richContent: true,
+        title: localize("Painel de atalhos", "Shortcut panel"),
+        trigger: "click",
+        variant: "panel",
+        width: "md",
+      };
     case "divider":
       return { align: "center", dashed: false, label: "checkpoint", orientation: "horizontal" };
     case "watermark":
@@ -1573,6 +1594,105 @@ function buildConfig(id: string): PlaygroundConfig {
       };
     }
 
+    case "navbar": {
+      const expand = String(state.expand || "lg");
+      const brandMode = String(state.brand || "combo");
+      const currentItem = localize("Components", "Components");
+      const navItems = [
+        localize("Docs", "Docs"),
+        currentItem,
+        localize("Tokens", "Tokens"),
+        localize("Guides", "Guides"),
+        localize("Themes", "Themes"),
+        localize("Support", "Support"),
+      ];
+      const visibleItems = state.scroll ? navItems : navItems.slice(0, 3);
+      const brandMarkup =
+        brandMode === "image"
+          ? `<a class="r8-navbar__brand" href="#">
+      <img src="/brand/logo-ui.png" alt="${escapeAttribute(localize("Retro8 UI", "Retro8 UI"))}" />
+    </a>`
+          : brandMode === "combo"
+            ? `<a class="r8-navbar__brand" href="#">
+      <img src="/brand/logo-ui.png" alt="${escapeAttribute(localize("Retro8 UI", "Retro8 UI"))}" />
+      <span>retro8-ui</span>
+    </a>`
+            : `<a class="r8-navbar__brand" href="#">retro8-ui</a>`;
+
+      return {
+        defaults: getDefaults(id),
+        fields: [
+          {
+            key: "brand",
+            label: localize("Brand", "Brand"),
+            options: [
+              option("text", "Texto", "Text"),
+              option("image", "Imagem", "Image"),
+              option("combo", "Imagem + texto", "Image + text"),
+            ],
+            type: "select",
+          },
+          {
+            key: "expand",
+            label: localize("Expandir em", "Expand at"),
+            options: [
+              option("never", "Nunca", "Never"),
+              option("sm", "SM", "SM"),
+              option("md", "MD", "MD"),
+              option("lg", "LG", "LG"),
+              option("xl", "XL", "XL"),
+              option("xxl", "XXL", "XXL"),
+              option("always", "Sempre", "Always"),
+            ],
+            type: "select",
+          },
+        ],
+        surface: "full",
+        toggles: [
+          { key: "dark", label: localize("Tema escuro", "Dark theme") },
+          { key: "open", label: localize("Menu aberto", "Menu open") },
+          { key: "search", label: localize("Com busca", "Show search") },
+          { key: "text", label: localize("Com texto", "Show text") },
+          { key: "actions", label: localize("Com ações", "Show actions") },
+          { key: "scroll", label: localize("Menu scrollável", "Scrollable menu") },
+        ],
+        render: () => `<nav class="${classList("r8-navbar", state.dark && "r8-navbar--dark")}" data-r8-expand="${expand}"${state.open ? ' data-r8-open="true"' : ""} aria-label="${escapeAttribute(localize("Navegação principal", "Main navigation"))}">
+  <div class="r8-navbar__container">
+    ${brandMarkup}
+    <button class="r8-navbar__toggle" type="button" aria-label="${escapeAttribute(localize("Alternar navegação", "Toggle navigation"))}">
+      <span class="r8-navbar__toggle-icon" aria-hidden="true"></span>
+    </button>
+    <div class="r8-navbar__collapse">
+      <ul class="${classList("r8-navbar__menu", state.scroll && "r8-navbar__menu--scroll")}">
+        ${visibleItems
+          .map(
+            (item) => `<li><a class="r8-navbar__item"${item === currentItem ? ' aria-current="page"' : ""} href="#">${escapeHtml(item)}</a></li>`,
+          )
+          .join("\n        ")}
+      </ul>
+      ${state.text ? `<p class="r8-navbar__text">${escapeHtml(localize("Build 0.3 sincronizado", "Build 0.3 synced"))}</p>` : ""}
+      ${
+        state.search
+          ? `<form class="r8-navbar__form" role="search">
+        <input class="r8-input" type="search" placeholder="${escapeAttribute(localize("Buscar docs", "Search docs"))}" aria-label="${escapeAttribute(localize("Buscar docs", "Search docs"))}" />
+        <button class="r8-btn r8-btn--sm r8-btn--primary" type="button">${escapeHtml(localize("Buscar", "Search"))}</button>
+      </form>`
+          : ""
+      }
+      ${
+        state.actions
+          ? `<div class="r8-navbar__actions">
+        <span class="r8-badge r8-badge--info">v1</span>
+        <button class="r8-btn r8-btn--sm" type="button">${escapeHtml(localize("Instalar", "Install"))}</button>
+      </div>`
+          : ""
+      }
+    </div>
+  </div>
+</nav>`,
+      };
+    }
+
     case "dropdown": {
       const selected = String(state.selected || "archive");
       const items = [
@@ -2002,9 +2122,31 @@ function buildConfig(id: string): PlaygroundConfig {
       };
     }
 
-    case "popover": {
+    case "poptip": {
       const placement = String(state.placement || "bottom-start");
-      const targetId = "docs-generic-popover-preview";
+      const targetId = "docs-generic-poptip-preview";
+      const triggerMode = String(state.trigger || "click");
+      const variant = String(state.variant || "panel");
+      const showHintVariant = variant === "hint";
+      const widthToken =
+        showHintVariant
+          ? state.width === "sm"
+            ? "10rem"
+            : state.width === "lg"
+              ? "14rem"
+              : "12rem"
+          : state.width === "sm"
+            ? "14rem"
+            : state.width === "lg"
+              ? "22rem"
+              : "18rem";
+      const triggerLabel =
+        triggerMode === "focus"
+          ? localize("Foque para abrir", "Focus to open")
+          : triggerMode === "hover"
+            ? localize("Hover ou focus", "Hover or focus")
+            : localize("Abrir poptip", "Open poptip");
+
       return {
         defaults: getDefaults(id),
         fields: [
@@ -2012,7 +2154,10 @@ function buildConfig(id: string): PlaygroundConfig {
             key: "placement",
             label: localize("Posição", "Placement"),
             options: [
+              option("top-start", "Topo início", "Top start"),
               option("top", "Topo", "Top"),
+              option("top-end", "Topo fim", "Top end"),
+              option("bottom", "Base", "Bottom"),
               option("bottom-start", "Base início", "Bottom start"),
               option("bottom-end", "Base fim", "Bottom end"),
               option("left", "Esquerda", "Left"),
@@ -2020,41 +2165,88 @@ function buildConfig(id: string): PlaygroundConfig {
             ],
             type: "select",
           },
-          { key: "title", label: localize("Título", "Title"), maxlength: 28, type: "text" },
-        ],
-        surface: "overlay",
-        toggles: [],
-        render: () => `<div class="r8-stack">
-  <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="popover" data-r8-target="#${targetId}" data-r8-placement="${placement}">${escapeHtml(localize("Alternar popover", "Toggle popover"))}</button>
-  <section id="${targetId}" class="r8-popover" data-r8-placement="${placement}" hidden>
-    <strong class="r8-popover__title">${escapeHtml(String(state.title || ""))}</strong>
-    <p class="r8-text">${escapeHtml(localize("Pressione G para abrir o grid overlay.", "Press G to open the grid overlay."))}</p>
-  </section>
-</div>`,
-      };
-    }
-
-    case "tooltip": {
-      const placement = String(state.placement || "top");
-      const targetId = "docs-generic-tooltip-preview";
-      return {
-        defaults: getDefaults(id),
-        fields: [
           {
-            key: "placement",
-            label: localize("Posição", "Placement"),
-            options: [option("top", "Topo", "Top"), option("bottom", "Base", "Bottom"), option("left", "Esquerda", "Left"), option("right", "Direita", "Right")],
+            key: "trigger",
+            label: localize("Trigger", "Trigger"),
+            options: [
+              option("click", "Clique", "Click"),
+              option("hover", "Hover", "Hover"),
+              option("focus", "Foco", "Focus"),
+            ],
             type: "select",
           },
-          { key: "label", label: localize("Texto", "Text"), maxlength: 36, type: "text" },
+          {
+            key: "variant",
+            label: localize("Modo", "Mode"),
+            options: [
+              option("panel", "Painel", "Panel"),
+              option("hint", "Hint", "Hint"),
+            ],
+            type: "select",
+          },
+          { key: "title", label: localize("Título", "Title"), maxlength: 28, type: "text" },
+          { key: "message", label: localize("Mensagem", "Message"), maxlength: 96, type: "text" },
+          {
+            key: "width",
+            label: localize("Largura", "Width"),
+            options: [
+              option("sm", "Compacta", "Compact"),
+              option("md", "Média", "Medium"),
+              option("lg", "Ampla", "Large"),
+            ],
+            type: "select",
+          },
         ],
         surface: "overlay",
-        toggles: [],
-        render: () => `<div class="r8-stack">
-  <button class="r8-btn" type="button" data-r8-toggle="tooltip" data-r8-target="#${targetId}" data-r8-placement="${placement}">${escapeHtml(localize("Hover ou focus", "Hover or focus"))}</button>
-  <div id="${targetId}" class="r8-tooltip" data-r8-placement="${placement}" role="tooltip" hidden>
-    ${escapeHtml(String(state.label || ""))}
-  </div>
+        toggles: [
+          { key: "richContent", label: localize("Conteúdo rico", "Rich content") },
+          { key: "actions", label: localize("Ações", "Actions") },
+        ],
+        render: () => `<div class="r8-stack" data-r8-overlay-scope>
+  <button
+    class="${classList("r8-btn", !showHintVariant && "r8-btn--secondary")}"
+    type="button"
+    data-r8-toggle="poptip"
+    data-r8-target="#${targetId}"
+    data-r8-placement="${placement}"
+    data-r8-trigger="${triggerMode}"
+  >
+    ${escapeHtml(triggerLabel)}
+  </button>
+  <section
+    id="${targetId}"
+    class="r8-poptip"
+    data-r8-placement="${placement}"
+    data-r8-trigger="${triggerMode}"
+    ${showHintVariant ? 'data-r8-variant="hint" role="tooltip"' : ""}
+    style="--r8-poptip-width: ${widthToken};"
+    hidden
+  >
+    ${
+      !showHintVariant && String(state.title || "").trim()
+        ? `<strong class="r8-poptip__title">${escapeHtml(String(state.title || ""))}</strong>`
+        : ""
+    }
+    <div class="r8-poptip__body">
+      <p class="r8-text">${escapeHtml(String(state.message || ""))}</p>
+      ${
+        state.richContent && !showHintVariant
+          ? `<div class="r8-poptip__meta">
+        <span class="r8-badge r8-badge--info">Ctrl+G</span>
+        <span class="r8-text r8-text--muted">${escapeHtml(localize("Overlay curto, ancorado no trigger.", "Short overlay anchored to the trigger."))}</span>
+      </div>`
+          : ""
+      }
+      ${
+        state.actions && !showHintVariant
+          ? `<div class="r8-poptip__actions">
+        <button class="r8-btn r8-btn--sm r8-btn--secondary" type="button" data-r8-close>${escapeHtml(localize("Fechar", "Close"))}</button>
+        <button class="r8-btn r8-btn--sm" type="button">${escapeHtml(localize("Abrir docs", "Open docs"))}</button>
+      </div>`
+          : ""
+      }
+    </div>
+  </section>
 </div>`,
       };
     }

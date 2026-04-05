@@ -1192,12 +1192,21 @@ pre {
   justify-items: start;
 }
 
+.docs-demo__stack--poptip {
+  padding-bottom: 12rem;
+  justify-items: start;
+}
+
 .docs-demo__stack--color-picker {
   padding-bottom: 23rem;
   justify-items: start;
 }
 
 .docs-demo__stack--upload {
+  justify-items: start;
+}
+
+.docs-demo__stack--navbar {
   justify-items: start;
 }
 
@@ -1213,8 +1222,16 @@ pre {
   width: min(100%, 28rem);
 }
 
+.docs-demo__stack--poptip > .r8-btn {
+  width: min(100%, 20rem);
+}
+
 .docs-demo__stack--upload > .r8-upload {
   width: min(100%, 46rem);
+}
+
+.docs-demo__stack--navbar > .r8-navbar {
+  width: min(100%, 42rem);
 }
 
 .docs-demo__stack--cascader > .r8-cascader {
@@ -1809,6 +1826,7 @@ pre {
 .docs-generic-playground__surface > .r8-steps,
 .docs-generic-playground__surface > .r8-tabs,
 .docs-generic-playground__surface > .r8-alert,
+.docs-generic-playground__surface > .r8-navbar,
 .docs-generic-playground__surface > .r8-loading,
 .docs-generic-playground__surface > .r8-upload,
 .docs-generic-playground__surface > .r8-watermark {

@@ -20,7 +20,7 @@ You do not need Tailwind CSS in the consuming project. Tailwind is used only to 
 - Framework-agnostic by design.
 - Semantic class API instead of utility-heavy consumer markup.
 - Strong retro 8-bit visual language with thick borders, hard shadows, and pixel-shift interactions.
-- Optional JavaScript runtime for dropdowns, dialogs, tabs, drawers, tooltips, and other interactive patterns.
+- Optional JavaScript runtime for dropdowns, dialogs, tabs, drawers, poptips, and other interactive patterns.
 - Clear design tokens for color, spacing, borders, shadows, typography, and interaction states.
 - Public documentation site with bilingual content, component routes, light mode, dark mode, and live previews.
 
@@ -202,7 +202,7 @@ The current runtime covers patterns such as:
 - sliders;
 - input tags;
 - transfer lists;
-- popovers, tooltips, dialogs, and dismissible feedback surfaces.
+- poptips, dialogs, and dismissible feedback surfaces.
 
 You can use the bundled runtime or replace it with your own application logic if your stack already manages state and accessibility behavior.
 
@@ -210,7 +210,7 @@ You can use the bundled runtime or replace it with your own application logic if
 
 The current catalog includes:
 
-- 51 core components across the main catalog, plus retro8-ui-specific extras;
+- 50 core components across the main catalog, plus retro8-ui-specific extras;
 - grouped categories across Basic, Configuration, Form, Data, Navigation, Feedback, and Others;
 - native `retro8-ui` extras such as `Panel`, `Window`, and `Navbar`.
 

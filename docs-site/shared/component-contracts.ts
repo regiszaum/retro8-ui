@@ -63,7 +63,7 @@ const choiceKinds = new Set([
   "select",
   "dropdown",
 ]);
-const overlayKinds = new Set(["dialog", "drawer", "popover", "tooltip"]);
+const overlayKinds = new Set(["dialog", "drawer", "poptip"]);
 const binaryKinds = new Set(["checkbox", "radio", "switch", "theme-switch"]);
 const runtimeKinds = new Set([
   "button",
@@ -78,6 +78,7 @@ const runtimeKinds = new Set([
   "input-number",
   "rate",
   "pagination",
+  "navbar",
   "splitter",
   "slider",
   "input-tag",
@@ -1342,14 +1343,23 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         ],
       });
       break;
-    case "popover":
-    case "tooltip":
+    case "poptip":
       mergeContract(contract, {
+        attributes: [
+          row("hidden", "boolean", "true before open", "Mantem o Poptip fora do fluxo ate o trigger ou a aplicacao abrirem o overlay.", "Keeps the Poptip out of flow until the trigger or the host app opens the overlay."),
+          row("role", `"tooltip" | custom`, "recommended for hint mode", "Use `role=\"tooltip\"` quando o Poptip estiver atuando como dica curta por hover ou foco.", "Use `role=\"tooltip\"` when the Poptip acts as a short hover or focus hint."),
+        ],
         dataAttributes: [
-          row("data-r8-toggle", `"true"`, `"true"`, `Trigger declarativo usado para abrir ${component.name}.`, `Declarative trigger used to open ${component.name}.`),
+          row("data-r8-toggle", `"poptip" | "popover" | "tooltip"`, `"poptip"`, `Trigger declarativo usado para abrir ${component.name}; aliases antigos continuam aceitos por compatibilidade.`, `Declarative trigger used to open ${component.name}; older aliases remain accepted for compatibility.`),
           row("data-r8-target", "CSS selector", "required", `Target controlado por ${component.name}.`, `Target controlled by ${component.name}.`),
           row("data-r8-close", "CSS selector | empty", "nearest host", `Fecha ${component.name} pelo helper do runtime.`, `Closes ${component.name} through the runtime helper.`),
-          row("data-r8-placement", `"top" | "top-start" | "top-end" | "bottom" | "bottom-start" | "bottom-end" | "left" | "right"`, component.name === "Tooltip" ? `"top"` : `"bottom-start"`, "Define o posicionamento flutuante relativo ao trigger.", "Defines the floating placement relative to the trigger."),
+          row("data-r8-trigger", `"click" | "hover" | "focus" | "contextmenu"`, `"click"`, "Controla se o overlay abre por clique, hover, foco ou clique de contexto.", "Controls whether the overlay opens on click, hover, focus, or context click."),
+          row("data-r8-variant", `"panel" | "hint"`, `"panel"`, "Alterna entre painel rico e dica compacta sem trocar de componente.", "Switches between a richer panel and a compact hint without switching components."),
+          row("data-r8-placement", `"top" | "top-start" | "top-end" | "bottom" | "bottom-start" | "bottom-end" | "left" | "right"`, `"bottom-start"`, "Define o posicionamento flutuante relativo ao trigger.", "Defines the floating placement relative to the trigger."),
+        ],
+        cssVariables: [
+          row("--r8-poptip-width", "length", "20rem", "Limita a largura maxima do painel ou hint para manter leitura confortavel.", "Limits the panel or hint max width so reading stays comfortable."),
+          row("--r8-poptip-background / --r8-poptip-color", "color", "surface / ink", "Permitem criar shells mais claros ou escuros sem duplicar variantes estruturais.", "Let you create lighter or darker shells without duplicating structural variants."),
         ],
         methods: runtimeMethods,
         events: [
@@ -1471,6 +1481,79 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
       break;
     case "navbar":
       mergeContract(contract, withVariantDataAttribute(component.name, `"dark"`));
+      mergeContract(contract, {
+        attributes: [
+          row(
+            "aria-label",
+            "string",
+            "recommended on `<nav>`",
+            "Nome acessivel do landmark de navegacao quando o header nao tiver titulo explicito por perto.",
+            "Accessible landmark name when the header does not have a nearby explicit title.",
+          ),
+          row(
+            "aria-controls / aria-expanded",
+            "string / boolean",
+            "managed by runtime",
+            "Mantem a relacao entre o toggle e o bloco `r8-navbar__collapse` em layouts colapsaveis.",
+            "Keeps the relationship between the toggle and the `r8-navbar__collapse` block in collapsible layouts.",
+          ),
+        ],
+        dataAttributes: [
+          row(
+            "data-r8-expand",
+            `"never" | "sm" | "md" | "lg" | "xl" | "xxl" | "always"`,
+            `"always"`,
+            "Define em qual breakpoint o navbar deixa de colapsar, seguindo a ideia do `navbar-expand-*` do Bootstrap.",
+            "Defines the breakpoint where the navbar stops collapsing, following the Bootstrap `navbar-expand-*` idea.",
+          ),
+          row(
+            "data-r8-open",
+            `"true" | "false"`,
+            `"false"`,
+            "Abre o bloco colapsado no primeiro paint, util para previews locais e demos guiadas.",
+            "Opens the collapsed block on first paint, useful for local previews and guided demos.",
+          ),
+        ],
+        cssVariables: [
+          row(
+            "--r8-navbar-bg / --r8-navbar-color / --r8-navbar-muted",
+            "color",
+            "surface / ink / ink-muted",
+            "Controlam o shell do navbar e o contraste interno de brand, texto e links auxiliares.",
+            "Control the navbar shell and the inner contrast for the brand, text, and secondary links.",
+          ),
+          row(
+            "--r8-navbar-padding-x / --r8-navbar-padding-y / --r8-navbar-gap",
+            "length",
+            "theme defaults",
+            "Ajustam a densidade horizontal e vertical do header sem alterar a estrutura interna.",
+            "Adjust the header horizontal and vertical density without changing its inner structure.",
+          ),
+          row(
+            "--r8-navbar-collapse-max-height",
+            "length",
+            "18rem",
+            "Define a altura maxima do menu scrollavel quando o navbar estiver em coluna colapsada.",
+            "Defines the maximum height of the scrollable menu when the navbar runs in collapsed column mode.",
+          ),
+          row(
+            "--r8-navbar-hover-bg / --r8-navbar-accent-bg / --r8-navbar-accent-color",
+            "color",
+            "theme defaults",
+            "Permitem personalizar hover e estado ativo sem criar uma variante estrutural nova.",
+            "Let you customize hover and active states without creating a new structural variant.",
+          ),
+        ],
+        methods: runtimeMethods,
+        events: [
+          event(
+            "r8:navbar-toggle",
+            `{ open, navbar, toggle, collapse, expandedLayout, trigger }`,
+            "Emitido quando o toggle abre ou fecha a navegacao colapsavel do navbar.",
+            "Emitted when the toggle opens or closes the navbar collapsible navigation.",
+          ),
+        ],
+      });
       break;
     case "badge":
       mergeContract(contract, withVariantDataAttribute(component.name, `"primary" | "secondary" | "tertiary" | "success" | "warning" | "danger" | "info" | "dark" | "light"`));

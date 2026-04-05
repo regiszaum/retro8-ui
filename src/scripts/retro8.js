@@ -45,15 +45,24 @@
   ];
 
   const choiceStates = new WeakMap();
+  const navbarStates = new WeakMap();
   const splitterStates = new WeakMap();
   const uploadStates = new WeakMap();
   const overlayTimers = new WeakMap();
   const floatingStates = new Set();
   const genericTargets = new Set();
+  const navbarRegistry = new Set();
   const observers = new WeakSet();
   const drawerTransitionMs = 270;
   const floatingOverlayGap = 12;
   const floatingViewportPadding = 12;
+  const navbarExpandQueries = {
+    sm: "(min-width: 576px)",
+    md: "(min-width: 768px)",
+    lg: "(min-width: 992px)",
+    xl: "(min-width: 1200px)",
+    xxl: "(min-width: 1400px)",
+  };
   const floatingPlacements = [
     "top",
     "top-start",
@@ -4647,6 +4656,174 @@
     });
   }
 
+  function normalizeNavbarExpand(value) {
+    if (value === "never" || value === "always") {
+      return value;
+    }
+
+    return Object.prototype.hasOwnProperty.call(navbarExpandQueries, value) ? value : "always";
+  }
+
+  function navbarShowsExpandedLayout(navbar) {
+    const expand = normalizeNavbarExpand(navbar?.dataset?.r8Expand || "always");
+    if (expand === "always") {
+      return true;
+    }
+
+    if (expand === "never") {
+      return false;
+    }
+
+    return window.matchMedia(navbarExpandQueries[expand]).matches;
+  }
+
+  function resolveNavbarCollapse(navbar, toggle = null) {
+    if (!(navbar instanceof HTMLElement)) {
+      return null;
+    }
+
+    const selector = toggle?.dataset?.r8Target || "";
+    if (selector) {
+      const explicitTarget = document.querySelector(selector);
+      if (explicitTarget instanceof HTMLElement) {
+        return explicitTarget;
+      }
+    }
+
+    const controlsId = toggle?.getAttribute("aria-controls") || "";
+    if (controlsId) {
+      const byId = document.getElementById(controlsId);
+      if (byId instanceof HTMLElement) {
+        return byId;
+      }
+    }
+
+    const nearestCollapse = navbar.querySelector(".r8-navbar__collapse");
+    return nearestCollapse instanceof HTMLElement ? nearestCollapse : null;
+  }
+
+  function syncNavbarDisclosure(navbar) {
+    const state = navbarStates.get(navbar);
+    if (!state?.toggle || !state.collapse) {
+      return;
+    }
+
+    const expandedLayout = navbarShowsExpandedLayout(navbar);
+    const isVisible = expandedLayout || state.open;
+
+    navbar.classList.toggle("is-open", state.open);
+    state.collapse.classList.toggle("is-open", state.open);
+    state.toggle.setAttribute("aria-expanded", isVisible ? "true" : "false");
+    state.collapse.setAttribute("aria-hidden", isVisible ? "false" : "true");
+  }
+
+  function setNavbarOpen(navbar, open, options = {}) {
+    const state = navbarStates.get(navbar);
+    if (!state?.toggle || !state.collapse) {
+      return;
+    }
+
+    state.open = Boolean(open);
+    if (state.open) {
+      navbar.dataset.r8Open = "true";
+    } else {
+      delete navbar.dataset.r8Open;
+    }
+
+    syncNavbarDisclosure(navbar);
+
+    if (options.silent === true) {
+      return;
+    }
+
+    emitComponentEvent(navbar, "navbar-toggle", {
+      open: state.open,
+      collapse: state.collapse,
+      expandedLayout: navbarShowsExpandedLayout(navbar),
+      navbar,
+      toggle: state.toggle,
+      trigger: options.trigger || state.toggle,
+    });
+  }
+
+  function syncNavbars() {
+    navbarRegistry.forEach((navbar) => {
+      if (!(navbar instanceof HTMLElement) || !navbar.isConnected) {
+        navbarRegistry.delete(navbar);
+        return;
+      }
+
+      syncNavbarDisclosure(navbar);
+    });
+  }
+
+  function initNavbars(root) {
+    toArray(root.querySelectorAll(".r8-navbar")).forEach((navbar) => {
+      if (!(navbar instanceof HTMLElement) || navbar.dataset.r8NavbarReady === "true") {
+        return;
+      }
+
+      navbar.dataset.r8NavbarReady = "true";
+      if (navbar.tagName !== "NAV" && !navbar.hasAttribute("role")) {
+        navbar.setAttribute("role", "navigation");
+      }
+
+      const toggle = navbar.querySelector(".r8-navbar__toggle");
+      if (!(toggle instanceof HTMLElement)) {
+        return;
+      }
+
+      const collapse = resolveNavbarCollapse(navbar, toggle);
+      if (!(collapse instanceof HTMLElement)) {
+        return;
+      }
+
+      prepareActionLikeElement(toggle);
+      if (toggle instanceof HTMLButtonElement && !toggle.hasAttribute("type")) {
+        toggle.type = "button";
+      }
+
+      const collapseId = ensureId(collapse, "r8-navbar-collapse");
+      toggle.setAttribute("aria-controls", collapseId);
+      if (!toggle.hasAttribute("aria-label")) {
+        toggle.setAttribute("aria-label", "Toggle navigation");
+      }
+
+      const initialOpen =
+        matchesTrue(navbar.dataset.r8Open || "false") ||
+        collapse.classList.contains("is-open") ||
+        toggle.getAttribute("aria-expanded") === "true";
+
+      navbarStates.set(navbar, {
+        collapse,
+        open: initialOpen,
+        toggle,
+      });
+      navbarRegistry.add(navbar);
+      syncNavbarDisclosure(navbar);
+
+      toggle.addEventListener("click", (event) => {
+        event.preventDefault();
+        const state = navbarStates.get(navbar);
+        if (!state || navbarShowsExpandedLayout(navbar)) {
+          return;
+        }
+
+        setNavbarOpen(navbar, !state.open, { trigger: toggle });
+      });
+
+      collapse.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape" || navbarShowsExpandedLayout(navbar)) {
+          return;
+        }
+
+        event.preventDefault();
+        setNavbarOpen(navbar, false, { trigger: toggle });
+        toggle.focus({ preventScroll: true });
+      });
+    });
+  }
+
   function initCarousels(root) {
     toArray(root.querySelectorAll(".r8-carousel")).forEach((carousel) => {
       if (!(carousel instanceof HTMLElement) || carousel.dataset.r8CarouselReady === "true") {
@@ -6740,6 +6917,7 @@
       (targetSelector && document.querySelector(targetSelector)) ||
       button.closest("dialog") ||
       button.closest(".r8-drawer") ||
+      button.closest(".r8-poptip") ||
       button.closest(".r8-popover") ||
       button.closest(".r8-tooltip") ||
       button.closest(".r8-alert");
@@ -6801,6 +6979,10 @@
     return target instanceof HTMLElement && target.classList.contains("r8-alert");
   }
 
+  function isPoptipTarget(target) {
+    return target instanceof HTMLElement && target.classList.contains("r8-poptip");
+  }
+
   function isPopoverTarget(target) {
     return target instanceof HTMLElement && target.classList.contains("r8-popover");
   }
@@ -6810,7 +6992,38 @@
   }
 
   function isFloatingOverlayTarget(target) {
-    return isPopoverTarget(target) || isTooltipTarget(target);
+    return isPoptipTarget(target) || isPopoverTarget(target) || isTooltipTarget(target);
+  }
+
+  function resolveFloatingVariant(trigger, target) {
+    const requestedVariant =
+      trigger?.dataset?.r8Variant || target?.dataset?.r8Variant || "";
+
+    if (requestedVariant === "hint" || requestedVariant === "panel") {
+      return requestedVariant;
+    }
+
+    return trigger?.dataset?.r8Toggle === "tooltip" || isTooltipTarget(target)
+      ? "hint"
+      : "panel";
+  }
+
+  function resolveFloatingTriggerMode(trigger, target) {
+    const requestedMode =
+      trigger?.dataset?.r8Trigger || target?.dataset?.r8Trigger || "";
+
+    if (
+      requestedMode === "click" ||
+      requestedMode === "hover" ||
+      requestedMode === "focus" ||
+      requestedMode === "contextmenu"
+    ) {
+      return requestedMode;
+    }
+
+    return trigger?.dataset?.r8Toggle === "tooltip" || isTooltipTarget(target)
+      ? "hover"
+      : "click";
   }
 
   function normalizeFloatingPlacement(value, fallback) {
@@ -6822,7 +7035,7 @@
   }
 
   function resolveFloatingPlacement(trigger, target) {
-    const fallback = isTooltipTarget(target) ? "top" : "bottom-start";
+    const fallback = resolveFloatingVariant(trigger, target) === "hint" ? "top" : "bottom-start";
     return normalizeFloatingPlacement(
       target?.dataset?.r8Placement || trigger?.dataset?.r8Placement || "",
       fallback,
@@ -6914,6 +7127,35 @@
     };
   }
 
+  function getFloatingOffsetContext(target) {
+    if (!(target instanceof HTMLElement)) {
+      return {
+        left: 0,
+        scrollLeft: window.scrollX,
+        scrollTop: window.scrollY,
+        top: 0,
+      };
+    }
+
+    const offsetParent = target.offsetParent;
+    if (offsetParent instanceof HTMLElement) {
+      const rect = offsetParent.getBoundingClientRect();
+      return {
+        left: rect.left + offsetParent.clientLeft,
+        scrollLeft: offsetParent.scrollLeft,
+        scrollTop: offsetParent.scrollTop,
+        top: rect.top + offsetParent.clientTop,
+      };
+    }
+
+    return {
+      left: 0,
+      scrollLeft: window.scrollX,
+      scrollTop: window.scrollY,
+      top: 0,
+    };
+  }
+
   function clearFloatingOverlayPosition(target) {
     if (!(target instanceof HTMLElement)) {
       return;
@@ -6945,9 +7187,10 @@
       : fallbackPlacement;
     const rawCoordinates = computeFloatingCoordinates(triggerRect, initialRect, placement);
     const coordinates = clampFloatingCoordinates(triggerRect, initialRect, placement, rawCoordinates);
+    const offsetContext = getFloatingOffsetContext(target);
 
-    target.style.top = `${Math.round(coordinates.top)}px`;
-    target.style.left = `${Math.round(coordinates.left)}px`;
+    target.style.top = `${Math.round(coordinates.top - offsetContext.top + offsetContext.scrollTop)}px`;
+    target.style.left = `${Math.round(coordinates.left - offsetContext.left + offsetContext.scrollLeft)}px`;
     target.dataset.r8PlacementActive = placement;
 
     if (placement.startsWith("top") || placement.startsWith("bottom")) {
@@ -7207,44 +7450,70 @@
 
       setExpanded(trigger, false);
       registerGenericTarget(trigger, target);
-      bindKeyboardActivation(trigger, () => handleToggleTrigger(trigger));
+      if (isFloatingOverlayTarget(target)) {
+        const floatingMode = resolveFloatingTriggerMode(trigger, target);
+        const floatingVariant = resolveFloatingVariant(trigger, target);
 
-      if (isTooltipTarget(target)) {
-        ensureId(target, "r8-tooltip");
-        trigger.setAttribute("aria-describedby", target.id);
+        ensureId(target, "r8-poptip");
 
-        if (trigger.dataset.r8TooltipReady !== "true") {
-          trigger.dataset.r8TooltipReady = "true";
-
-          trigger.addEventListener("pointerenter", () => {
-            clearOverlayTimer(target);
-            openTarget(target, trigger);
-          });
-
-          trigger.addEventListener("pointerleave", () => {
-            const closeTimer = window.setTimeout(() => {
-              closeTarget(target, trigger);
-            }, 40);
-            overlayTimers.set(target, closeTimer);
-          });
-
-          trigger.addEventListener("focus", () => {
-            clearOverlayTimer(target);
-            openTarget(target, trigger);
-          });
-
-          trigger.addEventListener("blur", () => {
-            closeTarget(target, trigger);
-          });
-
-          target.addEventListener("pointerenter", () => {
-            clearOverlayTimer(target);
-          });
-
-          target.addEventListener("pointerleave", () => {
-            closeTarget(target, trigger);
-          });
+        if (floatingVariant === "hint" || floatingMode !== "click") {
+          trigger.removeAttribute("aria-controls");
+          trigger.setAttribute("aria-describedby", target.id);
+          target.setAttribute("role", target.getAttribute("role") || "tooltip");
+        } else {
+          trigger.removeAttribute("aria-describedby");
+          trigger.setAttribute("aria-controls", target.id);
         }
+
+        if (floatingMode === "click") {
+          bindKeyboardActivation(trigger, () => handleToggleTrigger(trigger));
+        }
+
+        if (trigger.dataset.r8FloatingReady !== "true") {
+          trigger.dataset.r8FloatingReady = "true";
+
+          if (floatingMode === "hover") {
+            trigger.addEventListener("pointerenter", () => {
+              clearOverlayTimer(target);
+              openTarget(target, trigger);
+            });
+
+            trigger.addEventListener("pointerleave", () => {
+              const closeTimer = window.setTimeout(() => {
+                closeTarget(target, trigger);
+              }, 40);
+              overlayTimers.set(target, closeTimer);
+            });
+
+            trigger.addEventListener("focus", () => {
+              clearOverlayTimer(target);
+              openTarget(target, trigger);
+            });
+
+            trigger.addEventListener("blur", () => {
+              closeTarget(target, trigger);
+            });
+
+            target.addEventListener("pointerenter", () => {
+              clearOverlayTimer(target);
+            });
+
+            target.addEventListener("pointerleave", () => {
+              closeTarget(target, trigger);
+            });
+          } else if (floatingMode === "focus") {
+            trigger.addEventListener("focus", () => {
+              clearOverlayTimer(target);
+              openTarget(target, trigger);
+            });
+
+            trigger.addEventListener("blur", () => {
+              closeTarget(target, trigger);
+            });
+          }
+        }
+      } else {
+        bindKeyboardActivation(trigger, () => handleToggleTrigger(trigger));
       }
     });
 
@@ -7328,12 +7597,41 @@
         } else if (dismissButton instanceof HTMLElement) {
           handleDismissAction(dismissButton);
         } else if (toggleTrigger instanceof HTMLElement) {
-          event.preventDefault();
-          handleToggleTrigger(toggleTrigger);
+          const target = resolveTarget(toggleTrigger);
+          if (!(target instanceof HTMLElement) || !isFloatingOverlayTarget(target)) {
+            event.preventDefault();
+            handleToggleTrigger(toggleTrigger);
+          } else if (resolveFloatingTriggerMode(toggleTrigger, target) === "click") {
+            event.preventDefault();
+            handleToggleTrigger(toggleTrigger);
+          }
         }
 
         closeAllFloating(event.target);
       }
+    });
+
+    document.addEventListener("contextmenu", (event) => {
+      if (!(event.target instanceof HTMLElement)) {
+        return;
+      }
+
+      const toggleTrigger = event.target.closest("[data-r8-toggle][data-r8-target]");
+      if (!(toggleTrigger instanceof HTMLElement)) {
+        return;
+      }
+
+      const target = resolveTarget(toggleTrigger);
+      if (!(target instanceof HTMLElement) || !isFloatingOverlayTarget(target)) {
+        return;
+      }
+
+      if (resolveFloatingTriggerMode(toggleTrigger, target) !== "contextmenu") {
+        return;
+      }
+
+      event.preventDefault();
+      handleToggleTrigger(toggleTrigger);
     });
 
     document.addEventListener("keydown", (event) => {
@@ -7342,6 +7640,14 @@
       }
 
       floatingStates.forEach((container) => closeFloating(container));
+      navbarRegistry.forEach((navbar) => {
+        const state = navbarStates.get(navbar);
+        if (!state?.open || navbarShowsExpandedLayout(navbar)) {
+          return;
+        }
+
+        setNavbarOpen(navbar, false, { trigger: state.toggle });
+      });
       genericTargets.forEach((entry) => {
         if (isDrawerTarget(entry.target) && !drawerClosesOnEscape(entry.target)) {
           return;
@@ -7355,6 +7661,7 @@
 
     window.addEventListener("resize", () => {
       syncFloatingOverlayPositions();
+      syncNavbars();
     });
 
     window.addEventListener(
@@ -7392,6 +7699,7 @@
     syncProgressBars(scope);
     initDatePickers(scope);
     initChoices(scope);
+    initNavbars(scope);
     initTabs(scope);
     initCollapse(scope);
     initCarousels(scope);

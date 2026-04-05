@@ -45,11 +45,11 @@ const genericPlaygroundIds = new Set([
   "steps",
   "tabs",
   "alert",
+  "navbar",
   "dialog",
   "drawer",
   "loading",
-  "popover",
-  "tooltip",
+  "poptip",
   "divider",
   "watermark",
 ]);
