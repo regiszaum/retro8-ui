@@ -4412,100 +4412,196 @@ const feedbackComponents = [
       "r8-alert--danger",
       "r8-alert--dark",
       "r8-alert--light",
+      "r8-alert--surface",
+      "r8-alert--center",
       "r8-alert--dismissible",
+      "r8-alert__layout",
+      "r8-alert__icon",
       "r8-alert__content",
       "r8-alert__title",
       "r8-alert__heading",
       "r8-alert__body",
+      "r8-alert__description",
       "r8-alert__link",
       "r8-alert__close",
       "r8-alert__actions",
     ],
     preview: `<div class="docs-demo__stack">
-  <section class="r8-alert r8-alert--primary" role="alert">
-    <div class="r8-alert__content">
-      <strong class="r8-alert__title">Primary alert</strong>
-      <p class="r8-text">System boots with the default mission profile and synced controls.</p>
+  <section class="r8-alert r8-alert--primary r8-alert--surface" role="alert">
+    <div class="r8-alert__layout">
+      <span class="r8-alert__icon" aria-hidden="true">i</span>
+      <div class="r8-alert__content">
+        <strong class="r8-alert__title">Primary alert</strong>
+        <p class="r8-alert__description">System boots with the default mission profile and synced controls.</p>
+      </div>
     </div>
   </section>
 
-  <section class="r8-alert r8-alert--success" role="status" aria-live="polite">
-    <div class="r8-alert__content">
-      <strong class="r8-alert__title">Success alert</strong>
-      <p class="r8-text">
-        Deployment finished cleanly.
-        <a class="r8-alert__link" href="#">Read release notes</a>
-      </p>
+  <section class="r8-alert r8-alert--success r8-alert--surface" role="status" aria-live="polite">
+    <div class="r8-alert__layout">
+      <span class="r8-alert__icon" aria-hidden="true">OK</span>
+      <div class="r8-alert__content">
+        <strong class="r8-alert__title">Success alert</strong>
+        <p class="r8-alert__description">
+          Deployment finished cleanly.
+          <a class="r8-alert__link" href="#">Read release notes</a>
+        </p>
+      </div>
     </div>
   </section>
 
-  <section class="r8-alert r8-alert--warning r8-alert--dismissible" id="docs-alert-live" role="alert" hidden>
-    <div class="r8-alert__content">
-      <strong class="r8-alert__title">Live alert</strong>
-      <p class="r8-text">Nice, you triggered this alert message from the preview action.</p>
+  <section class="r8-alert r8-alert--info r8-alert--surface r8-alert--center r8-alert--dismissible" role="alert">
+    <div class="r8-alert__layout">
+      <span class="r8-alert__icon" aria-hidden="true">!</span>
+      <div class="r8-alert__content">
+        <strong class="r8-alert__title">Centered alert</strong>
+        <p class="r8-alert__description">Use centered content when the message is short and needs stronger emphasis.</p>
+      </div>
     </div>
-    <button class="r8-alert__close" type="button" data-r8-dismiss="true" aria-label="Dismiss alert">x</button>
+    <button class="r8-alert__close" type="button" aria-label="Dismiss alert">Got it</button>
   </section>
 
   <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#docs-alert-live">
     Show dismissible alert
   </button>
 
+  <section class="r8-alert r8-alert--warning r8-alert--dismissible" id="docs-alert-live" role="alert" hidden>
+    <div class="r8-alert__layout">
+      <span class="r8-alert__icon" aria-hidden="true">!</span>
+      <div class="r8-alert__content">
+        <strong class="r8-alert__title">Live alert</strong>
+        <p class="r8-alert__description">Nice, you triggered this alert message from the preview action.</p>
+      </div>
+    </div>
+    <button class="r8-alert__close" type="button" data-r8-dismiss="true" aria-label="Dismiss alert">x</button>
+  </section>
+
   <section class="r8-alert r8-alert--danger" role="alert">
-    <div class="r8-alert__content">
-      <h3 class="r8-alert__heading">System offline</h3>
-      <div class="r8-alert__body">
-        <p class="r8-text">Backup power is running on a reduced grid while the main core cools down.</p>
-        <hr />
-        <p class="r8-text">Use the maintenance tunnel and keep all squad traffic on channel 03.</p>
+    <div class="r8-alert__layout">
+      <span class="r8-alert__icon" aria-hidden="true">!!</span>
+      <div class="r8-alert__content">
+        <h3 class="r8-alert__heading">System offline</h3>
+        <div class="r8-alert__body">
+          <p class="r8-text">Backup power is running on a reduced grid while the main core cools down.</p>
+          <hr />
+          <p class="r8-text">Use the maintenance tunnel and keep all squad traffic on channel 03.</p>
+        </div>
+        <div class="r8-alert__actions">
+          <button class="r8-btn r8-btn--sm r8-btn--light" type="button">Review</button>
+          <button class="r8-btn r8-btn--sm" type="button">Later</button>
+        </div>
       </div>
     </div>
   </section>
 
   <section class="r8-alert r8-alert--dark" role="alert">
-    <div class="r8-alert__content">
-      <strong class="r8-alert__title">Dark alert</strong>
-      <div class="r8-alert__actions">
-        <button class="r8-btn r8-btn--sm r8-btn--light" type="button">Review</button>
-        <button class="r8-btn r8-btn--sm" type="button">Later</button>
+    <div class="r8-alert__layout">
+      <span class="r8-alert__icon" aria-hidden="true">*</span>
+      <div class="r8-alert__content">
+        <strong class="r8-alert__title">Dark alert</strong>
+        <p class="r8-alert__description">Use the solid look when the message must stand out without another container around it.</p>
       </div>
     </div>
   </section>
 </div>`,
-    code: `<div class="r8-stack">
-  <section class="r8-alert r8-alert--success" role="status" aria-live="polite">
+    code: `<section class="r8-alert r8-alert--success r8-alert--surface r8-alert--dismissible" role="status" aria-live="polite">
+  <div class="r8-alert__layout">
+    <span class="r8-alert__icon" aria-hidden="true">OK</span>
     <div class="r8-alert__content">
       <strong class="r8-alert__title">Success alert</strong>
-      <p class="r8-text">
+      <p class="r8-alert__description">
         Deployment finished cleanly.
         <a class="r8-alert__link" href="#">Read release notes</a>
       </p>
-    </div>
-  </section>
-
-  <section class="r8-alert r8-alert--danger" role="alert">
-    <div class="r8-alert__content">
-      <h3 class="r8-alert__heading">System offline</h3>
-      <div class="r8-alert__body">
-        <p class="r8-text">Backup power is running on a reduced grid.</p>
-        <hr />
-        <p class="r8-text">Use the maintenance tunnel and keep traffic on channel 03.</p>
+      <div class="r8-alert__actions">
+        <button class="r8-btn r8-btn--sm r8-btn--primary" type="button">Review</button>
       </div>
     </div>
-  </section>
+  </div>
+  <button class="r8-alert__close" type="button" data-r8-dismiss="true" aria-label="Dismiss alert">Got it</button>
+</section>
 
-  <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#inline-alert">
-    Show dismissible alert
-  </button>
+<button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#inline-alert">
+  Show dismissible alert
+</button>
 
-  <section id="inline-alert" class="r8-alert r8-alert--warning r8-alert--dismissible" role="alert" hidden>
+<section id="inline-alert" class="r8-alert r8-alert--warning r8-alert--surface r8-alert--dismissible" role="alert" hidden>
+  <div class="r8-alert__layout">
+    <span class="r8-alert__icon" aria-hidden="true">!</span>
     <div class="r8-alert__content">
       <strong class="r8-alert__title">Live alert</strong>
-      <p class="r8-text">Nice, you triggered this alert message.</p>
+      <p class="r8-alert__description">Nice, you triggered this alert message.</p>
     </div>
-    <button class="r8-alert__close" type="button" data-r8-dismiss="true" aria-label="Dismiss alert">x</button>
-  </section>
-</div>`,
+  </div>
+  <button class="r8-alert__close" type="button" data-r8-dismiss="true" aria-label="Dismiss alert">x</button>
+</section>`,
+    anatomy: ll(
+      [
+        "`r8-alert` define o frame base, enquanto os tons continuam em modifiers como `--success`, `--warning` ou `--danger`.",
+        "`r8-alert--surface` troca o bloco solido por uma leitura mais leve, e `r8-alert--center` recentraliza icone, copy e acoes.",
+        "`r8-alert__layout` organiza o icone ao lado do conteudo; `r8-alert__icon` pode ser texto curto, glifo ou SVG inline.",
+        "`r8-alert__title`, `r8-alert__description`, `r8-alert__body` e `r8-alert__actions` deixam mensagens simples e callouts longos no mesmo sistema.",
+        "`r8-alert__close` continua opcional e agora aceita tanto um `x` quanto labels curtos como `Got it` ou `Close`.",
+      ],
+      [
+        "`r8-alert` defines the base frame, while tones stay in modifiers such as `--success`, `--warning`, or `--danger`.",
+        "`r8-alert--surface` switches the solid block into a lighter read, and `r8-alert--center` recenters the icon, copy, and actions.",
+        "`r8-alert__layout` places the icon beside the content; `r8-alert__icon` can hold short text, a glyph, or inline SVG.",
+        "`r8-alert__title`, `r8-alert__description`, `r8-alert__body`, and `r8-alert__actions` keep simple messages and longer callouts in the same system.",
+        "`r8-alert__close` stays optional and now supports either an `x` or short labels such as `Got it` or `Close`.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Use `role=\"alert\"` para mensagens urgentes e `role=\"status\"` com `aria-live=\"polite\"` quando o update nao deve interromper a leitura atual.",
+        "Quando o close for icon-only, mantenha um `aria-label` explicito como `Dismiss alert`.",
+        "Nao dependa so da cor para semantica; combine tom, titulo e descricao para deixar sucesso, aviso e erro claros.",
+        "Se o Alert abrir por trigger declarativo, preserve o foco no fluxo principal e use copy curta para anuncios live.",
+      ],
+      [
+        "Use `role=\"alert\"` for urgent messages and `role=\"status\"` with `aria-live=\"polite\"` when the update should not interrupt current reading.",
+        "When the close affordance is icon-only, keep an explicit `aria-label` such as `Dismiss alert`.",
+        "Do not rely on color alone for semantics; combine tone, title, and description so success, warning, and error stay clear.",
+        "If the Alert opens through a declarative trigger, keep focus in the main flow and use short copy for live announcements.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-alert--surface / r8-alert--center",
+        description: l(
+          "Modifiers visuais para alternar entre o look solido e uma superficie mais leve, ou recentralizar o conteudo quando a mensagem e curta.",
+          "Visual modifiers for switching between the solid look and a lighter surface, or recentering content when the message is short.",
+        ),
+      },
+      {
+        name: "r8-alert__layout / r8-alert__icon",
+        description: l(
+          "Estruturam um alert com icone sem exigir runtime extra; o icone pode ser texto curto, glyph ou SVG inline.",
+          "Structure an icon-driven alert without extra runtime; the icon can be short text, a glyph, or inline SVG.",
+        ),
+      },
+      {
+        name: "r8-alert__description / r8-alert__body / r8-alert__actions",
+        description: l(
+          "Cobrem desde alerts de uma linha ate callouts maiores com descricao detalhada e CTA inline.",
+          "Cover everything from one-line alerts to larger callouts with detailed description and inline CTAs.",
+        ),
+      },
+      {
+        name: "r8-alert__close + data-r8-dismiss",
+        description: l(
+          "Permitem fechar o host imediatamente e aceitar texto customizado no botao, nao apenas um simbolo fixo.",
+          "Allow closing the host immediately while accepting custom button text, not only a fixed symbol.",
+        ),
+      },
+      {
+        name: "data-r8-toggle / data-r8-target",
+        description: l(
+          "Abrem ou recolhem um Alert hidden para previews live e mensagens inline controladas declarativamente.",
+          "Open or collapse a hidden Alert for live previews and inline messages controlled declaratively.",
+        ),
+      },
+    ],
   },
   {
     id: "dialog",

@@ -559,7 +559,16 @@ function getDefaults(id: string): Record<string, any> {
     case "tabs":
       return { active: "stats", vertical: false };
     case "alert":
-      return { dismissible: false, tone: "primary" };
+      return {
+        actions: false,
+        center: false,
+        closeText: "x",
+        description: true,
+        dismissible: false,
+        effect: "surface",
+        showIcon: true,
+        tone: "primary",
+      };
     case "dialog":
       return { fullscreen: false, tone: "default" };
     case "drawer":
@@ -1651,7 +1660,34 @@ function buildConfig(id: string): PlaygroundConfig {
 
     case "alert": {
       const tone = String(state.tone || "primary");
+      const effect = String(state.effect || "surface");
       const titleText = tone === "danger" ? localize("Sistema offline", "System offline") : localize("Alerta ativo", "Active alert");
+      const descriptionText =
+        tone === "danger"
+          ? localize(
+              "O core principal entrou em resfriamento e a interface migrou para energia reduzida.",
+              "The main core entered cooldown and the interface moved to reduced power.",
+            )
+          : localize(
+              "A interface recebeu as novas variantes seguras desse componente.",
+              "The interface received this component's new safe variants.",
+            );
+      const closeTextMap: Record<string, string> = {
+        close: localize("Fechar", "Close"),
+        gotit: localize("Entendi", "Got it"),
+        x: "x",
+      };
+      const iconMap: Record<string, string> = {
+        primary: "i",
+        secondary: ">",
+        tertiary: "*",
+        success: "OK",
+        warning: "!",
+        info: "i",
+        danger: "!!",
+        dark: "*",
+        light: "i",
+      };
       return {
         defaults: getDefaults(id),
         fields: [
@@ -1660,23 +1696,68 @@ function buildConfig(id: string): PlaygroundConfig {
             label: localize("Tom", "Tone"),
             options: [
               option("primary", "Primário", "Primary"),
+              option("secondary", "Secundário", "Secondary"),
+              option("tertiary", "Terciário", "Tertiary"),
               option("success", "Sucesso", "Success"),
               option("warning", "Aviso", "Warning"),
               option("info", "Info", "Info"),
               option("danger", "Perigo", "Danger"),
               option("dark", "Escuro", "Dark"),
+              option("light", "Claro", "Light"),
+            ],
+            type: "select",
+          },
+          {
+            key: "effect",
+            label: localize("Efeito", "Effect"),
+            options: [
+              option("surface", "Surface", "Surface"),
+              option("solid", "Solid", "Solid"),
+            ],
+            type: "select",
+          },
+          {
+            key: "closeText",
+            label: localize("Texto do close", "Close text"),
+            options: [
+              option("x", "x", "x"),
+              option("close", "Fechar", "Close"),
+              option("gotit", "Entendi", "Got it"),
             ],
             type: "select",
           },
         ],
         surface: "wide",
-        toggles: [{ key: "dismissible", label: localize("Fechável", "Dismissible") }],
-        render: () => `<section class="${classList("r8-alert", `r8-alert--${tone}`, state.dismissible && "r8-alert--dismissible")}" role="alert">
-  <div class="r8-alert__content">
-    <strong class="r8-alert__title">${escapeHtml(titleText)}</strong>
-    <p class="r8-text">${escapeHtml(localize("A interface recebeu as novas variantes seguras desse componente.", "The interface received this component's new safe variants."))}</p>
+        toggles: [
+          { key: "showIcon", label: localize("Com ícone", "Show icon") },
+          { key: "description", label: localize("Com descrição", "Description") },
+          { key: "actions", label: localize("Com ações", "Actions") },
+          { key: "center", label: localize("Centralizado", "Centered") },
+          { key: "dismissible", label: localize("Fechável", "Dismissible") },
+        ],
+        render: () => `<section class="${classList(
+          "r8-alert",
+          `r8-alert--${tone}`,
+          effect === "surface" && "r8-alert--surface",
+          state.center && "r8-alert--center",
+          state.dismissible && "r8-alert--dismissible",
+        )}" role="${tone === "success" ? "status" : "alert"}"${tone === "success" ? ' aria-live="polite"' : ""}>
+  <div class="r8-alert__layout">
+    ${state.showIcon ? `<span class="r8-alert__icon" aria-hidden="true">${escapeHtml(iconMap[tone] || "i")}</span>` : ""}
+    <div class="r8-alert__content">
+      <strong class="r8-alert__title">${escapeHtml(titleText)}</strong>
+      ${state.description ? `<p class="r8-alert__description">${escapeHtml(descriptionText)}</p>` : ""}
+      ${
+        state.actions
+          ? `<div class="r8-alert__actions">
+        <button class="r8-btn r8-btn--sm ${tone === "danger" || effect !== "surface" ? "" : "r8-btn--primary"}" type="button">${escapeHtml(localize("Revisar", "Review"))}</button>
+        <button class="r8-btn r8-btn--sm ${tone === "danger" ? "r8-btn--light" : "r8-btn--ghost"}" type="button">${escapeHtml(localize("Depois", "Later"))}</button>
+      </div>`
+          : ""
+      }
+    </div>
   </div>
-  ${state.dismissible ? `<button class="r8-alert__close" type="button" data-r8-dismiss="true" aria-label="${escapeAttribute(localize("Fechar alerta", "Dismiss alert"))}">x</button>` : ""}
+  ${state.dismissible ? `<button class="r8-alert__close" type="button" data-r8-dismiss="true" aria-label="${escapeAttribute(localize("Fechar alerta", "Dismiss alert"))}">${escapeHtml(closeTextMap[String(state.closeText || "x")] || "x")}</button>` : ""}
 </section>`,
       };
     }

@@ -1296,6 +1296,11 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
           row("data-r8-target", "CSS selector", "required on trigger", "Aponta para o Alert controlado pelo helper declarativo.", "Points to the Alert controlled by the declarative helper."),
           row("data-r8-close", "CSS selector | empty", "nearest host", "Fecha o Alert informado ou o host mais proximo pelo helper de runtime.", "Closes the provided Alert or the nearest host through the runtime helper."),
         ],
+        cssVariables: [
+          row("--r8-alert-background / --r8-alert-foreground / --r8-alert-accent", "color", "tone-specific", "Controlam superficie, contraste e faixa lateral do Alert.", "Control the Alert surface, contrast, and side accent rail."),
+          row("--r8-alert-gap / --r8-alert-padding", "length", "space tokens", "Ajustam a densidade interna do bloco sem reescrever a estrutura.", "Adjust the block's internal density without rewriting its structure."),
+          row("--r8-alert-icon-size", "length", "2rem", "Escala base do tile usado por `r8-alert__icon`.", "Base size of the tile used by `r8-alert__icon`."),
+        ],
         methods: runtimeMethods,
         events: [
           event("r8:dismiss", `{ target }`, "Emitido quando o Alert e fechado pelo helper declarativo.", "Emitted when the Alert is closed by the declarative helper."),
