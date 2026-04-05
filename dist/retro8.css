@@ -4114,6 +4114,9 @@ dialog.r8-dialog::backdrop {
     min-width: var(--r8-dropdown-menu-width);
     padding: var(--r8-space-2);
   }
+.r8-dropdown__menu[hidden] {
+    display: none;
+  }
 .r8-dropdown__item {
     background: var(--r8-color-surface);
     border: var(--r8-border-thin) solid var(--r8-color-border);

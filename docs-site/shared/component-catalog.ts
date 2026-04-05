@@ -4252,9 +4252,9 @@ const navigationComponents = [
       "--r8-dropdown-item-padding-x",
       "--r8-dropdown-item-padding-y",
     ],
-    preview: `<div class="r8-dropdown" data-r8-close-on-select="false">
+    preview: `<div class="r8-dropdown">
   <button class="r8-btn r8-btn--sm r8-dropdown__trigger" type="button">Actions</button>
-  <div class="r8-dropdown__menu">
+  <div class="r8-dropdown__menu" hidden>
     <button class="r8-dropdown__item" type="button" data-r8-command="duplicate">Duplicate</button>
     <button class="r8-dropdown__item is-selected" type="button" data-r8-command="archive">Archive</button>
     <button class="r8-dropdown__item" type="button" data-r8-command="share" aria-disabled="true">Share</button>
@@ -4266,7 +4266,7 @@ const navigationComponents = [
     <button class="r8-btn r8-btn--sm r8-dropdown__action" type="button">Run now</button>
     <button class="r8-btn r8-btn--sm r8-dropdown__trigger" type="button">More</button>
   </div>
-  <div class="r8-dropdown__menu" style="--r8-dropdown-menu-width: 13rem;">
+  <div class="r8-dropdown__menu" style="--r8-dropdown-menu-width: 13rem;" hidden>
     <button class="r8-dropdown__item" type="button" data-r8-command="duplicate">Duplicate</button>
     <button class="r8-dropdown__item" type="button" data-r8-command="rename">Rename</button>
     <button class="r8-dropdown__item r8-dropdown__item--divided" type="button" data-r8-command="archive">Archive</button>

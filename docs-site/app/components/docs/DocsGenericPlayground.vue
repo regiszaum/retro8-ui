@@ -1574,7 +1574,7 @@ function buildConfig(id: string): PlaygroundConfig {
   </div>`
       : `<button class="r8-btn r8-btn--sm r8-dropdown__trigger" type="button">${escapeHtml(localize("Abrir menu", "Open menu"))}</button>`
   }
-  <div class="r8-dropdown__menu" style="--r8-dropdown-menu-width: 13rem;">
+  <div class="r8-dropdown__menu" style="--r8-dropdown-menu-width: 13rem;" hidden>
     ${items
       .map(
         (item) => `<button
