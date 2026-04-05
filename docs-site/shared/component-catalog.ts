@@ -4839,6 +4839,9 @@ const feedbackComponents = [
       "r8-loading--bar",
       "r8-loading--equalizer",
       "r8-loading--spinner",
+      "r8-loading--ticker",
+      "r8-loading--radar",
+      "r8-loading--beacon",
       "r8-loading--sm",
       "r8-loading--lg",
       "r8-loading__label",
@@ -4852,6 +4855,13 @@ const feedbackComponents = [
       "r8-loading__bar",
       "r8-loading__spinner",
       "r8-loading__spinner-cell",
+      "r8-loading__ticker",
+      "r8-loading__ticker-cell",
+      "r8-loading__radar",
+      "r8-loading__radar-dot",
+      "r8-loading__beacon",
+      "r8-loading__beacon-ring",
+      "r8-loading__beacon-core",
     ],
     preview: `<div class="r8-grid" style="grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));">
   <div class="r8-stack">
@@ -4916,6 +4926,43 @@ const feedbackComponents = [
         <span class="r8-loading__spinner-cell"></span>
       </span>
       <span class="r8-loading__label">Matching nodes...</span>
+    </div>
+  </div>
+
+  <div class="r8-stack">
+    <span class="r8-badge">Ticker</span>
+    <div class="r8-loading r8-loading--ticker" role="status" aria-live="polite">
+      <span class="r8-loading__ticker" aria-hidden="true">
+        <span class="r8-loading__ticker-cell"></span>
+        <span class="r8-loading__ticker-cell"></span>
+        <span class="r8-loading__ticker-cell"></span>
+        <span class="r8-loading__ticker-cell"></span>
+        <span class="r8-loading__ticker-cell"></span>
+        <span class="r8-loading__ticker-cell"></span>
+      </span>
+      <span class="r8-loading__label">Buffering route data...</span>
+    </div>
+  </div>
+
+  <div class="r8-stack">
+    <span class="r8-badge">Radar</span>
+    <div class="r8-loading r8-loading--radar" role="status" aria-live="polite">
+      <span class="r8-loading__radar" aria-hidden="true">
+        <span class="r8-loading__radar-dot"></span>
+      </span>
+      <span class="r8-loading__label">Scanning signal range...</span>
+    </div>
+  </div>
+
+  <div class="r8-stack">
+    <span class="r8-badge">Beacon</span>
+    <div class="r8-loading r8-loading--beacon" role="status" aria-live="polite">
+      <span class="r8-loading__beacon" aria-hidden="true">
+        <span class="r8-loading__beacon-ring"></span>
+        <span class="r8-loading__beacon-ring"></span>
+        <span class="r8-loading__beacon-core"></span>
+      </span>
+      <span class="r8-loading__label">Waiting for uplink...</span>
     </div>
   </div>
 </div>`,
@@ -4984,6 +5031,43 @@ const feedbackComponents = [
       <span class="r8-loading__label">Matching nodes...</span>
     </div>
   </div>
+
+  <div class="r8-stack">
+    <span class="r8-badge">Ticker</span>
+    <div class="r8-loading r8-loading--ticker" role="status" aria-live="polite">
+      <span class="r8-loading__ticker" aria-hidden="true">
+        <span class="r8-loading__ticker-cell"></span>
+        <span class="r8-loading__ticker-cell"></span>
+        <span class="r8-loading__ticker-cell"></span>
+        <span class="r8-loading__ticker-cell"></span>
+        <span class="r8-loading__ticker-cell"></span>
+        <span class="r8-loading__ticker-cell"></span>
+      </span>
+      <span class="r8-loading__label">Buffering route data...</span>
+    </div>
+  </div>
+
+  <div class="r8-stack">
+    <span class="r8-badge">Radar</span>
+    <div class="r8-loading r8-loading--radar" role="status" aria-live="polite">
+      <span class="r8-loading__radar" aria-hidden="true">
+        <span class="r8-loading__radar-dot"></span>
+      </span>
+      <span class="r8-loading__label">Scanning signal range...</span>
+    </div>
+  </div>
+
+  <div class="r8-stack">
+    <span class="r8-badge">Beacon</span>
+    <div class="r8-loading r8-loading--beacon" role="status" aria-live="polite">
+      <span class="r8-loading__beacon" aria-hidden="true">
+        <span class="r8-loading__beacon-ring"></span>
+        <span class="r8-loading__beacon-ring"></span>
+        <span class="r8-loading__beacon-core"></span>
+      </span>
+      <span class="r8-loading__label">Waiting for uplink...</span>
+    </div>
+  </div>
 </div>`,
     anatomy: ll(
       [
@@ -5036,6 +5120,27 @@ const feedbackComponents = [
         description: l(
           "Variant com oito cells em rotacao step-based para estados mais longos.",
           "Eight-cell step-based rotation variant for longer waits.",
+        ),
+      },
+      {
+        name: "r8-loading--ticker",
+        description: l(
+          "Variant com segmentos horizontais em sequencia, boa para buffering, sync pipelines e filas curtas.",
+          "Sequential horizontal segment variant, good for buffering, sync pipelines, and short queues.",
+        ),
+      },
+      {
+        name: "r8-loading--radar",
+        description: l(
+          "Variant com sweep retro e target marker para scan, discovery e procura de sinais.",
+          "Retro sweep variant with a target marker for scan, discovery, and signal search states.",
+        ),
+      },
+      {
+        name: "r8-loading--beacon",
+        description: l(
+          "Variant com pulsos concentricos para waiting rooms, uplinks e estados de espera persistentes.",
+          "Concentric pulse variant for waiting rooms, uplinks, and persistent wait states.",
         ),
       },
       {

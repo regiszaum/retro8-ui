@@ -413,6 +413,40 @@ function buildLoadingVisual(variant: string, sizeClass: string, label: string) {
 </div>`;
   }
 
+  if (variant === "ticker") {
+    return `<div class="${rootClass}" role="status" aria-live="polite">
+  <span class="r8-loading__ticker" aria-hidden="true">
+    <span class="r8-loading__ticker-cell"></span>
+    <span class="r8-loading__ticker-cell"></span>
+    <span class="r8-loading__ticker-cell"></span>
+    <span class="r8-loading__ticker-cell"></span>
+    <span class="r8-loading__ticker-cell"></span>
+    <span class="r8-loading__ticker-cell"></span>
+  </span>
+  <span class="r8-loading__label">${escapeHtml(label)}</span>
+</div>`;
+  }
+
+  if (variant === "radar") {
+    return `<div class="${rootClass}" role="status" aria-live="polite">
+  <span class="r8-loading__radar" aria-hidden="true">
+    <span class="r8-loading__radar-dot"></span>
+  </span>
+  <span class="r8-loading__label">${escapeHtml(label)}</span>
+</div>`;
+  }
+
+  if (variant === "beacon") {
+    return `<div class="${rootClass}" role="status" aria-live="polite">
+  <span class="r8-loading__beacon" aria-hidden="true">
+    <span class="r8-loading__beacon-ring"></span>
+    <span class="r8-loading__beacon-ring"></span>
+    <span class="r8-loading__beacon-core"></span>
+  </span>
+  <span class="r8-loading__label">${escapeHtml(label)}</span>
+</div>`;
+  }
+
   return `<div class="${rootClass}" role="status" aria-live="polite">
   <span class="r8-loading__pixels" aria-hidden="true">
     <span class="r8-loading__pixel"></span>
@@ -1947,7 +1981,16 @@ function buildConfig(id: string): PlaygroundConfig {
           {
             key: "variant",
             label: localize("Variação", "Variant"),
-            options: [option("pixels", "Pixels", "Pixels"), option("dots", "Dots", "Dots"), option("bar", "Bar", "Bar"), option("equalizer", "Equalizer", "Equalizer"), option("spinner", "Spinner", "Spinner")],
+            options: [
+              option("pixels", "Pixels", "Pixels"),
+              option("dots", "Dots", "Dots"),
+              option("bar", "Bar", "Bar"),
+              option("equalizer", "Equalizer", "Equalizer"),
+              option("spinner", "Spinner", "Spinner"),
+              option("ticker", "Ticker", "Ticker"),
+              option("radar", "Radar", "Radar"),
+              option("beacon", "Beacon", "Beacon"),
+            ],
             type: "select",
           },
           { key: "label", label: localize("Texto", "Label"), maxlength: 32, type: "text" },
