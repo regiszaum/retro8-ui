@@ -143,13 +143,12 @@ function isInteractiveComponent(id: string) {
     "upload",
     "carousel",
     "collapse",
+    "dropdown",
     "pagination",
     "tabs",
     "alert",
     "dialog",
     "drawer",
-    "message-box",
-    "notification",
     "popover",
     "tooltip",
     "tag",
@@ -276,6 +275,43 @@ function buildTableRows(
     </tr>`;
     })
     .join("\n");
+}
+
+function buildBreadcrumbTrail(
+  current: string,
+  levels: number,
+  options: {
+    compact?: boolean;
+    links?: boolean;
+    nowrap?: boolean;
+    separator?: string;
+  } = {},
+) {
+  const currentLabel = String(current || localize("Breadcrumb", "Breadcrumb"));
+  const baseTrail = [
+    localize("Home", "Home"),
+    localize("Docs", "Docs"),
+    localize("Navigation", "Navigation"),
+    localize("Components", "Components"),
+  ];
+  const safeLevels = clamp(levels, 3, 5);
+  const items = [...baseTrail.slice(0, safeLevels - 1), currentLabel];
+
+  return `<nav aria-label="Breadcrumb">
+  <ol class="${classList("r8-breadcrumb", options.compact && "r8-breadcrumb--compact", options.nowrap && "r8-breadcrumb--nowrap")}" data-r8-separator="${escapeAttribute(String(options.separator || "slash"))}">
+    ${items
+      .map((item, index) => {
+        const isCurrent = index === items.length - 1;
+
+        return `<li class="r8-breadcrumb__item"${isCurrent ? ' aria-current="page"' : ""}>${
+          !isCurrent && options.links
+            ? `<a class="r8-breadcrumb__link" href="#">${escapeHtml(item)}</a>`
+            : escapeHtml(item)
+        }</li>`;
+      })
+      .join("\n    ")}
+  </ol>
+</nav>`;
 }
 
 function buildPaginationItems(total: number, active: number, pagerCount: number) {
@@ -515,11 +551,9 @@ function getDefaults(id: string): Record<string, any> {
     case "tag":
       return { closable: false, text: "synced", tone: "success" };
     case "breadcrumb":
-      return { current: "Button" };
+      return { compact: false, current: "Breadcrumb", links: true, levels: 4, nowrap: false, separator: "chevron" };
     case "dropdown":
-      return { selected: "duplicate" };
-    case "menu":
-      return { active: "overview", horizontal: true };
+      return { danger: true, divided: true, end: false, keepOpen: false, selected: "archive", split: false };
     case "steps":
       return { active: 2, vertical: false };
     case "tabs":
@@ -532,10 +566,6 @@ function getDefaults(id: string): Record<string, any> {
       return { placement: "right" };
     case "loading":
       return { label: localize("Carregando assets...", "Loading assets..."), size: "md", variant: "pixels" };
-    case "message-box":
-      return { title: localize("Sobrescrever arquivo?", "Overwrite file?") };
-    case "notification":
-      return { actions: true, title: localize("Nova release disponível", "New release available") };
     case "popover":
       return { placement: "bottom-start", title: localize("Painel de atalhos", "Shortcut panel") };
     case "tooltip":
@@ -1451,63 +1481,117 @@ function buildConfig(id: string): PlaygroundConfig {
       };
     }
 
-    case "breadcrumb":
+    case "breadcrumb": {
+      const current = String(state.current || localize("Breadcrumb", "Breadcrumb"));
+      const levels = clamp(asNumber(state.levels, 4), 3, 5);
+      const separator = String(state.separator || "chevron");
+
       return {
         defaults: getDefaults(id),
-        fields: [{ key: "current", label: localize("Página atual", "Current page"), maxlength: 20, type: "text" }],
+        fields: [
+          { key: "current", label: localize("Página atual", "Current page"), maxlength: 20, type: "text" },
+          { key: "levels", label: localize("Níveis", "Levels"), max: 5, min: 3, type: "number" },
+          {
+            key: "separator",
+            label: localize("Separador", "Separator"),
+            options: [
+              option("slash", "Barra /", "Slash /"),
+              option("chevron", "Chevron >", "Chevron >"),
+              option("double", "Duplo >>", "Double >>"),
+              option("dot", "Ponto •", "Dot •"),
+            ],
+            type: "select",
+          },
+        ],
         surface: "wide",
-        toggles: [],
-        render: () => `<nav class="r8-breadcrumb" aria-label="Breadcrumb">
-  <span class="r8-breadcrumb__item">Home</span>
-  <span class="r8-breadcrumb__item">Docs</span>
-  <span class="r8-breadcrumb__item">${escapeHtml(String(state.current || ""))}</span>
-</nav>`,
+        toggles: [
+          { key: "links", label: localize("Links clicáveis", "Clickable links") },
+          { key: "compact", label: localize("Compacto", "Compact") },
+          { key: "nowrap", label: localize("Sem quebra", "No wrap") },
+        ],
+        render: () =>
+          buildBreadcrumbTrail(current, levels, {
+            compact: Boolean(state.compact),
+            links: Boolean(state.links),
+            nowrap: Boolean(state.nowrap),
+            separator,
+          }),
       };
+    }
 
     case "dropdown": {
-      const selected = String(state.selected || "duplicate");
+      const selected = String(state.selected || "archive");
+      const items = [
+        {
+          key: "duplicate",
+          label: getActionLabel("duplicate"),
+        },
+        {
+          key: "archive",
+          label: getActionLabel("archive"),
+        },
+        {
+          key: "share",
+          label: localize("Compartilhar", "Share"),
+          disabled: Boolean(state.keepOpen),
+        },
+        {
+          key: "delete",
+          label: getActionLabel("delete"),
+          danger: Boolean(state.danger),
+          divided: Boolean(state.divided),
+        },
+      ];
+
       return {
         defaults: getDefaults(id),
         fields: [
           {
             key: "selected",
-            label: localize("Item em destaque", "Highlighted item"),
-            options: [option("duplicate", "Duplicate", "Duplicate"), option("archive", "Archive", "Archive"), option("delete", "Delete", "Delete")],
-            type: "select",
-          },
-        ],
-        surface: "default",
-        toggles: [],
-        render: () => `<div class="r8-dropdown">
-  <button class="r8-btn r8-btn--sm" type="button">${escapeHtml(localize("Abrir menu", "Open menu"))}</button>
-  <div class="r8-dropdown__menu">
-    <div class="${classList("r8-dropdown__item", selected === "duplicate" && "is-selected")}">${escapeHtml(getActionLabel("duplicate"))}</div>
-    <div class="${classList("r8-dropdown__item", selected === "archive" && "is-selected")}">${escapeHtml(getActionLabel("archive"))}</div>
-    <div class="${classList("r8-dropdown__item", selected === "delete" && "is-selected")}">${escapeHtml(getActionLabel("delete"))}</div>
-  </div>
-</div>`,
-      };
-    }
-
-    case "menu": {
-      const active = String(state.active || "overview");
-      return {
-        defaults: getDefaults(id),
-        fields: [
-          {
-            key: "active",
-            label: localize("Ativo", "Active"),
-            options: [option("overview", "Overview", "Overview"), option("tokens", "Tokens", "Tokens"), option("components", "Components", "Components")],
+            label: localize("Selecionado", "Selected"),
+            options: [
+              option("duplicate", "Duplicate", "Duplicate"),
+              option("archive", "Archive", "Archive"),
+              option("delete", "Delete", "Delete"),
+            ],
             type: "select",
           },
         ],
         surface: "wide",
-        toggles: [{ key: "horizontal", label: localize("Horizontal", "Horizontal") }],
-        render: () => `<ul class="${classList("r8-menu", state.horizontal && "r8-menu--horizontal")}">
-  <li class="${classList("r8-menu__item", active === "overview" && "is-active")}">Overview</li>
-  <li class="${classList("r8-menu__item", active === "tokens" && "is-active")}">Tokens</li>
-  <li class="${classList("r8-menu__submenu", active === "components" && "is-open")}">Components</li>
-</ul>`,
+        toggles: [
+          { key: "split", label: localize("Split trigger", "Split trigger") },
+          { key: "end", label: localize("Alinhar à direita", "Align end") },
+          { key: "divided", label: localize("Item dividido", "Divided item") },
+          { key: "danger", label: localize("Ação danger", "Danger action") },
+          { key: "keepOpen", label: localize("Manter aberto", "Keep open") },
+        ],
+        render: () => `<div class="${classList("r8-dropdown", state.end && "r8-dropdown--end")}"${state.keepOpen ? ' data-r8-close-on-select="false"' : ""}>
+  ${
+    state.split
+      ? `<div class="r8-dropdown__split">
+    <button class="r8-btn r8-btn--sm r8-dropdown__action" type="button">${escapeHtml(localize("Executar", "Run now"))}</button>
+    <button class="r8-btn r8-btn--sm r8-dropdown__trigger" type="button">${escapeHtml(localize("Mais ações", "More actions"))}</button>
+  </div>`
+      : `<button class="r8-btn r8-btn--sm r8-dropdown__trigger" type="button">${escapeHtml(localize("Abrir menu", "Open menu"))}</button>`
+  }
+  <div class="r8-dropdown__menu" style="--r8-dropdown-menu-width: 13rem;">
+    ${items
+      .map(
+        (item) => `<button
+      class="${classList(
+        "r8-dropdown__item",
+        selected === item.key && "is-selected",
+        item.divided && "r8-dropdown__item--divided",
+        item.danger && "r8-dropdown__item--danger",
+      )}"
+      type="button"
+      data-r8-command="${item.key}"
+      ${item.disabled ? 'aria-disabled="true"' : ""}
+    >${escapeHtml(item.label)}</button>`,
+      )
+      .join("\n    ")}
+  </div>
+</div>`,
       };
     }
 
@@ -1688,48 +1772,6 @@ function buildConfig(id: string): PlaygroundConfig {
         surface: "default",
         toggles: [],
         render: () => buildLoadingVisual(String(state.variant || "pixels"), sizeClass, String(state.label || "")),
-      };
-    }
-
-    case "message-box": {
-      const targetId = "docs-generic-message-box-preview";
-      return {
-        defaults: getDefaults(id),
-        fields: [{ key: "title", label: localize("Título", "Title"), maxlength: 28, type: "text" }],
-        surface: "overlay",
-        toggles: [],
-        render: () => `<div class="r8-stack">
-  <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="message-box" data-r8-target="#${targetId}">${escapeHtml(localize("Abrir message box", "Open message box"))}</button>
-  <section id="${targetId}" class="r8-message-box" hidden>
-    <strong class="r8-message-box__title">${escapeHtml(String(state.title || ""))}</strong>
-    <p class="r8-text">${escapeHtml(localize("Esse fluxo funciona bem para confirmações rápidas e prompts curtos.", "This flow works well for quick confirmations and short prompts."))}</p>
-    <div class="r8-message-box__footer">
-      <button class="r8-btn r8-btn--sm" type="button" data-r8-close="#${targetId}">${escapeHtml(localize("Cancelar", "Cancel"))}</button>
-      <button class="r8-btn r8-btn--sm r8-btn--danger" type="button" data-r8-close="#${targetId}">${escapeHtml(localize("Sobrescrever", "Overwrite"))}</button>
-    </div>
-  </section>
-</div>`,
-      };
-    }
-
-    case "notification": {
-      const targetId = "docs-generic-notification-preview";
-      return {
-        defaults: getDefaults(id),
-        fields: [{ key: "title", label: localize("Título", "Title"), maxlength: 32, type: "text" }],
-        surface: "overlay",
-        toggles: [{ key: "actions", label: localize("Com ações", "With actions") }],
-        render: () => `<div class="r8-stack">
-  <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="notification" data-r8-target="#${targetId}">${escapeHtml(localize("Mostrar notification", "Show notification"))}</button>
-  <section id="${targetId}" class="r8-notification" hidden>
-    <strong class="r8-notification__title">${escapeHtml(String(state.title || ""))}</strong>
-    <p class="r8-text">${escapeHtml(localize("retro8-ui agora cobre playgrounds para um lote maior de componentes.", "retro8-ui now covers playgrounds for a larger batch of components."))}</p>
-    ${state.actions ? `<div class="r8-notification__footer">
-      <button class="r8-btn r8-btn--sm" type="button" data-r8-close="#${targetId}">${escapeHtml(localize("Dispensar", "Dismiss"))}</button>
-      <button class="r8-btn r8-btn--sm r8-btn--primary" type="button">${escapeHtml(localize("Abrir changelog", "Open changelog"))}</button>
-    </div>` : ""}
-  </section>
-</div>`,
       };
     }
 

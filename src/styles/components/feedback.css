@@ -5,10 +5,8 @@
   }
 
   .r8-alert,
-  .r8-notification,
   .r8-popover,
-  .r8-tooltip,
-  .r8-message-box {
+  .r8-tooltip {
     border: var(--r8-border-thick) solid var(--r8-color-border);
     box-shadow: var(--r8-shadow-md);
     display: grid;
@@ -112,9 +110,7 @@
   }
 
   .r8-alert__title,
-  .r8-notification__title,
   .r8-popover__title,
-  .r8-message-box__title,
   .r8-drawer__title {
     font-family: var(--r8-font-display);
     font-size: var(--r8-font-size-xs);
@@ -607,16 +603,6 @@
     }
   }
 
-  .r8-notification {
-    background: var(--r8-color-surface);
-    max-width: 20rem;
-  }
-
-  .r8-message-box {
-    background: var(--r8-color-surface);
-    max-width: 22rem;
-  }
-
   .r8-popover,
   .r8-tooltip {
     background: var(--r8-color-surface);
@@ -710,13 +696,6 @@
 
   .r8-tooltip[data-r8-placement-active="right"]::after {
     border-right-color: var(--r8-color-dark);
-  }
-
-  .r8-message-box__footer,
-  .r8-notification__footer {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--r8-space-2);
   }
 
   @media (max-width: 48rem) {

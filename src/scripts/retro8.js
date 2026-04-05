@@ -37,7 +37,7 @@
     },
     {
       root: ".r8-dropdown",
-      trigger: ".r8-btn, .r8-dropdown__trigger",
+      trigger: ".r8-dropdown__trigger, .r8-btn:not(.r8-dropdown__action)",
       panel: ".r8-dropdown__menu",
       option: ".r8-dropdown__item",
       kind: "dropdown",
@@ -1817,6 +1817,15 @@
       return;
     }
 
+    if (isChoiceOptionDisabled(option)) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeFloating(container);
+        state.trigger?.focus({ preventScroll: true });
+      }
+      return;
+    }
+
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       markChoiceSelection(container, option, family);
@@ -1868,6 +1877,10 @@
   function markChoiceSelection(container, option, family, options = {}) {
     const state = choiceStates.get(container);
     if (!state?.options?.length) {
+      return;
+    }
+
+    if (isChoiceOptionDisabled(option)) {
       return;
     }
 
@@ -2001,18 +2014,27 @@
     updateChoiceDisplay(container, option, family);
     container.dataset.r8Value = getTextValue(option);
 
-    if (family.closeOnSelect !== false && state.panel && state.trigger) {
+    if (shouldCloseChoiceOnSelect(container, family) && state.panel && state.trigger) {
       closeFloating(container);
       state.trigger.focus({ preventScroll: true });
     }
 
     if (!silent) {
-      emitComponentEvent(container, "choice-change", {
+      const detail = {
         kind: family.kind || "choice",
         option,
         text: getTextValue(option),
         value: getTextValue(option),
-      });
+      };
+
+      emitComponentEvent(container, "choice-change", detail);
+
+      if (family.kind === "dropdown") {
+        emitComponentEvent(container, "dropdown-command", {
+          ...detail,
+          command: option.dataset.r8Command || detail.value,
+        });
+      }
     }
   }
 
@@ -2047,7 +2069,31 @@
   }
 
   function getVisibleOptions(state) {
-    return (state?.options || []).filter((item) => item instanceof HTMLElement && !item.hasAttribute("hidden"));
+    return (state?.options || []).filter(
+      (item) =>
+        item instanceof HTMLElement &&
+        !item.hasAttribute("hidden") &&
+        !isChoiceOptionDisabled(item),
+    );
+  }
+
+  function isChoiceOptionDisabled(option) {
+    return (
+      option instanceof HTMLElement &&
+      (option.hasAttribute("disabled") || option.getAttribute("aria-disabled") === "true")
+    );
+  }
+
+  function shouldCloseChoiceOnSelect(container, family) {
+    if (!(container instanceof HTMLElement)) {
+      return family.closeOnSelect !== false;
+    }
+
+    if (container.dataset.r8CloseOnSelect === "false") {
+      return false;
+    }
+
+    return family.closeOnSelect !== false;
   }
 
   function resolveAvatarFallback(component) {
@@ -4428,7 +4474,7 @@
           option.setAttribute("aria-selected", option.classList.contains("is-selected") ? "true" : "false");
           option.addEventListener("pointerenter", () => {
             const state = choiceStates.get(container);
-            if (state) {
+            if (state && !isChoiceOptionDisabled(option)) {
               setChoiceActiveOption(state, option);
             }
           });
@@ -6696,8 +6742,6 @@
       button.closest(".r8-drawer") ||
       button.closest(".r8-popover") ||
       button.closest(".r8-tooltip") ||
-      button.closest(".r8-message-box") ||
-      button.closest(".r8-notification") ||
       button.closest(".r8-alert");
 
     closeTarget(target);
@@ -6708,7 +6752,7 @@
       return;
     }
 
-    const host = button.closest(".r8-alert, .r8-notification, .r8-message-box, .r8-tag");
+    const host = button.closest(".r8-alert, .r8-tag");
     if (host instanceof HTMLElement) {
       if (host.classList.contains("r8-tag")) {
         host.remove();

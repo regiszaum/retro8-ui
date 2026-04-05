@@ -202,7 +202,7 @@ The current runtime covers patterns such as:
 - sliders;
 - input tags;
 - transfer lists;
-- popovers, tooltips, notifications, and dismissible feedback surfaces.
+- popovers, tooltips, dialogs, and dismissible feedback surfaces.
 
 You can use the bundled runtime or replace it with your own application logic if your stack already manages state and accessibility behavior.
 
@@ -210,7 +210,7 @@ You can use the bundled runtime or replace it with your own application logic if
 
 The current catalog includes:
 
-- 54 core components across the main catalog, plus retro8-ui-specific extras;
+- 51 core components across the main catalog, plus retro8-ui-specific extras;
 - grouped categories across Basic, Configuration, Form, Data, Navigation, Feedback, and Others;
 - native `retro8-ui` extras such as `Panel`, `Window`, and `Navbar`.
 

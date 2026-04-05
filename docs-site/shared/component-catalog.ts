@@ -4139,48 +4139,196 @@ const navigationComponents = [
     name: "Breadcrumb",
     group: "navigation",
     summary: l(
-      "Trilha de navegacao para orientacao de caminho e profundidade de pagina.",
-      "Navigation trail for path orientation and page depth.",
+      "Trilha de navegacao mais flexivel, com separador configuravel, links reais, estado atual claro e modos compacto ou sem quebra.",
+      "More flexible navigation trail with configurable separators, real links, a clear current state, and compact or no-wrap modes.",
     ),
-    classes: ["r8-breadcrumb", "r8-breadcrumb__item"],
-    preview: `<nav class="r8-breadcrumb" aria-label="Breadcrumb">
-  <span class="r8-breadcrumb__item">Home</span>
-  <span class="r8-breadcrumb__item">Docs</span>
-  <span class="r8-breadcrumb__item">Button</span>
+    classes: [
+      "r8-breadcrumb",
+      "r8-breadcrumb--compact",
+      "r8-breadcrumb--nowrap",
+      "r8-breadcrumb__item",
+      "r8-breadcrumb__link",
+      "data-r8-separator",
+      "--r8-breadcrumb-gap",
+      "--r8-breadcrumb-separator-color",
+      "--r8-breadcrumb-current-color",
+      "--r8-breadcrumb-link-color",
+      "--r8-breadcrumb-link-hover-color",
+    ],
+    preview: `<nav aria-label="Breadcrumb">
+  <ol class="r8-breadcrumb" data-r8-separator="chevron">
+    <li class="r8-breadcrumb__item"><a class="r8-breadcrumb__link" href="#">Home</a></li>
+    <li class="r8-breadcrumb__item"><a class="r8-breadcrumb__link" href="#">Components</a></li>
+    <li class="r8-breadcrumb__item"><a class="r8-breadcrumb__link" href="#">Navigation</a></li>
+    <li class="r8-breadcrumb__item" aria-current="page">Breadcrumb</li>
+  </ol>
 </nav>`,
+    code: `<nav aria-label="Breadcrumb">
+  <ol class="r8-breadcrumb r8-breadcrumb--compact" data-r8-separator="dot">
+    <li class="r8-breadcrumb__item"><a class="r8-breadcrumb__link" href="/">Home</a></li>
+    <li class="r8-breadcrumb__item"><a class="r8-breadcrumb__link" href="/docs">Docs</a></li>
+    <li class="r8-breadcrumb__item"><a class="r8-breadcrumb__link" href="/docs/navigation">Navigation</a></li>
+    <li class="r8-breadcrumb__item" aria-current="page">Breadcrumb</li>
+  </ol>
+</nav>`,
+    anatomy: ll(
+      [
+        "`r8-breadcrumb` organiza a trilha horizontal e aceita `data-r8-separator` para trocar o divisor sem mexer no HTML dos itens.",
+        "`r8-breadcrumb__item` funciona bem com `li`, `span` ou wrappers leves para manter semantica de lista.",
+        "`r8-breadcrumb__link` aplica estados interativos apenas aos niveis clicaveis, preservando o item atual como texto ou `aria-current`.",
+        "`r8-breadcrumb--compact` e `r8-breadcrumb--nowrap` ajudam quando a trilha precisa caber em headers densos ou barras superiores.",
+      ],
+      [
+        "`r8-breadcrumb` lays out the trail horizontally and accepts `data-r8-separator` so you can change the divider without touching item HTML.",
+        "`r8-breadcrumb__item` works well with `li`, `span`, or light wrappers to keep list semantics intact.",
+        "`r8-breadcrumb__link` applies interactive states only to clickable levels, preserving the current item as text or `aria-current`.",
+        "`r8-breadcrumb--compact` and `r8-breadcrumb--nowrap` help when the trail needs to fit dense headers or top bars.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Envolva a trilha em `nav` com `aria-label=\"Breadcrumb\"` para expor o contexto de navegacao para leitores de tela.",
+        "Marque apenas o ultimo item com `aria-current=\"page\"` e evite transforma-lo em link se ele nao realmente navegar.",
+        "Se usar `r8-breadcrumb--nowrap`, garanta que a ordem continue previsivel e que o usuario consiga rolar horizontalmente quando necessario.",
+      ],
+      [
+        "Wrap the trail in `nav` with `aria-label=\"Breadcrumb\"` so assistive tech gets clear navigation context.",
+        "Mark only the last item with `aria-current=\"page\"` and avoid turning it into a link if it does not actually navigate.",
+        "If you use `r8-breadcrumb--nowrap`, make sure order remains predictable and users can scroll horizontally when needed.",
+      ],
+    ),
+    api: [
+      {
+        name: "data-r8-separator",
+        description: l(
+          "Aceita `slash`, `chevron`, `double` ou `dot` para mudar o caractere separador da trilha.",
+          "Accepts `slash`, `chevron`, `double`, or `dot` to change the trail separator character.",
+        ),
+      },
+      {
+        name: "r8-breadcrumb__link",
+        description: l(
+          "Aplica leitura e foco adequados aos niveis clicaveis sem misturar o estado atual com links falsos.",
+          "Applies appropriate reading and focus states to clickable levels without mixing the current state with fake links.",
+        ),
+      },
+      {
+        name: "r8-breadcrumb--compact / r8-breadcrumb--nowrap",
+        description: l(
+          "Ajustam densidade e quebra de linha para headers, toolbars ou areas com pouco espaco horizontal.",
+          "Adjust density and line wrapping for headers, toolbars, or areas with limited horizontal space.",
+        ),
+      },
+      {
+        name: "--r8-breadcrumb-gap / --r8-breadcrumb-separator-color / --r8-breadcrumb-link-color",
+        description: l(
+          "Permitem alinhar espacamento, cor do separador e tom dos links ao contexto visual local.",
+          "Let you tune spacing, separator color, and link tone to the local visual context.",
+        ),
+      },
+    ],
   },
   {
     id: "dropdown",
     name: "Dropdown",
     group: "navigation",
     summary: l(
-      "Menu suspenso compacto para acoes, atalhos e opcoes contextuais.",
-      "Compact flyout menu for actions, shortcuts and contextual options.",
+      "Dropdown mais completo para acoes contextuais, com item selecionado, estados disabled e danger, divisorias e trigger simples ou dividido.",
+      "More complete dropdown for contextual actions, with selected items, disabled and danger states, dividers, and simple or split triggers.",
     ),
-    classes: ["r8-dropdown", "r8-dropdown__menu", "r8-dropdown__item"],
-    preview: `<div class="r8-dropdown">
-  <button class="r8-btn r8-btn--sm" type="button">Open menu</button>
+    classes: [
+      "r8-dropdown",
+      "r8-dropdown--end",
+      "r8-dropdown__split",
+      "r8-dropdown__trigger",
+      "r8-dropdown__action",
+      "r8-dropdown__menu",
+      "r8-dropdown__item",
+      "r8-dropdown__item--divided",
+      "r8-dropdown__item--danger",
+      "data-r8-command",
+      "data-r8-close-on-select",
+      "--r8-dropdown-menu-width",
+      "--r8-dropdown-item-padding-x",
+      "--r8-dropdown-item-padding-y",
+    ],
+    preview: `<div class="r8-dropdown" data-r8-close-on-select="false">
+  <button class="r8-btn r8-btn--sm r8-dropdown__trigger" type="button">Actions</button>
   <div class="r8-dropdown__menu">
-    <div class="r8-dropdown__item">Duplicate</div>
-    <div class="r8-dropdown__item">Archive</div>
-    <div class="r8-dropdown__item">Delete</div>
+    <button class="r8-dropdown__item" type="button" data-r8-command="duplicate">Duplicate</button>
+    <button class="r8-dropdown__item is-selected" type="button" data-r8-command="archive">Archive</button>
+    <button class="r8-dropdown__item" type="button" data-r8-command="share" aria-disabled="true">Share</button>
+    <button class="r8-dropdown__item r8-dropdown__item--divided r8-dropdown__item--danger" type="button" data-r8-command="delete">Delete</button>
   </div>
 </div>`,
-  },
-  {
-    id: "menu",
-    name: "Menu",
-    group: "navigation",
-    summary: l(
-      "Menu primario vertical ou horizontal para apps, sidebars e dashboards.",
-      "Primary vertical or horizontal menu for apps, sidebars and dashboards.",
+    code: `<div class="r8-dropdown r8-dropdown--end">
+  <div class="r8-dropdown__split">
+    <button class="r8-btn r8-btn--sm r8-dropdown__action" type="button">Run now</button>
+    <button class="r8-btn r8-btn--sm r8-dropdown__trigger" type="button">More</button>
+  </div>
+  <div class="r8-dropdown__menu" style="--r8-dropdown-menu-width: 13rem;">
+    <button class="r8-dropdown__item" type="button" data-r8-command="duplicate">Duplicate</button>
+    <button class="r8-dropdown__item" type="button" data-r8-command="rename">Rename</button>
+    <button class="r8-dropdown__item r8-dropdown__item--divided" type="button" data-r8-command="archive">Archive</button>
+    <button class="r8-dropdown__item r8-dropdown__item--danger" type="button" data-r8-command="delete">Delete</button>
+  </div>
+</div>`,
+    anatomy: ll(
+      [
+        "`r8-dropdown` agrupa trigger e menu, e aceita `r8-dropdown--end` quando o painel precisa alinhar pela borda direita.",
+        "`r8-dropdown__trigger` identifica o botao que abre ou recolhe o menu; `r8-dropdown__action` cobre o botao lateral de um split trigger.",
+        "`r8-dropdown__item` continua semantico o bastante para usar `button`, `a` ou outros action-like elements preparados pelo runtime.",
+        "`r8-dropdown__item--divided`, `__item--danger` e `aria-disabled=\"true\"` resolvem os estados mais comuns sem inventar uma API grande demais.",
+      ],
+      [
+        "`r8-dropdown` groups the trigger and menu, and accepts `r8-dropdown--end` when the panel should align to the right edge.",
+        "`r8-dropdown__trigger` identifies the button that opens or closes the menu; `r8-dropdown__action` covers the side button in a split trigger.",
+        "`r8-dropdown__item` stays semantic enough to be used with `button`, `a`, or other action-like elements prepared by the runtime.",
+        "`r8-dropdown__item--divided`, `__item--danger`, and `aria-disabled=\"true\"` cover the most common states without inventing an oversized API.",
+      ],
     ),
-    classes: ["r8-menu", "r8-menu--horizontal", "r8-menu__item", "r8-menu__submenu"],
-    preview: `<ul class="r8-menu r8-menu--horizontal">
-  <li class="r8-menu__item is-active">Overview</li>
-  <li class="r8-menu__item">Tokens</li>
-  <li class="r8-menu__submenu is-open">Components</li>
-</ul>`,
+    accessibility: ll(
+      [
+        "Use `button` ou `a` nos itens quando possivel, e marque apenas itens indisponiveis com `aria-disabled=\"true\"`.",
+        "Quando houver split trigger, mantenha o botao lateral principal com acao clara e o trigger do menu com rotulo proprio.",
+        "Se usar `data-r8-close-on-select=\"false\"`, garanta outra forma simples de fechar o menu por teclado ou clique fora.",
+      ],
+      [
+        "Use `button` or `a` for items when possible, and mark unavailable items only with `aria-disabled=\"true\"`.",
+        "When using a split trigger, keep the primary side button tied to a clear action and give the menu trigger its own label.",
+        "If you use `data-r8-close-on-select=\"false\"`, make sure there is another simple way to close the menu through keyboard or outside click.",
+      ],
+    ),
+    api: [
+      {
+        name: "data-r8-command",
+        description: l(
+          "Valor declarativo emitido no evento `r8:dropdown-command` quando o item e acionado.",
+          "Declarative value emitted in the `r8:dropdown-command` event when the item is activated.",
+        ),
+      },
+      {
+        name: "data-r8-close-on-select",
+        description: l(
+          "Aceita `false` para manter o painel aberto apos uma selecao, util em menus de inspeção ou batch actions.",
+          "Accepts `false` to keep the panel open after selection, useful for inspection menus or batch actions.",
+        ),
+      },
+      {
+        name: "r8-dropdown--end / r8-dropdown__split",
+        description: l(
+          "Cobrem alinhamento a direita e o layout de split trigger sem depender de JS adicional.",
+          "Cover right-edge alignment and split-trigger layout without extra JS.",
+        ),
+      },
+      {
+        name: "--r8-dropdown-menu-width / --r8-dropdown-item-padding-x / --r8-dropdown-item-padding-y",
+        description: l(
+          "Permitem ajustar largura do painel e densidade dos itens para toolbars, cards e menus compactos.",
+          "Let you tune panel width and item density for toolbars, cards, and compact menus.",
+        ),
+      },
+    ],
   },
   {
     id: "steps",
@@ -4696,62 +4844,6 @@ const feedbackComponents = [
         ),
       },
     ],
-  },
-  {
-    id: "message-box",
-    name: "Message Box",
-    group: "feedback",
-    summary: l(
-      "Caixa de mensagem para confirmacoes e prompts de curta duracao.",
-      "Message box for short confirmation and prompt flows.",
-    ),
-    classes: ["r8-message-box", "r8-message-box__title", "r8-message-box__footer"],
-    preview: `<div class="docs-demo__stack">
-  <button
-    class="r8-btn r8-btn--secondary"
-    type="button"
-    data-r8-toggle="message-box"
-    data-r8-target="#docs-message-box-preview"
-  >
-    Open message box
-  </button>
-  <section id="docs-message-box-preview" class="r8-message-box" hidden>
-    <strong class="r8-message-box__title">Overwrite file?</strong>
-    <p class="r8-text">This action will replace the current build artifact.</p>
-    <div class="r8-message-box__footer">
-      <button class="r8-btn r8-btn--sm" type="button" data-r8-close="#docs-message-box-preview">Cancel</button>
-      <button class="r8-btn r8-btn--sm r8-btn--danger" type="button" data-r8-close="#docs-message-box-preview">Overwrite</button>
-    </div>
-  </section>
-</div>`,
-  },
-  {
-    id: "notification",
-    name: "Notification",
-    group: "feedback",
-    summary: l(
-      "Cartao de notificacao maior para comunicados persistentes e detalhes extras.",
-      "Larger notification card for persistent announcements and extra detail.",
-    ),
-    classes: ["r8-notification", "r8-notification__title", "r8-notification__footer"],
-    preview: `<div class="docs-demo__stack">
-  <button
-    class="r8-btn r8-btn--secondary"
-    type="button"
-    data-r8-toggle="notification"
-    data-r8-target="#docs-notification-preview"
-  >
-    Show notification
-  </button>
-  <section id="docs-notification-preview" class="r8-notification" hidden>
-    <strong class="r8-notification__title">New release available</strong>
-    <p class="r8-text">retro8-ui 0.2 ships with the extended component catalog.</p>
-    <div class="r8-notification__footer">
-      <button class="r8-btn r8-btn--sm" type="button" data-r8-close="#docs-notification-preview">Dismiss</button>
-      <button class="r8-btn r8-btn--sm r8-btn--primary" type="button">Read notes</button>
-    </div>
-  </section>
-</div>`,
   },
   {
     id: "popover",

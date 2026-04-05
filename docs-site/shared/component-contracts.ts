@@ -63,7 +63,7 @@ const choiceKinds = new Set([
   "select",
   "dropdown",
 ]);
-const overlayKinds = new Set(["dialog", "drawer", "message-box", "notification", "popover", "tooltip"]);
+const overlayKinds = new Set(["dialog", "drawer", "popover", "tooltip"]);
 const binaryKinds = new Set(["checkbox", "radio", "switch", "theme-switch"]);
 const runtimeKinds = new Set([
   "button",
@@ -1204,6 +1204,44 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         ],
       });
       break;
+    case "breadcrumb":
+      mergeContract(contract, {
+        attributes: [
+          row("aria-label", "string", `"Breadcrumb" recommended on nav`, "Nome acessivel recomendado no `nav` que envolve a trilha.", "Recommended accessible name on the `nav` wrapping the trail."),
+          row("aria-current", `"page"`, "only on current item", "Marca o ultimo item como pagina atual para tecnologia assistiva.", "Marks the last item as the current page for assistive technology."),
+        ],
+        dataAttributes: [
+          row("data-r8-separator", `"slash" | "chevron" | "double" | "dot"`, `"slash"`, "Troca o separador visual entre os itens sem alterar a estrutura do breadcrumb.", "Changes the visual separator between items without altering the breadcrumb structure."),
+        ],
+        cssVariables: [
+          row("--r8-breadcrumb-gap", "length", "var(--r8-space-2)", "Ajusta o espacamento entre os itens e o separador.", "Adjusts spacing between items and the separator."),
+          row("--r8-breadcrumb-separator-color", "color", "var(--r8-color-accent)", "Controla a cor usada no caractere separador.", "Controls the color used for the separator character."),
+          row("--r8-breadcrumb-current-color", "color", "var(--r8-color-ink)", "Define o destaque do item atual sem transformar o breadcrumb em tabs.", "Defines the current item emphasis without turning the breadcrumb into tabs."),
+          row("--r8-breadcrumb-link-color / --r8-breadcrumb-link-hover-color", "color", "muted / primary strong", "Permitem alinhar o tom dos links com o contexto visual local.", "Let you align link tone with the local visual context."),
+        ],
+      });
+      break;
+    case "dropdown":
+      mergeContract(contract, {
+        attributes: [
+          row("aria-expanded", "boolean", "false on trigger", "Reflete o estado aberto do trigger principal do dropdown.", "Reflects the open state on the dropdown's main trigger."),
+          row("aria-disabled", "boolean", "false", "Bloqueia itens específicos do menu sem removê-los da leitura visual.", "Blocks specific menu items without removing them from visual reading."),
+        ],
+        dataAttributes: [
+          row("data-r8-command", "string", "item text fallback", "Valor emitido no evento `r8:dropdown-command` ao acionar um item.", "Value emitted in the `r8:dropdown-command` event when an item is activated."),
+          row("data-r8-close-on-select", `"true" | "false"`, `"true"`, "Quando `false`, mantém o menu aberto após selecionar uma ação.", "When `false`, keeps the menu open after selecting an action."),
+        ],
+        cssVariables: [
+          row("--r8-dropdown-menu-width", "length", "12rem", "Ajusta a largura mínima do painel de ações.", "Adjusts the minimum width of the actions panel."),
+          row("--r8-dropdown-item-padding-x / --r8-dropdown-item-padding-y", "length", "var(--r8-space-3) / var(--r8-space-2)", "Controlam a densidade interna dos itens do menu.", "Control the internal density of menu items."),
+        ],
+        methods: runtimeMethods,
+        events: [
+          event("r8:dropdown-command", `{ command, option, text, value }`, "Emitido quando uma ação do dropdown é escolhida.", "Emitted when a dropdown action is chosen."),
+          event("r8:choice-change", `{ kind, option, text, value }`, "Evento genérico compartilhado com outras famílias de escolha.", "Generic event shared with other choice families."),
+        ],
+      });
+      break;
     case "pagination":
       mergeContract(contract, {
         attributes: [
@@ -1316,8 +1354,6 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
       });
       break;
     case "drawer":
-    case "message-box":
-    case "notification":
       mergeContract(contract, {
         dataAttributes: [
           row("data-r8-toggle", `"true"`, `"true"`, `Trigger declarativo para abrir ${component.name}.`, `Declarative trigger used to open ${component.name}.`),
