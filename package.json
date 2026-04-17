@@ -3,6 +3,9 @@
   "version": "0.1.3",
   "description": "Retro8 UI component library authored with Tailwind CSS and shipped as framework-agnostic CSS and optional JavaScript.",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "keywords": [
     "retro",
     "8-bit",
