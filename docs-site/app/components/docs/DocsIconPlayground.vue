@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { withDocsBasePath } from "~/utils/docs-assets";
+
 const props = defineProps<{
   site: any;
 }>();
@@ -15,6 +17,7 @@ const source = ref<IconSource>("pointer");
 const tone = ref<IconTone>("default");
 const size = ref<IconSize>("md");
 const isDecorative = ref(true);
+const runtimeConfig = useRuntimeConfig();
 
 const sourceOptions = computed(() => [
   { value: "pointer", label: strings.value.options.pointer },
@@ -63,7 +66,7 @@ const sourceAsset = computed(() => {
     return "";
   }
 
-  return sourceAssetMap[source.value];
+  return withDocsBasePath(sourceAssetMap[source.value], runtimeConfig.app.baseURL);
 });
 
 const glyphStyle = computed(() => {
@@ -273,10 +276,15 @@ function getToggleClass(enabled: boolean) {
           {{ sourceDescriptionMap[source] }} {{ strings.previewCopy }}
         </p>
 
-        <div class="docs-icon-playground__markup">
-          <span class="r8-label">{{ strings.markupLabel }}</span>
-          <pre class="docs-icon-playground__code"><code>{{ markup }}</code></pre>
-        </div>
+        <DocsPlaygroundMarkup
+          wrapper-class="docs-icon-playground__markup"
+          code-class="docs-icon-playground__code"
+          :label="strings.markupLabel"
+          :code="markup"
+          :button-label="site.componentPage.copyButton"
+          :copied-label="site.componentPage.copySuccess"
+          :unavailable-label="site.componentPage.copyUnavailable"
+        />
       </div>
     </div>
   </section>

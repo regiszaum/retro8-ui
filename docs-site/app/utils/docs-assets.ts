@@ -22,6 +22,10 @@ function withBase(path: string, baseURL: string) {
   return `${baseNoTrailingSlash}${path}`;
 }
 
+export function withDocsBasePath(path: string, baseURL: string) {
+  return withBase(path, normalizeBaseURL(baseURL));
+}
+
 export function rewriteDocsAssetPaths(markup: string, baseURL: string) {
   if (!markup) {
     return markup;

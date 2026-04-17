@@ -298,10 +298,15 @@ watch([labelText, size, isChecked, isIndeterminate, isDisabled, isBordered], asy
           </div>
         </div>
 
-        <div class="docs-checkbox-playground__markup">
-          <span class="r8-label">{{ strings.markupLabel }}</span>
-          <pre class="docs-checkbox-playground__code"><code>{{ markup }}</code></pre>
-        </div>
+        <DocsPlaygroundMarkup
+          wrapper-class="docs-checkbox-playground__markup"
+          code-class="docs-checkbox-playground__code"
+          :label="strings.markupLabel"
+          :code="markup"
+          :button-label="site.componentPage.copyButton"
+          :copied-label="site.componentPage.copySuccess"
+          :unavailable-label="site.componentPage.copyUnavailable"
+        />
       </div>
     </div>
   </section>

@@ -1623,6 +1623,13 @@ html[data-theme="light"] .docs-theme-switch:focus-visible {
   white-space: pre-wrap;
 }
 
+.docs-playground-markup__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
 .docs-autocomplete-playground__surface {
   width: min(100%, 34rem);
 }

@@ -387,10 +387,15 @@ watch([triggerMode, separator, filterPlaceholder, isFilterable, isClearable, isS
           </div>
         </div>
 
-        <div class="docs-cascader-playground__markup">
-          <span class="r8-label">{{ strings.markupLabel }}</span>
-          <pre class="docs-cascader-playground__code"><code>{{ markup }}</code></pre>
-        </div>
+        <DocsPlaygroundMarkup
+          wrapper-class="docs-cascader-playground__markup"
+          code-class="docs-cascader-playground__code"
+          :label="strings.markupLabel"
+          :code="markup"
+          :button-label="site.componentPage.copyButton"
+          :copied-label="site.componentPage.copySuccess"
+          :unavailable-label="site.componentPage.copyUnavailable"
+        />
       </div>
     </div>
   </section>

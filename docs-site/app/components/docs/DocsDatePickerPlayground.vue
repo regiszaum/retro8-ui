@@ -274,10 +274,15 @@ onMounted(async () => {
           </div>
         </div>
 
-        <div class="docs-date-picker-playground__markup">
-          <span class="r8-label">{{ strings.markupLabel }}</span>
-          <pre class="docs-date-picker-playground__code"><code>{{ markup }}</code></pre>
-        </div>
+        <DocsPlaygroundMarkup
+          wrapper-class="docs-date-picker-playground__markup"
+          code-class="docs-date-picker-playground__code"
+          :label="strings.markupLabel"
+          :code="markup"
+          :button-label="site.componentPage.copyButton"
+          :copied-label="site.componentPage.copySuccess"
+          :unavailable-label="site.componentPage.copyUnavailable"
+        />
       </div>
     </div>
   </section>
