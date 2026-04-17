@@ -4717,6 +4717,7 @@ dialog.r8-dialog::backdrop {
   }
 .r8-navbar[data-r8-expand]:not([data-r8-expand="always"]) .r8-navbar__form .r8-input,
   .r8-navbar[data-r8-expand]:not([data-r8-expand="always"]) .r8-navbar__form .r8-btn {
+    flex: 0 0 auto;
     width: 100%;
   }
 .r8-navbar[data-r8-expand]:not([data-r8-expand="always"]) .r8-navbar__actions {
