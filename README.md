@@ -2,6 +2,13 @@
 
 Retro 8-bit UI library authored with Tailwind CSS and shipped as framework-agnostic semantic CSS classes, plus an optional JavaScript runtime for interactive components.
 
+![Retro8 UI preview](branding/logo/doc-img.png)
+
+## Links
+
+- NPM: https://www.npmjs.com/package/retro8-ui
+- Docs: https://regiszaum.github.io/retro8-ui/
+
 ## Overview
 
 `Retro8 UI` is a design system for building retro game-inspired interfaces without locking consumers into a specific framework. It is written with Tailwind CSS as an authoring tool, but the public API is intentionally simple:
