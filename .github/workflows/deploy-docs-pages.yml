@@ -40,11 +40,11 @@ jobs:
       - name: Build library assets
         run: npm run build
 
-      - name: Generate docs-site
+      - name: Build docs-site for GitHub Pages
         working-directory: docs-site
         env:
           NUXT_APP_BASE_URL: /${{ github.event.repository.name }}/
-        run: npm run generate
+        run: npx nuxt build --preset github_pages
 
       - name: Debug generated output
         run: |
@@ -58,20 +58,32 @@ jobs:
           set -euo pipefail
           rm -rf .pages-artifact
 
+          OUTPUT_DIR=""
+
           if [ -d docs-site/.output/public ]; then
-            cp -R docs-site/.output/public .pages-artifact
+            OUTPUT_DIR="docs-site/.output/public"
           elif [ -d .output/public ]; then
-            cp -R .output/public .pages-artifact
+            OUTPUT_DIR=".output/public"
           elif [ -d docs-site/dist ]; then
-            cp -R docs-site/dist .pages-artifact
-          else
+            OUTPUT_DIR="docs-site/dist"
+          fi
+
+          if [ -z "${OUTPUT_DIR}" ]; then
+            OUTPUT_DIR="$(find . -type f -path '*/.output/public/index.html' -not -path '*/node_modules/*' -print -quit | xargs -r dirname || true)"
+          fi
+
+          if [ -z "${OUTPUT_DIR}" ]; then
             echo "ERROR: no static output folder found."
             echo "Expected docs-site/.output/public, .output/public or docs-site/dist"
+            find . -maxdepth 4 -type d -name '.output' -not -path '*/node_modules/*' || true
+            find . -maxdepth 4 -type f -name 'index.html' -not -path '*/node_modules/*' | sed -n '1,120p' || true
             ls -la docs-site
             ls -la . || true
-            ls -la .output || true
             exit 2
           fi
+
+          echo "Using output directory: ${OUTPUT_DIR}"
+          cp -R "${OUTPUT_DIR}" .pages-artifact
 
           if [ ! -f .pages-artifact/index.html ]; then
             echo "ERROR: .pages-artifact/index.html not found."
