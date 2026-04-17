@@ -30,7 +30,7 @@ You do not need Tailwind CSS in the consuming project. Tailwind is used only to 
 - Optional runtime. JavaScript is available when behavior is needed, but it is not required for static styling.
 - Semantic API. Consumers work with `r8-*` classes, not internal Tailwind utilities.
 - Framework independence. The same assets should work anywhere CSS and browser JavaScript work.
-- Scalable architecture. Tokens, components, utilities, examples, and docs are organized for maintainability and future npm publishing.
+- Scalable architecture. Tokens, components, utilities, and docs-site are organized for maintainability and future npm publishing.
 
 ## Installation
 
@@ -298,9 +298,7 @@ Builds everything and previews the generated documentation locally.
 ```text
 retro8-ui/
 ├── dist/                    # Compiled CSS and JS outputs.
-├── docs/                    # Internal project notes.
 ├── docs-site/               # Public Nuxt documentation app.
-├── examples/                # Plain HTML usage examples.
 ├── scripts/                 # Build helpers.
 ├── src/
 │   ├── scripts/             # Optional runtime source.
@@ -322,11 +320,6 @@ retro8-ui/
 - PostCSS, Autoprefixer, and cssnano handle the CSS pipeline.
 - The JavaScript runtime is intentionally lightweight and browser-first.
 - The documentation app is separate from the library package, so the product remains framework-agnostic.
-
-## Examples
-
-- `examples/index.html` contains a general showcase.
-- `examples/dashboard.html` contains a dashboard-style composition example.
 
 ## License
 
