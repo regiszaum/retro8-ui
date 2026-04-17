@@ -702,23 +702,24 @@ pre {
 
 .docs-locale-select .r8-select__trigger {
   background: transparent;
-  border: 2px solid transparent;
+  border: 0;
   box-shadow: none;
   color: var(--docs-topbar-text);
   font-family: "Press Start 2P", "Courier New", Courier, monospace;
   font-size: 0.6rem;
   letter-spacing: 0.06em;
   min-height: var(--docs-toolbar-inner-height);
-  padding: 0.35rem 0.65rem;
+  padding: calc(0.35rem + 2px) calc(0.65rem + 2px);
   text-transform: uppercase;
 }
 
 .docs-locale-select .r8-select__trigger:hover,
 .docs-locale-select .r8-select__trigger:focus-visible,
 .docs-locale-select .r8-select__trigger[aria-expanded="true"] {
-  border-color: color-mix(in srgb, var(--docs-topbar-text) 18%, transparent);
+  background: var(--docs-toolbar-active-bg);
+  color: var(--docs-toolbar-active-text);
   outline: none;
-  transform: translate(-1px, -1px);
+  transform: none;
 }
 
 .docs-locale-select .r8-select__menu {
@@ -758,7 +759,6 @@ pre {
 
 .docs-theme-switch:hover,
 .docs-theme-switch:focus-visible {
-  border-color: color-mix(in srgb, var(--docs-topbar-text) 18%, transparent);
   transform: translate(-1px, -1px);
 }
 
@@ -775,9 +775,31 @@ pre {
 .docs-theme-switch.is-checked,
 .docs-theme-switch[aria-checked="true"] {
   background: var(--docs-toolbar-active-bg);
-  border-color: var(--docs-panel-border);
   box-shadow: 2px 2px 0 0 var(--docs-panel-shadow);
   color: var(--docs-toolbar-active-text);
+}
+
+html[data-theme="dark"] .docs-theme-switch,
+html[data-theme="dark"] .docs-theme-switch.is-checked,
+html[data-theme="dark"] .docs-theme-switch[aria-checked="true"] {
+  border-color: color-mix(in srgb, var(--docs-topbar-text) 32%, transparent);
+}
+
+html[data-theme="dark"] .docs-theme-switch:hover,
+html[data-theme="dark"] .docs-theme-switch:focus-visible {
+  border-color: color-mix(in srgb, var(--docs-topbar-text) 48%, transparent);
+}
+
+html[data-theme="light"] .docs-theme-switch,
+html[data-theme="light"] .docs-theme-switch.is-checked,
+html[data-theme="light"] .docs-theme-switch[aria-checked="true"] {
+  border-color: color-mix(in srgb, var(--docs-topbar-text) 14%, transparent);
+  box-shadow: none;
+}
+
+html[data-theme="light"] .docs-theme-switch:hover,
+html[data-theme="light"] .docs-theme-switch:focus-visible {
+  border-color: color-mix(in srgb, var(--docs-topbar-text) 28%, transparent);
 }
 
 .docs-toolbar__button {
