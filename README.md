@@ -2,7 +2,7 @@
 
 Retro 8-bit UI library authored with Tailwind CSS and shipped as framework-agnostic semantic CSS classes, plus an optional JavaScript runtime for interactive components.
 
-![Retro8 UI preview](branding/logo/doc-img.png)
+![Retro8 UI preview](https://raw.githubusercontent.com/regiszaum/retro8-ui/main/branding/logo/doc-img.png)
 
 ## Links
 
