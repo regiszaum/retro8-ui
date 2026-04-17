@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: "20"
           cache: npm
@@ -42,13 +42,32 @@ jobs:
           NUXT_APP_BASE_URL: /${{ github.event.repository.name }}/
         run: npm run build:docs
 
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
+      - name: Prepare pages artifact
+        run: |
+          set -euo pipefail
+          rm -rf .pages-artifact
+
+          if [ -d docs-site/.output/public ]; then
+            cp -R docs-site/.output/public .pages-artifact
+          elif [ -d docs-site/dist ]; then
+            cp -R docs-site/dist .pages-artifact
+          else
+            echo "ERROR: no static output folder found."
+            echo "Expected docs-site/.output/public or docs-site/dist"
+            ls -la docs-site
+            exit 2
+          fi
+
+          if [ ! -f .pages-artifact/index.html ]; then
+            echo "ERROR: .pages-artifact/index.html not found."
+            find .pages-artifact -maxdepth 2 -type f | head -n 100
+            exit 2
+          fi
 
       - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v4
         with:
-          path: docs-site/.output/public
+          path: .pages-artifact
 
   deploy:
     environment:
