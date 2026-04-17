@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { rewriteDocsAssetPaths } from "~/utils/docs-assets";
+
 type ControlOption = {
   value: string;
   label: string;
@@ -39,6 +41,7 @@ const props = defineProps<{
 
 const previewSurface = ref<HTMLElement | null>(null);
 const state = reactive<Record<string, any>>({});
+const runtimeConfig = useRuntimeConfig();
 
 const isPt = computed(() => props.locale === "pt-br");
 const title = computed(() => (isPt.value ? `Playground do ${props.component.name}` : `${props.component.name} playground`));
@@ -2312,6 +2315,7 @@ function buildConfig(id: string): PlaygroundConfig {
 
 const config = computed(() => buildConfig(props.component.id));
 const previewMarkup = computed(() => config.value.render());
+const previewMarkupWithBase = computed(() => rewriteDocsAssetPaths(previewMarkup.value, runtimeConfig.app.baseURL));
 const surfaceClass = computed(() => classList("docs-generic-playground__surface", `docs-generic-playground__surface--${config.value.surface}`));
 
 function resetState(defaults: Record<string, any>) {
@@ -2347,7 +2351,7 @@ watch(
 );
 
 watch(
-  previewMarkup,
+  previewMarkupWithBase,
   async () => {
     await nextTick();
     initPreviewRuntime();
@@ -2421,7 +2425,7 @@ watch(
       <div class="docs-demo__stage docs-generic-playground__stage">
         <div class="docs-generic-playground__preview">
           <span class="r8-label">{{ ui.previewLabel }}</span>
-          <div ref="previewSurface" :class="surfaceClass" v-html="previewMarkup" />
+          <div ref="previewSurface" :class="surfaceClass" v-html="previewMarkupWithBase" />
         </div>
 
         <p class="docs-demo__stage-copy">
