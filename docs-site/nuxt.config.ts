@@ -46,7 +46,7 @@ export default defineNuxtConfig({
     },
   },
   routeRules: {
-    "/": { redirect: "/en" },
+    "/": { redirect: "./en" },
   },
   nitro: {
     prerender: {
