@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { withDocsBasePath } from "~/utils/docs-assets";
+
 const props = defineProps<{
   site: any;
 }>();
@@ -15,6 +17,7 @@ const source = ref<IconSource>("pointer");
 const tone = ref<IconTone>("default");
 const size = ref<IconSize>("md");
 const isDecorative = ref(true);
+const runtimeConfig = useRuntimeConfig();
 
 const sourceOptions = computed(() => [
   { value: "pointer", label: strings.value.options.pointer },
@@ -63,7 +66,7 @@ const sourceAsset = computed(() => {
     return "";
   }
 
-  return sourceAssetMap[source.value];
+  return withDocsBasePath(sourceAssetMap[source.value], runtimeConfig.app.baseURL);
 });
 
 const glyphStyle = computed(() => {
