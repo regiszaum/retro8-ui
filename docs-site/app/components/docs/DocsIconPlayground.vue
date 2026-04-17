@@ -276,10 +276,15 @@ function getToggleClass(enabled: boolean) {
           {{ sourceDescriptionMap[source] }} {{ strings.previewCopy }}
         </p>
 
-        <div class="docs-icon-playground__markup">
-          <span class="r8-label">{{ strings.markupLabel }}</span>
-          <pre class="docs-icon-playground__code"><code>{{ markup }}</code></pre>
-        </div>
+        <DocsPlaygroundMarkup
+          wrapper-class="docs-icon-playground__markup"
+          code-class="docs-icon-playground__code"
+          :label="strings.markupLabel"
+          :code="markup"
+          :button-label="site.componentPage.copyButton"
+          :copied-label="site.componentPage.copySuccess"
+          :unavailable-label="site.componentPage.copyUnavailable"
+        />
       </div>
     </div>
   </section>

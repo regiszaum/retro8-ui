@@ -63,6 +63,9 @@ const stageCopy = computed(() =>
   ),
 );
 const ui = computed(() => ({
+  copyButton: localize("Copiar", "Copy"),
+  copySuccess: localize("Copiado", "Copied"),
+  copyUnavailable: localize("Indisponível", "Unavailable"),
   currentMarkup: localize("Markup atual", "Current markup"),
   previewLabel: localize("Prévia configurável", "Configurable preview"),
   quickStates: localize("Estados rápidos", "Quick states"),
@@ -2432,10 +2435,15 @@ watch(
           {{ stageCopy }}
         </p>
 
-        <div class="docs-generic-playground__markup">
-          <span class="r8-label">{{ ui.currentMarkup }}</span>
-          <pre class="docs-generic-playground__code"><code>{{ previewMarkup }}</code></pre>
-        </div>
+        <DocsPlaygroundMarkup
+          wrapper-class="docs-generic-playground__markup"
+          code-class="docs-generic-playground__code"
+          :label="ui.currentMarkup"
+          :code="previewMarkup"
+          :button-label="ui.copyButton"
+          :copied-label="ui.copySuccess"
+          :unavailable-label="ui.copyUnavailable"
+        />
       </div>
     </div>
   </section>
