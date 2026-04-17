@@ -44,7 +44,9 @@ jobs:
         working-directory: docs-site
         env:
           NUXT_APP_BASE_URL: /${{ github.event.repository.name }}/
-        run: npx nuxt build --preset github_pages
+        run: |
+          npx nuxt build --preset github_pages
+          echo "Nuxt build finished."
 
       - name: Debug generated output
         run: |
@@ -52,6 +54,10 @@ jobs:
           ls -la docs-site/.output || true
           ls -la docs-site/.output/public || true
           ls -la .output || true
+          ls -la docs-site/node_modules/.cache || true
+          ls -la docs-site/node_modules/.cache/nuxt || true
+          ls -la docs-site/node_modules/.cache/nuxt/.output || true
+          ls -la docs-site/node_modules/.cache/nuxt/.output/public || true
 
       - name: Prepare pages artifact
         run: |
@@ -66,17 +72,19 @@ jobs:
             OUTPUT_DIR=".output/public"
           elif [ -d docs-site/dist ]; then
             OUTPUT_DIR="docs-site/dist"
+          elif [ -d docs-site/node_modules/.cache/nuxt/.output/public ]; then
+            OUTPUT_DIR="docs-site/node_modules/.cache/nuxt/.output/public"
           fi
 
           if [ -z "${OUTPUT_DIR}" ]; then
-            OUTPUT_DIR="$(find . -type f -path '*/.output/public/index.html' -not -path '*/node_modules/*' -print -quit | xargs -r dirname || true)"
+            OUTPUT_DIR="$(find . -type f -path '*/.output/public/index.html' -print -quit | xargs -r dirname || true)"
           fi
 
           if [ -z "${OUTPUT_DIR}" ]; then
             echo "ERROR: no static output folder found."
-            echo "Expected docs-site/.output/public, .output/public or docs-site/dist"
-            find . -maxdepth 4 -type d -name '.output' -not -path '*/node_modules/*' || true
-            find . -maxdepth 4 -type f -name 'index.html' -not -path '*/node_modules/*' | sed -n '1,120p' || true
+            echo "Expected docs-site/.output/public, .output/public, docs-site/dist or cache output"
+            find . -maxdepth 6 -type d -name '.output' | sed -n '1,120p' || true
+            find . -maxdepth 6 -type f -name 'index.html' | sed -n '1,120p' || true
             ls -la docs-site
             ls -la . || true
             exit 2
