@@ -2286,51 +2286,283 @@ const formComponents = [
     name: "Input",
     group: "form",
     summary: l(
-      "Campo base para texto, select e textarea com foco visivel e sombra interna retro.",
-      "Base field for text, select and textarea with visible focus and an inset retro shadow.",
+      "Campo base para texto e textarea com shell opcional para clear, contador, toggle de senha e autosize.",
+      "Base text and textarea field with an optional shell for clear, counting, password toggle, and autosize.",
     ),
-    classes: ["r8-field", "r8-field--inline", "r8-label", "r8-help", "r8-input", "r8-input--invalid"],
+    classes: [
+      "r8-field",
+      "r8-field--inline",
+      "r8-label",
+      "r8-help",
+      "r8-input-shell",
+      "r8-input",
+      "r8-input__prefix",
+      "r8-input__suffix",
+      "r8-input__actions",
+      "r8-input__clear",
+      "r8-input__toggle",
+      "r8-input__count",
+      "r8-input--invalid",
+    ],
     preview: `<div class="docs-demo__stack">
   <label class="r8-field">
     <span class="r8-label">Pilot name</span>
-    <input class="r8-input" type="text" placeholder="PIX-07" />
-    <span class="r8-help">Use a short readable alias.</span>
+    <div class="r8-input-shell" data-r8-clearable="true" data-r8-word-limit="true">
+      <span class="r8-input__prefix">@</span>
+      <input class="r8-input" type="text" value="PIX-07 Vanguard" maxlength="18" placeholder="Enter callsign" />
+    </div>
+    <span class="r8-help">Clear and live count come from the optional shell runtime.</span>
   </label>
   <label class="r8-field">
-    <span class="r8-label">Notes</span>
-    <textarea class="r8-input" placeholder="No anomalies detected."></textarea>
+    <span class="r8-label">Access code</span>
+    <div class="r8-input-shell" data-r8-show-password="true">
+      <input class="r8-input" type="password" value="retro-88" placeholder="Enter access code" />
+    </div>
+  </label>
+  <label class="r8-field">
+    <span class="r8-label">Mission notes</span>
+    <textarea class="r8-input" data-r8-autosize="true" data-r8-min-rows="3" data-r8-max-rows="6" maxlength="96" placeholder="No anomalies detected.">No anomalies detected. Keep scanners warm and confirm route once the console sync finishes.</textarea>
   </label>
 </div>`,
+    code: `<label class="r8-field">
+  <span class="r8-label">Pilot name</span>
+  <div class="r8-input-shell" data-r8-clearable="true" data-r8-word-limit="true">
+    <span class="r8-input__prefix">@</span>
+    <input class="r8-input" type="text" maxlength="18" placeholder="Enter callsign" value="PIX-07 Vanguard" />
+  </div>
+  <span class="r8-help">Clear and live count come from the optional shell runtime.</span>
+</label>
+
+<label class="r8-field">
+  <span class="r8-label">Mission notes</span>
+  <textarea class="r8-input" data-r8-autosize="true" data-r8-min-rows="3" data-r8-max-rows="6" maxlength="96">No anomalies detected.</textarea>
+</label>`,
+    anatomy: ll(
+      [
+        "`r8-input` continua sendo a surface base para texto, senha, select e textarea.",
+        "`r8-input-shell` envolve o campo quando ele precisa de prefixo, sufixo, clear, contador ou toggle de senha.",
+        "`r8-input__prefix` e `r8-input__suffix` adicionam contexto curto sem trocar a semantica do input nativo.",
+        "`r8-input__actions` agrupa clear, toggle e contador no lado direito do shell.",
+        "`data-r8-autosize` deixa o textarea crescer com o conteudo sem um layout extra de framework.",
+      ],
+      [
+        "`r8-input` remains the base surface for text, password, select, and textarea fields.",
+        "`r8-input-shell` wraps the field when it needs prefix, suffix, clear, counting, or password reveal actions.",
+        "`r8-input__prefix` and `r8-input__suffix` add small context cues without changing the native input semantics.",
+        "`r8-input__actions` groups clear, reveal, and count affordances on the right side of the shell.",
+        "`data-r8-autosize` lets the textarea grow with its content without a framework-specific layout layer.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Mantenha `label` ou `aria-label` forte no campo, porque clear e toggle sao acoes auxiliares e nao substituem o nome acessivel principal.",
+        "Se usar contador, combine `maxlength` com texto de ajuda para que o limite nao apareca so como numero solto.",
+        "No modo senha, deixe o contexto do segredo claro no label para que o toggle nao fique ambiguo para teclado e leitores de tela.",
+        "Autosize melhora leitura, mas ainda vale limitar `max-rows` em blocos longos para o layout nao crescer sem controle.",
+      ],
+      [
+        "Keep a strong `label` or `aria-label` on the field because clear and reveal are helper actions, not the main accessible name.",
+        "When using a counter, pair `maxlength` with nearby help text so the limit does not appear as a stray number.",
+        "In password mode, make the secret context clear in the label so the toggle stays understandable to keyboard and screen-reader users.",
+        "Autosize improves reading, but it still helps to cap `max-rows` on longer blocks so the layout does not grow without control.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-input-shell / r8-input__prefix / r8-input__suffix",
+        description: l(
+          "Montam um shell opcional para adornos curtos e acoes auxiliares sem trocar o input nativo.",
+          "Build an optional shell for short adornments and helper actions without replacing the native input.",
+        ),
+      },
+      {
+        name: "data-r8-clearable / r8-input__clear",
+        description: l(
+          "Mostram um botao de clear quando o campo tem valor e o shell estiver habilitado para isso.",
+          "Show a clear button when the field has a value and the shell is configured for it.",
+        ),
+      },
+      {
+        name: "data-r8-show-password / r8-input__toggle",
+        description: l(
+          "Ativam o toggle declarativo de senha para alternar entre texto oculto e visivel.",
+          "Enable a declarative password toggle so the field can switch between hidden and visible text.",
+        ),
+      },
+      {
+        name: "data-r8-word-limit / r8-input__count",
+        description: l(
+          "Exibem o contador no shell quando `maxlength` estiver presente no input ou textarea.",
+          "Display a live counter inside the shell when `maxlength` is present on the input or textarea.",
+        ),
+      },
+      {
+        name: "data-r8-autosize / data-r8-min-rows / data-r8-max-rows",
+        description: l(
+          "Controlam o crescimento automatico do textarea sem depender de JS externo da aplicacao.",
+          "Control textarea autosizing without depending on extra app-side JavaScript.",
+        ),
+      },
+    ],
   },
   {
     id: "input-number",
     name: "Input Number",
     group: "form",
     summary: l(
-      "Controle numerico com botoes laterais e area central para contagens e quantidades.",
-      "Numeric control with side buttons and a central field for counts and quantities.",
+      "Controle numerico com limites, precision, step strictly e opcao de empilhar os controles na lateral direita.",
+      "Numeric control with limits, precision, step-strict behavior, and an option to stack controls on the right.",
     ),
     classes: ["r8-input-number", "r8-input-number__button", "r8-input-number__input"],
-    preview: `<div class="r8-input-number">
+    preview: `<div class="r8-input-number" data-r8-step-strictly="true" data-r8-precision="2" data-r8-controls-position="right">
   <button class="r8-input-number__button" type="button">-</button>
-  <input class="r8-input-number__input" type="number" value="8" />
+  <input class="r8-input-number__input" type="number" min="0" max="12" step="0.25" value="3.5" />
   <button class="r8-input-number__button" type="button">+</button>
 </div>`,
+    code: `<div class="r8-input-number" data-r8-step-strictly="true" data-r8-precision="2" data-r8-controls-position="right">
+  <button class="r8-input-number__button" type="button">-</button>
+  <input class="r8-input-number__input" type="number" min="0" max="12" step="0.25" value="3.5" />
+  <button class="r8-input-number__button" type="button">+</button>
+</div>`,
+    anatomy: ll(
+      [
+        "`r8-input-number` agrupa o campo nativo e os dois botoes de incremento sem esconder a semantica numerica original.",
+        "`r8-input-number__button` continua responsavel pelos passos declarativos e pelos limites min/max.",
+        "`r8-input-number__input` aceita digitacao manual e agora sincroniza melhor com precision e step strictly.",
+        "`data-r8-controls-position=\"right\"` reorganiza os botoes em uma coluna compacta, mais proxima do padrao de paines densos.",
+      ],
+      [
+        "`r8-input-number` groups the native field and both step buttons without hiding the original numeric semantics.",
+        "`r8-input-number__button` still owns the declarative stepping and min/max limits.",
+        "`r8-input-number__input` accepts manual typing and now syncs more cleanly with precision and step-strict alignment.",
+        "`data-r8-controls-position=\"right\"` rearranges the buttons into a compact column that fits denser panels.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Preserve `min`, `max` e `step` no input nativo para que teclado e validacao do browser continuem coerentes.",
+        "Quando usar precision, combine isso com texto de ajuda se os incrementos nao forem intuitivos no dominio do produto.",
+        "Se o numero tiver impacto critico, prefira limites estreitos e mensagens auxiliares em vez de depender so do bloqueio do botao.",
+      ],
+      [
+        "Preserve `min`, `max`, and `step` on the native input so keyboard behavior and browser validation stay coherent.",
+        "When using precision, pair it with nearby help text if the increment is not obvious in the product domain.",
+        "If the number is operationally sensitive, prefer tighter limits and helper copy instead of relying only on button blocking.",
+      ],
+    ),
+    api: [
+      {
+        name: "min / max / step",
+        description: l(
+          "Continuam definindo o intervalo nativo do campo e o tamanho de cada incremento lateral.",
+          "Still define the native field range and the size of each side-button increment.",
+        ),
+      },
+      {
+        name: "data-r8-precision",
+        description: l(
+          "Arredonda e formata o valor final com a quantidade declarativa de casas decimais.",
+          "Rounds and formats the final value with a declarative number of decimal places.",
+        ),
+      },
+      {
+        name: "data-r8-step-strictly",
+        description: l(
+          "Alinha a digitacao manual e os cliques ao grid do step, aproximando o comportamento do recorte mais util do Element Plus.",
+          "Aligns manual typing and button clicks to the step grid, matching the most useful slice of the Element Plus behavior.",
+        ),
+      },
+      {
+        name: "data-r8-controls-position",
+        description: l(
+          "Move os botoes para a lateral direita em uma coluna quando o layout pedir mais densidade.",
+          "Moves the buttons into a right-side column when the layout needs a denser control.",
+        ),
+      },
+    ],
   },
   {
     id: "input-tag",
     name: "Input Tag",
     group: "form",
     summary: l(
-      "Campo de tags para labels, filtros e chips curtos com remocao inline.",
-      "Tag entry field for labels, filters and short chips with inline removal.",
+      "Campo de tags com limite opcional, delimitadores configuraveis, clear all e remocao inline por clique ou backspace.",
+      "Tag entry field with optional limits, configurable delimiters, clear-all behavior, and inline removal by click or backspace.",
     ),
-    classes: ["r8-input-tag", "r8-input-tag__tag", "r8-input-tag__remove", "r8-input-tag__input"],
-    preview: `<div class="r8-input-tag">
-  <span class="r8-input-tag__tag">HUD <span class="r8-input-tag__remove">x</span></span>
-  <span class="r8-input-tag__tag">PIXEL <span class="r8-input-tag__remove">x</span></span>
-  <input class="r8-input-tag__input" type="text" value="add-tag" />
+    classes: [
+      "r8-input-tag",
+      "r8-input-tag__tag",
+      "r8-input-tag__label",
+      "r8-input-tag__remove",
+      "r8-input-tag__clear",
+      "r8-input-tag__input",
+    ],
+    preview: `<div class="r8-input-tag" data-r8-max-tags="5" data-r8-delimiters=",;" data-r8-clearable="true">
+  <span class="r8-input-tag__tag"><span class="r8-input-tag__label">HUD</span><button class="r8-input-tag__remove" type="button" aria-label="Remove HUD">x</button></span>
+  <span class="r8-input-tag__tag"><span class="r8-input-tag__label">PIXEL</span><button class="r8-input-tag__remove" type="button" aria-label="Remove PIXEL">x</button></span>
+  <input class="r8-input-tag__input" type="text" placeholder="Add tag and press Enter" />
 </div>`,
+    code: `<div class="r8-input-tag" data-r8-max-tags="5" data-r8-delimiters=",;" data-r8-clearable="true">
+  <span class="r8-input-tag__tag"><span class="r8-input-tag__label">HUD</span><button class="r8-input-tag__remove" type="button" aria-label="Remove HUD">x</button></span>
+  <span class="r8-input-tag__tag"><span class="r8-input-tag__label">PIXEL</span><button class="r8-input-tag__remove" type="button" aria-label="Remove PIXEL">x</button></span>
+  <input class="r8-input-tag__input" type="text" placeholder="Add tag and press Enter" />
+</div>`,
+    anatomy: ll(
+      [
+        "`r8-input-tag` continua sendo o container flexivel das chips e do input nativo para novas entradas.",
+        "`r8-input-tag__label` separa o texto da tag do affordance de remocao, deixando o DOM mais claro do que o markup anterior em string.",
+        "`r8-input-tag__remove` remove a chip focada e `r8-input-tag__clear` limpa o conjunto inteiro quando habilitado.",
+        "`data-r8-delimiters` permite transformar listas coladas ou digitadas em varias tags sem sair do proprio campo.",
+      ],
+      [
+        "`r8-input-tag` remains the flexible container for both chips and the native input used for new values.",
+        "`r8-input-tag__label` separates chip text from the removal affordance, making the DOM clearer than the older string-based markup.",
+        "`r8-input-tag__remove` removes the focused chip and `r8-input-tag__clear` clears the whole set when enabled.",
+        "`data-r8-delimiters` lets pasted or typed lists become multiple tags without leaving the field.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Use placeholder curto e contextual, porque a acao principal continua sendo adicionar itens ao conjunto e nao um campo de busca generico.",
+        "Cada botao de remocao deve manter `aria-label` com o valor da tag para nao soar como varios `x` identicos.",
+        "Quando limitar o total de tags, deixe esse contrato claro em texto de ajuda perto do campo.",
+      ],
+      [
+        "Use a short, contextual placeholder because the main action is adding items to a set, not entering a generic search.",
+        "Each removal button should keep an `aria-label` with the tag value so it does not sound like a row of identical `x` controls.",
+        "When limiting the total number of tags, make that contract visible in nearby helper copy.",
+      ],
+    ),
+    api: [
+      {
+        name: "data-r8-max-tags",
+        description: l(
+          "Limita o total de chips aceitas sem confundir esse teto com `maxlength` do input interno.",
+          "Limits the total accepted chips without confusing that cap with the inner input `maxlength`.",
+        ),
+      },
+      {
+        name: "data-r8-delimiters",
+        description: l(
+          "Define caracteres como `,` e `;` para quebrar uma entrada em varias tags no Enter, na digitacao ou no paste.",
+          "Defines characters such as `,` and `;` so a single entry can split into multiple tags on Enter, typing, or paste.",
+        ),
+      },
+      {
+        name: "data-r8-clearable / r8-input-tag__clear",
+        description: l(
+          "Mostram um botao de clear all no proprio campo quando houver tags para remover.",
+          "Show a clear-all button inside the field when there are tags to remove.",
+        ),
+      },
+      {
+        name: "r8:input-tag-change",
+        description: l(
+          "Emite o conjunto atualizado de valores depois de adicionar, remover ou limpar tags.",
+          "Emits the updated value set after adding, removing, or clearing tags.",
+        ),
+      },
+    ],
   },
   {
     id: "radio",
@@ -2378,15 +2610,17 @@ const formComponents = [
       "Choice list with a compact trigger and retro options inside a highlighted panel.",
     ),
     classes: ["r8-select", "r8-select__trigger", "r8-select__menu", "r8-select__option"],
-    preview: `<div class="r8-select">
-  <button class="r8-select__trigger" type="button">
-    <span data-r8-choice-display>Explorer</span>
-    <span class="r8-choice__caret" aria-hidden="true">&gt;</span>
-  </button>
-  <div class="r8-select__menu" hidden>
-    <button class="r8-select__option" type="button" data-r8-value="engineer">Engineer</button>
-    <button class="r8-select__option" type="button" data-r8-value="medic">Medic</button>
-    <button class="r8-select__option is-selected" type="button" data-r8-value="explorer">Explorer</button>
+    preview: `<div class="docs-demo__stack docs-demo__stack--select">
+  <div class="r8-select">
+    <button class="r8-select__trigger" type="button">
+      <span data-r8-choice-display>Explorer</span>
+      <span class="r8-choice__caret" aria-hidden="true">&gt;</span>
+    </button>
+    <div class="r8-select__menu" hidden>
+      <button class="r8-select__option" type="button" data-r8-value="engineer">Engineer</button>
+      <button class="r8-select__option" type="button" data-r8-value="medic">Medic</button>
+      <button class="r8-select__option is-selected" type="button" data-r8-value="explorer">Explorer</button>
+    </div>
   </div>
 </div>`,
     code: `<div class="r8-select">
@@ -2488,17 +2722,234 @@ const formComponents = [
     name: "Upload",
     group: "form",
     summary: l(
-      "Area de dropzone e lista de arquivos para fluxos de envio controlados pelo host app.",
-      "Dropzone area and file list for upload flows controlled by the host app.",
+      "Shell de upload com dropzone, variantes de lista e estados de arquivo para fluxos controlados pela aplicacao host.",
+      "Upload shell with a dropzone, list variants, and file states for flows controlled by the host app.",
     ),
-    classes: ["r8-upload", "r8-upload__dropzone", "r8-upload__list", "r8-upload__file"],
-    preview: `<div class="r8-upload">
-  <div class="r8-upload__dropzone">Drop files here</div>
-  <div class="r8-upload__list">
-    <div class="r8-upload__file"><span>retro8.css</span><span>18 KB</span></div>
-    <div class="r8-upload__file"><span>sprite-sheet.png</span><span>92 KB</span></div>
+    classes: [
+      "r8-upload",
+      "r8-upload--picture",
+      "r8-upload--avatar",
+      "r8-upload__toolbar",
+      "r8-upload__copy",
+      "r8-upload__title",
+      "r8-upload__input",
+      "r8-upload__dropzone",
+      "r8-upload__tip",
+      "r8-upload__list",
+      "r8-upload__file",
+      "r8-upload__thumb",
+      "r8-upload__meta",
+      "r8-upload__name",
+      "r8-upload__details",
+      "r8-upload__progress",
+      "r8-upload__actions",
+      "r8-upload__action",
+    ],
+    preview: `<div class="docs-demo__stack docs-demo__stack--upload">
+  <div
+    class="r8-upload"
+    accept=".png,.jpg,.jpeg,.zip"
+    multiple
+    data-r8-upload-preview-label="Preview"
+    data-r8-upload-remove-label="Remove"
+    data-r8-upload-selected-label="Selected"
+  >
+    <div class="r8-upload__toolbar">
+      <div class="r8-upload__copy">
+        <strong class="r8-upload__title">Mission assets</strong>
+        <span class="r8-upload__tip">PNG, JPG or ZIP up to 8 MB. The host app validates and sends files.</span>
+      </div>
+      <input class="r8-upload__input" type="file" accept=".png,.jpg,.jpeg,.zip" multiple />
+      <button class="r8-btn r8-btn--sm r8-btn--primary" data-r8-upload-trigger="button" type="button">Choose files</button>
+    </div>
+    <div class="r8-upload__dropzone" role="button" tabindex="0">
+      <strong>Drop files here</strong>
+      <span class="r8-text r8-text--sm r8-text--muted">Or paste, browse, or replace the queue.</span>
+    </div>
+    <div class="r8-upload__list">
+      <div class="r8-upload__file" data-r8-upload-state="uploading" aria-busy="true" style="--r8-upload-progress: 72%;">
+        <div class="r8-upload__thumb">PNG</div>
+        <div class="r8-upload__meta">
+          <strong class="r8-upload__name">hero-banner.png</strong>
+          <div class="r8-upload__details">
+            <span>2.4 MB</span>
+            <span>Uploading</span>
+          </div>
+          <div class="r8-upload__progress"><span></span></div>
+        </div>
+        <div class="r8-upload__actions">
+          <button class="r8-upload__action" type="button">Pause</button>
+          <button class="r8-upload__action" data-r8-upload-action="remove" type="button">Remove</button>
+        </div>
+      </div>
+      <div class="r8-upload__file" data-r8-upload-state="success" style="--r8-upload-progress: 100%;">
+        <div class="r8-upload__thumb">ZIP</div>
+        <div class="r8-upload__meta">
+          <strong class="r8-upload__name">release-bundle.zip</strong>
+          <div class="r8-upload__details">
+            <span>18 MB</span>
+            <span>Ready</span>
+          </div>
+        </div>
+        <div class="r8-upload__actions">
+          <button class="r8-upload__action" type="button">Preview</button>
+          <button class="r8-upload__action" data-r8-upload-action="remove" type="button">Remove</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="r8-upload r8-upload--picture">
+    <div class="r8-upload__list">
+      <div class="r8-upload__file" data-r8-upload-state="success">
+        <div class="r8-upload__thumb">ART</div>
+        <div class="r8-upload__meta">
+          <strong class="r8-upload__name">cover-art.png</strong>
+          <div class="r8-upload__details">
+            <span>512 KB</span>
+            <span>Thumbnail list</span>
+          </div>
+        </div>
+        <div class="r8-upload__actions">
+          <button class="r8-upload__action" type="button">View</button>
+        </div>
+      </div>
+      <div class="r8-upload__file" data-r8-upload-state="error" aria-invalid="true" style="--r8-upload-progress: 24%;">
+        <div class="r8-upload__thumb">JPG</div>
+        <div class="r8-upload__meta">
+          <strong class="r8-upload__name">pilot-portrait.jpg</strong>
+          <div class="r8-upload__details">
+            <span>1.1 MB</span>
+            <span>Retry needed</span>
+          </div>
+          <div class="r8-upload__progress"><span></span></div>
+        </div>
+        <div class="r8-upload__actions">
+          <button class="r8-upload__action" type="button">Retry</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>`,
+    code: `<div
+  class="r8-upload"
+  accept=".png,.jpg,.jpeg,.zip"
+  multiple
+  data-r8-upload-preview-label="Preview"
+  data-r8-upload-remove-label="Remove"
+  data-r8-upload-selected-label="Selected"
+>
+  <div class="r8-upload__toolbar">
+    <div class="r8-upload__copy">
+      <strong class="r8-upload__title">Mission assets</strong>
+      <span class="r8-upload__tip">PNG, JPG or ZIP up to 8 MB. The host app validates and sends files.</span>
+    </div>
+    <input class="r8-upload__input" type="file" accept=".png,.jpg,.jpeg,.zip" multiple />
+    <button class="r8-btn r8-btn--sm r8-btn--primary" data-r8-upload-trigger="button" type="button">Choose files</button>
+  </div>
+  <div class="r8-upload__dropzone" role="button" tabindex="0">
+    <strong>Drop files here</strong>
+    <span class="r8-text r8-text--sm r8-text--muted">Or paste, browse, or replace the queue.</span>
+  </div>
+  <div class="r8-upload__list">
+    <div class="r8-upload__file" data-r8-upload-state="uploading" aria-busy="true" style="--r8-upload-progress: 72%;">
+      <div class="r8-upload__thumb">PNG</div>
+      <div class="r8-upload__meta">
+        <strong class="r8-upload__name">hero-banner.png</strong>
+        <div class="r8-upload__details">
+          <span>2.4 MB</span>
+          <span>Uploading</span>
+        </div>
+        <div class="r8-upload__progress"><span></span></div>
+      </div>
+      <div class="r8-upload__actions">
+        <button class="r8-upload__action" type="button">Pause</button>
+        <button class="r8-upload__action" data-r8-upload-action="remove" type="button">Remove</button>
+      </div>
+    </div>
+  </div>
+</div>`,
+    anatomy: ll(
+      [
+        "`r8-upload` organiza trigger, dropzone, dicas e lista, mas continua deixando validacao, input nativo e transporte na aplicacao host.",
+        "`r8-upload__toolbar`, `r8-upload__copy`, `r8-upload__title`, `r8-upload__tip` e `r8-upload__input` agrupam contexto, limite, input nativo escondido e o CTA para escolher itens.",
+        "`r8-upload__dropzone` e a superficie clicavel ou focavel para drop, browse ou replace queue, com suporte visual a drag ativo.",
+        "`r8-upload__list` abriga os arquivos e pode virar grade com `r8-upload--picture` ou shell unico com `r8-upload--avatar`.",
+        "Cada `r8-upload__file` pode combinar `r8-upload__thumb`, `r8-upload__meta`, `r8-upload__details`, `r8-upload__progress` e `r8-upload__actions` para representar fila, sucesso, erro ou retry.",
+      ],
+      [
+        "`r8-upload` organizes the trigger, dropzone, hints, and file list while keeping validation, native input, and transport in the host app.",
+        "`r8-upload__toolbar`, `r8-upload__copy`, `r8-upload__title`, `r8-upload__tip`, and `r8-upload__input` group context, file limits, the hidden native input, and the primary choose-files CTA.",
+        "`r8-upload__dropzone` is the clickable or focusable surface for drop, browse, or queue replacement, with visual support for active drag state.",
+        "`r8-upload__list` holds the queued files and can switch to a thumbnail grid with `r8-upload--picture` or a single-image shell with `r8-upload--avatar`.",
+        "Each `r8-upload__file` can combine `r8-upload__thumb`, `r8-upload__meta`, `r8-upload__details`, `r8-upload__progress`, and `r8-upload__actions` to represent queued, success, error, or retry states.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Conecte a dropzone a um `input[type=file]` real e use `aria-describedby` para anunciar formatos aceitos, limite e feedback de validacao.",
+        "Reflita indisponibilidade tanto no input nativo quanto no shell visual com `disabled` ou `aria-disabled=\"true\"`, evitando sugerir drop em um estado travado.",
+        "Marque arquivos em envio com `aria-busy=\"true\"` e itens com falha usando `aria-invalid=\"true\"` ou `data-r8-upload-state=\"error\"`.",
+        "Botoes de preview, retry e remove precisam de labels claros e ordem de foco consistente para keyboard e leitor de tela.",
+      ],
+      [
+        "Connect the dropzone to a real `input[type=file]` and use `aria-describedby` so accepted formats, limits, and validation feedback are announced.",
+        "Reflect unavailable state on both the native input and the visual shell with `disabled` or `aria-disabled=\"true\"`, so drag is not implied when locked.",
+        "Mark uploading files with `aria-busy=\"true\"` and failed items with `aria-invalid=\"true\"` or `data-r8-upload-state=\"error\"`.",
+        "Preview, retry, and remove buttons need explicit labels and a predictable focus order for keyboard and screen reader users.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-upload / r8-upload--picture / r8-upload--avatar",
+        description: l(
+          "Shell base com variantes para lista linear, grade de thumbs ou uploader de avatar em um unico slot.",
+          "Base shell with variants for linear lists, thumbnail grids, or a single-slot avatar uploader.",
+        ),
+      },
+      {
+        name: "r8-upload__toolbar / __copy / __title / __tip / __input",
+        description: l(
+          "Agrupam trigger, limite, input nativo escondido e mensagens auxiliares sem acoplar a logica de envio ao estilo.",
+          "Group the trigger, limits, hidden native input, and helper copy without coupling transfer logic to the styling layer.",
+        ),
+      },
+      {
+        name: "data-r8-drag-active / .is-active",
+        description: l(
+          "Expande a leitura do estado de dragover no shell para destacar a dropzone enquanto o host app acompanha eventos de drag.",
+          "Surfaces dragover state on the shell so the dropzone can highlight while the host app tracks drag events.",
+        ),
+      },
+      {
+        name: "r8-upload__file + data-r8-upload-state",
+        description: l(
+          "Cada arquivo pode declarar `queued`, `uploading`, `success` ou `error`, combinando tambem `aria-busy` e `aria-invalid`.",
+          "Each file can declare `queued`, `uploading`, `success`, or `error`, and can also pair that with `aria-busy` or `aria-invalid`.",
+        ),
+      },
+      {
+        name: "r8-upload__thumb / __meta / __progress / __actions",
+        description: l(
+          "Partes opcionais para thumbs, metadados, progresso visual e acoes como preview, retry, pause ou remove.",
+          "Optional parts for thumbnails, metadata, visual progress, and actions such as preview, retry, pause, or remove.",
+        ),
+      },
+      {
+        name: "data-r8-upload-preview-label / remove-label / selected-label",
+        description: l(
+          "Customiza os labels usados pelo runtime local para preview, remove e status selecionado quando a fila e renderizada automaticamente.",
+          "Customizes the labels used by the local runtime for preview, remove, and selected status when the queue is rendered automatically.",
+        ),
+      },
+      {
+        name: "--r8-upload-*",
+        description: l(
+          "Custom properties ajustam altura minima, thumb size, accent local e progresso preenchido por arquivo.",
+          "Custom properties tune minimum height, thumbnail size, local accent, and per-file filled progress.",
+        ),
+      },
+    ],
   },
 ] satisfies CatalogEntry[];
 
@@ -2508,14 +2959,96 @@ const dataComponents = [
     name: "Avatar",
     group: "data",
     summary: l(
-      "Avatar quadrado e pixelado para perfis, squads e blocos de identidade.",
-      "Square pixel-like avatar for profiles, squads and identity blocks.",
+      "Avatar pixelado para perfis e squads, com suporte a texto, imagem interna e fallback curto quando a midia falha.",
+      "Pixel-like avatar for profiles and squads, with support for text, inner images, and a short fallback when media fails.",
     ),
-    classes: ["r8-avatar", "r8-avatar--lg"],
-    preview: `<div class="r8-cluster">
-  <span class="r8-avatar">PX</span>
-  <span class="r8-avatar r8-avatar--lg">R8</span>
+    classes: ["r8-avatar", "r8-avatar--sm", "r8-avatar--lg", "r8-avatar--round", "r8-avatar__fallback"],
+    preview: `<div class="docs-demo__stack">
+  <div class="r8-cluster">
+    <span class="r8-avatar">PX</span>
+    <span class="r8-avatar r8-avatar--lg">R8</span>
+    <span class="r8-avatar r8-avatar--round" data-r8-avatar-fallback="P1">
+      <img src="/imgs/p1.png" alt="Pilot one" />
+    </span>
+    <span class="r8-avatar r8-avatar--lg" data-r8-avatar-fallback="P2" data-r8-fit="contain">
+      <img src="/imgs/p2.png" alt="Pilot two" />
+    </span>
+    <span class="r8-avatar r8-avatar--round" data-r8-avatar-fallback="ER">
+      <img src="/missing-avatar.png" alt="Broken avatar example" />
+    </span>
+  </div>
 </div>`,
+    code: `<div class="r8-cluster">
+  <span class="r8-avatar">PX</span>
+
+  <span class="r8-avatar r8-avatar--round" data-r8-avatar-fallback="P1">
+    <img src="/imgs/p1.png" alt="Pilot one" />
+  </span>
+
+  <span class="r8-avatar r8-avatar--lg" data-r8-avatar-fallback="P2" data-r8-fit="contain">
+    <img src="/imgs/p2.png" alt="Pilot two" />
+  </span>
+
+  <span class="r8-avatar r8-avatar--round" data-r8-avatar-fallback="ER">
+    <img src="/missing-avatar.png" alt="Broken avatar example" />
+  </span>
+</div>`,
+    anatomy: ll(
+      [
+        "`r8-avatar` e o wrapper base para textos curtos, imagens internas e blocos de identidade com a mesma moldura pixelada.",
+        "`r8-avatar--sm`, `r8-avatar--lg` e `r8-avatar--round` ajustam escala e shape sem mudar o markup principal.",
+        "Quando houver `<img>` interno, o runtime tenta exibir a midia; se ela falhar ou vier vazia, usa `data-r8-avatar-fallback` com ate 2 caracteres.",
+        "`data-r8-fit` aplica `cover`, `contain`, `fill`, `none` ou `scale-down` para controlar como a imagem ocupa a moldura.",
+      ],
+      [
+        "`r8-avatar` is the base wrapper for short text, inner images, and identity blocks with the same pixel frame.",
+        "`r8-avatar--sm`, `r8-avatar--lg`, and `r8-avatar--round` adjust scale and shape without changing the core markup.",
+        "When an inner `<img>` is present, the runtime tries to display it; if it fails or comes empty, it falls back to `data-r8-avatar-fallback` with up to 2 characters.",
+        "`data-r8-fit` applies `cover`, `contain`, `fill`, `none`, or `scale-down` to control how the image fills the frame.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Forneca `alt` util nas imagens de avatar quando elas carregarem informacao relevante; se a foto for decorativa, deixe `alt=\"\"` e rotule o contexto ao redor.",
+        "Use `data-r8-avatar-fallback` como fallback curto, mas nao dependa apenas das iniciais para identificar a pessoa em contextos importantes.",
+        "Se o avatar for clicavel, envolva-o em um link ou botao semanticamente correto em vez de adicionar interacao no span puro.",
+      ],
+      [
+        "Provide meaningful `alt` text on avatar images when they carry relevant identity information; if the photo is decorative, use `alt=\"\"` and label surrounding context instead.",
+        "Use `data-r8-avatar-fallback` as a short fallback, but do not rely on initials alone to identify a person in critical flows.",
+        "If the avatar should be clickable, wrap it in a semantic link or button instead of making the plain span interactive.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-avatar / --sm / --lg / --round",
+        description: l(
+          "Wrapper base com variacoes de tamanho e shape para texto curto ou imagem interna.",
+          "Base wrapper with size and shape variants for short text or inner images.",
+        ),
+      },
+      {
+        name: "data-r8-avatar-fallback",
+        description: l(
+          "Define ate 2 caracteres para o fallback quando a imagem falhar, estiver vazia ou nao existir.",
+          "Defines up to 2 characters for the fallback when the image fails, is empty, or does not exist.",
+        ),
+      },
+      {
+        name: "data-r8-fit",
+        description: l(
+          "Controla o `object-fit` da imagem com valores como `cover`, `contain`, `fill`, `none` e `scale-down`.",
+          "Controls the image `object-fit` with values such as `cover`, `contain`, `fill`, `none`, and `scale-down`.",
+        ),
+      },
+      {
+        name: "img + alt",
+        description: l(
+          "Suporta imagem interna com `alt`; o runtime alterna para o fallback automaticamente se a midia falhar.",
+          "Supports an inner image with `alt`; the runtime automatically switches to the fallback if the media fails.",
+        ),
+      },
+    ],
   },
   {
     id: "badge",
@@ -2576,172 +3109,1012 @@ const dataComponents = [
     name: "Carousel",
     group: "data",
     summary: l(
-      "Trilho horizontal de slides para banners, destaques e showcases visuais.",
-      "Horizontal slide track for banners, highlights and visual showcases.",
+      "Carrossel para banners e galerias curtas, com setas laterais, dots e slides com imagem ou conteudo livre.",
+      "Carousel for banners and short galleries, with side arrows, dots, and slides that can hold images or custom content.",
     ),
-    classes: ["r8-carousel", "r8-carousel__viewport", "r8-carousel__track", "r8-carousel__slide", "r8-carousel__dots", "r8-carousel__dot"],
-    preview: `<div class="r8-carousel">
+    classes: [
+      "r8-carousel",
+      "r8-carousel__viewport",
+      "r8-carousel__track",
+      "r8-carousel__slide",
+      "r8-carousel__arrow",
+      "r8-carousel__media",
+      "r8-carousel__caption",
+      "r8-carousel__dots",
+      "r8-carousel__dot",
+    ],
+    preview: `<div class="r8-carousel docs-preview__carousel" data-r8-arrows="always">
   <div class="r8-carousel__viewport">
+    <button class="r8-carousel__arrow r8-carousel__arrow--prev" data-r8-direction="prev" type="button" aria-label="Previous slide">&lt;</button>
+    <button class="r8-carousel__arrow r8-carousel__arrow--next" data-r8-direction="next" type="button" aria-label="Next slide">&gt;</button>
     <div class="r8-carousel__track">
-      <article class="r8-carousel__slide">Slide 01</article>
-      <article class="r8-carousel__slide" hidden>Slide 02</article>
-      <article class="r8-carousel__slide" hidden>Slide 03</article>
+      <article class="r8-carousel__slide">
+        <figure class="r8-carousel__media">
+          <img src="/imgs/carousel1.png" alt="Retro8 UI command center banner" />
+        </figure>
+        <div class="r8-carousel__caption">
+          <strong>Mission control</strong>
+          <span class="r8-text r8-text--sm r8-text--muted">Wide hero banners, covers and featured releases.</span>
+        </div>
+      </article>
+      <article class="r8-carousel__slide" hidden>
+        <figure class="r8-carousel__media">
+          <img src="/imgs/carousel2.png" alt="Retro8 UI pixel interface showcase" />
+        </figure>
+        <div class="r8-carousel__caption">
+          <strong>Pixel showcase</strong>
+          <span class="r8-text r8-text--sm r8-text--muted">Image-first slides still support captions and mixed content.</span>
+        </div>
+      </article>
+      <article class="r8-carousel__slide" hidden>
+        <figure class="r8-carousel__media">
+          <img src="/imgs/carousel3.png" alt="Retro8 UI product highlight banner" />
+        </figure>
+        <div class="r8-carousel__caption">
+          <strong>Product highlight</strong>
+          <span class="r8-text r8-text--sm r8-text--muted">Keep navigation compact with dots and left or right arrows.</span>
+        </div>
+      </article>
     </div>
   </div>
   <div class="r8-carousel__dots">
-    <span class="r8-carousel__dot is-active"></span>
-    <span class="r8-carousel__dot"></span>
-    <span class="r8-carousel__dot"></span>
+    <button class="r8-carousel__dot is-active" type="button" aria-label="Go to slide 1"></button>
+    <button class="r8-carousel__dot" type="button" aria-label="Go to slide 2"></button>
+    <button class="r8-carousel__dot" type="button" aria-label="Go to slide 3"></button>
   </div>
 </div>`,
+    code: `<div class="r8-carousel" data-r8-arrows="always" data-r8-autoplay="true" data-r8-interval="3200">
+  <div class="r8-carousel__viewport">
+    <button class="r8-carousel__arrow r8-carousel__arrow--prev" data-r8-direction="prev" type="button" aria-label="Previous slide">&lt;</button>
+    <button class="r8-carousel__arrow r8-carousel__arrow--next" data-r8-direction="next" type="button" aria-label="Next slide">&gt;</button>
+
+    <div class="r8-carousel__track">
+      <article class="r8-carousel__slide">
+        <figure class="r8-carousel__media">
+          <img src="/imgs/carousel1.png" alt="Launch trailer" />
+        </figure>
+        <div class="r8-carousel__caption">
+          <strong>Launch trailer</strong>
+          <span class="r8-text r8-text--sm r8-text--muted">Hero banner with image and caption.</span>
+        </div>
+      </article>
+
+      <article class="r8-carousel__slide" hidden>
+        <figure class="r8-carousel__media">
+          <img src="/imgs/carousel2.png" alt="Dashboard preview" />
+        </figure>
+        <div class="r8-carousel__caption">
+          <strong>Dashboard preview</strong>
+          <span class="r8-text r8-text--sm r8-text--muted">Slides can mix images, text and actions.</span>
+        </div>
+      </article>
+
+      <article class="r8-carousel__slide" hidden>
+        <figure class="r8-carousel__media">
+          <img src="/imgs/carousel3.png" alt="Release spotlight" />
+        </figure>
+        <div class="r8-carousel__caption">
+          <strong>Release spotlight</strong>
+          <span class="r8-text r8-text--sm r8-text--muted">Autoplay is optional and pauses on hover or focus.</span>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <div class="r8-carousel__dots">
+    <button class="r8-carousel__dot is-active" type="button" aria-label="Go to slide 1"></button>
+    <button class="r8-carousel__dot" type="button" aria-label="Go to slide 2"></button>
+    <button class="r8-carousel__dot" type="button" aria-label="Go to slide 3"></button>
+  </div>
+</div>`,
+    anatomy: ll(
+      [
+        "`r8-carousel` organiza viewport, trilho, slides, setas e dots em um shell unico para banners ou galerias curtas.",
+        "`r8-carousel__viewport` delimita a area visivel, enquanto `r8-carousel__track` guarda os slides que o runtime alterna usando `hidden`.",
+        "`r8-carousel__arrow` com `data-r8-direction=\"prev|next\"` habilita navegacao lateral; `r8-carousel__dot` permite salto direto para um slide.",
+        "`r8-carousel__media` e `r8-carousel__caption` ajudam a montar slides com imagem e legenda sem depender de markup extra fora do componente.",
+      ],
+      [
+        "`r8-carousel` groups the viewport, track, slides, arrows, and dots into one shell for banners or short galleries.",
+        "`r8-carousel__viewport` defines the visible area, while `r8-carousel__track` holds the slides that the runtime swaps using `hidden`.",
+        "`r8-carousel__arrow` with `data-r8-direction=\"prev|next\"` enables side navigation, and `r8-carousel__dot` jumps directly to a slide.",
+        "`r8-carousel__media` and `r8-carousel__caption` help build image-first slides with captions without extra wrapper markup outside the component.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Forneca `alt` util nas imagens quando o slide depender delas para contexto; se forem decorativas, use `alt=\"\"` e mantenha a legenda textual no slide.",
+        "As setas devem continuar sendo botoes reais com `aria-label`, e os dots precisam permanecer focaveis para navegacao por teclado.",
+        "Evite autoplay agressivo em carrosseis com informacao critica; se usar `data-r8-autoplay`, mantenha tempo suficiente para leitura.",
+      ],
+      [
+        "Provide meaningful `alt` text on slide images when the image carries context; if it is decorative, use `alt=\"\"` and keep textual captioning in the slide.",
+        "Arrows should remain real buttons with `aria-label`, and dots should stay focusable for keyboard navigation.",
+        "Avoid aggressive autoplay for critical information; if you use `data-r8-autoplay`, keep enough time for reading.",
+      ],
+    ),
+    api: [
+      {
+        name: "data-r8-autoplay / data-r8-interval",
+        description: l(
+          "Liga a rotacao automatica e controla o intervalo em milissegundos.",
+          "Enables automatic rotation and controls the interval in milliseconds.",
+        ),
+      },
+      {
+        name: "data-r8-arrows",
+        description: l(
+          "Controla a visibilidade das setas com `always`, `hover` ou `none`.",
+          "Controls arrow visibility with `always`, `hover`, or `none`.",
+        ),
+      },
+      {
+        name: "r8-carousel__arrow + data-r8-direction",
+        description: l(
+          "Botoes opcionais para navegar para tras ou para frente dentro do mesmo viewport.",
+          "Optional buttons for moving backward or forward inside the same viewport.",
+        ),
+      },
+      {
+        name: "--r8-carousel-height / --r8-carousel-media-fit",
+        description: l(
+          "Ajusta a altura do bloco e como as imagens ocupam a area do slide.",
+          "Adjusts the block height and how images fill the slide area.",
+        ),
+      },
+    ],
   },
   {
     id: "collapse",
     name: "Collapse",
     group: "data",
     summary: l(
-      "Acordeao visual para blocos expansivos, FAQs e configuracoes densas.",
-      "Visual accordion for expandable blocks, FAQs and dense settings.",
+      "Blocos expansivos para FAQs, settings e grupos densos, com accordion, titulo rico, icone customizavel e estado desabilitado por item.",
+      "Expandable sections for FAQs, settings, and dense groups, with accordion mode, rich titles, custom icons, and per-item disabled state.",
     ),
-    classes: ["r8-collapse", "r8-collapse__item", "r8-collapse__header", "r8-collapse__body"],
-    preview: `<div class="r8-collapse">
+    classes: [
+      "r8-collapse",
+      "r8-collapse__item",
+      "r8-collapse__header",
+      "r8-collapse__copy",
+      "r8-collapse__title",
+      "r8-collapse__meta",
+      "r8-collapse__icon",
+      "r8-collapse__body",
+    ],
+    preview: `<div class="r8-collapse" data-r8-accordion="true" data-r8-icon-position="left">
   <section class="r8-collapse__item is-open">
-    <div class="r8-collapse__header">
-      <strong>Display settings</strong>
-      <span>+</span>
+    <button class="r8-collapse__header" type="button" aria-expanded="true">
+      <span class="r8-collapse__copy">
+        <span class="r8-collapse__title">Display settings</span>
+        <span class="r8-collapse__meta">Scanlines, palette and contrast tuning.</span>
+      </span>
+      <span class="r8-collapse__icon" aria-hidden="true">&gt;</span>
+    </button>
+    <div class="r8-collapse__body">
+      Contrast presets, motion reduction, and palette overrides stay grouped in one readable block.
     </div>
-    <div class="r8-collapse__body">Scanlines, palette and contrast controls.</div>
   </section>
   <section class="r8-collapse__item">
-    <div class="r8-collapse__header">
-      <strong>Accessibility settings</strong>
-      <span>+</span>
-    </div>
+    <button class="r8-collapse__header" type="button" aria-expanded="false">
+      <span class="r8-collapse__copy">
+        <span class="r8-collapse__title">Accessibility settings</span>
+        <span class="r8-collapse__meta">Focus rings, readable copy and motion fallback.</span>
+      </span>
+      <span class="r8-collapse__icon" aria-hidden="true">&gt;</span>
+    </button>
     <div class="r8-collapse__body" hidden>Focus rings, motion fallback and contrast presets.</div>
   </section>
+  <section class="r8-collapse__item is-disabled" data-r8-disabled="true" aria-disabled="true">
+    <button class="r8-collapse__header" type="button" aria-expanded="false" aria-disabled="true">
+      <span class="r8-collapse__copy">
+        <span class="r8-collapse__title">Audit log</span>
+        <span class="r8-collapse__meta">Locked until the current sync finishes.</span>
+      </span>
+      <span class="r8-collapse__icon" aria-hidden="true">&gt;</span>
+    </button>
+    <div class="r8-collapse__body" hidden>Disabled sections stay visible in the structure without allowing interaction.</div>
+  </section>
 </div>`,
+    code: `<div class="r8-collapse" data-r8-accordion="true" data-r8-icon-position="left">
+  <section class="r8-collapse__item is-open">
+    <button class="r8-collapse__header" type="button" aria-expanded="true">
+      <span class="r8-collapse__copy">
+        <span class="r8-collapse__title">Display settings</span>
+        <span class="r8-collapse__meta">Scanlines, palette and contrast tuning.</span>
+      </span>
+      <span class="r8-collapse__icon" aria-hidden="true">&gt;</span>
+    </button>
+    <div class="r8-collapse__body">
+      Contrast presets, motion reduction, and palette overrides stay grouped in one readable block.
+    </div>
+  </section>
+
+  <section class="r8-collapse__item">
+    <button class="r8-collapse__header" type="button" aria-expanded="false">
+      <span class="r8-collapse__copy">
+        <span class="r8-collapse__title">Accessibility settings</span>
+        <span class="r8-collapse__meta">Focus rings, readable copy and motion fallback.</span>
+      </span>
+      <span class="r8-collapse__icon" aria-hidden="true">&gt;</span>
+    </button>
+    <div class="r8-collapse__body" hidden>
+      Focus rings, motion fallback and contrast presets.
+    </div>
+  </section>
+
+  <section class="r8-collapse__item is-disabled" data-r8-disabled="true" aria-disabled="true">
+    <button class="r8-collapse__header" type="button" aria-expanded="false" aria-disabled="true">
+      <span class="r8-collapse__copy">
+        <span class="r8-collapse__title">Audit log</span>
+        <span class="r8-collapse__meta">Locked until the current sync finishes.</span>
+      </span>
+      <span class="r8-collapse__icon" aria-hidden="true">&gt;</span>
+    </button>
+    <div class="r8-collapse__body" hidden>
+      Disabled sections stay visible in the structure without allowing interaction.
+    </div>
+  </section>
+</div>`,
+    anatomy: ll(
+      [
+        "`r8-collapse` organiza grupos expansivos e aceita `data-r8-accordion=\"true\"` quando apenas um item pode ficar aberto por vez.",
+        "Cada `r8-collapse__item` combina `r8-collapse__header` para o gatilho e `r8-collapse__body` para o conteudo expansivel.",
+        "`r8-collapse__copy`, `r8-collapse__title`, `r8-collapse__meta` e `r8-collapse__icon` deixam o header mais rico, no estilo de titulo customizado do Element Plus.",
+        "`data-r8-icon-position=\"left|right\"` muda o lado do icone, e `data-r8-disabled=\"true\"` bloqueia a interacao sem remover o item da hierarquia.",
+      ],
+      [
+        "`r8-collapse` groups expandable sections and accepts `data-r8-accordion=\"true\"` when only one item should stay open at a time.",
+        "Each `r8-collapse__item` combines `r8-collapse__header` for the trigger and `r8-collapse__body` for the expandable content.",
+        "`r8-collapse__copy`, `r8-collapse__title`, `r8-collapse__meta`, and `r8-collapse__icon` make richer headers possible, similar to Element Plus custom titles.",
+        "`data-r8-icon-position=\"left|right\"` changes the icon side, and `data-r8-disabled=\"true\"` blocks interaction without removing the item from the structure.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Prefira `button` real para `r8-collapse__header`; o runtime completa `aria-expanded`, `aria-controls` e o vinculo com o painel.",
+        "Use `r8-collapse__title` como rotulo principal e deixe `r8-collapse__meta` para contexto secundario, sem depender apenas do icone para comunicar estado.",
+        "Itens com `data-r8-disabled=\"true\"` devem continuar legiveis, mas sem esconder informacao critica atras de um painel inativo.",
+      ],
+      [
+        "Prefer a real `button` for `r8-collapse__header`; the runtime fills in `aria-expanded`, `aria-controls`, and the panel relationship.",
+        "Use `r8-collapse__title` as the primary label and keep `r8-collapse__meta` for secondary context instead of relying on the icon alone.",
+        "Items with `data-r8-disabled=\"true\"` should remain readable, but avoid hiding critical information behind an inactive panel.",
+      ],
+    ),
+    api: [
+      {
+        name: "data-r8-accordion",
+        description: l(
+          "Fecha os itens irmaos quando um novo painel abre.",
+          "Closes sibling items when a new panel opens.",
+        ),
+      },
+      {
+        name: "data-r8-icon-position",
+        description: l(
+          "Posiciona o icone de expansao em `left` ou `right` no header do conjunto.",
+          "Places the expand icon on the `left` or `right` side of the group header.",
+        ),
+      },
+      {
+        name: "data-r8-disabled / is-disabled",
+        description: l(
+          "Desativa um item especifico sem removê-lo do layout ou do contexto visual.",
+          "Disables an individual item without removing it from the layout or visual context.",
+        ),
+      },
+      {
+        name: "r8-collapse__copy / __title / __meta / __icon",
+        description: l(
+          "Classes opcionais para montar titulos ricos com descricao curta e icone separado.",
+          "Optional classes for building richer titles with a short description and a separate icon.",
+        ),
+      },
+    ],
   },
   {
     id: "empty",
     name: "Empty",
     group: "data",
     summary: l(
-      "Estado vazio para listas, busca e telas sem conteudo disponivel.",
-      "Empty state for lists, search and screens with no available content.",
+      "Estado vazio mais flexivel, com mídia customizável, descrição, alinhamento e ações para listas, busca e telas sem conteúdo.",
+      "More flexible empty state with customizable media, description, alignment, and actions for lists, search, and screens with no content.",
     ),
-    classes: ["r8-empty", "r8-empty__icon", "r8-empty__title"],
-    preview: `<div class="r8-empty">
-  <div class="r8-empty__icon">NO-DATA</div>
-  <div class="r8-empty__title">Nothing here yet</div>
-  <p class="r8-text r8-text--muted">Try another filter or create a new record.</p>
+    classes: ["r8-empty", "r8-empty__media", "r8-empty__icon", "r8-empty__copy", "r8-empty__title", "r8-empty__description", "r8-empty__actions"],
+    preview: `<div class="r8-empty" style="--r8-empty-media-size: 9rem;">
+  <div class="r8-empty__media">
+    <img src="/imgs/carousel2.png" alt="" />
+  </div>
+  <div class="r8-empty__copy">
+    <div class="r8-empty__title">No missions yet</div>
+    <p class="r8-empty__description">Create a queue, import a preset, or start from a blank canvas.</p>
+  </div>
+  <div class="r8-empty__actions">
+    <button class="r8-btn r8-btn--sm r8-btn--primary" type="button">Create mission</button>
+    <button class="r8-btn r8-btn--sm" type="button">Import preset</button>
+  </div>
 </div>`,
+    code: `<div class="r8-empty" data-r8-align="left" style="--r8-empty-media-size: 9rem;">
+  <div class="r8-empty__media">
+    <img src="/imgs/carousel2.png" alt="" />
+  </div>
+
+  <div class="r8-empty__copy">
+    <div class="r8-empty__title">No missions yet</div>
+    <p class="r8-empty__description">Create a queue, import a preset, or start from a blank canvas.</p>
+  </div>
+
+  <div class="r8-empty__actions">
+    <button class="r8-btn r8-btn--sm r8-btn--primary" type="button">Create mission</button>
+    <button class="r8-btn r8-btn--sm" type="button">Import preset</button>
+  </div>
+</div>`,
+    anatomy: ll(
+      [
+        "`r8-empty` é o shell base do estado vazio e aceita `data-r8-align=\"left\"` para sair do layout centralizado quando o contexto pedir leitura mais editorial.",
+        "`r8-empty__media` funciona como área para imagem customizada, enquanto `r8-empty__icon` continua cobrindo casos mais simples com texto curto ou label técnica.",
+        "`r8-empty__copy` agrupa `r8-empty__title` e `r8-empty__description` para manter hierarquia clara entre headline e explicação.",
+        "`r8-empty__actions` cria uma área de CTA inferior, inspirada no slot de conteúdo do Element Plus, sem exigir runtime novo.",
+      ],
+      [
+        "`r8-empty` is the base empty-state shell and accepts `data-r8-align=\"left\"` when the context calls for a more editorial left-aligned layout.",
+        "`r8-empty__media` acts as the custom image area, while `r8-empty__icon` still covers simpler cases with short text or technical labels.",
+        "`r8-empty__copy` groups `r8-empty__title` and `r8-empty__description` to keep a clear hierarchy between the headline and the explanation.",
+        "`r8-empty__actions` creates a bottom CTA area, inspired by the Element Plus bottom-content slot, without adding new runtime behavior.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Se a imagem for apenas decorativa, use `alt=\"\"` em `r8-empty__media > img` e deixe o contexto principal no título e na descrição.",
+        "Evite depender só do visual da ilustração para explicar o problema; `r8-empty__title` e `r8-empty__description` devem comunicar o próximo passo.",
+        "Quando houver ações, mantenha uma CTA principal bem clara para a pessoa sair do estado vazio sem ambiguidade.",
+      ],
+      [
+        "If the image is purely decorative, use `alt=\"\"` on `r8-empty__media > img` and keep the main context in the title and description.",
+        "Avoid relying on the illustration alone to explain the problem; `r8-empty__title` and `r8-empty__description` should communicate the next step.",
+        "When actions are present, keep one clear primary CTA so people can leave the empty state without ambiguity.",
+      ],
+    ),
+    api: [
+      {
+        name: "data-r8-align",
+        description: l(
+          "Alinha o estado vazio em `center` ou `left` sem trocar o markup base.",
+          "Aligns the empty state to `center` or `left` without changing the base markup.",
+        ),
+      },
+      {
+        name: "--r8-empty-media-size",
+        description: l(
+          "Controla a largura e a altura úteis da área visual usada por imagem ou ilustração.",
+          "Controls the usable width and height of the visual area used by an image or illustration.",
+        ),
+      },
+      {
+        name: "r8-empty__media / __icon",
+        description: l(
+          "Escolha `__media` para imagem customizada e `__icon` para casos textuais ou técnicos mais simples.",
+          "Use `__media` for a custom image and `__icon` for simpler textual or technical cases.",
+        ),
+      },
+      {
+        name: "r8-empty__actions",
+        description: l(
+          "Área opcional para CTA primária e ações secundárias abaixo da cópia.",
+          "Optional area for a primary CTA and secondary actions below the copy.",
+        ),
+      },
+    ],
   },
   {
     id: "image",
     name: "Image",
     group: "data",
     summary: l(
-      "Moldura de imagem com caption curta para assets, covers e thumbnails retro.",
-      "Image frame with a short caption for assets, covers and retro thumbnails.",
+      "Bloco de imagem mais flexível, com proporção, fit, placeholder e estado de erro para previews, covers e thumbnails retro.",
+      "More flexible image block with ratio, fit, placeholder, and error state for previews, covers, and retro thumbnails.",
     ),
-    classes: ["r8-image", "r8-image__frame", "r8-image__caption"],
-    preview: `<figure class="r8-image">
-  <div class="r8-image__frame">PIXEL PREVIEW</div>
-  <figcaption class="r8-image__caption">Sprite sheet preview</figcaption>
+    classes: ["r8-image", "r8-image__frame", "r8-image__placeholder", "r8-image__error", "r8-image__caption"],
+    preview: `<figure class="r8-image" data-r8-fit="cover" data-r8-ratio="wide">
+  <div class="r8-image__frame">
+    <img src="/imgs/carousel1.png" alt="Retro forest route preview" loading="eager" />
+    <div class="r8-image__placeholder">LOADING...</div>
+    <div class="r8-image__error">FILE LOST</div>
+  </div>
+  <figcaption class="r8-image__caption">Forest route preview</figcaption>
 </figure>`,
+    code: `<figure class="r8-image" data-r8-fit="contain" data-r8-ratio="landscape" style="--r8-image-height: 14rem;">
+  <div class="r8-image__frame">
+    <img src="/imgs/carousel1.png" alt="Retro forest route preview" loading="lazy" />
+    <div class="r8-image__placeholder">LOADING...</div>
+    <div class="r8-image__error">FILE LOST</div>
+  </div>
+  <figcaption class="r8-image__caption">Forest route preview</figcaption>
+</figure>`,
+    anatomy: ll(
+      [
+        "`r8-image` é o wrapper base e aceita `data-r8-fit` e `data-r8-ratio` para controlar como a mídia ocupa a moldura.",
+        "`r8-image__frame` é a área visual principal, pronta para receber `<img>`, placeholder e estado de erro dentro do mesmo bloco.",
+        "`r8-image__placeholder` e `r8-image__error` são overlays opcionais que o runtime alterna conforme o carregamento ou falha da mídia.",
+        "`r8-image__caption` mantém uma legenda curta abaixo da imagem, sem misturar a cópia com a área visual.",
+      ],
+      [
+        "`r8-image` is the base wrapper and accepts `data-r8-fit` and `data-r8-ratio` to control how media fills the frame.",
+        "`r8-image__frame` is the main visual area, ready to host an `<img>`, placeholder, and error state inside the same block.",
+        "`r8-image__placeholder` and `r8-image__error` are optional overlays that the runtime switches based on loading or media failure.",
+        "`r8-image__caption` keeps a short caption below the image instead of mixing copy into the visual area itself.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Forneça `alt` útil quando a imagem trouxer contexto real; se ela for decorativa, use `alt=\"\"` e deixe a informação importante na legenda.",
+        "O placeholder e o estado de erro ajudam a dar feedback visual, mas a legenda ainda deve explicar o que a pessoa deveria ver ou fazer em seguida.",
+        "Evite esconder informação essencial só na imagem sem um texto complementar, especialmente em fluxos críticos ou listas densas.",
+      ],
+      [
+        "Provide meaningful `alt` text when the image carries real context; if it is decorative, use `alt=\"\"` and keep important information in the caption.",
+        "The placeholder and error states provide visual feedback, but the caption should still explain what people should see or do next.",
+        "Avoid hiding essential information inside the image alone without complementary text, especially in critical flows or dense lists.",
+      ],
+    ),
+    api: [
+      {
+        name: "data-r8-fit",
+        description: l(
+          "Controla o `object-fit` da mídia com valores como `cover`, `contain`, `fill`, `none` e `scale-down`.",
+          "Controls the media `object-fit` with values such as `cover`, `contain`, `fill`, `none`, and `scale-down`.",
+        ),
+      },
+      {
+        name: "data-r8-ratio",
+        description: l(
+          "Define proporções rápidas como `square`, `landscape`, `wide` e `portrait`.",
+          "Defines quick ratios such as `square`, `landscape`, `wide`, and `portrait`.",
+        ),
+      },
+      {
+        name: "r8-image__placeholder / __error",
+        description: l(
+          "Overlays opcionais para loading e falha de carregamento, alternados pelo runtime.",
+          "Optional loading and error overlays that the runtime toggles automatically.",
+        ),
+      },
+      {
+        name: "--r8-image-height / --r8-image-fit",
+        description: l(
+          "Ajusta a altura útil da moldura e o modo de encaixe da imagem sem trocar classes extras.",
+          "Adjusts the usable frame height and image fitting mode without extra classes.",
+        ),
+      },
+    ],
   },
   {
     id: "pagination",
     name: "Pagination",
     group: "data",
     summary: l(
-      "Controle de paginas com botoes pixelados e estado ativo facil de escanear.",
-      "Paging control with pixelated buttons and an easy-to-scan active state.",
+      "Navegação de páginas com prev/next, pager dinâmico, resumo total e jumper opcional para listas maiores.",
+      "Page navigation with prev/next controls, dynamic pagers, total summary, and an optional jumper for larger lists.",
     ),
-    classes: ["r8-pagination", "r8-pagination__item", "r8-pagination__more"],
-    preview: `<div class="r8-pagination">
-  <span class="r8-pagination__item">1</span>
-  <span class="r8-pagination__item is-active">2</span>
-  <span class="r8-pagination__item">3</span>
-  <span class="r8-pagination__more">...</span>
-  <span class="r8-pagination__item">9</span>
+    classes: ["r8-pagination", "r8-pagination__summary", "r8-pagination__nav", "r8-pagination__pages", "r8-pagination__item", "r8-pagination__more", "r8-pagination__jumper", "r8-pagination__jump-input"],
+    preview: `<div class="r8-pagination" data-r8-total-pages="9" data-r8-current-page="4" data-r8-pager-count="7">
+  <span class="r8-pagination__summary">Total 9</span>
+  <button class="r8-pagination__nav" type="button" data-r8-page-action="prev" aria-label="Previous page">&lt;</button>
+  <div class="r8-pagination__pages">
+    <button class="r8-pagination__item" type="button" data-r8-page="1">1</button>
+    <button class="r8-pagination__item" type="button" data-r8-page="2">2</button>
+    <button class="r8-pagination__item" type="button" data-r8-page="3">3</button>
+    <button class="r8-pagination__item is-active" type="button" data-r8-page="4" aria-current="true">4</button>
+    <button class="r8-pagination__item" type="button" data-r8-page="5">5</button>
+    <span class="r8-pagination__more" aria-hidden="true">...</span>
+    <button class="r8-pagination__item" type="button" data-r8-page="9">9</button>
+  </div>
+  <button class="r8-pagination__nav" type="button" data-r8-page-action="next" aria-label="Next page">&gt;</button>
+  <label class="r8-pagination__jumper">
+    <span>Go to</span>
+    <input class="r8-pagination__jump-input r8-input" type="number" min="1" max="9" value="4" data-r8-page-jump-input />
+    <button class="r8-btn r8-btn--sm" type="button" data-r8-page-action="jump">OK</button>
+  </label>
 </div>`,
+    code: `<div class="r8-pagination r8-pagination--background" data-r8-total-pages="18" data-r8-current-page="6" data-r8-pager-count="7" data-r8-hide-on-single-page="true">
+  <span class="r8-pagination__summary">Total 18</span>
+  <button class="r8-pagination__nav" type="button" data-r8-page-action="prev" aria-label="Previous page">&lt;</button>
+  <div class="r8-pagination__pages">
+    <button class="r8-pagination__item" type="button" data-r8-page="1">1</button>
+    <button class="r8-pagination__item" type="button" data-r8-page="2">2</button>
+    <button class="r8-pagination__item" type="button" data-r8-page="3">3</button>
+    <button class="r8-pagination__item is-active" type="button" data-r8-page="6" aria-current="true">6</button>
+    <span class="r8-pagination__more" aria-hidden="true">...</span>
+    <button class="r8-pagination__item" type="button" data-r8-page="18">18</button>
+  </div>
+  <button class="r8-pagination__nav" type="button" data-r8-page-action="next" aria-label="Next page">&gt;</button>
+  <label class="r8-pagination__jumper">
+    <span>Go to</span>
+    <input class="r8-pagination__jump-input r8-input" type="number" min="1" max="18" value="6" data-r8-page-jump-input />
+    <button class="r8-btn r8-btn--sm" type="button" data-r8-page-action="jump">OK</button>
+  </label>
+</div>`,
+    anatomy: ll(
+      [
+        "`r8-pagination` é o shell base e aceita `data-r8-total-pages`, `data-r8-current-page` e `data-r8-pager-count` para o runtime desenhar o pager.",
+        "`r8-pagination__nav` cobre anterior e próxima página, enquanto `r8-pagination__pages` segura os botões numerados e elipses.",
+        "`r8-pagination__summary` mostra o total do conjunto e `r8-pagination__jumper` cria a área de salto rápido com input numérico.",
+        "`data-r8-hide-on-single-page=\"true\"` esconde o bloco quando existir apenas uma página, no mesmo espírito do Element Plus.",
+      ],
+      [
+        "`r8-pagination` is the base shell and accepts `data-r8-total-pages`, `data-r8-current-page`, and `data-r8-pager-count` so the runtime can draw the pager.",
+        "`r8-pagination__nav` covers previous and next page controls, while `r8-pagination__pages` holds numbered buttons and ellipses.",
+        "`r8-pagination__summary` shows the set total and `r8-pagination__jumper` creates a quick-jump area with a numeric input.",
+        "`data-r8-hide-on-single-page=\"true\"` hides the whole block when there is only one page, in the same spirit as Element Plus.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Use `aria-label` claro nos botões de navegação lateral e mantenha `aria-current=\"true\"` na página ativa.",
+        "Quando houver jumper, limite o input ao intervalo válido de páginas para evitar ambiguidade na navegação.",
+        "Evite esconder paginação em contextos onde a pessoa ainda precisa entender quantas páginas existem; o resumo total ajuda nisso.",
+      ],
+      [
+        "Use a clear `aria-label` on side navigation buttons and keep `aria-current=\"true\"` on the active page.",
+        "When a jumper is present, constrain the input to the valid page range to avoid ambiguity in navigation.",
+        "Avoid hiding pagination when people still need to understand how many pages exist; the total summary helps with that.",
+      ],
+    ),
+    api: [
+      {
+        name: "data-r8-total-pages / data-r8-current-page",
+        description: l(
+          "Definem o total e a página ativa controlados pelo runtime.",
+          "Define the total and current page handled by the runtime.",
+        ),
+      },
+      {
+        name: "data-r8-pager-count",
+        description: l(
+          "Controla quantos pagers numéricos aparecem antes do colapso com elipses.",
+          "Controls how many numeric pagers appear before collapsing with ellipses.",
+        ),
+      },
+      {
+        name: "data-r8-hide-on-single-page",
+        description: l(
+          "Esconde o componente quando o total de páginas for igual a 1.",
+          "Hides the component when the total page count is 1.",
+        ),
+      },
+      {
+        name: "r8-pagination__summary / __jumper",
+        description: l(
+          "Blocos opcionais para mostrar total e salto rápido sem sair do mesmo componente.",
+          "Optional blocks for showing the total and a quick jumper without leaving the same component.",
+        ),
+      },
+    ],
   },
   {
     id: "progress",
     name: "Progress",
     group: "data",
     summary: l(
-      "Barra de progresso com fill retro listrado e valor controlado por custom property ou `data-r8-value`.",
-      "Progress bar with a retro striped fill and a value controlled through a custom property or `data-r8-value`.",
+      "Indicador de progresso com barra linear ou dial circular, label opcional dentro do track e modo indeterminado para fluxos ainda sem percentual final.",
+      "Progress indicator with a linear bar or circular dial, an optional in-track label, and an indeterminate mode for flows without a final percentage yet.",
     ),
-    classes: ["r8-progress", "r8-progress__label", "r8-progress__track", "r8-progress__bar", "--r8-progress-value", "r8-progress--success", "r8-progress--warning", "r8-progress--danger"],
+    classes: [
+      "r8-progress",
+      "r8-progress__label",
+      "r8-progress__track",
+      "r8-progress__bar",
+      "r8-progress__value",
+      "r8-progress__inside-value",
+      "r8-progress__dial",
+      "r8-progress__content",
+      "r8-progress__meta",
+      "r8-progress--circle",
+      "r8-progress--inside",
+      "r8-progress--indeterminate",
+      "r8-progress--success",
+      "r8-progress--warning",
+      "r8-progress--danger",
+      "--r8-progress-value",
+      "--r8-progress-height",
+      "--r8-progress-dial-size",
+      "--r8-progress-bar-color",
+    ],
     preview: `<div class="docs-demo__stack">
   <div class="r8-progress" data-r8-value="32">
     <div class="r8-progress__label">
       <span>Upload</span>
-      <span>32%</span>
+      <span class="r8-progress__value" data-r8-progress-value-output>32%</span>
     </div>
     <div class="r8-progress__track">
       <div class="r8-progress__bar"></div>
     </div>
   </div>
-  <div class="r8-progress r8-progress--success" data-r8-value="84">
+  <div class="r8-progress" data-r8-value="72" data-r8-variant="warning" data-r8-label-position="inside">
     <div class="r8-progress__label">
-      <span>Shield sync</span>
-      <span>84%</span>
+      <span>Queue sync</span>
+      <span class="r8-progress__value" data-r8-progress-value-output>72%</span>
     </div>
     <div class="r8-progress__track">
       <div class="r8-progress__bar"></div>
+      <span class="r8-progress__inside-value" data-r8-progress-value-output>72%</span>
+    </div>
+  </div>
+  <div class="r8-progress" data-r8-value="84" data-r8-variant="success" data-r8-shape="circle">
+    <div class="r8-progress__dial">
+      <div class="r8-progress__content">
+        <strong class="r8-progress__value" data-r8-progress-value-output>84%</strong>
+        <span class="r8-progress__meta">stable</span>
+      </div>
+    </div>
+    <div class="r8-progress__label">
+      <span>Shield sync</span>
     </div>
   </div>
 </div>`,
+    code: `<div class="docs-demo__stack">
+  <div class="r8-progress" data-r8-value="48" style="--r8-progress-height: 1rem;">
+    <div class="r8-progress__label">
+      <span>Indexing assets</span>
+      <span class="r8-progress__value" data-r8-progress-value-output>48%</span>
+    </div>
+    <div class="r8-progress__track">
+      <div class="r8-progress__bar"></div>
+    </div>
+  </div>
+
+  <div class="r8-progress" data-r8-value="76" data-r8-label-position="inside" data-r8-variant="warning">
+    <div class="r8-progress__label">
+      <span>Queue sync</span>
+      <span class="r8-progress__value" data-r8-progress-value-output>76%</span>
+    </div>
+    <div class="r8-progress__track">
+      <div class="r8-progress__bar"></div>
+      <span class="r8-progress__inside-value" data-r8-progress-value-output>76%</span>
+    </div>
+  </div>
+
+  <div class="r8-progress" data-r8-value="84" data-r8-shape="circle" data-r8-variant="success" style="--r8-progress-dial-size: 7rem;">
+    <div class="r8-progress__dial">
+      <div class="r8-progress__content">
+        <strong class="r8-progress__value" data-r8-progress-value-output>84%</strong>
+        <span class="r8-progress__meta">stable</span>
+      </div>
+    </div>
+    <div class="r8-progress__label">
+      <span>Shield sync</span>
+    </div>
+  </div>
+</div>`,
+    anatomy: ll(
+      [
+        "`r8-progress` é o wrapper base e aceita valor, shape, tom, label interna e modo indeterminado pela mesma API pública.",
+        "`r8-progress__label` agrupa o título e a leitura percentual externa, enquanto `r8-progress__inside-value` cobre a versão compacta dentro do track.",
+        "`r8-progress__track` e `r8-progress__bar` formam a barra linear; `r8-progress__dial` e `r8-progress__content` cobrem o modo circular.",
+        "As custom properties ajustam altura, tamanho do dial, cor do preenchimento, trilha e velocidade da animação sem multiplicar classes.",
+      ],
+      [
+        "`r8-progress` is the base wrapper and accepts value, shape, tone, inside label, and indeterminate mode through the same public API.",
+        "`r8-progress__label` groups the title and the external percentage readout, while `r8-progress__inside-value` covers the compact version inside the track.",
+        "`r8-progress__track` and `r8-progress__bar` build the linear bar; `r8-progress__dial` and `r8-progress__content` cover the circular mode.",
+        "Custom properties adjust height, dial size, fill color, track color, and animation speed without multiplying classes.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Mantenha um nome claro perto do componente ou use `aria-label` quando o título visível não existir; o runtime já expõe `role=\"progressbar\"` e os limites de valor.",
+        "Não dependa só da cor para comunicar estado. A leitura textual do percentual e o rótulo do processo continuam importantes para contraste e legibilidade.",
+        "Use o modo indeterminado apenas quando ainda não houver um número confiável; quando o percentual existir, sincronize `data-r8-value` para manter a interface e a tecnologia assistiva alinhadas.",
+      ],
+      [
+        "Keep a clear name near the component or use `aria-label` when there is no visible title; the runtime already exposes `role=\"progressbar\"` and value bounds.",
+        "Do not rely on color alone to communicate state. The textual percentage readout and process label still matter for contrast and readability.",
+        "Use the indeterminate mode only when there is no reliable number yet; once a percentage exists, sync `data-r8-value` to keep the interface and assistive tech aligned.",
+      ],
+    ),
+    api: [
+      {
+        name: "data-r8-value / data-r8-variant",
+        description: l(
+          "Controlam o percentual e o tom sem precisar manipular a custom property diretamente.",
+          "Control the percentage and tone without having to manipulate the custom property directly.",
+        ),
+      },
+      {
+        name: "data-r8-shape / data-r8-label-position / data-r8-indeterminate",
+        description: l(
+          "Alternam entre barra linear, dial circular, label interna e animação contínua.",
+          "Switch between a linear bar, a circular dial, an inside label, and continuous animation.",
+        ),
+      },
+      {
+        name: "data-r8-progress-value-output",
+        description: l(
+          "Marca os nodes que devem receber a leitura textual atualizada pelo runtime.",
+          "Marks the nodes that should receive the textual readout updated by the runtime.",
+        ),
+      },
+      {
+        name: "--r8-progress-height / --r8-progress-dial-size / --r8-progress-bar-color",
+        description: l(
+          "Ajustam espessura, escala circular e cor local do preenchimento sem trocar a estrutura.",
+          "Adjust thickness, circular scale, and the local fill color without replacing the structure.",
+        ),
+      },
+    ],
   },
   {
     id: "skeleton",
     name: "Skeleton",
     group: "data",
     summary: l(
-      "Placeholders animados para carregamento de cards, listas e paines de dados.",
-      "Animated placeholders for loading cards, lists and data panels.",
+      "Placeholder estrutural para loading de cards, listas e perfis, com avatar, media, linhas e animacao opcional no mesmo sistema visual.",
+      "Structural loading placeholder for cards, lists, and profiles, with avatar, media, lines, and optional animation in the same visual system.",
     ),
-    classes: ["r8-skeleton", "r8-skeleton__block", "r8-skeleton__line"],
-    preview: `<div class="r8-skeleton">
-  <div class="r8-skeleton__block"></div>
+    classes: [
+      "r8-skeleton",
+      "r8-skeleton--card",
+      "r8-skeleton__block",
+      "r8-skeleton__header",
+      "r8-skeleton__text",
+      "r8-skeleton__footer",
+      "r8-skeleton__media",
+      "r8-skeleton__avatar",
+      "r8-skeleton__title",
+      "r8-skeleton__line",
+      "r8-skeleton__line--medium",
+      "r8-skeleton__line--short",
+      "r8-skeleton__button",
+    ],
+    preview: `<div class="r8-skeleton r8-skeleton--card">
+  <div class="r8-skeleton__media"></div>
+  <div class="r8-skeleton__title"></div>
   <div class="r8-skeleton__line"></div>
-  <div class="r8-skeleton__line"></div>
+  <div class="r8-skeleton__line r8-skeleton__line--medium"></div>
+  <div class="r8-skeleton__footer">
+    <div class="r8-skeleton__line r8-skeleton__line--short"></div>
+    <div class="r8-skeleton__button"></div>
+  </div>
 </div>`,
+    code: `<div class="docs-demo__stack">
+  <div class="r8-skeleton r8-skeleton--card">
+    <div class="r8-skeleton__media"></div>
+    <div class="r8-skeleton__title"></div>
+    <div class="r8-skeleton__line"></div>
+    <div class="r8-skeleton__line r8-skeleton__line--medium"></div>
+    <div class="r8-skeleton__footer">
+      <div class="r8-skeleton__line r8-skeleton__line--short"></div>
+      <div class="r8-skeleton__button"></div>
+    </div>
+  </div>
+
+  <div class="r8-skeleton" style="--r8-skeleton-avatar-size: 2.75rem;">
+    <div class="r8-skeleton__header">
+      <div class="r8-skeleton__avatar"></div>
+      <div class="r8-skeleton__text">
+        <div class="r8-skeleton__title"></div>
+        <div class="r8-skeleton__line"></div>
+        <div class="r8-skeleton__line r8-skeleton__line--short"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="r8-skeleton" data-r8-animated="false">
+    <div class="r8-skeleton__title"></div>
+    <div class="r8-skeleton__line"></div>
+    <div class="r8-skeleton__line r8-skeleton__line--medium"></div>
+    <div class="r8-skeleton__line r8-skeleton__line--short"></div>
+  </div>
+</div>`,
+    anatomy: ll(
+      [
+        "`r8-skeleton` e o wrapper base. Ele organiza as pecas falsas e aceita variaveis para espacamento, alturas e velocidade do shimmer.",
+        "`r8-skeleton__media`, `__avatar`, `__title`, `__line` e `__button` permitem aproximar o placeholder do layout real sem inventar markup aleatorio.",
+        "`r8-skeleton--card` adiciona moldura e padding quando o loading precisa reservar o mesmo volume de um card real.",
+        "As variantes de largura como `r8-skeleton__line--medium` e `--short` ajudam a quebrar a repeticao e deixam a leitura mais natural.",
+      ],
+      [
+        "`r8-skeleton` is the base wrapper. It arranges the fake pieces and accepts variables for spacing, heights, and shimmer speed.",
+        "`r8-skeleton__media`, `__avatar`, `__title`, `__line`, and `__button` let you match the placeholder to the real layout without inventing random markup.",
+        "`r8-skeleton--card` adds frame and padding when loading needs to reserve the same footprint as a real card.",
+        "Width variants such as `r8-skeleton__line--medium` and `--short` help break repetition and make the placeholder feel more natural.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Use skeleton apenas como feedback temporario. Quando os dados chegarem, troque pelo conteudo real em vez de deixar a UI em estado ambiguo por muito tempo.",
+        "Desative ou reduza a animacao em contextos sensiveis a movimento; `data-r8-animated=\"false\"` cobre esse caso sem trocar classes.",
+        "O ideal e que o placeholder reserve dimensoes proximas das do DOM final para evitar saltos visuais grandes quando o conteudo carregar.",
+      ],
+      [
+        "Use skeletons only as temporary feedback. Once data arrives, swap them for real content instead of leaving the UI in an ambiguous state for too long.",
+        "Disable or reduce animation in motion-sensitive contexts; `data-r8-animated=\"false\"` covers that without changing classes.",
+        "Ideally the placeholder should reserve dimensions close to the final DOM to avoid large visual jumps when content loads.",
+      ],
+    ),
+    api: [
+      {
+        name: "data-r8-animated",
+        description: l(
+          "Liga ou pausa o shimmer do skeleton sem precisar remover a estrutura inteira.",
+          "Turns the skeleton shimmer on or off without removing the whole structure.",
+        ),
+      },
+      {
+        name: "r8-skeleton__media / __avatar / __title / __button",
+        description: l(
+          "Pecas estruturais para aproximar o loading de cards, perfis, listas e CTAs reais.",
+          "Structural pieces for matching cards, profiles, lists, and real CTAs during loading.",
+        ),
+      },
+      {
+        name: "r8-skeleton__line--medium / --short",
+        description: l(
+          "Varia a largura das linhas para fugir de um bloco de texto artificialmente uniforme.",
+          "Varies line widths so the text block does not feel artificially uniform.",
+        ),
+      },
+      {
+        name: "--r8-skeleton-media-height / --r8-skeleton-avatar-size / --r8-skeleton-speed",
+        description: l(
+          "Ajusta altura da media, escala do avatar e ritmo da animacao sem sair da API publica.",
+          "Adjusts media height, avatar scale, and animation pace without leaving the public API.",
+        ),
+      },
+    ],
   },
   {
     id: "table",
     name: "Table",
     group: "data",
     summary: l(
-      "Tabela retro para dados tabulares com header forte e corpo altamente legivel.",
-      "Retro table for tabular data with a strong header and highly readable body.",
+      "Tabela retro mais flexivel para grades densas, com zebra, hover, status por linha, modo compacto e wrapper opcional para header fixo.",
+      "More flexible retro table for dense grids, with striping, hover, row status states, compact mode, and an optional fixed-header wrapper.",
     ),
-    classes: ["r8-table"],
-    preview: `<table class="r8-table">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Status</th>
-      <th>Role</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>PIX-07</td>
-      <td>Online</td>
-      <td>Engineer</td>
-    </tr>
-    <tr>
-      <td>PIX-11</td>
-      <td>Queued</td>
-      <td>Medic</td>
-    </tr>
-  </tbody>
-</table>`,
+    classes: [
+      "r8-table-wrap",
+      "r8-table-wrap--fixed",
+      "r8-table",
+      "r8-table--striped",
+      "r8-table--hover",
+      "r8-table--sm",
+      "r8-table__row--success",
+      "r8-table__row--warning",
+      "r8-table__row--danger",
+      "r8-table__row--info",
+      "r8-table__cell--truncate",
+      "r8-table__cell--numeric",
+      "--r8-table-max-height",
+    ],
+    preview: `<div class="r8-table-wrap r8-table-wrap--fixed" style="--r8-table-max-height: 13rem;">
+  <table class="r8-table r8-table--striped r8-table--hover">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Status</th>
+        <th>Role</th>
+        <th>Address</th>
+        <th>Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="r8-table__row--success">
+        <td>PIX-07</td>
+        <td>Stable</td>
+        <td>Engineer</td>
+        <td class="r8-table__cell--truncate">Orbital dock / maintenance corridor / west sector</td>
+        <td class="r8-table__cell--numeric">98</td>
+      </tr>
+      <tr class="r8-table__row--warning">
+        <td>PIX-11</td>
+        <td>Queued</td>
+        <td>Medic</td>
+        <td class="r8-table__cell--truncate">Forward wing / command relay / upper rail</td>
+        <td class="r8-table__cell--numeric">64</td>
+      </tr>
+      <tr>
+        <td>PIX-21</td>
+        <td>Review</td>
+        <td>Analyst</td>
+        <td class="r8-table__cell--truncate">Gamma gate / archive lane / checkpoint 04</td>
+        <td class="r8-table__cell--numeric">72</td>
+      </tr>
+    </tbody>
+  </table>
+</div>`,
+    code: `<div class="r8-table-wrap r8-table-wrap--fixed" style="--r8-table-max-height: 14rem;">
+  <table class="r8-table r8-table--striped r8-table--hover r8-table--sm">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Status</th>
+        <th>Role</th>
+        <th>Address</th>
+        <th>Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="r8-table__row--success">
+        <td>PIX-07</td>
+        <td>Stable</td>
+        <td>Engineer</td>
+        <td class="r8-table__cell--truncate">Orbital dock / maintenance corridor / west sector</td>
+        <td class="r8-table__cell--numeric">98</td>
+      </tr>
+      <tr class="r8-table__row--warning">
+        <td>PIX-11</td>
+        <td>Queued</td>
+        <td>Medic</td>
+        <td class="r8-table__cell--truncate">Forward wing / command relay / upper rail</td>
+        <td class="r8-table__cell--numeric">64</td>
+      </tr>
+      <tr class="r8-table__row--danger">
+        <td>PIX-42</td>
+        <td>Offline</td>
+        <td>Scout</td>
+        <td class="r8-table__cell--truncate">Dust line / sensor break / lower canyon</td>
+        <td class="r8-table__cell--numeric">12</td>
+      </tr>
+    </tbody>
+  </table>
+</div>`,
+    anatomy: ll(
+      [
+        "`r8-table-wrap` segura overflow horizontal e, com `r8-table-wrap--fixed`, habilita header sticky via `--r8-table-max-height`.",
+        "`r8-table` continua sendo a raiz semantica da grade e aceita modifiers como `--striped`, `--hover` e `--sm` para mudar leitura e densidade.",
+        "As classes `r8-table__row--success|warning|danger|info` destacam linhas sem depender de runtime.",
+        "`r8-table__cell--truncate` e `__cell--numeric` ajudam em colunas longas e valores alinhados a direita.",
+      ],
+      [
+        "`r8-table-wrap` handles horizontal overflow and, with `r8-table-wrap--fixed`, enables a sticky header through `--r8-table-max-height`.",
+        "`r8-table` remains the semantic grid root and accepts modifiers such as `--striped`, `--hover`, and `--sm` to change readability and density.",
+        "`r8-table__row--success|warning|danger|info` highlight rows without relying on runtime.",
+        "`r8-table__cell--truncate` and `__cell--numeric` help with long columns and right-aligned values.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Use `th scope=\"col\"` no header e mantenha a ordem das colunas previsivel, principalmente quando houver scroll horizontal.",
+        "Nao use cor sozinha para estados de linha. O texto da coluna de status ainda deve explicar o que mudou.",
+        "Se truncar conteudo longo, preserve o dado completo em `title` ou em um detalhe acessivel no fluxo real da aplicacao.",
+      ],
+      [
+        "Use `th scope=\"col\"` in the header and keep column order predictable, especially when horizontal scrolling is present.",
+        "Do not rely on color alone for row states. The status column text should still explain what changed.",
+        "If you truncate long content, preserve the full value in `title` or another accessible detail in the real application flow.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-table-wrap / r8-table-wrap--fixed",
+        description: l(
+          "Wrapper opcional para overflow horizontal e header fixo com scroll vertical.",
+          "Optional wrapper for horizontal overflow and a fixed header with vertical scrolling.",
+        ),
+      },
+      {
+        name: "r8-table--striped / --hover / --sm",
+        description: l(
+          "Controlam zebra, destaque no hover e densidade compacta sem tocar na estrutura do HTML.",
+          "Control striping, hover highlight, and compact density without touching the HTML structure.",
+        ),
+      },
+      {
+        name: "r8-table__row--success|warning|danger|info",
+        description: l(
+          "Aplica estados visuais por linha para tabelas operacionais, auditoria e filas.",
+          "Applies visual row states for operational tables, audits, and queues.",
+        ),
+      },
+      {
+        name: "--r8-table-max-height / r8-table__cell--truncate / r8-table__cell--numeric",
+        description: l(
+          "Ajustam altura do wrapper, truncamento de texto e alinhamento numerico de colunas.",
+          "Adjust wrapper height, text truncation, and numeric column alignment.",
+        ),
+      },
+    ],
   },
   {
     id: "tag",
@@ -2758,106 +4131,204 @@ const dataComponents = [
   <span class="r8-tag r8-tag--danger">error</span>
 </div>`,
   },
-  {
-    id: "timeline",
-    name: "Timeline",
-    group: "data",
-    summary: l(
-      "Sequencia vertical de eventos para changelog, deploys e historico de atividade.",
-      "Vertical sequence of events for changelogs, deploys and activity history.",
-    ),
-    classes: ["r8-timeline", "r8-timeline__item", "r8-timeline__dot", "r8-timeline__content"],
-    preview: `<div class="r8-timeline">
-  <div class="r8-timeline__item">
-    <span class="r8-timeline__dot"></span>
-    <div class="r8-timeline__content">08:30 - Build finished</div>
-  </div>
-  <div class="r8-timeline__item">
-    <span class="r8-timeline__dot"></span>
-    <div class="r8-timeline__content">08:45 - Docs deployed</div>
-  </div>
-</div>`,
-  },
-  {
-    id: "tree",
-    name: "Tree",
-    group: "data",
-    summary: l(
-      "Arvore visual para entidades hierarquicas, arquivos e menus de estrutura profunda.",
-      "Visual tree for hierarchical entities, files and deep-structure menus.",
-    ),
-    classes: ["r8-tree", "r8-tree__node", "r8-tree__node--child"],
-    preview: `<div class="r8-tree">
-  <div class="r8-tree__node">src</div>
-  <div class="r8-tree__node r8-tree__node--child">styles</div>
-  <div class="r8-tree__node r8-tree__node--child">components</div>
-</div>`,
-  },
 ] satisfies CatalogEntry[];
 
 const navigationComponents = [
-  {
-    id: "anchor",
-    name: "Anchor",
-    group: "navigation",
-    summary: l(
-      "Indice de links internos para navegar por secao dentro de paginas longas.",
-      "Internal link index for moving across sections inside long pages.",
-    ),
-    classes: ["r8-anchor", "r8-anchor__link"],
-    preview: `<nav class="r8-anchor">
-  <a class="r8-anchor__link" href="#installation">Installation</a>
-  <a class="r8-anchor__link" href="#usage">Usage</a>
-  <a class="r8-anchor__link" href="#api">API</a>
-</nav>`,
-  },
   {
     id: "breadcrumb",
     name: "Breadcrumb",
     group: "navigation",
     summary: l(
-      "Trilha de navegacao para orientacao de caminho e profundidade de pagina.",
-      "Navigation trail for path orientation and page depth.",
+      "Trilha de navegacao mais flexivel, com separador configuravel, links reais, estado atual claro e modos compacto ou sem quebra.",
+      "More flexible navigation trail with configurable separators, real links, a clear current state, and compact or no-wrap modes.",
     ),
-    classes: ["r8-breadcrumb", "r8-breadcrumb__item"],
-    preview: `<nav class="r8-breadcrumb" aria-label="Breadcrumb">
-  <span class="r8-breadcrumb__item">Home</span>
-  <span class="r8-breadcrumb__item">Docs</span>
-  <span class="r8-breadcrumb__item">Button</span>
+    classes: [
+      "r8-breadcrumb",
+      "r8-breadcrumb--compact",
+      "r8-breadcrumb--nowrap",
+      "r8-breadcrumb__item",
+      "r8-breadcrumb__link",
+      "data-r8-separator",
+      "--r8-breadcrumb-gap",
+      "--r8-breadcrumb-separator-color",
+      "--r8-breadcrumb-current-color",
+      "--r8-breadcrumb-link-color",
+      "--r8-breadcrumb-link-hover-color",
+    ],
+    preview: `<nav aria-label="Breadcrumb">
+  <ol class="r8-breadcrumb" data-r8-separator="chevron">
+    <li class="r8-breadcrumb__item"><a class="r8-breadcrumb__link" href="#">Home</a></li>
+    <li class="r8-breadcrumb__item"><a class="r8-breadcrumb__link" href="#">Components</a></li>
+    <li class="r8-breadcrumb__item"><a class="r8-breadcrumb__link" href="#">Navigation</a></li>
+    <li class="r8-breadcrumb__item" aria-current="page">Breadcrumb</li>
+  </ol>
 </nav>`,
+    code: `<nav aria-label="Breadcrumb">
+  <ol class="r8-breadcrumb r8-breadcrumb--compact" data-r8-separator="dot">
+    <li class="r8-breadcrumb__item"><a class="r8-breadcrumb__link" href="/">Home</a></li>
+    <li class="r8-breadcrumb__item"><a class="r8-breadcrumb__link" href="/docs">Docs</a></li>
+    <li class="r8-breadcrumb__item"><a class="r8-breadcrumb__link" href="/docs/navigation">Navigation</a></li>
+    <li class="r8-breadcrumb__item" aria-current="page">Breadcrumb</li>
+  </ol>
+</nav>`,
+    anatomy: ll(
+      [
+        "`r8-breadcrumb` organiza a trilha horizontal e aceita `data-r8-separator` para trocar o divisor sem mexer no HTML dos itens.",
+        "`r8-breadcrumb__item` funciona bem com `li`, `span` ou wrappers leves para manter semantica de lista.",
+        "`r8-breadcrumb__link` aplica estados interativos apenas aos niveis clicaveis, preservando o item atual como texto ou `aria-current`.",
+        "`r8-breadcrumb--compact` e `r8-breadcrumb--nowrap` ajudam quando a trilha precisa caber em headers densos ou barras superiores.",
+      ],
+      [
+        "`r8-breadcrumb` lays out the trail horizontally and accepts `data-r8-separator` so you can change the divider without touching item HTML.",
+        "`r8-breadcrumb__item` works well with `li`, `span`, or light wrappers to keep list semantics intact.",
+        "`r8-breadcrumb__link` applies interactive states only to clickable levels, preserving the current item as text or `aria-current`.",
+        "`r8-breadcrumb--compact` and `r8-breadcrumb--nowrap` help when the trail needs to fit dense headers or top bars.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Envolva a trilha em `nav` com `aria-label=\"Breadcrumb\"` para expor o contexto de navegacao para leitores de tela.",
+        "Marque apenas o ultimo item com `aria-current=\"page\"` e evite transforma-lo em link se ele nao realmente navegar.",
+        "Se usar `r8-breadcrumb--nowrap`, garanta que a ordem continue previsivel e que o usuario consiga rolar horizontalmente quando necessario.",
+      ],
+      [
+        "Wrap the trail in `nav` with `aria-label=\"Breadcrumb\"` so assistive tech gets clear navigation context.",
+        "Mark only the last item with `aria-current=\"page\"` and avoid turning it into a link if it does not actually navigate.",
+        "If you use `r8-breadcrumb--nowrap`, make sure order remains predictable and users can scroll horizontally when needed.",
+      ],
+    ),
+    api: [
+      {
+        name: "data-r8-separator",
+        description: l(
+          "Aceita `slash`, `chevron`, `double` ou `dot` para mudar o caractere separador da trilha.",
+          "Accepts `slash`, `chevron`, `double`, or `dot` to change the trail separator character.",
+        ),
+      },
+      {
+        name: "r8-breadcrumb__link",
+        description: l(
+          "Aplica leitura e foco adequados aos niveis clicaveis sem misturar o estado atual com links falsos.",
+          "Applies appropriate reading and focus states to clickable levels without mixing the current state with fake links.",
+        ),
+      },
+      {
+        name: "r8-breadcrumb--compact / r8-breadcrumb--nowrap",
+        description: l(
+          "Ajustam densidade e quebra de linha para headers, toolbars ou areas com pouco espaco horizontal.",
+          "Adjust density and line wrapping for headers, toolbars, or areas with limited horizontal space.",
+        ),
+      },
+      {
+        name: "--r8-breadcrumb-gap / --r8-breadcrumb-separator-color / --r8-breadcrumb-link-color",
+        description: l(
+          "Permitem alinhar espacamento, cor do separador e tom dos links ao contexto visual local.",
+          "Let you tune spacing, separator color, and link tone to the local visual context.",
+        ),
+      },
+    ],
   },
   {
     id: "dropdown",
     name: "Dropdown",
     group: "navigation",
     summary: l(
-      "Menu suspenso compacto para acoes, atalhos e opcoes contextuais.",
-      "Compact flyout menu for actions, shortcuts and contextual options.",
+      "Dropdown mais completo para acoes contextuais, com item selecionado, estados disabled e danger, divisorias e trigger simples ou dividido.",
+      "More complete dropdown for contextual actions, with selected items, disabled and danger states, dividers, and simple or split triggers.",
     ),
-    classes: ["r8-dropdown", "r8-dropdown__menu", "r8-dropdown__item"],
+    classes: [
+      "r8-dropdown",
+      "r8-dropdown--end",
+      "r8-dropdown__split",
+      "r8-dropdown__trigger",
+      "r8-dropdown__action",
+      "r8-dropdown__menu",
+      "r8-dropdown__item",
+      "r8-dropdown__item--divided",
+      "r8-dropdown__item--danger",
+      "data-r8-command",
+      "data-r8-close-on-select",
+      "--r8-dropdown-menu-width",
+      "--r8-dropdown-item-padding-x",
+      "--r8-dropdown-item-padding-y",
+    ],
     preview: `<div class="r8-dropdown">
-  <button class="r8-btn r8-btn--sm" type="button">Open menu</button>
-  <div class="r8-dropdown__menu">
-    <div class="r8-dropdown__item">Duplicate</div>
-    <div class="r8-dropdown__item">Archive</div>
-    <div class="r8-dropdown__item">Delete</div>
+  <button class="r8-btn r8-btn--sm r8-dropdown__trigger" type="button">Actions</button>
+  <div class="r8-dropdown__menu" hidden>
+    <button class="r8-dropdown__item" type="button" data-r8-command="duplicate">Duplicate</button>
+    <button class="r8-dropdown__item is-selected" type="button" data-r8-command="archive">Archive</button>
+    <button class="r8-dropdown__item" type="button" data-r8-command="share" aria-disabled="true">Share</button>
+    <button class="r8-dropdown__item r8-dropdown__item--divided r8-dropdown__item--danger" type="button" data-r8-command="delete">Delete</button>
   </div>
 </div>`,
-  },
-  {
-    id: "menu",
-    name: "Menu",
-    group: "navigation",
-    summary: l(
-      "Menu primario vertical ou horizontal para apps, sidebars e dashboards.",
-      "Primary vertical or horizontal menu for apps, sidebars and dashboards.",
+    code: `<div class="r8-dropdown r8-dropdown--end">
+  <div class="r8-dropdown__split">
+    <button class="r8-btn r8-btn--sm r8-dropdown__action" type="button">Run now</button>
+    <button class="r8-btn r8-btn--sm r8-dropdown__trigger" type="button">More</button>
+  </div>
+  <div class="r8-dropdown__menu" style="--r8-dropdown-menu-width: 13rem;" hidden>
+    <button class="r8-dropdown__item" type="button" data-r8-command="duplicate">Duplicate</button>
+    <button class="r8-dropdown__item" type="button" data-r8-command="rename">Rename</button>
+    <button class="r8-dropdown__item r8-dropdown__item--divided" type="button" data-r8-command="archive">Archive</button>
+    <button class="r8-dropdown__item r8-dropdown__item--danger" type="button" data-r8-command="delete">Delete</button>
+  </div>
+</div>`,
+    anatomy: ll(
+      [
+        "`r8-dropdown` agrupa trigger e menu, e aceita `r8-dropdown--end` quando o painel precisa alinhar pela borda direita.",
+        "`r8-dropdown__trigger` identifica o botao que abre ou recolhe o menu; `r8-dropdown__action` cobre o botao lateral de um split trigger.",
+        "`r8-dropdown__item` continua semantico o bastante para usar `button`, `a` ou outros action-like elements preparados pelo runtime.",
+        "`r8-dropdown__item--divided`, `__item--danger` e `aria-disabled=\"true\"` resolvem os estados mais comuns sem inventar uma API grande demais.",
+      ],
+      [
+        "`r8-dropdown` groups the trigger and menu, and accepts `r8-dropdown--end` when the panel should align to the right edge.",
+        "`r8-dropdown__trigger` identifies the button that opens or closes the menu; `r8-dropdown__action` covers the side button in a split trigger.",
+        "`r8-dropdown__item` stays semantic enough to be used with `button`, `a`, or other action-like elements prepared by the runtime.",
+        "`r8-dropdown__item--divided`, `__item--danger`, and `aria-disabled=\"true\"` cover the most common states without inventing an oversized API.",
+      ],
     ),
-    classes: ["r8-menu", "r8-menu--horizontal", "r8-menu__item", "r8-menu__submenu"],
-    preview: `<ul class="r8-menu r8-menu--horizontal">
-  <li class="r8-menu__item is-active">Overview</li>
-  <li class="r8-menu__item">Tokens</li>
-  <li class="r8-menu__submenu is-open">Components</li>
-</ul>`,
+    accessibility: ll(
+      [
+        "Use `button` ou `a` nos itens quando possivel, e marque apenas itens indisponiveis com `aria-disabled=\"true\"`.",
+        "Quando houver split trigger, mantenha o botao lateral principal com acao clara e o trigger do menu com rotulo proprio.",
+        "Se usar `data-r8-close-on-select=\"false\"`, garanta outra forma simples de fechar o menu por teclado ou clique fora.",
+      ],
+      [
+        "Use `button` or `a` for items when possible, and mark unavailable items only with `aria-disabled=\"true\"`.",
+        "When using a split trigger, keep the primary side button tied to a clear action and give the menu trigger its own label.",
+        "If you use `data-r8-close-on-select=\"false\"`, make sure there is another simple way to close the menu through keyboard or outside click.",
+      ],
+    ),
+    api: [
+      {
+        name: "data-r8-command",
+        description: l(
+          "Valor declarativo emitido no evento `r8:dropdown-command` quando o item e acionado.",
+          "Declarative value emitted in the `r8:dropdown-command` event when the item is activated.",
+        ),
+      },
+      {
+        name: "data-r8-close-on-select",
+        description: l(
+          "Aceita `false` para manter o painel aberto apos uma selecao, util em menus de inspeção ou batch actions.",
+          "Accepts `false` to keep the panel open after selection, useful for inspection menus or batch actions.",
+        ),
+      },
+      {
+        name: "r8-dropdown--end / r8-dropdown__split",
+        description: l(
+          "Cobrem alinhamento a direita e o layout de split trigger sem depender de JS adicional.",
+          "Cover right-edge alignment and split-trigger layout without extra JS.",
+        ),
+      },
+      {
+        name: "--r8-dropdown-menu-width / --r8-dropdown-item-padding-x / --r8-dropdown-item-padding-y",
+        description: l(
+          "Permitem ajustar largura do painel e densidade dos itens para toolbars, cards e menus compactos.",
+          "Let you tune panel width and item density for toolbars, cards, and compact menus.",
+        ),
+      },
+    ],
   },
   {
     id: "steps",
@@ -2941,100 +4412,196 @@ const feedbackComponents = [
       "r8-alert--danger",
       "r8-alert--dark",
       "r8-alert--light",
+      "r8-alert--surface",
+      "r8-alert--center",
       "r8-alert--dismissible",
+      "r8-alert__layout",
+      "r8-alert__icon",
       "r8-alert__content",
       "r8-alert__title",
       "r8-alert__heading",
       "r8-alert__body",
+      "r8-alert__description",
       "r8-alert__link",
       "r8-alert__close",
       "r8-alert__actions",
     ],
     preview: `<div class="docs-demo__stack">
-  <section class="r8-alert r8-alert--primary" role="alert">
-    <div class="r8-alert__content">
-      <strong class="r8-alert__title">Primary alert</strong>
-      <p class="r8-text">System boots with the default mission profile and synced controls.</p>
+  <section class="r8-alert r8-alert--primary r8-alert--surface" role="alert">
+    <div class="r8-alert__layout">
+      <span class="r8-alert__icon" aria-hidden="true">i</span>
+      <div class="r8-alert__content">
+        <strong class="r8-alert__title">Primary alert</strong>
+        <p class="r8-alert__description">System boots with the default mission profile and synced controls.</p>
+      </div>
     </div>
   </section>
 
-  <section class="r8-alert r8-alert--success" role="status" aria-live="polite">
-    <div class="r8-alert__content">
-      <strong class="r8-alert__title">Success alert</strong>
-      <p class="r8-text">
-        Deployment finished cleanly.
-        <a class="r8-alert__link" href="#">Read release notes</a>
-      </p>
+  <section class="r8-alert r8-alert--success r8-alert--surface" role="status" aria-live="polite">
+    <div class="r8-alert__layout">
+      <span class="r8-alert__icon" aria-hidden="true">OK</span>
+      <div class="r8-alert__content">
+        <strong class="r8-alert__title">Success alert</strong>
+        <p class="r8-alert__description">
+          Deployment finished cleanly.
+          <a class="r8-alert__link" href="#">Read release notes</a>
+        </p>
+      </div>
     </div>
   </section>
 
-  <section class="r8-alert r8-alert--warning r8-alert--dismissible" id="docs-alert-live" role="alert" hidden>
-    <div class="r8-alert__content">
-      <strong class="r8-alert__title">Live alert</strong>
-      <p class="r8-text">Nice, you triggered this alert message from the preview action.</p>
+  <section class="r8-alert r8-alert--info r8-alert--surface r8-alert--center r8-alert--dismissible" role="alert">
+    <div class="r8-alert__layout">
+      <span class="r8-alert__icon" aria-hidden="true">!</span>
+      <div class="r8-alert__content">
+        <strong class="r8-alert__title">Centered alert</strong>
+        <p class="r8-alert__description">Use centered content when the message is short and needs stronger emphasis.</p>
+      </div>
     </div>
-    <button class="r8-alert__close" type="button" data-r8-dismiss="true" aria-label="Dismiss alert">x</button>
+    <button class="r8-alert__close" type="button" aria-label="Dismiss alert">Got it</button>
   </section>
 
   <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#docs-alert-live">
     Show dismissible alert
   </button>
 
+  <section class="r8-alert r8-alert--warning r8-alert--dismissible" id="docs-alert-live" role="alert" hidden>
+    <div class="r8-alert__layout">
+      <span class="r8-alert__icon" aria-hidden="true">!</span>
+      <div class="r8-alert__content">
+        <strong class="r8-alert__title">Live alert</strong>
+        <p class="r8-alert__description">Nice, you triggered this alert message from the preview action.</p>
+      </div>
+    </div>
+    <button class="r8-alert__close" type="button" data-r8-dismiss="true" aria-label="Dismiss alert">x</button>
+  </section>
+
   <section class="r8-alert r8-alert--danger" role="alert">
-    <div class="r8-alert__content">
-      <h3 class="r8-alert__heading">System offline</h3>
-      <div class="r8-alert__body">
-        <p class="r8-text">Backup power is running on a reduced grid while the main core cools down.</p>
-        <hr />
-        <p class="r8-text">Use the maintenance tunnel and keep all squad traffic on channel 03.</p>
+    <div class="r8-alert__layout">
+      <span class="r8-alert__icon" aria-hidden="true">!!</span>
+      <div class="r8-alert__content">
+        <h3 class="r8-alert__heading">System offline</h3>
+        <div class="r8-alert__body">
+          <p class="r8-text">Backup power is running on a reduced grid while the main core cools down.</p>
+          <hr />
+          <p class="r8-text">Use the maintenance tunnel and keep all squad traffic on channel 03.</p>
+        </div>
+        <div class="r8-alert__actions">
+          <button class="r8-btn r8-btn--sm r8-btn--light" type="button">Review</button>
+          <button class="r8-btn r8-btn--sm" type="button">Later</button>
+        </div>
       </div>
     </div>
   </section>
 
   <section class="r8-alert r8-alert--dark" role="alert">
-    <div class="r8-alert__content">
-      <strong class="r8-alert__title">Dark alert</strong>
-      <div class="r8-alert__actions">
-        <button class="r8-btn r8-btn--sm r8-btn--light" type="button">Review</button>
-        <button class="r8-btn r8-btn--sm" type="button">Later</button>
+    <div class="r8-alert__layout">
+      <span class="r8-alert__icon" aria-hidden="true">*</span>
+      <div class="r8-alert__content">
+        <strong class="r8-alert__title">Dark alert</strong>
+        <p class="r8-alert__description">Use the solid look when the message must stand out without another container around it.</p>
       </div>
     </div>
   </section>
 </div>`,
-    code: `<div class="r8-stack">
-  <section class="r8-alert r8-alert--success" role="status" aria-live="polite">
+    code: `<section class="r8-alert r8-alert--success r8-alert--surface r8-alert--dismissible" role="status" aria-live="polite">
+  <div class="r8-alert__layout">
+    <span class="r8-alert__icon" aria-hidden="true">OK</span>
     <div class="r8-alert__content">
       <strong class="r8-alert__title">Success alert</strong>
-      <p class="r8-text">
+      <p class="r8-alert__description">
         Deployment finished cleanly.
         <a class="r8-alert__link" href="#">Read release notes</a>
       </p>
-    </div>
-  </section>
-
-  <section class="r8-alert r8-alert--danger" role="alert">
-    <div class="r8-alert__content">
-      <h3 class="r8-alert__heading">System offline</h3>
-      <div class="r8-alert__body">
-        <p class="r8-text">Backup power is running on a reduced grid.</p>
-        <hr />
-        <p class="r8-text">Use the maintenance tunnel and keep traffic on channel 03.</p>
+      <div class="r8-alert__actions">
+        <button class="r8-btn r8-btn--sm r8-btn--primary" type="button">Review</button>
       </div>
     </div>
-  </section>
+  </div>
+  <button class="r8-alert__close" type="button" data-r8-dismiss="true" aria-label="Dismiss alert">Got it</button>
+</section>
 
-  <button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#inline-alert">
-    Show dismissible alert
-  </button>
+<button class="r8-btn r8-btn--secondary" type="button" data-r8-toggle="alert" data-r8-target="#inline-alert">
+  Show dismissible alert
+</button>
 
-  <section id="inline-alert" class="r8-alert r8-alert--warning r8-alert--dismissible" role="alert" hidden>
+<section id="inline-alert" class="r8-alert r8-alert--warning r8-alert--surface r8-alert--dismissible" role="alert" hidden>
+  <div class="r8-alert__layout">
+    <span class="r8-alert__icon" aria-hidden="true">!</span>
     <div class="r8-alert__content">
       <strong class="r8-alert__title">Live alert</strong>
-      <p class="r8-text">Nice, you triggered this alert message.</p>
+      <p class="r8-alert__description">Nice, you triggered this alert message.</p>
     </div>
-    <button class="r8-alert__close" type="button" data-r8-dismiss="true" aria-label="Dismiss alert">x</button>
-  </section>
-</div>`,
+  </div>
+  <button class="r8-alert__close" type="button" data-r8-dismiss="true" aria-label="Dismiss alert">x</button>
+</section>`,
+    anatomy: ll(
+      [
+        "`r8-alert` define o frame base, enquanto os tons continuam em modifiers como `--success`, `--warning` ou `--danger`.",
+        "`r8-alert--surface` troca o bloco solido por uma leitura mais leve, e `r8-alert--center` recentraliza icone, copy e acoes.",
+        "`r8-alert__layout` organiza o icone ao lado do conteudo; `r8-alert__icon` pode ser texto curto, glifo ou SVG inline.",
+        "`r8-alert__title`, `r8-alert__description`, `r8-alert__body` e `r8-alert__actions` deixam mensagens simples e callouts longos no mesmo sistema.",
+        "`r8-alert__close` continua opcional e agora aceita tanto um `x` quanto labels curtos como `Got it` ou `Close`.",
+      ],
+      [
+        "`r8-alert` defines the base frame, while tones stay in modifiers such as `--success`, `--warning`, or `--danger`.",
+        "`r8-alert--surface` switches the solid block into a lighter read, and `r8-alert--center` recenters the icon, copy, and actions.",
+        "`r8-alert__layout` places the icon beside the content; `r8-alert__icon` can hold short text, a glyph, or inline SVG.",
+        "`r8-alert__title`, `r8-alert__description`, `r8-alert__body`, and `r8-alert__actions` keep simple messages and longer callouts in the same system.",
+        "`r8-alert__close` stays optional and now supports either an `x` or short labels such as `Got it` or `Close`.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Use `role=\"alert\"` para mensagens urgentes e `role=\"status\"` com `aria-live=\"polite\"` quando o update nao deve interromper a leitura atual.",
+        "Quando o close for icon-only, mantenha um `aria-label` explicito como `Dismiss alert`.",
+        "Nao dependa so da cor para semantica; combine tom, titulo e descricao para deixar sucesso, aviso e erro claros.",
+        "Se o Alert abrir por trigger declarativo, preserve o foco no fluxo principal e use copy curta para anuncios live.",
+      ],
+      [
+        "Use `role=\"alert\"` for urgent messages and `role=\"status\"` with `aria-live=\"polite\"` when the update should not interrupt current reading.",
+        "When the close affordance is icon-only, keep an explicit `aria-label` such as `Dismiss alert`.",
+        "Do not rely on color alone for semantics; combine tone, title, and description so success, warning, and error stay clear.",
+        "If the Alert opens through a declarative trigger, keep focus in the main flow and use short copy for live announcements.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-alert--surface / r8-alert--center",
+        description: l(
+          "Modifiers visuais para alternar entre o look solido e uma superficie mais leve, ou recentralizar o conteudo quando a mensagem e curta.",
+          "Visual modifiers for switching between the solid look and a lighter surface, or recentering content when the message is short.",
+        ),
+      },
+      {
+        name: "r8-alert__layout / r8-alert__icon",
+        description: l(
+          "Estruturam um alert com icone sem exigir runtime extra; o icone pode ser texto curto, glyph ou SVG inline.",
+          "Structure an icon-driven alert without extra runtime; the icon can be short text, a glyph, or inline SVG.",
+        ),
+      },
+      {
+        name: "r8-alert__description / r8-alert__body / r8-alert__actions",
+        description: l(
+          "Cobrem desde alerts de uma linha ate callouts maiores com descricao detalhada e CTA inline.",
+          "Cover everything from one-line alerts to larger callouts with detailed description and inline CTAs.",
+        ),
+      },
+      {
+        name: "r8-alert__close + data-r8-dismiss",
+        description: l(
+          "Permitem fechar o host imediatamente e aceitar texto customizado no botao, nao apenas um simbolo fixo.",
+          "Allow closing the host immediately while accepting custom button text, not only a fixed symbol.",
+        ),
+      },
+      {
+        name: "data-r8-toggle / data-r8-target",
+        description: l(
+          "Abrem ou recolhem um Alert hidden para previews live e mensagens inline controladas declarativamente.",
+          "Open or collapse a hidden Alert for live previews and inline messages controlled declaratively.",
+        ),
+      },
+    ],
   },
   {
     id: "dialog",
@@ -3073,10 +4640,33 @@ const feedbackComponents = [
     name: "Drawer",
     group: "feedback",
     summary: l(
-      "Painel lateral para filtros, settings e detalhes contextuais sem trocar de pagina.",
-      "Side panel for filters, settings and contextual details without leaving the page.",
+      "Painel deslizante para settings, filtros e fluxos laterais mais longos, com controle de backdrop, escape e scroll lock.",
+      "Sliding panel for settings, filters, and longer side flows, with backdrop, escape, and scroll-lock controls.",
     ),
-    classes: ["r8-drawer", "r8-drawer--right", "r8-drawer--left", "r8-drawer__header", "r8-drawer__title", "r8-drawer__body", "r8-drawer__footer", "r8-drawer-backdrop"],
+    classes: [
+      "r8-drawer",
+      "r8-drawer--right",
+      "r8-drawer--left",
+      "r8-drawer--top",
+      "r8-drawer--bottom",
+      "r8-drawer__header",
+      "r8-drawer__copy",
+      "r8-drawer__title",
+      "r8-drawer__meta",
+      "r8-drawer__close",
+      "r8-drawer__body",
+      "r8-drawer__footer",
+      "r8-drawer-backdrop",
+      "data-r8-modal",
+      "data-r8-close-on-backdrop",
+      "data-r8-close-on-escape",
+      "data-r8-lock-scroll",
+      "--r8-drawer-size",
+      "--r8-drawer-min-size",
+      "--r8-drawer-header-surface",
+      "--r8-drawer-footer-surface",
+      "--r8-drawer-body-padding",
+    ],
     preview: `<div class="docs-demo__stack">
   <div class="docs-demo__actions">
     <button
@@ -3092,13 +4682,22 @@ const feedbackComponents = [
     <p class="docs-demo__stage-copy">
       This preview uses the same runtime as the library package: backdrop, escape close, outside click, and button helpers are all active.
     </p>
-    <aside id="docs-drawer-preview" class="r8-drawer r8-drawer--right" hidden>
+    <aside
+      id="docs-drawer-preview"
+      class="r8-drawer r8-drawer--right"
+      style="--r8-drawer-size: 27rem;"
+      aria-labelledby="docs-drawer-preview-title"
+      hidden
+    >
       <div class="r8-drawer__header">
-        <strong class="r8-drawer__title">Quick settings</strong>
-        <button class="r8-btn r8-btn--sm" type="button" data-r8-close="#docs-drawer-preview">Close</button>
+        <div class="r8-drawer__copy">
+          <strong id="docs-drawer-preview-title" class="r8-drawer__title">Quick settings</strong>
+          <p class="r8-drawer__meta">Backdrops, escape close and local overlay scopes are all handled by the runtime.</p>
+        </div>
+        <button class="r8-drawer__close" type="button" data-r8-close="#docs-drawer-preview" aria-label="Close drawer">x</button>
       </div>
       <div class="r8-drawer__body">
-        <p class="r8-text">Tune the active color palette and HUD density.</p>
+        <p class="r8-text">Tune the active color palette, HUD density and quick mission toggles without leaving the current surface.</p>
         <label class="r8-checkbox is-checked">
           <span class="r8-checkbox__box" aria-hidden="true"></span>
           <span>Show minimap</span>
@@ -3106,6 +4705,10 @@ const feedbackComponents = [
         <label class="r8-checkbox">
           <span class="r8-checkbox__box" aria-hidden="true"></span>
           <span>Enable scanlines</span>
+        </label>
+        <label class="r8-checkbox is-checked">
+          <span class="r8-checkbox__box" aria-hidden="true"></span>
+          <span>Compact density</span>
         </label>
       </div>
       <div class="r8-drawer__footer">
@@ -3126,10 +4729,20 @@ const feedbackComponents = [
   </button>
 
   <div data-r8-overlay-scope style="min-height: 20rem;">
-    <aside id="settings-drawer" class="r8-drawer r8-drawer--right" hidden>
+    <aside
+      id="settings-drawer"
+      class="r8-drawer r8-drawer--right"
+      style="--r8-drawer-size: 28rem;"
+      data-r8-close-on-backdrop="false"
+      aria-labelledby="settings-drawer-title"
+      hidden
+    >
       <div class="r8-drawer__header">
-        <strong class="r8-drawer__title">Quick settings</strong>
-        <button class="r8-btn r8-btn--sm" type="button" data-r8-close="#settings-drawer">Close</button>
+        <div class="r8-drawer__copy">
+          <strong id="settings-drawer-title" class="r8-drawer__title">Quick settings</strong>
+          <p class="r8-drawer__meta">Keep the panel open during multi-step edits and close it only through explicit actions.</p>
+        </div>
+        <button class="r8-drawer__close" type="button" data-r8-close="#settings-drawer" aria-label="Close drawer">x</button>
       </div>
 
       <div class="r8-drawer__body">
@@ -3142,6 +4755,10 @@ const feedbackComponents = [
           <span class="r8-checkbox__box" aria-hidden="true"></span>
           <span>Enable scanlines</span>
         </label>
+        <label class="r8-checkbox is-checked">
+          <span class="r8-checkbox__box" aria-hidden="true"></span>
+          <span>Keep help panel visible</span>
+        </label>
       </div>
 
       <div class="r8-drawer__footer">
@@ -3151,6 +4768,62 @@ const feedbackComponents = [
     </aside>
   </div>
 </div>`,
+    anatomy: ll(
+      [
+        "`r8-drawer` define o shell do painel e combina com `r8-drawer--right`, `--left`, `--top` ou `--bottom` para a direcao de entrada.",
+        "`r8-drawer__header` pode receber um bloco `r8-drawer__copy` com `r8-drawer__title` e `r8-drawer__meta`, alem de um `r8-drawer__close` opcional.",
+        "`r8-drawer__body` concentra o conteudo rolavel; `r8-drawer__footer` fecha o fluxo com acoes persistentes quando houver formulario ou confirmacao.",
+        "`data-r8-modal`, `data-r8-close-on-backdrop`, `data-r8-close-on-escape` e `data-r8-lock-scroll` ajustam o comportamento sem exigir JS customizado.",
+      ],
+      [
+        "`r8-drawer` defines the panel shell and pairs with `r8-drawer--right`, `--left`, `--top`, or `--bottom` for entry direction.",
+        "`r8-drawer__header` can host a `r8-drawer__copy` block with `r8-drawer__title` and `r8-drawer__meta`, plus an optional `r8-drawer__close` button.",
+        "`r8-drawer__body` holds the scrollable content; `r8-drawer__footer` closes the flow with persistent actions when a form or confirmation is involved.",
+        "`data-r8-modal`, `data-r8-close-on-backdrop`, `data-r8-close-on-escape`, and `data-r8-lock-scroll` tune behavior without requiring custom JS.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Prefira dar nome acessivel ao painel com `aria-labelledby` apontando para `r8-drawer__title`; se remover o header, use `aria-label` direto no host.",
+        "Mantenha sempre uma forma explicita de fechar o Drawer quando desabilitar clique no backdrop ou fechamento por `Esc`.",
+        "Quando o corpo trouxer formularios longos, preserve a ordem logica do foco e deixe as acoes principais no footer ou no topo do painel.",
+      ],
+      [
+        "Prefer giving the panel an accessible name with `aria-labelledby` pointing to `r8-drawer__title`; if you remove the header, use `aria-label` on the host.",
+        "Always keep an explicit way to close the Drawer when backdrop click or `Esc` closing is disabled.",
+        "When the body contains long forms, preserve logical focus order and keep primary actions in the footer or near the top of the panel.",
+      ],
+    ),
+    api: [
+      {
+        name: "data-r8-modal / data-r8-close-on-backdrop / data-r8-close-on-escape / data-r8-lock-scroll",
+        description: l(
+          "Controlam backdrop, clique fora, tecla Escape e bloqueio do scroll global sem sair da API declarativa.",
+          "Control backdrop, outside click, Escape handling, and global scroll lock without leaving the declarative API.",
+        ),
+      },
+      {
+        name: "r8-drawer--right / --left / --top / --bottom",
+        description: l(
+          "Definem a direcao do painel para filtros laterais, trays superiores ou folhas curtas vindas da base.",
+          "Set the panel direction for side filters, top trays, or shorter sheets entering from the bottom.",
+        ),
+      },
+      {
+        name: "r8-drawer__copy / __meta / __close",
+        description: l(
+          "Estruturam headers mais ricos sem depender de slots: copy, contexto secundario e close action dedicada.",
+          "Structure richer headers without slots: copy, secondary context, and a dedicated close action.",
+        ),
+      },
+      {
+        name: "--r8-drawer-size / --r8-drawer-min-size / --r8-drawer-body-padding",
+        description: l(
+          "Permitem ajustar tamanho e densidade do painel para flows compactos, forms longos ou drawers de conteudo mais denso.",
+          "Let you tune panel size and density for compact flows, longer forms, or denser drawers.",
+        ),
+      },
+    ],
   },
   {
     id: "loading",
@@ -3166,6 +4839,9 @@ const feedbackComponents = [
       "r8-loading--bar",
       "r8-loading--equalizer",
       "r8-loading--spinner",
+      "r8-loading--ticker",
+      "r8-loading--radar",
+      "r8-loading--beacon",
       "r8-loading--sm",
       "r8-loading--lg",
       "r8-loading__label",
@@ -3179,6 +4855,13 @@ const feedbackComponents = [
       "r8-loading__bar",
       "r8-loading__spinner",
       "r8-loading__spinner-cell",
+      "r8-loading__ticker",
+      "r8-loading__ticker-cell",
+      "r8-loading__radar",
+      "r8-loading__radar-dot",
+      "r8-loading__beacon",
+      "r8-loading__beacon-ring",
+      "r8-loading__beacon-core",
     ],
     preview: `<div class="r8-grid" style="grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));">
   <div class="r8-stack">
@@ -3243,6 +4926,43 @@ const feedbackComponents = [
         <span class="r8-loading__spinner-cell"></span>
       </span>
       <span class="r8-loading__label">Matching nodes...</span>
+    </div>
+  </div>
+
+  <div class="r8-stack">
+    <span class="r8-badge">Ticker</span>
+    <div class="r8-loading r8-loading--ticker" role="status" aria-live="polite">
+      <span class="r8-loading__ticker" aria-hidden="true">
+        <span class="r8-loading__ticker-cell"></span>
+        <span class="r8-loading__ticker-cell"></span>
+        <span class="r8-loading__ticker-cell"></span>
+        <span class="r8-loading__ticker-cell"></span>
+        <span class="r8-loading__ticker-cell"></span>
+        <span class="r8-loading__ticker-cell"></span>
+      </span>
+      <span class="r8-loading__label">Buffering route data...</span>
+    </div>
+  </div>
+
+  <div class="r8-stack">
+    <span class="r8-badge">Radar</span>
+    <div class="r8-loading r8-loading--radar" role="status" aria-live="polite">
+      <span class="r8-loading__radar" aria-hidden="true">
+        <span class="r8-loading__radar-dot"></span>
+      </span>
+      <span class="r8-loading__label">Scanning signal range...</span>
+    </div>
+  </div>
+
+  <div class="r8-stack">
+    <span class="r8-badge">Beacon</span>
+    <div class="r8-loading r8-loading--beacon" role="status" aria-live="polite">
+      <span class="r8-loading__beacon" aria-hidden="true">
+        <span class="r8-loading__beacon-ring"></span>
+        <span class="r8-loading__beacon-ring"></span>
+        <span class="r8-loading__beacon-core"></span>
+      </span>
+      <span class="r8-loading__label">Waiting for uplink...</span>
     </div>
   </div>
 </div>`,
@@ -3311,6 +5031,43 @@ const feedbackComponents = [
       <span class="r8-loading__label">Matching nodes...</span>
     </div>
   </div>
+
+  <div class="r8-stack">
+    <span class="r8-badge">Ticker</span>
+    <div class="r8-loading r8-loading--ticker" role="status" aria-live="polite">
+      <span class="r8-loading__ticker" aria-hidden="true">
+        <span class="r8-loading__ticker-cell"></span>
+        <span class="r8-loading__ticker-cell"></span>
+        <span class="r8-loading__ticker-cell"></span>
+        <span class="r8-loading__ticker-cell"></span>
+        <span class="r8-loading__ticker-cell"></span>
+        <span class="r8-loading__ticker-cell"></span>
+      </span>
+      <span class="r8-loading__label">Buffering route data...</span>
+    </div>
+  </div>
+
+  <div class="r8-stack">
+    <span class="r8-badge">Radar</span>
+    <div class="r8-loading r8-loading--radar" role="status" aria-live="polite">
+      <span class="r8-loading__radar" aria-hidden="true">
+        <span class="r8-loading__radar-dot"></span>
+      </span>
+      <span class="r8-loading__label">Scanning signal range...</span>
+    </div>
+  </div>
+
+  <div class="r8-stack">
+    <span class="r8-badge">Beacon</span>
+    <div class="r8-loading r8-loading--beacon" role="status" aria-live="polite">
+      <span class="r8-loading__beacon" aria-hidden="true">
+        <span class="r8-loading__beacon-ring"></span>
+        <span class="r8-loading__beacon-ring"></span>
+        <span class="r8-loading__beacon-core"></span>
+      </span>
+      <span class="r8-loading__label">Waiting for uplink...</span>
+    </div>
+  </div>
 </div>`,
     anatomy: ll(
       [
@@ -3366,6 +5123,27 @@ const feedbackComponents = [
         ),
       },
       {
+        name: "r8-loading--ticker",
+        description: l(
+          "Variant com segmentos horizontais em sequencia, boa para buffering, sync pipelines e filas curtas.",
+          "Sequential horizontal segment variant, good for buffering, sync pipelines, and short queues.",
+        ),
+      },
+      {
+        name: "r8-loading--radar",
+        description: l(
+          "Variant com sweep retro e target marker para scan, discovery e procura de sinais.",
+          "Retro sweep variant with a target marker for scan, discovery, and signal search states.",
+        ),
+      },
+      {
+        name: "r8-loading--beacon",
+        description: l(
+          "Variant com pulsos concentricos para waiting rooms, uplinks e estados de espera persistentes.",
+          "Concentric pulse variant for waiting rooms, uplinks, and persistent wait states.",
+        ),
+      },
+      {
         name: "r8-loading--sm / r8-loading--lg",
         description: l(
           "Size presets para encaixar o loading em toolbars, cards ou superficies maiores.",
@@ -3375,109 +5153,93 @@ const feedbackComponents = [
     ],
   },
   {
-    id: "message-box",
-    name: "Message Box",
+    id: "poptip",
+    name: "Poptip",
     group: "feedback",
     summary: l(
-      "Caixa de mensagem para confirmacoes e prompts de curta duracao.",
-      "Message box for short confirmation and prompt flows.",
+      "Overlay flutuante unificado para dicas breves ou paineis curtos, com trigger por clique, hover ou foco.",
+      "Unified floating overlay for short hints or compact panels, with click, hover, or focus triggers.",
     ),
-    classes: ["r8-message-box", "r8-message-box__title", "r8-message-box__footer"],
-    preview: `<div class="docs-demo__stack">
+    classes: ["r8-poptip", "r8-poptip__title", "r8-poptip__body", "r8-poptip__actions"],
+    preview: `<div class="docs-demo__stack docs-demo__stack--poptip" data-r8-overlay-scope>
   <button
     class="r8-btn r8-btn--secondary"
     type="button"
-    data-r8-toggle="message-box"
-    data-r8-target="#docs-message-box-preview"
-  >
-    Open message box
-  </button>
-  <section id="docs-message-box-preview" class="r8-message-box" hidden>
-    <strong class="r8-message-box__title">Overwrite file?</strong>
-    <p class="r8-text">This action will replace the current build artifact.</p>
-    <div class="r8-message-box__footer">
-      <button class="r8-btn r8-btn--sm" type="button" data-r8-close="#docs-message-box-preview">Cancel</button>
-      <button class="r8-btn r8-btn--sm r8-btn--danger" type="button" data-r8-close="#docs-message-box-preview">Overwrite</button>
-    </div>
-  </section>
-</div>`,
-  },
-  {
-    id: "notification",
-    name: "Notification",
-    group: "feedback",
-    summary: l(
-      "Cartao de notificacao maior para comunicados persistentes e detalhes extras.",
-      "Larger notification card for persistent announcements and extra detail.",
-    ),
-    classes: ["r8-notification", "r8-notification__title", "r8-notification__footer"],
-    preview: `<div class="docs-demo__stack">
-  <button
-    class="r8-btn r8-btn--secondary"
-    type="button"
-    data-r8-toggle="notification"
-    data-r8-target="#docs-notification-preview"
-  >
-    Show notification
-  </button>
-  <section id="docs-notification-preview" class="r8-notification" hidden>
-    <strong class="r8-notification__title">New release available</strong>
-    <p class="r8-text">retro8-ui 0.2 ships with the extended component catalog.</p>
-    <div class="r8-notification__footer">
-      <button class="r8-btn r8-btn--sm" type="button" data-r8-close="#docs-notification-preview">Dismiss</button>
-      <button class="r8-btn r8-btn--sm r8-btn--primary" type="button">Read notes</button>
-    </div>
-  </section>
-</div>`,
-  },
-  {
-    id: "popover",
-    name: "Popover",
-    group: "feedback",
-    summary: l(
-      "Conteudo flutuante com titulo opcional para detalhes, acoes rapidas e metadata.",
-      "Floating content with an optional title for details, quick actions and metadata.",
-    ),
-    classes: ["r8-popover", "r8-popover__title"],
-    preview: `<div class="docs-demo__stack">
-  <button
-    class="r8-btn r8-btn--secondary"
-    type="button"
-    data-r8-toggle="popover"
-    data-r8-target="#docs-popover-preview"
+    data-r8-toggle="poptip"
+    data-r8-target="#docs-poptip-panel-preview"
     data-r8-placement="bottom-start"
   >
-    Toggle popover
+    Open control panel
   </button>
-  <section id="docs-popover-preview" class="r8-popover" data-r8-placement="bottom-start" hidden>
-    <strong class="r8-popover__title">Shortcut panel</strong>
-    <p class="r8-text">Press G to open the grid overlay.</p>
+  <section id="docs-poptip-panel-preview" class="r8-poptip" data-r8-placement="bottom-start" hidden>
+    <strong class="r8-poptip__title">Shortcut panel</strong>
+    <div class="r8-poptip__body">
+      <p class="r8-text">Press G to open the grid overlay and jump to layout guides.</p>
+      <div class="r8-poptip__actions">
+        <button class="r8-btn r8-btn--sm r8-btn--secondary" type="button" data-r8-close>Close</button>
+        <button class="r8-btn r8-btn--sm" type="button">Open docs</button>
+      </div>
+    </div>
   </section>
 </div>`,
-  },
-  {
-    id: "tooltip",
-    name: "Tooltip",
-    group: "feedback",
-    summary: l(
-      "Dica breve para explicar icones, acoes compactas e controles densos.",
-      "Short hint for explaining icons, compact actions and dense controls.",
+    anatomy: ll(
+      [
+        "`r8-poptip` e o shell flutuante reutilizavel para modos panel e hint sem duplicar a API.",
+        "`r8-poptip__title` apresenta um heading curto quando o conteudo precisa de contexto adicional.",
+        "`r8-poptip__body` organiza texto, badges, metadata e blocos mais ricos com espaco previsivel.",
+        "`r8-poptip__actions` fecha o painel com acoes compactas, incluindo botao com `data-r8-close` quando fizer sentido.",
+      ],
+      [
+        "`r8-poptip` is the reusable floating shell for both panel and hint modes without duplicating the API.",
+        "`r8-poptip__title` adds a short heading when the content needs extra context.",
+        "`r8-poptip__body` organizes text, badges, metadata, and richer content blocks with predictable spacing.",
+        "`r8-poptip__actions` closes the panel with compact actions, including a `data-r8-close` button when needed.",
+      ],
     ),
-    classes: ["r8-tooltip"],
-    preview: `<div class="docs-demo__stack">
-  <button
-    class="r8-btn"
-    type="button"
-    data-r8-toggle="tooltip"
-    data-r8-target="#docs-tooltip-preview"
-    data-r8-placement="top"
-  >
-    Hover or focus
-  </button>
-  <div id="docs-tooltip-preview" class="r8-tooltip" data-r8-placement="top" role="tooltip" hidden>
-    Hold Shift to toggle precision mode.
-  </div>
-</div>`,
+    accessibility: ll(
+      [
+        "Use trigger focavel para que modos `hover` e `focus` continuem acessiveis no teclado.",
+        "Para hints curtos, prefira `data-r8-variant=\"hint\"` e mantenha o texto direto o bastante para leitura rapida.",
+        "Em paineis clicaveis, inclua acao clara de fechar quando o conteudo trouxer varias escolhas ou instrucoes.",
+        "Evite depender apenas da posicao do overlay; o label do trigger deve continuar explicando a acao principal.",
+      ],
+      [
+        "Use a focusable trigger so `hover` and `focus` modes remain keyboard-accessible.",
+        "For short hints, prefer `data-r8-variant=\"hint\"` and keep the copy direct enough for quick reading.",
+        "For clickable panels, add a clear close action when the content contains multiple choices or instructions.",
+        "Do not rely only on overlay position; the trigger label should still explain the main action.",
+      ],
+    ),
+    api: [
+      {
+        name: "data-r8-trigger",
+        description: l(
+          "Escolhe entre interacao por clique, hover ou foco sem trocar a estrutura base do componente.",
+          "Chooses between click, hover, or focus interaction without changing the component's base structure.",
+        ),
+      },
+      {
+        name: "data-r8-variant / r8-poptip__title",
+        description: l(
+          "Alternam entre um painel mais rico (`panel`) e um hint compacto (`hint`) com titulo opcional.",
+          "Switch between a richer panel (`panel`) and a compact hint (`hint`) with an optional title.",
+        ),
+      },
+      {
+        name: "data-r8-placement / --r8-poptip-width",
+        description: l(
+          "Controlam a ancoragem e a largura maxima do overlay em relacao ao trigger.",
+          "Control anchoring and the overlay's maximum width relative to the trigger.",
+        ),
+      },
+      {
+        name: "data-r8-close / r8-poptip__actions",
+        description: l(
+          "Permitem fechar o painel por helper declarativo e acomodar acoes curtas dentro do proprio overlay.",
+          "Let you close the panel through the declarative helper and place short actions inside the overlay itself.",
+        ),
+      },
+    ],
   },
 ] satisfies CatalogEntry[];
 
@@ -3583,22 +5345,154 @@ const retroExtraComponents = [
     group: "retro-extras",
     core: false,
     summary: l(
-      "Barra superior pronta para docs, landing pages e dashboards com brand, links e acoes.",
-      "Top bar ready for docs, landing pages and dashboards with brand, links and actions.",
+      "Barra superior responsiva com brand, nav, texto, acoes e colapso declarativo para cabecalhos de app, docs e landing pages.",
+      "Responsive top bar with brand, nav, text, actions, and declarative collapse for app headers, docs, and landing pages.",
     ),
-    classes: ["r8-navbar", "r8-navbar__brand", "r8-navbar__menu", "r8-navbar__item", "r8-navbar__actions", "r8-navbar--dark"],
-    preview: `<nav class="r8-navbar">
-  <a class="r8-navbar__brand" href="#0">retro8-ui</a>
-  <ul class="r8-navbar__menu">
-    <li><a class="r8-navbar__item" aria-current="page" href="#0">Docs</a></li>
-    <li><a class="r8-navbar__item" href="#0">Components</a></li>
-    <li><a class="r8-navbar__item" href="#0">Examples</a></li>
-  </ul>
-  <div class="r8-navbar__actions">
-    <span class="r8-badge r8-badge--info">v1</span>
-    <button class="r8-btn r8-btn--sm r8-btn--primary" type="button">Install</button>
+    classes: [
+      "r8-navbar",
+      "r8-navbar__container",
+      "r8-navbar__brand",
+      "r8-navbar__toggle",
+      "r8-navbar__toggle-icon",
+      "r8-navbar__collapse",
+      "r8-navbar__menu",
+      "r8-navbar__menu--scroll",
+      "r8-navbar__item",
+      "r8-navbar__text",
+      "r8-navbar__form",
+      "r8-navbar__actions",
+      "r8-navbar--dark",
+    ],
+    preview: `<div class="docs-demo__stack docs-demo__stack--navbar">
+  <nav class="r8-navbar" data-r8-expand="never" data-r8-open="true" aria-label="Primary navigation">
+    <div class="r8-navbar__container">
+      <a class="r8-navbar__brand" href="#0">
+        <img src="/brand/logo-ui.png" alt="Retro8 UI" />
+        <span>retro8-ui</span>
+      </a>
+      <button class="r8-navbar__toggle" type="button" aria-label="Toggle navigation">
+        <span class="r8-navbar__toggle-icon" aria-hidden="true"></span>
+      </button>
+      <div class="r8-navbar__collapse">
+        <ul class="r8-navbar__menu">
+          <li><a class="r8-navbar__item" aria-current="page" href="#0">Docs</a></li>
+          <li><a class="r8-navbar__item" href="#0">Components</a></li>
+          <li><a class="r8-navbar__item" href="#0">Tokens</a></li>
+        </ul>
+        <p class="r8-navbar__text">Build 0.3 synced</p>
+        <form class="r8-navbar__form" role="search">
+          <input class="r8-input" type="search" placeholder="Search docs" aria-label="Search docs" />
+          <button class="r8-btn r8-btn--sm r8-btn--primary" type="button">Search</button>
+        </form>
+        <div class="r8-navbar__actions">
+          <span class="r8-badge r8-badge--info">v1</span>
+          <button class="r8-btn r8-btn--sm" type="button">Install</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+</div>`,
+    code: `<nav class="r8-navbar r8-navbar--dark" data-r8-expand="lg" aria-label="Primary navigation">
+  <div class="r8-navbar__container">
+    <a class="r8-navbar__brand" href="/">
+      <img src="/brand/logo-ui.png" alt="Retro8 UI" />
+      <span>retro8-ui</span>
+    </a>
+
+    <button class="r8-navbar__toggle" type="button" aria-label="Toggle navigation">
+      <span class="r8-navbar__toggle-icon" aria-hidden="true"></span>
+    </button>
+
+    <div class="r8-navbar__collapse">
+      <ul class="r8-navbar__menu">
+        <li><a class="r8-navbar__item" aria-current="page" href="/docs">Docs</a></li>
+        <li><a class="r8-navbar__item" href="/components">Components</a></li>
+        <li><a class="r8-navbar__item" href="/tokens">Tokens</a></li>
+        <li><a class="r8-navbar__item" href="/guides">Guides</a></li>
+      </ul>
+
+      <span class="r8-navbar__text">Stable channel</span>
+
+      <form class="r8-navbar__form" role="search">
+        <input class="r8-input" type="search" placeholder="Search docs" aria-label="Search docs" />
+        <button class="r8-btn r8-btn--sm r8-btn--primary" type="submit">Search</button>
+      </form>
+
+      <div class="r8-navbar__actions">
+        <button class="r8-btn r8-btn--sm" type="button">Install</button>
+      </div>
+    </div>
   </div>
 </nav>`,
+    anatomy: ll(
+      [
+        "`r8-navbar` e a shell principal e aceita brand, nav, texto, form e acoes sem exigir wrappers extras.",
+        "`r8-navbar__container` agrupa o miolo quando voce quiser um inner wrapper previsivel, mas o componente continua funcionando sem ele.",
+        "`r8-navbar__toggle` + `r8-navbar__collapse` cuidam do colapso responsivo em conjunto com `data-r8-expand`.",
+        "`r8-navbar__menu` organiza os links principais; use `r8-navbar__menu--scroll` quando a coluna colapsada puder crescer demais.",
+        "`r8-navbar__text`, `r8-navbar__form` e `r8-navbar__actions` ocupam slots opcionais, como no padrao do Bootstrap.",
+      ],
+      [
+        "`r8-navbar` is the main shell and accepts brand, nav, text, form, and actions without requiring extra wrappers.",
+        "`r8-navbar__container` groups the inner layout when you want a predictable inner wrapper, but the component still works without it.",
+        "`r8-navbar__toggle` + `r8-navbar__collapse` handle responsive collapsing together with `data-r8-expand`.",
+        "`r8-navbar__menu` organizes the primary links; use `r8-navbar__menu--scroll` when the collapsed column could grow too tall.",
+        "`r8-navbar__text`, `r8-navbar__form`, and `r8-navbar__actions` fill optional slots, much like the Bootstrap pattern.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Prefira `<nav>` para expor o componente como landmark; se usar outro host, adicione `role=\"navigation\"`.",
+        "O toggle precisa de nome acessivel claro, como `Toggle navigation`, e deve controlar uma area identificavel por `aria-controls`.",
+        "Marque o link atual com `aria-current=\"page\"` para manter o contexto da navegacao.",
+        "Se houver busca no header, use `role=\"search\"` no form e preserve labels explicitos no campo.",
+        "Nao esconda informacao importante apenas dentro do menu colapsado; brand e acao principal devem continuar claras mesmo fechado.",
+      ],
+      [
+        "Prefer `<nav>` so the component is exposed as a landmark; if you use another host, add `role=\"navigation\"`.",
+        "The toggle needs a clear accessible name such as `Toggle navigation`, and it should control an identifiable region through `aria-controls`.",
+        "Mark the current link with `aria-current=\"page\"` to preserve navigation context.",
+        "If the header includes search, use `role=\"search\"` on the form and keep explicit labels on the field.",
+        "Do not hide critical information only inside the collapsed menu; brand and the main action should remain clear even when closed.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-navbar / data-r8-expand",
+        description: l(
+          "Base do header e ponto de entrada para o comportamento responsivo, com breakpoints no estilo navbar-expand do Bootstrap.",
+          "Header base and entry point for the responsive behavior, with Bootstrap-like navbar-expand breakpoints.",
+        ),
+      },
+      {
+        name: "r8-navbar__toggle / r8-navbar__collapse",
+        description: l(
+          "Par declarativo para abrir e fechar a navegacao colapsada sem JS de aplicacao.",
+          "Declarative pair used to open and close the collapsed navigation without app-level JS.",
+        ),
+      },
+      {
+        name: "r8-navbar__brand / r8-navbar__menu / r8-navbar__item",
+        description: l(
+          "Blocos para brand textual ou com imagem e para a lista principal de links.",
+          "Building blocks for text or image brands and for the main list of links.",
+        ),
+      },
+      {
+        name: "r8-navbar__text / r8-navbar__form / r8-navbar__actions",
+        description: l(
+          "Slots opcionais para copy curta, busca e CTAs auxiliares dentro da mesma barra.",
+          "Optional slots for short copy, search, and secondary CTAs inside the same bar.",
+        ),
+      },
+      {
+        name: "r8-navbar--dark / data-r8-variant=\"dark\"",
+        description: l(
+          "Ativa o tema escuro do navbar sem duplicar a estrutura do markup.",
+          "Enables the dark navbar theme without duplicating the markup structure.",
+        ),
+      },
+    ],
   },
 ] satisfies CatalogEntry[];
 

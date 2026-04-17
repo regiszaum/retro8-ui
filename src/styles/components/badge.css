@@ -38,4 +38,9 @@
   .r8-badge--light {
     @apply bg-r8-light-strong text-r8-light-contrast;
   }
+
+  .r8-badge--dot {
+    @apply h-3 min-h-0 min-w-0 px-0 py-0 text-transparent;
+    width: 0.75rem;
+  }
 }

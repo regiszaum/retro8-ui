@@ -159,6 +159,7 @@ button:not(:disabled),
 .r8-navbar__brand,
 .r8-navbar__item,
 .r8-btn:not(:disabled):not([aria-disabled="true"]),
+.r8-carousel__arrow,
 .r8-carousel__dot,
 .r8-tabs__tab,
 .r8-collapse__header,
@@ -170,7 +171,6 @@ button:not(:disabled),
 .r8-switch,
 .r8-rate__item,
 .r8-transfer__item,
-.r8-tree__node,
 .r8-input-number__button,
 [data-r8-toggle],
 [data-r8-close],
@@ -702,23 +702,24 @@ pre {
 
 .docs-locale-select .r8-select__trigger {
   background: transparent;
-  border: 2px solid transparent;
+  border: 0;
   box-shadow: none;
   color: var(--docs-topbar-text);
   font-family: "Press Start 2P", "Courier New", Courier, monospace;
   font-size: 0.6rem;
   letter-spacing: 0.06em;
   min-height: var(--docs-toolbar-inner-height);
-  padding: 0.35rem 0.65rem;
+  padding: calc(0.35rem + 2px) calc(0.65rem + 2px);
   text-transform: uppercase;
 }
 
 .docs-locale-select .r8-select__trigger:hover,
 .docs-locale-select .r8-select__trigger:focus-visible,
 .docs-locale-select .r8-select__trigger[aria-expanded="true"] {
-  border-color: color-mix(in srgb, var(--docs-topbar-text) 18%, transparent);
+  background: var(--docs-toolbar-active-bg);
+  color: var(--docs-toolbar-active-text);
   outline: none;
-  transform: translate(-1px, -1px);
+  transform: none;
 }
 
 .docs-locale-select .r8-select__menu {
@@ -758,7 +759,6 @@ pre {
 
 .docs-theme-switch:hover,
 .docs-theme-switch:focus-visible {
-  border-color: color-mix(in srgb, var(--docs-topbar-text) 18%, transparent);
   transform: translate(-1px, -1px);
 }
 
@@ -775,9 +775,31 @@ pre {
 .docs-theme-switch.is-checked,
 .docs-theme-switch[aria-checked="true"] {
   background: var(--docs-toolbar-active-bg);
-  border-color: var(--docs-panel-border);
   box-shadow: 2px 2px 0 0 var(--docs-panel-shadow);
   color: var(--docs-toolbar-active-text);
+}
+
+html[data-theme="dark"] .docs-theme-switch,
+html[data-theme="dark"] .docs-theme-switch.is-checked,
+html[data-theme="dark"] .docs-theme-switch[aria-checked="true"] {
+  border-color: color-mix(in srgb, var(--docs-topbar-text) 32%, transparent);
+}
+
+html[data-theme="dark"] .docs-theme-switch:hover,
+html[data-theme="dark"] .docs-theme-switch:focus-visible {
+  border-color: color-mix(in srgb, var(--docs-topbar-text) 48%, transparent);
+}
+
+html[data-theme="light"] .docs-theme-switch,
+html[data-theme="light"] .docs-theme-switch.is-checked,
+html[data-theme="light"] .docs-theme-switch[aria-checked="true"] {
+  border-color: color-mix(in srgb, var(--docs-topbar-text) 14%, transparent);
+  box-shadow: none;
+}
+
+html[data-theme="light"] .docs-theme-switch:hover,
+html[data-theme="light"] .docs-theme-switch:focus-visible {
+  border-color: color-mix(in srgb, var(--docs-topbar-text) 28%, transparent);
 }
 
 .docs-toolbar__button {
@@ -1026,6 +1048,7 @@ pre {
 .docs-token-card > .r8-panel__body {
   flex: 1 1 auto;
   min-height: 0;
+  overflow-x: auto;
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-gutter: stable;
@@ -1107,21 +1130,26 @@ pre {
 
 .docs-token-list__pair {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-columns: minmax(12rem, 1fr) minmax(12rem, 1fr);
   gap: 0.75rem;
   align-items: start;
+  min-width: 24.75rem;
 }
 
 .docs-token-list__pair code {
   min-width: 0;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
-.docs-token-list__value {
-  width: 100%;
+.docs-token-list__pair .docs-token-list__value {
+  width: auto;
+  min-width: 12rem;
   max-width: 100%;
   justify-self: end;
   text-align: right;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 .docs-token-list__content small {
@@ -1187,9 +1215,31 @@ pre {
   justify-items: start;
 }
 
+.docs-demo__stack--select {
+  padding-bottom: 13rem;
+  justify-items: start;
+}
+
+.docs-demo__stack--poptip {
+  padding-bottom: 12rem;
+  justify-items: start;
+}
+
 .docs-demo__stack--color-picker {
   padding-bottom: 23rem;
   justify-items: start;
+}
+
+.docs-demo__stack--upload {
+  justify-items: start;
+}
+
+.docs-demo__stack--navbar {
+  justify-items: start;
+}
+
+.docs-demo__stack--select > .r8-select {
+  width: min(100%, 28rem);
 }
 
 .docs-demo__stack--date-picker > .r8-date-picker {
@@ -1198,6 +1248,18 @@ pre {
 
 .docs-demo__stack--color-picker > .r8-color-picker {
   width: min(100%, 28rem);
+}
+
+.docs-demo__stack--poptip > .r8-btn {
+  width: min(100%, 20rem);
+}
+
+.docs-demo__stack--upload > .r8-upload {
+  width: min(100%, 46rem);
+}
+
+.docs-demo__stack--navbar > .r8-navbar {
+  width: min(100%, 42rem);
 }
 
 .docs-demo__stack--cascader > .r8-cascader {
@@ -1243,10 +1305,14 @@ pre {
 .docs-color-picker-playground,
 .docs-date-picker-playground,
 .docs-icon-playground,
+.docs-input-playground,
+.docs-input-number-playground,
+.docs-input-tag-playground,
 .docs-link-playground,
 .docs-splitter-playground,
 .docs-typography-playground,
-.docs-layout-container-playground {
+.docs-layout-container-playground,
+.docs-generic-playground {
   margin-bottom: 1rem;
 }
 
@@ -1300,6 +1366,24 @@ pre {
 .docs-color-picker-playground__preview,
 .docs-color-picker-playground__events,
 .docs-color-picker-playground__markup,
+.docs-input-playground__header,
+.docs-input-playground__intro,
+.docs-input-playground__controls,
+.docs-input-playground__preview,
+.docs-input-playground__events,
+.docs-input-playground__markup,
+.docs-input-number-playground__header,
+.docs-input-number-playground__intro,
+.docs-input-number-playground__controls,
+.docs-input-number-playground__preview,
+.docs-input-number-playground__events,
+.docs-input-number-playground__markup,
+.docs-input-tag-playground__header,
+.docs-input-tag-playground__intro,
+.docs-input-tag-playground__controls,
+.docs-input-tag-playground__preview,
+.docs-input-tag-playground__events,
+.docs-input-tag-playground__markup,
 .docs-icon-playground__header,
 .docs-icon-playground__intro,
 .docs-icon-playground__controls,
@@ -1325,7 +1409,12 @@ pre {
 .docs-layout-container-playground__intro,
 .docs-layout-container-playground__controls,
 .docs-layout-container-playground__preview,
-.docs-layout-container-playground__markup {
+.docs-layout-container-playground__markup,
+.docs-generic-playground__header,
+.docs-generic-playground__intro,
+.docs-generic-playground__controls,
+.docs-generic-playground__preview,
+.docs-generic-playground__markup {
   display: grid;
   gap: 0.75rem;
 }
@@ -1339,11 +1428,15 @@ pre {
 .docs-config-provider-playground__header,
 .docs-color-playground__header,
 .docs-color-picker-playground__header,
+.docs-input-playground__header,
+.docs-input-number-playground__header,
+.docs-input-tag-playground__header,
 .docs-icon-playground__header,
 .docs-link-playground__header,
 .docs-typography-playground__header,
 .docs-splitter-playground__header,
-.docs-layout-container-playground__header {
+.docs-layout-container-playground__header,
+.docs-generic-playground__header {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: start;
 }
@@ -1357,11 +1450,15 @@ pre {
 .docs-config-provider-playground__intro > .docs-panel__meta,
 .docs-color-playground__intro > .docs-panel__meta,
 .docs-color-picker-playground__intro > .docs-panel__meta,
+.docs-input-playground__intro > .docs-panel__meta,
+.docs-input-number-playground__intro > .docs-panel__meta,
+.docs-input-tag-playground__intro > .docs-panel__meta,
 .docs-icon-playground__intro > .docs-panel__meta,
 .docs-link-playground__intro > .docs-panel__meta,
 .docs-typography-playground__intro > .docs-panel__meta,
 .docs-splitter-playground__intro > .docs-panel__meta,
-.docs-layout-container-playground__intro > .docs-panel__meta {
+.docs-layout-container-playground__intro > .docs-panel__meta,
+.docs-generic-playground__intro > .docs-panel__meta {
   margin: 0;
 }
 
@@ -1374,11 +1471,15 @@ pre {
 .docs-config-provider-playground__body,
 .docs-color-playground__body,
 .docs-color-picker-playground__body,
+.docs-input-playground__body,
+.docs-input-number-playground__body,
+.docs-input-tag-playground__body,
 .docs-icon-playground__body,
 .docs-link-playground__body,
 .docs-typography-playground__body,
 .docs-splitter-playground__body,
-.docs-layout-container-playground__body {
+.docs-layout-container-playground__body,
+.docs-generic-playground__body {
   display: grid;
   grid-template-columns: minmax(18rem, 0.95fr) minmax(0, 1.05fr);
   gap: 1rem;
@@ -1394,11 +1495,15 @@ pre {
 .docs-config-provider-playground__field-grid,
 .docs-color-playground__field-grid,
 .docs-color-picker-playground__field-grid,
+.docs-input-playground__field-grid,
+.docs-input-number-playground__field-grid,
+.docs-input-tag-playground__field-grid,
 .docs-icon-playground__field-grid,
 .docs-link-playground__field-grid,
 .docs-typography-playground__field-grid,
 .docs-splitter-playground__field-grid,
-.docs-layout-container-playground__field-grid {
+.docs-layout-container-playground__field-grid,
+.docs-generic-playground__field-grid {
   display: grid;
   gap: 0.85rem;
   grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
@@ -1412,11 +1517,15 @@ pre {
 .docs-border-playground__toggles,
 .docs-config-provider-playground__toggles,
 .docs-color-picker-playground__toggles,
+.docs-input-playground__toggles,
+.docs-input-number-playground__toggles,
+.docs-input-tag-playground__toggles,
 .docs-icon-playground__toggles,
 .docs-link-playground__toggles,
 .docs-typography-playground__toggles,
 .docs-splitter-playground__toggles,
-.docs-layout-container-playground__toggles {
+.docs-layout-container-playground__toggles,
+.docs-generic-playground__toggles {
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem;
@@ -1431,11 +1540,15 @@ pre {
 .docs-config-provider-playground__stage,
 .docs-color-playground__stage,
 .docs-color-picker-playground__stage,
+.docs-input-playground__stage,
+.docs-input-number-playground__stage,
+.docs-input-tag-playground__stage,
 .docs-icon-playground__stage,
 .docs-link-playground__stage,
 .docs-typography-playground__stage,
 .docs-splitter-playground__stage,
-.docs-layout-container-playground__stage {
+.docs-layout-container-playground__stage,
+.docs-generic-playground__stage {
   display: grid;
   gap: 1rem;
   align-content: start;
@@ -1481,11 +1594,15 @@ pre {
 .docs-config-provider-playground__code,
 .docs-color-playground__code,
 .docs-color-picker-playground__code,
+.docs-input-playground__code,
+.docs-input-number-playground__code,
+.docs-input-tag-playground__code,
 .docs-icon-playground__code,
 .docs-link-playground__code,
 .docs-typography-playground__code,
 .docs-splitter-playground__code,
-.docs-layout-container-playground__code {
+.docs-layout-container-playground__code,
+.docs-generic-playground__code {
   margin: 0;
   padding: 0.9rem 1rem;
   overflow: auto;
@@ -1528,6 +1645,20 @@ pre {
   width: 100%;
 }
 
+.docs-datetime-picker-playground .docs-date-picker-playground__surface {
+  width: min(100%, 36rem);
+  min-height: 24rem;
+  padding-bottom: 19rem;
+}
+
+.docs-datetime-picker-playground .docs-date-picker-playground__surface > .r8-datetime-picker {
+  width: 100%;
+}
+
+.docs-datetime-picker-playground .docs-date-picker-playground__helper {
+  max-width: 34rem;
+}
+
 .docs-date-picker-playground__helper {
   margin: 0;
   max-width: 30rem;
@@ -1564,6 +1695,30 @@ pre {
 }
 
 .docs-color-picker-playground__surface > .r8-color-picker {
+  width: 100%;
+}
+
+.docs-input-playground__surface {
+  width: min(100%, 34rem);
+}
+
+.docs-input-playground__surface > .r8-field {
+  margin: 0;
+}
+
+.docs-input-number-playground__surface {
+  width: min(100%, 28rem);
+}
+
+.docs-input-number-playground__surface > .r8-input-number {
+  width: 100%;
+}
+
+.docs-input-tag-playground__surface {
+  width: min(100%, 34rem);
+}
+
+.docs-input-tag-playground__surface > .r8-input-tag {
   width: 100%;
 }
 
@@ -1623,6 +1778,9 @@ pre {
 .docs-date-picker-playground__event-log,
 .docs-checkbox-playground__event-log,
 .docs-color-picker-playground__event-log,
+.docs-input-playground__event-log,
+.docs-input-number-playground__event-log,
+.docs-input-tag-playground__event-log,
 .docs-splitter-playground__event-log {
   display: grid;
   gap: 0.35rem;
@@ -1636,6 +1794,9 @@ pre {
 .docs-date-picker-playground__event-log > .r8-text,
 .docs-checkbox-playground__event-log > .r8-text,
 .docs-color-picker-playground__event-log > .r8-text,
+.docs-input-playground__event-log > .r8-text,
+.docs-input-number-playground__event-log > .r8-text,
+.docs-input-tag-playground__event-log > .r8-text,
 .docs-splitter-playground__event-log > .r8-text {
   margin: 0;
 }
@@ -1646,6 +1807,82 @@ pre {
 
 .docs-layout-container-playground__surface > .r8-container {
   width: 100%;
+}
+
+.docs-generic-playground__surface {
+  width: min(100%, 34rem);
+}
+
+.docs-generic-playground__surface--compact {
+  width: min(100%, 18rem);
+}
+
+.docs-generic-playground__surface--wide {
+  width: min(100%, 46rem);
+}
+
+.docs-generic-playground__surface--full,
+.docs-generic-playground__surface--table,
+.docs-generic-playground__surface--watermark {
+  width: 100%;
+}
+
+.docs-generic-playground__surface--table {
+  overflow-x: auto;
+}
+
+.docs-generic-playground__surface--overlay {
+  width: 100%;
+  min-height: 18rem;
+  padding: 1rem;
+  position: relative;
+}
+
+.docs-generic-playground__surface--watermark {
+  min-height: 16rem;
+}
+
+.docs-generic-playground__surface > .r8-select,
+.docs-generic-playground__surface > .r8-card,
+.docs-generic-playground__surface > .r8-carousel,
+.docs-generic-playground__surface > .r8-collapse,
+.docs-generic-playground__surface > .r8-empty,
+.docs-generic-playground__surface > .r8-progress,
+.docs-generic-playground__surface > .r8-skeleton,
+.docs-generic-playground__surface > .r8-table-wrap,
+.docs-generic-playground__surface > .r8-table,
+.docs-generic-playground__surface > .r8-steps,
+.docs-generic-playground__surface > .r8-tabs,
+.docs-generic-playground__surface > .r8-alert,
+.docs-generic-playground__surface > .r8-navbar,
+.docs-generic-playground__surface > .r8-loading,
+.docs-generic-playground__surface > .r8-upload,
+.docs-generic-playground__surface > .r8-watermark {
+  width: 100%;
+}
+
+.docs-generic-playground__surface > .r8-upload--avatar {
+  width: min(100%, 14rem);
+}
+
+.docs-generic-playground__surface > .r8-progress[data-r8-shape="circle"],
+.docs-generic-playground__surface > .r8-progress.r8-progress--circle {
+  justify-self: center;
+  width: fit-content;
+}
+
+.docs-generic-playground__surface > .r8-image {
+  justify-self: center;
+  width: min(100%, 24rem);
+}
+
+.docs-generic-playground__surface > .r8-image .r8-image__caption {
+  overflow-wrap: anywhere;
+}
+
+.docs-generic-playground__surface .r8-stack,
+.docs-generic-playground__surface .r8-row {
+  margin: 0;
 }
 
 .docs-preview__surface {
@@ -1945,11 +2182,15 @@ dialog.r8-dialog {
   .docs-config-provider-playground__body,
   .docs-color-playground__body,
   .docs-color-picker-playground__body,
+  .docs-input-playground__body,
+  .docs-input-number-playground__body,
+  .docs-input-tag-playground__body,
   .docs-icon-playground__body,
   .docs-link-playground__body,
   .docs-typography-playground__body,
   .docs-splitter-playground__body,
-  .docs-layout-container-playground__body {
+  .docs-layout-container-playground__body,
+  .docs-generic-playground__body {
     grid-template-columns: 1fr;
   }
 }
@@ -2018,6 +2259,8 @@ dialog.r8-dialog {
   }
 
   .docs-token-list__value {
+    min-width: 0;
+    max-width: 100%;
     justify-self: start;
     text-align: left;
   }
@@ -2033,7 +2276,8 @@ dialog.r8-dialog {
   .docs-link-playground__header,
   .docs-typography-playground__header,
   .docs-splitter-playground__header,
-  .docs-layout-container-playground__header {
+  .docs-layout-container-playground__header,
+  .docs-generic-playground__header {
     grid-template-columns: 1fr;
   }
 
@@ -2048,7 +2292,8 @@ dialog.r8-dialog {
   .docs-link-playground__field-grid,
   .docs-typography-playground__field-grid,
   .docs-splitter-playground__field-grid,
-  .docs-layout-container-playground__field-grid {
+  .docs-layout-container-playground__field-grid,
+  .docs-generic-playground__field-grid {
     grid-template-columns: 1fr;
   }
 

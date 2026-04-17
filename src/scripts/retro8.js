@@ -37,7 +37,7 @@
     },
     {
       root: ".r8-dropdown",
-      trigger: ".r8-btn, .r8-dropdown__trigger",
+      trigger: ".r8-dropdown__trigger, .r8-btn:not(.r8-dropdown__action)",
       panel: ".r8-dropdown__menu",
       option: ".r8-dropdown__item",
       kind: "dropdown",
@@ -45,14 +45,24 @@
   ];
 
   const choiceStates = new WeakMap();
+  const navbarStates = new WeakMap();
   const splitterStates = new WeakMap();
+  const uploadStates = new WeakMap();
   const overlayTimers = new WeakMap();
   const floatingStates = new Set();
   const genericTargets = new Set();
+  const navbarRegistry = new Set();
   const observers = new WeakSet();
   const drawerTransitionMs = 270;
   const floatingOverlayGap = 12;
   const floatingViewportPadding = 12;
+  const navbarExpandQueries = {
+    sm: "(min-width: 576px)",
+    md: "(min-width: 768px)",
+    lg: "(min-width: 992px)",
+    xl: "(min-width: 1200px)",
+    xxl: "(min-width: 1400px)",
+  };
   const floatingPlacements = [
     "top",
     "top-start",
@@ -100,6 +110,28 @@
 
   function clamp(value, min, max) {
     return Math.min(max, Math.max(min, value));
+  }
+
+  function parseFiniteNumber(value) {
+    if (value === null || value === undefined || value === "") {
+      return null;
+    }
+
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  function roundToPrecision(value, precision) {
+    if (!Number.isFinite(value) || !Number.isInteger(precision) || precision < 0) {
+      return value;
+    }
+
+    const factor = 10 ** precision;
+    return Math.round(value * factor) / factor;
+  }
+
+  function escapeRegExpFragment(value) {
+    return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   }
 
   function ensureId(element, prefix) {
@@ -378,6 +410,71 @@
         detail,
       }),
     );
+  }
+
+  function formatFileSize(size) {
+    const amount = Number(size);
+    if (!Number.isFinite(amount) || amount < 0) {
+      return "0 B";
+    }
+
+    if (amount < 1024) {
+      return `${Math.round(amount)} B`;
+    }
+
+    if (amount < 1024 * 1024) {
+      return `${Math.round(amount / 102.4) / 10} KB`;
+    }
+
+    if (amount < 1024 * 1024 * 1024) {
+      return `${Math.round(amount / (1024 * 102.4)) / 10} MB`;
+    }
+
+    return `${Math.round(amount / (1024 * 1024 * 102.4)) / 10} GB`;
+  }
+
+  function sanitizeAvatarFallback(value) {
+    const normalized = String(value || "").replace(/\s+/g, "").slice(0, 2).toUpperCase();
+    return normalized || "??";
+  }
+
+  function getFileExtension(name) {
+    const text = String(name || "");
+    const index = text.lastIndexOf(".");
+    if (index === -1 || index === text.length - 1) {
+      return "FILE";
+    }
+
+    return text.slice(index + 1).toUpperCase();
+  }
+
+  function isImageFile(file) {
+    return file instanceof File && typeof file.type === "string" && file.type.startsWith("image/");
+  }
+
+  function createUploadEntry(file) {
+    const image = isImageFile(file);
+    const objectUrl = image ? URL.createObjectURL(file) : "";
+
+    return {
+      file,
+      id: nextId("r8-upload-file"),
+      name: file?.name || "file",
+      sizeLabel: formatFileSize(file?.size || 0),
+      status: "queued",
+      objectUrl,
+      previewable: Boolean(objectUrl),
+      thumbLabel: image ? "" : getFileExtension(file?.name || ""),
+    };
+  }
+
+  function revokeUploadEntry(entry) {
+    if (!entry?.objectUrl) {
+      return;
+    }
+
+    URL.revokeObjectURL(entry.objectUrl);
+    entry.objectUrl = "";
   }
 
   function matchesTrue(value) {
@@ -1729,6 +1826,15 @@
       return;
     }
 
+    if (isChoiceOptionDisabled(option)) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeFloating(container);
+        state.trigger?.focus({ preventScroll: true });
+      }
+      return;
+    }
+
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       markChoiceSelection(container, option, family);
@@ -1780,6 +1886,10 @@
   function markChoiceSelection(container, option, family, options = {}) {
     const state = choiceStates.get(container);
     if (!state?.options?.length) {
+      return;
+    }
+
+    if (isChoiceOptionDisabled(option)) {
       return;
     }
 
@@ -1913,18 +2023,27 @@
     updateChoiceDisplay(container, option, family);
     container.dataset.r8Value = getTextValue(option);
 
-    if (family.closeOnSelect !== false && state.panel && state.trigger) {
+    if (shouldCloseChoiceOnSelect(container, family) && state.panel && state.trigger) {
       closeFloating(container);
       state.trigger.focus({ preventScroll: true });
     }
 
     if (!silent) {
-      emitComponentEvent(container, "choice-change", {
+      const detail = {
         kind: family.kind || "choice",
         option,
         text: getTextValue(option),
         value: getTextValue(option),
-      });
+      };
+
+      emitComponentEvent(container, "choice-change", detail);
+
+      if (family.kind === "dropdown") {
+        emitComponentEvent(container, "dropdown-command", {
+          ...detail,
+          command: option.dataset.r8Command || detail.value,
+        });
+      }
     }
   }
 
@@ -1959,7 +2078,185 @@
   }
 
   function getVisibleOptions(state) {
-    return (state?.options || []).filter((item) => item instanceof HTMLElement && !item.hasAttribute("hidden"));
+    return (state?.options || []).filter(
+      (item) =>
+        item instanceof HTMLElement &&
+        !item.hasAttribute("hidden") &&
+        !isChoiceOptionDisabled(item),
+    );
+  }
+
+  function isChoiceOptionDisabled(option) {
+    return (
+      option instanceof HTMLElement &&
+      (option.hasAttribute("disabled") || option.getAttribute("aria-disabled") === "true")
+    );
+  }
+
+  function shouldCloseChoiceOnSelect(container, family) {
+    if (!(container instanceof HTMLElement)) {
+      return family.closeOnSelect !== false;
+    }
+
+    if (container.dataset.r8CloseOnSelect === "false") {
+      return false;
+    }
+
+    return family.closeOnSelect !== false;
+  }
+
+  function resolveAvatarFallback(component) {
+    if (!isElement(component)) {
+      return "??";
+    }
+
+    const explicit = component.dataset.r8AvatarFallback;
+    if (explicit) {
+      return sanitizeAvatarFallback(explicit);
+    }
+
+    const textContent = toArray(component.childNodes)
+      .filter((node) => node.nodeType === Node.TEXT_NODE)
+      .map((node) => node.textContent || "")
+      .join("")
+      .trim();
+
+    return sanitizeAvatarFallback(textContent);
+  }
+
+  function ensureAvatarFallbackNode(component, text) {
+    if (!isElement(component)) {
+      return null;
+    }
+
+    let fallback = firstMatch(component, ".r8-avatar__fallback");
+    if (!(fallback instanceof HTMLElement)) {
+      fallback = document.createElement("span");
+      fallback.className = "r8-avatar__fallback";
+      component.append(fallback);
+    }
+
+    fallback.textContent = sanitizeAvatarFallback(text);
+    fallback.setAttribute("aria-hidden", "true");
+    return fallback;
+  }
+
+  function syncAvatarState(component) {
+    if (!isElement(component)) {
+      return;
+    }
+
+    const fallback = ensureAvatarFallbackNode(component, resolveAvatarFallback(component));
+    const image = firstMatch(component, "img");
+    const hasImage = image instanceof HTMLImageElement && Boolean(image.getAttribute("src"));
+    const ready = hasImage && image.complete && image.naturalWidth > 0 && image.dataset.r8AvatarError !== "true";
+
+    toArray(component.childNodes).forEach((node) => {
+      if (node.nodeType === Node.TEXT_NODE && (node.textContent || "").trim()) {
+        node.textContent = "";
+      }
+    });
+
+    if (image instanceof HTMLImageElement) {
+      image.decoding = image.decoding || "async";
+      if (!image.alt && fallback instanceof HTMLElement) {
+        image.alt = fallback.textContent || "";
+      }
+      image.hidden = !ready;
+    }
+
+    component.classList.toggle("is-ready", ready);
+    component.classList.toggle("is-fallback", !ready);
+    component.classList.toggle("is-image", hasImage);
+  }
+
+  function initAvatars(root) {
+    toArray(root.querySelectorAll(".r8-avatar")).forEach((component) => {
+      if (!(component instanceof HTMLElement)) {
+        return;
+      }
+
+      const image = firstMatch(component, "img");
+      if (image instanceof HTMLImageElement && image.dataset.r8AvatarBound !== "true") {
+        image.dataset.r8AvatarBound = "true";
+
+        image.addEventListener("load", () => {
+          delete image.dataset.r8AvatarError;
+          syncAvatarState(component);
+        });
+
+        image.addEventListener("error", () => {
+          image.dataset.r8AvatarError = "true";
+          syncAvatarState(component);
+          emitComponentEvent(component, "avatar-fallback", {
+            alt: image.alt || "",
+            fallback: resolveAvatarFallback(component),
+            src: image.currentSrc || image.src || "",
+          });
+        });
+      }
+
+      syncAvatarState(component);
+    });
+  }
+
+  function syncImageState(component) {
+    if (!isElement(component)) {
+      return;
+    }
+
+    const frame = firstMatch(component, ".r8-image__frame");
+    const image = frame instanceof HTMLElement ? firstMatch(frame, "img") : null;
+    const hasImage = image instanceof HTMLImageElement && Boolean((image.getAttribute("src") || "").trim());
+    const errored =
+      hasImage &&
+      (image.dataset.r8ImageError === "true" || (image.complete && image.naturalWidth === 0 && Boolean(image.currentSrc || image.src)));
+    const ready = hasImage && image.complete && image.naturalWidth > 0 && !errored;
+    const loading = hasImage && !ready && !errored;
+
+    if (image instanceof HTMLImageElement) {
+      image.decoding = image.decoding || "async";
+      image.hidden = errored;
+    }
+
+    component.classList.toggle("is-image", hasImage);
+    component.classList.toggle("is-loading", loading);
+    component.classList.toggle("is-ready", ready);
+    component.classList.toggle("is-error", errored);
+  }
+
+  function initImages(root) {
+    toArray(root.querySelectorAll(".r8-image")).forEach((component) => {
+      if (!(component instanceof HTMLElement)) {
+        return;
+      }
+
+      const frame = firstMatch(component, ".r8-image__frame");
+      const image = frame instanceof HTMLElement ? firstMatch(frame, "img") : null;
+      if (image instanceof HTMLImageElement && image.dataset.r8ImageBound !== "true") {
+        image.dataset.r8ImageBound = "true";
+
+        image.addEventListener("load", () => {
+          delete image.dataset.r8ImageError;
+          syncImageState(component);
+          emitComponentEvent(component, "image-load", {
+            alt: image.alt || "",
+            src: image.currentSrc || image.src || "",
+          });
+        });
+
+        image.addEventListener("error", () => {
+          image.dataset.r8ImageError = "true";
+          syncImageState(component);
+          emitComponentEvent(component, "image-error", {
+            alt: image.alt || "",
+            src: image.currentSrc || image.src || "",
+          });
+        });
+      }
+
+      syncImageState(component);
+    });
   }
 
   function syncAutocompleteCount(state) {
@@ -4186,7 +4483,7 @@
           option.setAttribute("aria-selected", option.classList.contains("is-selected") ? "true" : "false");
           option.addEventListener("pointerenter", () => {
             const state = choiceStates.get(container);
-            if (state) {
+            if (state && !isChoiceOptionDisabled(option)) {
               setChoiceActiveOption(state, option);
             }
           });
@@ -4295,12 +4592,56 @@
       }
 
       prepareActionLikeElement(trigger);
+      if (trigger instanceof HTMLButtonElement && !trigger.hasAttribute("type")) {
+        trigger.type = "button";
+      }
+
+      const triggerId = ensureId(trigger, "r8-collapse-trigger");
+      const panelId = ensureId(panel, "r8-collapse-panel");
+      trigger.setAttribute("aria-controls", panelId);
+      panel.setAttribute("aria-labelledby", triggerId);
+      panel.setAttribute("role", "region");
+
+      const disabled =
+        item.classList.contains("is-disabled") ||
+        matchesTrue(item.dataset.r8Disabled || "false") ||
+        item.getAttribute("aria-disabled") === "true";
+      trigger.setAttribute("aria-disabled", disabled ? "true" : "false");
+
       const initiallyOpen = !panel.hasAttribute("hidden");
       setHidden(panel, !initiallyOpen);
       setExpanded(trigger, initiallyOpen);
+      item.classList.toggle("is-open", initiallyOpen);
 
       const toggle = () => {
+        if (disabled) {
+          return;
+        }
+
         const nextState = !isOpen(panel);
+        const container = item.closest(".r8-collapse");
+
+        if (
+          nextState &&
+          container instanceof HTMLElement &&
+          matchesTrue(container.dataset.r8Accordion || "false")
+        ) {
+          toArray(container.querySelectorAll(".r8-collapse__item")).forEach((sibling) => {
+            if (!(sibling instanceof HTMLElement) || sibling === item) {
+              return;
+            }
+
+            const siblingTrigger = sibling.querySelector(".r8-collapse__header");
+            const siblingPanel = sibling.querySelector(".r8-collapse__body");
+
+            if (siblingTrigger instanceof HTMLElement && siblingPanel instanceof HTMLElement) {
+              setHidden(siblingPanel, true);
+              setExpanded(siblingTrigger, false);
+              sibling.classList.remove("is-open");
+            }
+          });
+        }
+
         setHidden(panel, !nextState);
         setExpanded(trigger, nextState);
         item.classList.toggle("is-open", nextState);
@@ -4315,6 +4656,174 @@
     });
   }
 
+  function normalizeNavbarExpand(value) {
+    if (value === "never" || value === "always") {
+      return value;
+    }
+
+    return Object.prototype.hasOwnProperty.call(navbarExpandQueries, value) ? value : "always";
+  }
+
+  function navbarShowsExpandedLayout(navbar) {
+    const expand = normalizeNavbarExpand(navbar?.dataset?.r8Expand || "always");
+    if (expand === "always") {
+      return true;
+    }
+
+    if (expand === "never") {
+      return false;
+    }
+
+    return window.matchMedia(navbarExpandQueries[expand]).matches;
+  }
+
+  function resolveNavbarCollapse(navbar, toggle = null) {
+    if (!(navbar instanceof HTMLElement)) {
+      return null;
+    }
+
+    const selector = toggle?.dataset?.r8Target || "";
+    if (selector) {
+      const explicitTarget = document.querySelector(selector);
+      if (explicitTarget instanceof HTMLElement) {
+        return explicitTarget;
+      }
+    }
+
+    const controlsId = toggle?.getAttribute("aria-controls") || "";
+    if (controlsId) {
+      const byId = document.getElementById(controlsId);
+      if (byId instanceof HTMLElement) {
+        return byId;
+      }
+    }
+
+    const nearestCollapse = navbar.querySelector(".r8-navbar__collapse");
+    return nearestCollapse instanceof HTMLElement ? nearestCollapse : null;
+  }
+
+  function syncNavbarDisclosure(navbar) {
+    const state = navbarStates.get(navbar);
+    if (!state?.toggle || !state.collapse) {
+      return;
+    }
+
+    const expandedLayout = navbarShowsExpandedLayout(navbar);
+    const isVisible = expandedLayout || state.open;
+
+    navbar.classList.toggle("is-open", state.open);
+    state.collapse.classList.toggle("is-open", state.open);
+    state.toggle.setAttribute("aria-expanded", isVisible ? "true" : "false");
+    state.collapse.setAttribute("aria-hidden", isVisible ? "false" : "true");
+  }
+
+  function setNavbarOpen(navbar, open, options = {}) {
+    const state = navbarStates.get(navbar);
+    if (!state?.toggle || !state.collapse) {
+      return;
+    }
+
+    state.open = Boolean(open);
+    if (state.open) {
+      navbar.dataset.r8Open = "true";
+    } else {
+      delete navbar.dataset.r8Open;
+    }
+
+    syncNavbarDisclosure(navbar);
+
+    if (options.silent === true) {
+      return;
+    }
+
+    emitComponentEvent(navbar, "navbar-toggle", {
+      open: state.open,
+      collapse: state.collapse,
+      expandedLayout: navbarShowsExpandedLayout(navbar),
+      navbar,
+      toggle: state.toggle,
+      trigger: options.trigger || state.toggle,
+    });
+  }
+
+  function syncNavbars() {
+    navbarRegistry.forEach((navbar) => {
+      if (!(navbar instanceof HTMLElement) || !navbar.isConnected) {
+        navbarRegistry.delete(navbar);
+        return;
+      }
+
+      syncNavbarDisclosure(navbar);
+    });
+  }
+
+  function initNavbars(root) {
+    toArray(root.querySelectorAll(".r8-navbar")).forEach((navbar) => {
+      if (!(navbar instanceof HTMLElement) || navbar.dataset.r8NavbarReady === "true") {
+        return;
+      }
+
+      navbar.dataset.r8NavbarReady = "true";
+      if (navbar.tagName !== "NAV" && !navbar.hasAttribute("role")) {
+        navbar.setAttribute("role", "navigation");
+      }
+
+      const toggle = navbar.querySelector(".r8-navbar__toggle");
+      if (!(toggle instanceof HTMLElement)) {
+        return;
+      }
+
+      const collapse = resolveNavbarCollapse(navbar, toggle);
+      if (!(collapse instanceof HTMLElement)) {
+        return;
+      }
+
+      prepareActionLikeElement(toggle);
+      if (toggle instanceof HTMLButtonElement && !toggle.hasAttribute("type")) {
+        toggle.type = "button";
+      }
+
+      const collapseId = ensureId(collapse, "r8-navbar-collapse");
+      toggle.setAttribute("aria-controls", collapseId);
+      if (!toggle.hasAttribute("aria-label")) {
+        toggle.setAttribute("aria-label", "Toggle navigation");
+      }
+
+      const initialOpen =
+        matchesTrue(navbar.dataset.r8Open || "false") ||
+        collapse.classList.contains("is-open") ||
+        toggle.getAttribute("aria-expanded") === "true";
+
+      navbarStates.set(navbar, {
+        collapse,
+        open: initialOpen,
+        toggle,
+      });
+      navbarRegistry.add(navbar);
+      syncNavbarDisclosure(navbar);
+
+      toggle.addEventListener("click", (event) => {
+        event.preventDefault();
+        const state = navbarStates.get(navbar);
+        if (!state || navbarShowsExpandedLayout(navbar)) {
+          return;
+        }
+
+        setNavbarOpen(navbar, !state.open, { trigger: toggle });
+      });
+
+      collapse.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape" || navbarShowsExpandedLayout(navbar)) {
+          return;
+        }
+
+        event.preventDefault();
+        setNavbarOpen(navbar, false, { trigger: toggle });
+        toggle.focus({ preventScroll: true });
+      });
+    });
+  }
+
   function initCarousels(root) {
     toArray(root.querySelectorAll(".r8-carousel")).forEach((carousel) => {
       if (!(carousel instanceof HTMLElement) || carousel.dataset.r8CarouselReady === "true") {
@@ -4324,26 +4833,45 @@
       carousel.dataset.r8CarouselReady = "true";
       const slides = toArray(carousel.querySelectorAll(".r8-carousel__slide")).filter((item) => item instanceof HTMLElement);
       const dots = toArray(carousel.querySelectorAll(".r8-carousel__dot")).filter((item) => item instanceof HTMLElement);
+      const arrows = toArray(carousel.querySelectorAll(".r8-carousel__arrow")).filter((item) => item instanceof HTMLElement);
+      const autoplayEnabled = matchesTrue(carousel.dataset.r8Autoplay || "false");
+      const autoplayInterval = clamp(Number(carousel.dataset.r8Interval || "3400") || 3400, 1200, 12000);
+      let activeIndex = 0;
+      let autoplayTimer = null;
 
       if (!slides.length) {
         return;
       }
 
+      function normalizeIndex(index) {
+        if (!slides.length) {
+          return 0;
+        }
+
+        const total = slides.length;
+        return ((index % total) + total) % total;
+      }
+
       function activate(index, options = {}) {
         const silent = options.silent === true;
-        const safeIndex = clamp(index, 0, slides.length - 1);
+        const safeIndex = normalizeIndex(index);
         slides.forEach((slide, slideIndex) => {
+          const isActive = slideIndex === safeIndex;
           if (slideIndex === safeIndex) {
             slide.removeAttribute("hidden");
           } else {
             slide.setAttribute("hidden", "");
           }
+
+          slide.setAttribute("aria-hidden", isActive ? "false" : "true");
         });
 
         dots.forEach((dot, dotIndex) => {
           dot.classList.toggle("is-active", dotIndex === safeIndex);
           dot.setAttribute("aria-current", dotIndex === safeIndex ? "true" : "false");
         });
+
+        activeIndex = safeIndex;
 
         if (!silent) {
           emitComponentEvent(carousel, "carousel-change", {
@@ -4353,70 +4881,564 @@
         }
       }
 
+      const stopAutoplay = () => {
+        if (typeof autoplayTimer === "number") {
+          window.clearInterval(autoplayTimer);
+          autoplayTimer = null;
+        }
+      };
+
+      const startAutoplay = () => {
+        stopAutoplay();
+
+        if (!autoplayEnabled || slides.length < 2) {
+          return;
+        }
+
+        autoplayTimer = window.setInterval(() => {
+          activate((activeIndex + 1) % slides.length);
+        }, autoplayInterval);
+      };
+
       dots.forEach((dot, index) => {
         prepareActionLikeElement(dot);
+        if (!dot.hasAttribute("aria-label")) {
+          dot.setAttribute("aria-label", `Go to slide ${index + 1}`);
+        }
         dot.addEventListener("click", () => activate(index));
         bindKeyboardActivation(dot, () => activate(index));
       });
 
-      activate(dots.findIndex((dot) => dot.classList.contains("is-active")) >= 0 ? dots.findIndex((dot) => dot.classList.contains("is-active")) : 0, {
+      arrows.forEach((arrow) => {
+        prepareActionLikeElement(arrow);
+        const direction = arrow.dataset.r8Direction === "prev" ? -1 : 1;
+        if (!arrow.hasAttribute("aria-label")) {
+          arrow.setAttribute("aria-label", direction < 0 ? "Previous slide" : "Next slide");
+        }
+
+        const move = () => activate(activeIndex + direction);
+        arrow.addEventListener("click", move);
+        bindKeyboardActivation(arrow, move);
+      });
+
+      carousel.addEventListener("keydown", (event) => {
+        if (!(event instanceof KeyboardEvent)) {
+          return;
+        }
+
+        if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") {
+          return;
+        }
+
+        const target = event.target;
+        if (
+          target instanceof HTMLInputElement ||
+          target instanceof HTMLTextAreaElement ||
+          target instanceof HTMLSelectElement
+        ) {
+          return;
+        }
+
+        event.preventDefault();
+        activate(activeIndex + (event.key === "ArrowLeft" ? -1 : 1));
+      });
+
+      const initialDotIndex = dots.findIndex((dot) => dot.classList.contains("is-active"));
+      const initialSlideIndex = slides.findIndex((slide) => !slide.hasAttribute("hidden"));
+      const initialIndex = initialDotIndex >= 0 ? initialDotIndex : initialSlideIndex >= 0 ? initialSlideIndex : 0;
+
+      activate(initialIndex, {
         silent: true,
       });
+
+      carousel.addEventListener("pointerenter", stopAutoplay);
+      carousel.addEventListener("pointerleave", startAutoplay);
+      carousel.addEventListener("focusin", stopAutoplay);
+      carousel.addEventListener("focusout", startAutoplay);
+      startAutoplay();
     });
+  }
+
+  function createInputControlButton(className, label, text) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = className;
+    button.textContent = text;
+    button.setAttribute("aria-label", label);
+    return button;
+  }
+
+  function updateAutosizeTextarea(textarea) {
+    if (!(textarea instanceof HTMLTextAreaElement)) {
+      return;
+    }
+
+    const shell = textarea.closest(".r8-input-shell");
+    const autosizeEnabled = matchesTrue(textarea.dataset.r8Autosize || shell?.dataset.r8Autosize || "false");
+    if (!autosizeEnabled) {
+      return;
+    }
+
+    const styles = window.getComputedStyle(textarea);
+    const lineHeight = parseFloat(styles.lineHeight) || parseFloat(styles.fontSize) * 1.4 || 22;
+    const padding =
+      (parseFloat(styles.paddingTop) || 0) +
+      (parseFloat(styles.paddingBottom) || 0) +
+      (parseFloat(styles.borderTopWidth) || 0) +
+      (parseFloat(styles.borderBottomWidth) || 0);
+    const fallbackRows = clamp(Number(textarea.getAttribute("rows") || "3") || 3, 1, 40);
+    const minRows = clamp(
+      Number(textarea.dataset.r8MinRows || shell?.dataset.r8MinRows || fallbackRows) || fallbackRows,
+      1,
+      40,
+    );
+    const rawMaxRows = Number(textarea.dataset.r8MaxRows || shell?.dataset.r8MaxRows || "0") || 0;
+    const maxRows = rawMaxRows > 0 ? clamp(rawMaxRows, minRows, 50) : null;
+    const minHeight = lineHeight * minRows + padding;
+    const maxHeight = maxRows !== null ? lineHeight * maxRows + padding : null;
+
+    textarea.style.height = "auto";
+    let nextHeight = Math.max(textarea.scrollHeight, minHeight);
+
+    if (maxHeight !== null) {
+      textarea.style.overflowY = nextHeight > maxHeight ? "auto" : "hidden";
+      nextHeight = Math.min(nextHeight, maxHeight);
+    } else {
+      textarea.style.overflowY = "hidden";
+    }
+
+    textarea.style.height = `${Math.ceil(nextHeight)}px`;
+  }
+
+  function initInputShell(shell) {
+    if (!(shell instanceof HTMLElement)) {
+      return;
+    }
+
+    const input = shell.querySelector(".r8-input");
+    if (!(input instanceof HTMLInputElement) && !(input instanceof HTMLTextAreaElement)) {
+      return;
+    }
+
+    const clearable = matchesTrue(shell.dataset.r8Clearable || input.dataset.r8Clearable || "false");
+    const showPassword =
+      input instanceof HTMLInputElement &&
+      (input.dataset.r8PasswordOriginalType === "password" || input.type === "password") &&
+      matchesTrue(shell.dataset.r8ShowPassword || input.dataset.r8ShowPassword || "false");
+    const showWordLimit =
+      input.maxLength > 0 && matchesTrue(shell.dataset.r8WordLimit || input.dataset.r8WordLimit || "false");
+    const baseReadonly = input.readOnly;
+    let actions = firstMatch(shell, ".r8-input__actions");
+    let clearButton = actions?.querySelector(".r8-input__clear") || null;
+    let toggleButton = actions?.querySelector(".r8-input__toggle") || null;
+    let counter = actions?.querySelector(".r8-input__count") || null;
+
+    if (showPassword && input instanceof HTMLInputElement && !input.dataset.r8PasswordOriginalType) {
+      input.dataset.r8PasswordOriginalType = input.type;
+    }
+
+    if ((clearable || showPassword || showWordLimit) && !(actions instanceof HTMLElement)) {
+      actions = document.createElement("div");
+      actions.className = "r8-input__actions";
+      shell.append(actions);
+    }
+
+    if (actions instanceof HTMLElement && clearable && !(clearButton instanceof HTMLElement)) {
+      clearButton = createInputControlButton("r8-input__clear", "Clear input", "x");
+      actions.append(clearButton);
+    }
+
+    if (actions instanceof HTMLElement && showPassword && !(toggleButton instanceof HTMLElement)) {
+      toggleButton = createInputControlButton("r8-input__toggle", "Show password", "show");
+      actions.append(toggleButton);
+    }
+
+    if (actions instanceof HTMLElement && showWordLimit && !(counter instanceof HTMLElement)) {
+      counter = document.createElement("span");
+      counter.className = "r8-input__count";
+      actions.append(counter);
+    }
+
+    const syncShellState = () => {
+      const hasValue = input.value.length > 0;
+
+      if (clearButton instanceof HTMLButtonElement) {
+        clearButton.hidden = !hasValue || input.disabled || input.readOnly;
+        clearButton.disabled = input.disabled || input.readOnly;
+      }
+
+      if (toggleButton instanceof HTMLButtonElement && input instanceof HTMLInputElement) {
+        const revealed = input.type === "text";
+        toggleButton.disabled = input.disabled;
+        toggleButton.textContent = revealed ? "hide" : "show";
+        toggleButton.setAttribute("aria-label", revealed ? "Hide password" : "Show password");
+        toggleButton.setAttribute("aria-pressed", revealed ? "true" : "false");
+      }
+
+      if (counter instanceof HTMLElement) {
+        counter.textContent = `${input.value.length}/${input.maxLength}`;
+        counter.classList.toggle("is-limit", input.maxLength > 0 && input.value.length >= input.maxLength);
+      }
+
+      if (actions instanceof HTMLElement) {
+        const hasVisibleItem = toArray(actions.children).some(
+          (item) => item instanceof HTMLElement && !item.hidden,
+        );
+        actions.hidden = !hasVisibleItem;
+      }
+    };
+
+    if (shell.dataset.r8InputShellReady === "true") {
+      syncShellState();
+      if (input instanceof HTMLTextAreaElement) {
+        updateAutosizeTextarea(input);
+      }
+      return;
+    }
+
+    shell.dataset.r8InputShellReady = "true";
+
+    if (clearButton instanceof HTMLButtonElement) {
+      clearButton.addEventListener("click", () => {
+        if (input.disabled || input.readOnly) {
+          return;
+        }
+
+        input.value = "";
+        if (input instanceof HTMLTextAreaElement) {
+          updateAutosizeTextarea(input);
+        }
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+        emitComponentEvent(shell, "input-clear", {
+          value: "",
+        });
+        input.focus({ preventScroll: true });
+        syncShellState();
+      });
+    }
+
+    if (toggleButton instanceof HTMLButtonElement && input instanceof HTMLInputElement) {
+      toggleButton.addEventListener("click", () => {
+        if (input.disabled) {
+          return;
+        }
+
+        const nextType = input.type === "password" ? "text" : "password";
+        input.type = nextType;
+        emitComponentEvent(shell, "input-password-toggle", {
+          revealed: nextType === "text",
+        });
+        syncShellState();
+        input.focus({ preventScroll: true });
+      });
+    }
+
+    shell.addEventListener("click", (event) => {
+      const target = event.target;
+      if (target instanceof HTMLElement && target.closest("button, .r8-input")) {
+        return;
+      }
+
+      input.focus({ preventScroll: true });
+    });
+
+    input.addEventListener("input", () => {
+      if (input instanceof HTMLTextAreaElement) {
+        updateAutosizeTextarea(input);
+      }
+      syncShellState();
+    });
+
+    input.addEventListener("change", syncShellState);
+
+    input.readOnly = baseReadonly;
+    syncShellState();
+    if (input instanceof HTMLTextAreaElement) {
+      updateAutosizeTextarea(input);
+    }
+  }
+
+  function initInputs(root) {
+    toArray(root.querySelectorAll(".r8-input-shell")).forEach((shell) => {
+      initInputShell(shell);
+    });
+
+    toArray(root.querySelectorAll("textarea.r8-input")).forEach((textarea) => {
+      if (!(textarea instanceof HTMLTextAreaElement)) {
+        return;
+      }
+
+      updateAutosizeTextarea(textarea);
+
+      if (textarea.dataset.r8AutosizeReady === "true") {
+        return;
+      }
+
+      textarea.dataset.r8AutosizeReady = "true";
+      textarea.addEventListener("input", () => updateAutosizeTextarea(textarea));
+    });
+  }
+
+  function getInputNumberSettings(component, input) {
+    const rawStep = String(input.step || component.dataset.r8Step || "1");
+    const step = Math.abs(parseFiniteNumber(rawStep) || 1);
+    const rawPrecision = parseFiniteNumber(component.dataset.r8Precision || input.dataset.r8Precision || "");
+    const stepDigits = rawStep.includes(".") ? rawStep.split(".")[1].length : 0;
+    return {
+      step,
+      min: parseFiniteNumber(input.min),
+      max: parseFiniteNumber(input.max),
+      precision:
+        rawPrecision !== null
+          ? clamp(Math.round(rawPrecision), 0, 6)
+          : stepDigits > 0
+            ? stepDigits
+            : null,
+      stepStrictly: matchesTrue(component.dataset.r8StepStrictly || "false"),
+      disabled:
+        input.disabled || component.hasAttribute("disabled") || component.getAttribute("aria-disabled") === "true",
+    };
+  }
+
+  function alignInputNumberToStep(value, settings) {
+    if (!settings.stepStrictly || !Number.isFinite(value)) {
+      return value;
+    }
+
+    const base = settings.min !== null ? settings.min : 0;
+    const offset = (value - base) / settings.step;
+    return base + Math.round(offset) * settings.step;
+  }
+
+  function formatInputNumberValue(value, precision) {
+    if (value === null || !Number.isFinite(value)) {
+      return "";
+    }
+
+    if (precision !== null) {
+      return value.toFixed(precision);
+    }
+
+    return String(roundToPrecision(value, 6));
+  }
+
+  function normalizeInputNumberValue(component, input, nextValue, options = {}) {
+    const settings = getInputNumberSettings(component, input);
+    let value = parseFiniteNumber(nextValue);
+
+    if (value === null) {
+      return options.allowEmpty ? null : settings.min !== null ? settings.min : 0;
+    }
+
+    value = alignInputNumberToStep(value, settings);
+    value = clamp(
+      value,
+      settings.min !== null ? settings.min : Number.NEGATIVE_INFINITY,
+      settings.max !== null ? settings.max : Number.POSITIVE_INFINITY,
+    );
+    value = settings.precision !== null ? roundToPrecision(value, settings.precision) : value;
+    value = alignInputNumberToStep(value, settings);
+    return settings.precision !== null ? roundToPrecision(value, settings.precision) : value;
+  }
+
+  function syncInputNumberState(component, input, buttons) {
+    const settings = getInputNumberSettings(component, input);
+    const currentValue = parseFiniteNumber(input.value);
+    const epsilon = settings.precision !== null ? 1 / 10 ** (settings.precision + 1) : settings.step / 1000;
+    const [decrementButton, incrementButton] = buttons;
+
+    component.classList.toggle("is-disabled", settings.disabled);
+
+    if (decrementButton instanceof HTMLButtonElement) {
+      decrementButton.disabled =
+        settings.disabled ||
+        (currentValue !== null && settings.min !== null && currentValue <= settings.min + epsilon);
+    }
+
+    if (incrementButton instanceof HTMLButtonElement) {
+      incrementButton.disabled =
+        settings.disabled ||
+        (currentValue !== null && settings.max !== null && currentValue >= settings.max - epsilon);
+    }
   }
 
   function initInputNumbers(root) {
     toArray(root.querySelectorAll(".r8-input-number")).forEach((component) => {
-      if (!(component instanceof HTMLElement) || component.dataset.r8InputNumberReady === "true") {
+      if (!(component instanceof HTMLElement)) {
         return;
       }
 
-      component.dataset.r8InputNumberReady = "true";
       const input = component.querySelector(".r8-input-number__input");
-      const buttons = toArray(component.querySelectorAll(".r8-input-number__button")).filter((item) => item instanceof HTMLElement);
+      const buttons = toArray(component.querySelectorAll(".r8-input-number__button")).filter(
+        (item) => item instanceof HTMLButtonElement,
+      );
       if (!(input instanceof HTMLInputElement) || buttons.length < 2) {
         return;
       }
 
-      buttons.forEach((button, index) => {
-        button.addEventListener("click", () => {
-          const step = Number(input.step || "1") || 1;
-          const min = input.min === "" ? Number.NEGATIVE_INFINITY : Number(input.min);
-          const max = input.max === "" ? Number.POSITIVE_INFINITY : Number(input.max);
-          const direction = index === 0 ? -1 : 1;
-          const nextValue = clamp((Number(input.value || "0") || 0) + step * direction, min, max);
-          input.value = String(nextValue);
+      const initialValue = input.value.trim() === ""
+        ? null
+        : normalizeInputNumberValue(component, input, input.value, { allowEmpty: true });
+      input.value = formatInputNumberValue(initialValue, getInputNumberSettings(component, input).precision);
+      syncInputNumberState(component, input, buttons);
+
+      if (component.dataset.r8InputNumberReady === "true") {
+        return;
+      }
+
+      component.dataset.r8InputNumberReady = "true";
+      let isInternalSync = false;
+
+      const commitValue = (nextValue, source, options = {}) => {
+        const allowEmpty = options.allowEmpty === true;
+        const normalizedValue = normalizeInputNumberValue(component, input, nextValue, { allowEmpty });
+        const settings = getInputNumberSettings(component, input);
+        input.value = formatInputNumberValue(normalizedValue, settings.precision);
+        syncInputNumberState(component, input, buttons);
+
+        if (options.dispatchNative !== false) {
+          isInternalSync = true;
           input.dispatchEvent(new Event("input", { bubbles: true }));
           input.dispatchEvent(new Event("change", { bubbles: true }));
+          isInternalSync = false;
+        }
+
+        if (options.silent !== true) {
           emitComponentEvent(component, "input-number-change", {
-            value: nextValue,
+            value: normalizedValue,
+            source,
           });
+        }
+
+        return normalizedValue;
+      };
+
+      const stepValue = (direction, source) => {
+        const settings = getInputNumberSettings(component, input);
+        if (settings.disabled) {
+          return;
+        }
+
+        const currentValue = parseFiniteNumber(input.value);
+        const baseValue = currentValue !== null ? currentValue : settings.min !== null ? settings.min : 0;
+        commitValue(baseValue + settings.step * direction, source);
+      };
+
+      buttons.forEach((button, index) => {
+        button.addEventListener("click", () => {
+          stepValue(index === 0 ? -1 : 1, "button");
         });
+      });
+
+      input.addEventListener("input", () => {
+        syncInputNumberState(component, input, buttons);
+      });
+
+      input.addEventListener("change", () => {
+        if (isInternalSync) {
+          return;
+        }
+
+        if (input.value.trim() === "") {
+          syncInputNumberState(component, input, buttons);
+          emitComponentEvent(component, "input-number-change", {
+            value: null,
+            source: "manual",
+          });
+          return;
+        }
+
+        commitValue(input.value, "manual", {
+          dispatchNative: false,
+        });
+      });
+
+      input.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowUp") {
+          event.preventDefault();
+          stepValue(1, "keyboard");
+          return;
+        }
+
+        if (event.key === "ArrowDown") {
+          event.preventDefault();
+          stepValue(-1, "keyboard");
+          return;
+        }
+
+        if (event.key === "Home" && input.min !== "") {
+          event.preventDefault();
+          commitValue(input.min, "keyboard");
+          return;
+        }
+
+        if (event.key === "End" && input.max !== "") {
+          event.preventDefault();
+          commitValue(input.max, "keyboard");
+        }
       });
     });
   }
 
-  function syncCheckboxModifiers(control) {
-    if (!(control instanceof HTMLElement) || !control.classList.contains("r8-checkbox")) {
+  function syncBinaryModifiers(control) {
+    if (!(control instanceof HTMLElement)) {
       return;
     }
 
     const sizeValue = control.dataset.r8Size || "";
     const hasSizeBinding = Object.prototype.hasOwnProperty.call(control.dataset, "r8Size");
     const hasBorderBinding = Object.prototype.hasOwnProperty.call(control.dataset, "r8Border");
+    const isCheckbox = control.classList.contains("r8-checkbox");
+    const isRadio = control.classList.contains("r8-radio");
+    const isSwitch = control.classList.contains("r8-switch");
+    const isThemeSwitch = control.classList.contains("r8-theme-switch");
 
     if (hasSizeBinding) {
-      control.classList.remove("r8-checkbox--sm", "r8-checkbox--lg");
+      control.classList.remove(
+        "r8-checkbox--sm",
+        "r8-checkbox--lg",
+        "r8-radio--sm",
+        "r8-radio--lg",
+        "r8-switch--sm",
+        "r8-switch--lg",
+        "r8-theme-switch--sm",
+        "r8-theme-switch--lg",
+      );
 
       if (sizeValue === "sm") {
-        control.classList.add("r8-checkbox--sm");
+        if (isCheckbox) {
+          control.classList.add("r8-checkbox--sm");
+        }
+        if (isRadio) {
+          control.classList.add("r8-radio--sm");
+        }
+        if (isSwitch) {
+          control.classList.add("r8-switch--sm");
+        }
+        if (isThemeSwitch) {
+          control.classList.add("r8-theme-switch--sm");
+        }
       } else if (sizeValue === "lg") {
-        control.classList.add("r8-checkbox--lg");
+        if (isCheckbox) {
+          control.classList.add("r8-checkbox--lg");
+        }
+        if (isRadio) {
+          control.classList.add("r8-radio--lg");
+        }
+        if (isSwitch) {
+          control.classList.add("r8-switch--lg");
+        }
+        if (isThemeSwitch) {
+          control.classList.add("r8-theme-switch--lg");
+        }
       }
     }
 
-    if (hasBorderBinding) {
-      control.classList.toggle("r8-checkbox--bordered", matchesTrue(control.dataset.r8Border || "false"));
+    if (hasBorderBinding && (isCheckbox || isRadio)) {
+      const enabled = matchesTrue(control.dataset.r8Border || "false");
+      control.classList.toggle("r8-checkbox--bordered", enabled && isCheckbox);
+      control.classList.toggle("r8-radio--bordered", enabled && isRadio);
     }
   }
 
@@ -4481,7 +5503,7 @@
           : "checkbox";
       const state = readBinaryState(control, kind);
 
-      syncCheckboxModifiers(control);
+      syncBinaryModifiers(control);
       setBinaryState(control, state.checked, { indeterminate: state.indeterminate });
 
       if (control.dataset.r8BinaryReady === "true") {
@@ -4558,26 +5580,181 @@
       }
 
       component.dataset.r8PaginationReady = "true";
-      const items = toArray(component.querySelectorAll(".r8-pagination__item")).filter((item) => item instanceof HTMLElement);
+      const pagesContainer = firstMatch(component, ".r8-pagination__pages");
+      const prevButton = firstMatch(component, '[data-r8-page-action="prev"]');
+      const nextButton = firstMatch(component, '[data-r8-page-action="next"]');
+      const jumpButton = firstMatch(component, '[data-r8-page-action="jump"]');
+      const jumpInput = firstMatch(component, "[data-r8-page-jump-input]");
+      const summary = firstMatch(component, ".r8-pagination__summary");
+      const hideOnSinglePage = matchesTrue(component.dataset.r8HideOnSinglePage || "false");
+      const totalPages = clamp(Number(component.dataset.r8TotalPages || "0") || 0, 1, 999);
+      const configuredCurrent = clamp(Number(component.dataset.r8CurrentPage || "1") || 1, 1, totalPages || 1);
+      const configuredPagerCount = Number(component.dataset.r8PagerCount || "7") || 7;
+      const pagerCount = Math.max(5, Math.min(11, configuredPagerCount % 2 === 0 ? configuredPagerCount - 1 : configuredPagerCount));
+      let currentPage = configuredCurrent;
 
-      function activate(target) {
-        items.forEach((item) => {
-          const isActive = item === target;
-          item.classList.toggle("is-active", isActive);
-          item.setAttribute("aria-current", isActive ? "true" : "false");
-        });
+      function buildModel(total, current, count) {
+        if (total <= count) {
+          return Array.from({ length: total }, (_, index) => index + 1);
+        }
 
+        const innerCount = Math.max(1, count - 2);
+        let start = Math.max(2, current - Math.floor(innerCount / 2));
+        let end = start + innerCount - 1;
+
+        if (end > total - 1) {
+          end = total - 1;
+          start = Math.max(2, end - innerCount + 1);
+        }
+
+        const model = [1];
+        if (start > 2) {
+          model.push("more");
+        }
+
+        for (let page = start; page <= end; page += 1) {
+          model.push(page);
+        }
+
+        if (end < total - 1) {
+          model.push("more");
+        }
+
+        model.push(total);
+        return model;
+      }
+
+      function bindPageItem(item) {
+        if (!(item instanceof HTMLElement) || item.dataset.r8PaginationBound === "true") {
+          return;
+        }
+
+        item.dataset.r8PaginationBound = "true";
+        prepareActionLikeElement(item);
+        const activateItem = () => {
+          const page = clamp(Number(item.dataset.r8Page || item.textContent || "1") || 1, 1, totalPages || 1);
+          activatePage(page, "item");
+        };
+        item.addEventListener("click", activateItem);
+        bindKeyboardActivation(item, activateItem);
+      }
+
+      function render() {
+        const safeTotal = totalPages || Math.max(
+          1,
+          toArray(component.querySelectorAll(".r8-pagination__item")).filter((item) => item instanceof HTMLElement).length,
+        );
+        const safeCurrent = clamp(currentPage, 1, safeTotal);
+        currentPage = safeCurrent;
+        component.dataset.r8CurrentPage = String(safeCurrent);
+
+        if (hideOnSinglePage) {
+          component.hidden = safeTotal <= 1;
+        }
+
+        if (summary instanceof HTMLElement && summary.dataset.r8PaginationStatic !== "true") {
+          summary.textContent = `Total ${safeTotal}`;
+        }
+
+        if (pagesContainer instanceof HTMLElement && totalPages > 0) {
+          const model = buildModel(safeTotal, safeCurrent, pagerCount);
+          pagesContainer.innerHTML = model
+            .map((entry) => {
+              if (entry === "more") {
+                return '<span class="r8-pagination__more" aria-hidden="true">...</span>';
+              }
+
+              const page = Number(entry);
+              return `<button class="r8-pagination__item${page === safeCurrent ? " is-active" : ""}" type="button" data-r8-page="${page}" aria-current="${page === safeCurrent ? "true" : "false"}">${page}</button>`;
+            })
+            .join("");
+
+          toArray(pagesContainer.querySelectorAll(".r8-pagination__item")).forEach(bindPageItem);
+        } else {
+          const items = toArray(component.querySelectorAll(".r8-pagination__item")).filter((item) => item instanceof HTMLElement);
+          items.forEach((item, index) => {
+            if (!item.dataset.r8Page) {
+              item.dataset.r8Page = String(index + 1);
+            }
+
+            const page = clamp(Number(item.dataset.r8Page || index + 1) || index + 1, 1, safeTotal);
+            const isActive = page === safeCurrent;
+            item.classList.toggle("is-active", isActive);
+            item.setAttribute("aria-current", isActive ? "true" : "false");
+            bindPageItem(item);
+          });
+        }
+
+        if (prevButton instanceof HTMLElement) {
+          const disabled = safeCurrent <= 1;
+          prevButton.classList.toggle("is-disabled", disabled);
+          prevButton.setAttribute("aria-disabled", disabled ? "true" : "false");
+          if (prevButton instanceof HTMLButtonElement) {
+            prevButton.disabled = disabled;
+          }
+        }
+
+        if (nextButton instanceof HTMLElement) {
+          const disabled = safeCurrent >= safeTotal;
+          nextButton.classList.toggle("is-disabled", disabled);
+          nextButton.setAttribute("aria-disabled", disabled ? "true" : "false");
+          if (nextButton instanceof HTMLButtonElement) {
+            nextButton.disabled = disabled;
+          }
+        }
+
+        if (jumpInput instanceof HTMLInputElement) {
+          jumpInput.value = String(safeCurrent);
+          jumpInput.min = "1";
+          jumpInput.max = String(safeTotal);
+        }
+      }
+
+      function activatePage(nextPage, source = "api") {
+        const safeTotal = totalPages || Math.max(
+          1,
+          toArray(component.querySelectorAll(".r8-pagination__item")).filter((item) => item instanceof HTMLElement).length,
+        );
+        currentPage = clamp(Number(nextPage) || 1, 1, safeTotal);
+        render();
         emitComponentEvent(component, "pagination-change", {
-          item: target,
-          index: items.indexOf(target),
+          page: currentPage,
+          totalPages: safeTotal,
+          source,
         });
       }
 
-      items.forEach((item) => {
-        prepareActionLikeElement(item);
-        item.addEventListener("click", () => activate(item));
-        bindKeyboardActivation(item, () => activate(item));
-      });
+      if (prevButton instanceof HTMLElement) {
+        const goPrev = () => activatePage(currentPage - 1, "prev");
+        prevButton.addEventListener("click", goPrev);
+        bindKeyboardActivation(prevButton, goPrev);
+      }
+
+      if (nextButton instanceof HTMLElement) {
+        const goNext = () => activatePage(currentPage + 1, "next");
+        nextButton.addEventListener("click", goNext);
+        bindKeyboardActivation(nextButton, goNext);
+      }
+
+      if (jumpButton instanceof HTMLElement) {
+        const jumpToPage = () => {
+          const value = jumpInput instanceof HTMLInputElement ? Number(jumpInput.value || currentPage) : currentPage;
+          activatePage(value, "jumper");
+        };
+        jumpButton.addEventListener("click", jumpToPage);
+        bindKeyboardActivation(jumpButton, jumpToPage);
+      }
+
+      if (jumpInput instanceof HTMLInputElement) {
+        jumpInput.addEventListener("keydown", (event) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            activatePage(Number(jumpInput.value || currentPage), "jumper");
+          }
+        });
+      }
+
+      render();
     });
   }
 
@@ -4795,11 +5972,29 @@
       component.setAttribute("aria-valuemin", "0");
       component.setAttribute("aria-valuemax", "100");
 
-      if (component.dataset.r8Value) {
-        const value = clamp(Number(component.dataset.r8Value) || 0, 0, 100);
-        component.style.setProperty("--r8-progress-value", `${value}%`);
-        component.setAttribute("aria-valuenow", String(value));
+      const rawValue =
+        component.dataset.r8Value ||
+        component.getAttribute("aria-valuenow") ||
+        component.style.getPropertyValue("--r8-progress-value");
+      const parsedValue =
+        typeof rawValue === "string"
+          ? parseFloat(rawValue)
+          : Number(rawValue);
+      const value = clamp(Number.isFinite(parsedValue) ? parsedValue : 0, 0, 100);
+      component.style.setProperty("--r8-progress-value", `${value}%`);
+      component.style.setProperty("--r8-progress-ratio", String(value / 100));
+      component.dataset.r8Value = String(value);
+      component.setAttribute("aria-valuenow", String(value));
+      component.setAttribute("aria-valuetext", `${value}%`);
 
+      const outputs = toArray(component.querySelectorAll("[data-r8-progress-value-output]"));
+      if (outputs.length > 0) {
+        outputs.forEach((output) => {
+          if (output instanceof HTMLElement) {
+            output.textContent = `${value}%`;
+          }
+        });
+      } else {
         const label = component.querySelector(".r8-progress__label span:last-child");
         if (label instanceof HTMLElement) {
           label.textContent = `${value}%`;
@@ -4904,52 +6099,254 @@
     });
   }
 
+  function getInputTagValue(tag) {
+    if (!(tag instanceof HTMLElement)) {
+      return "";
+    }
+
+    const label = tag.querySelector(".r8-input-tag__label");
+    if (label instanceof HTMLElement) {
+      return (label.textContent || "").trim();
+    }
+
+    return (tag.textContent || "").replace(/\s*x\s*$/i, "").trim();
+  }
+
+  function getInputTagValues(component) {
+    return toArray(component.querySelectorAll(".r8-input-tag__tag"))
+      .map((tag) => getInputTagValue(tag))
+      .filter(Boolean);
+  }
+
+  function getInputTagConfig(component, input) {
+    const maxTags = clamp(Number(component.dataset.r8MaxTags || "0") || 0, 0, 99);
+    const delimiters = Array.from(
+      new Set(
+        String(component.dataset.r8Delimiters || "")
+          .split("")
+          .filter(Boolean),
+      ),
+    );
+
+    return {
+      maxTags,
+      delimiters,
+      clearable: matchesTrue(component.dataset.r8Clearable || "false"),
+      disabled:
+        input.disabled || component.hasAttribute("disabled") || component.getAttribute("aria-disabled") === "true",
+    };
+  }
+
+  function splitInputTagTokens(value, delimiters) {
+    const source = String(value || "").trim();
+    if (!source) {
+      return [];
+    }
+
+    if (!Array.isArray(delimiters) || delimiters.length === 0) {
+      return [source];
+    }
+
+    const pattern = new RegExp(`[${delimiters.map((item) => escapeRegExpFragment(item)).join("")}]+`, "g");
+    return source.split(pattern).map((item) => item.trim()).filter(Boolean);
+  }
+
+  function createInputTagTag(value) {
+    const tag = document.createElement("span");
+    tag.className = "r8-input-tag__tag";
+
+    const label = document.createElement("span");
+    label.className = "r8-input-tag__label";
+    label.textContent = value;
+
+    const remove = document.createElement("button");
+    remove.type = "button";
+    remove.className = "r8-input-tag__remove";
+    remove.textContent = "x";
+    remove.setAttribute("aria-label", `Remove ${value}`);
+
+    tag.append(label, remove);
+    return tag;
+  }
+
   function initInputTags(root) {
     toArray(root.querySelectorAll(".r8-input-tag")).forEach((component) => {
-      if (!(component instanceof HTMLElement) || component.dataset.r8InputTagReady === "true") {
+      if (!(component instanceof HTMLElement)) {
         return;
       }
 
-      component.dataset.r8InputTagReady = "true";
       const input = component.querySelector(".r8-input-tag__input");
       if (!(input instanceof HTMLInputElement)) {
         return;
       }
 
-      component.addEventListener("click", (event) => {
-        const target = event.target;
-        if (!(target instanceof HTMLElement) || !target.closest(".r8-input-tag__remove")) {
-          return;
+      const basePlaceholder = input.getAttribute("placeholder") || "";
+      const baseReadonly = input.readOnly;
+      let clearButton = component.querySelector(".r8-input-tag__clear");
+
+      if (!(clearButton instanceof HTMLButtonElement) && matchesTrue(component.dataset.r8Clearable || "false")) {
+        clearButton = document.createElement("button");
+        clearButton.type = "button";
+        clearButton.className = "r8-input-tag__clear";
+        clearButton.textContent = "clr";
+        clearButton.setAttribute("aria-label", "Clear tags");
+        component.append(clearButton);
+      }
+
+      const emitChange = () => {
+        emitComponentEvent(component, "input-tag-change", {
+          values: getInputTagValues(component),
+        });
+      };
+
+      const syncInputTagState = () => {
+        const config = getInputTagConfig(component, input);
+        const values = getInputTagValues(component);
+        const maxReached = config.maxTags > 0 && values.length >= config.maxTags;
+        component.classList.toggle("is-disabled", config.disabled);
+        component.classList.toggle("is-maxed", maxReached);
+        input.readOnly = baseReadonly || maxReached || config.disabled;
+        input.placeholder = maxReached ? "" : basePlaceholder;
+
+        if (clearButton instanceof HTMLButtonElement) {
+          clearButton.hidden = !config.clearable || values.length === 0;
+          clearButton.disabled = config.disabled || values.length === 0;
         }
 
-        const tag = target.closest(".r8-input-tag__tag");
-        const value = (tag?.textContent || "").replace(/\s*x\s*$/i, "").trim();
+        toArray(component.querySelectorAll(".r8-input-tag__remove")).forEach((remove) => {
+          if (remove instanceof HTMLButtonElement) {
+            remove.disabled = config.disabled;
+          }
+        });
+      };
+
+      const addTagsFromValue = (value, source) => {
+        const config = getInputTagConfig(component, input);
+        const tokens = splitInputTagTokens(value, config.delimiters);
+        let lastTag = null;
+        let addedAny = false;
+
+        tokens.forEach((token) => {
+          if (!token) {
+            return;
+          }
+
+          const currentValues = getInputTagValues(component);
+          if (config.maxTags > 0 && currentValues.length >= config.maxTags) {
+            return;
+          }
+
+          lastTag = createInputTagTag(token);
+          component.insertBefore(lastTag, input);
+          emitComponentEvent(component, "input-tag-add", {
+            value: token,
+            tag: lastTag,
+            values: getInputTagValues(component).concat(token),
+            source,
+          });
+          addedAny = true;
+        });
+
+        if (addedAny) {
+          input.value = "";
+          emitChange();
+        }
+
+        syncInputTagState();
+        return lastTag;
+      };
+
+      const removeTag = (tag, source) => {
+        const value = getInputTagValue(tag);
         tag?.remove();
         emitComponentEvent(component, "input-tag-remove", {
           value,
+          values: getInputTagValues(component),
+          source,
         });
+        emitChange();
+        syncInputTagState();
+      };
+
+      const clearAllTags = (source) => {
+        toArray(component.querySelectorAll(".r8-input-tag__tag")).forEach((tag) => tag.remove());
+        emitComponentEvent(component, "input-tag-clear", {
+          values: [],
+          source,
+        });
+        emitChange();
+        syncInputTagState();
+      };
+
+      syncInputTagState();
+
+      if (component.dataset.r8InputTagReady === "true") {
+        return;
+      }
+
+      component.dataset.r8InputTagReady = "true";
+
+      component.addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) {
+          return;
+        }
+
+        const removeTrigger = target.closest(".r8-input-tag__remove");
+        if (removeTrigger instanceof HTMLElement) {
+          const tag = removeTrigger.closest(".r8-input-tag__tag");
+          if (tag instanceof HTMLElement) {
+            removeTag(tag, "button");
+          }
+          return;
+        }
+
+        if (target.closest(".r8-input-tag__clear")) {
+          clearAllTags("button");
+          input.focus({ preventScroll: true });
+          return;
+        }
+
+        if (!target.closest("input")) {
+          input.focus({ preventScroll: true });
+        }
       });
 
       input.addEventListener("keydown", (event) => {
-        if (event.key !== "Enter") {
+        const config = getInputTagConfig(component, input);
+        if (config.disabled) {
+          return;
+        }
+
+        if (event.key === "Backspace" && input.value === "") {
+          const tags = toArray(component.querySelectorAll(".r8-input-tag__tag"));
+          const lastTag = tags[tags.length - 1];
+          if (lastTag instanceof HTMLElement) {
+            event.preventDefault();
+            removeTag(lastTag, "keyboard");
+          }
+          return;
+        }
+
+        if (event.key === "Enter" || config.delimiters.includes(event.key)) {
+          event.preventDefault();
+          addTagsFromValue(input.value, "keyboard");
+        }
+      });
+
+      input.addEventListener("paste", (event) => {
+        const config = getInputTagConfig(component, input);
+        if (!config.delimiters.length) {
+          return;
+        }
+
+        const pastedText = event.clipboardData?.getData("text") || "";
+        if (!pastedText || !config.delimiters.some((delimiter) => pastedText.includes(delimiter))) {
           return;
         }
 
         event.preventDefault();
-        const value = input.value.trim();
-        if (!value) {
-          return;
-        }
-
-        const tag = document.createElement("span");
-        tag.className = "r8-input-tag__tag";
-        tag.innerHTML = `${value} <span class="r8-input-tag__remove">x</span>`;
-        component.insertBefore(tag, input);
-        input.value = "";
-        emitComponentEvent(component, "input-tag-add", {
-          value,
-          tag,
-        });
+        addTagsFromValue(pastedText, "paste");
       });
     });
   }
@@ -4999,6 +6396,465 @@
             movedItems,
           });
         });
+      });
+    });
+  }
+
+  function getUploadLabels(component) {
+    if (!isElement(component)) {
+      return {
+        empty: "No file selected",
+        preview: "Preview",
+        remove: "Remove",
+        selected: "Selected",
+      };
+    }
+
+    return {
+      empty: component.dataset.r8UploadEmptyLabel || "No file selected",
+      preview: component.dataset.r8UploadPreviewLabel || "Preview",
+      remove: component.dataset.r8UploadRemoveLabel || "Remove",
+      selected: component.dataset.r8UploadSelectedLabel || "Selected",
+    };
+  }
+
+  function isUploadDisabled(component) {
+    return (
+      isElement(component) &&
+      (component.hasAttribute("disabled") || component.getAttribute("aria-disabled") === "true")
+    );
+  }
+
+  function syncUploadConfig(state) {
+    if (!state?.component || !(state.input instanceof HTMLInputElement)) {
+      return;
+    }
+
+    const accept = state.component.getAttribute("accept") || state.input.getAttribute("accept") || "";
+    const multiple =
+      (state.component.hasAttribute("multiple") || state.input.hasAttribute("multiple")) &&
+      !state.component.classList.contains("r8-upload--avatar");
+    const disabled = isUploadDisabled(state.component) || state.input.disabled;
+
+    state.accept = accept;
+    state.multiple = multiple;
+    state.disabled = disabled;
+    state.input.accept = accept;
+    state.input.multiple = multiple;
+    state.input.disabled = disabled;
+
+    state.triggers.forEach((trigger) => {
+      if (!isElement(trigger)) {
+        return;
+      }
+
+      trigger.setAttribute("aria-disabled", disabled ? "true" : "false");
+      if (trigger instanceof HTMLButtonElement) {
+        trigger.disabled = disabled;
+      }
+    });
+  }
+
+  function ensureUploadList(state) {
+    if (!state?.component) {
+      return null;
+    }
+
+    if (state.list instanceof HTMLElement) {
+      return state.list;
+    }
+
+    const list = document.createElement("div");
+    list.className = "r8-upload__list";
+    state.component.append(list);
+    state.list = list;
+    return list;
+  }
+
+  function buildUploadFileNode(state, entry) {
+    const labels = state.labels || getUploadLabels(state.component);
+    const item = document.createElement("div");
+    item.className = "r8-upload__file";
+    item.dataset.r8UploadState = entry.status;
+    item.dataset.r8UploadId = entry.id;
+
+    const thumb = document.createElement("div");
+    thumb.className = "r8-upload__thumb";
+    if (entry.objectUrl) {
+      const image = document.createElement("img");
+      image.src = entry.objectUrl;
+      image.alt = entry.name;
+      thumb.append(image);
+    } else {
+      thumb.textContent = entry.thumbLabel;
+    }
+
+    const meta = document.createElement("div");
+    meta.className = "r8-upload__meta";
+
+    const name = document.createElement("strong");
+    name.className = "r8-upload__name";
+    name.textContent = entry.name;
+    meta.append(name);
+
+    const details = document.createElement("div");
+    details.className = "r8-upload__details";
+    const size = document.createElement("span");
+    size.textContent = entry.sizeLabel;
+    const status = document.createElement("span");
+    status.textContent = labels.selected;
+    details.append(size, status);
+    meta.append(details);
+
+    const actions = document.createElement("div");
+    actions.className = "r8-upload__actions";
+
+    if (entry.previewable) {
+      const previewButton = document.createElement("button");
+      previewButton.type = "button";
+      previewButton.className = "r8-upload__action";
+      previewButton.dataset.r8UploadAction = "preview";
+      previewButton.textContent = labels.preview;
+      actions.append(previewButton);
+    }
+
+    const removeButton = document.createElement("button");
+    removeButton.type = "button";
+    removeButton.className = "r8-upload__action";
+    removeButton.dataset.r8UploadAction = "remove";
+    removeButton.textContent = labels.remove;
+    actions.append(removeButton);
+
+    item.append(thumb, meta, actions);
+    return item;
+  }
+
+  function renderUploadAvatar(state) {
+    if (!state?.dropzone || !state.isAvatar) {
+      return;
+    }
+
+    const entry = state.entries[0] || null;
+    state.dropzone.innerHTML = "";
+
+    if (!entry) {
+      state.dropzone.innerHTML = state.avatarTemplate;
+      return;
+    }
+
+    const thumb = document.createElement("div");
+    thumb.className = "r8-upload__thumb";
+    if (entry.objectUrl) {
+      const image = document.createElement("img");
+      image.src = entry.objectUrl;
+      image.alt = entry.name;
+      thumb.append(image);
+    } else {
+      thumb.textContent = entry.thumbLabel;
+    }
+
+    const title = document.createElement("strong");
+    title.textContent = entry.name;
+
+    const details = document.createElement("div");
+    details.className = "r8-upload__details";
+    const size = document.createElement("span");
+    size.textContent = entry.sizeLabel;
+    const status = document.createElement("span");
+    status.textContent = state.labels.selected;
+    details.append(size, status);
+
+    state.dropzone.append(thumb, title, details);
+  }
+
+  function renderUploadEntries(state) {
+    if (!state?.component) {
+      return;
+    }
+
+    if (state.isAvatar) {
+      renderUploadAvatar(state);
+      return;
+    }
+
+    const list = ensureUploadList(state);
+    if (!(list instanceof HTMLElement)) {
+      return;
+    }
+
+    list.innerHTML = "";
+    state.entries.forEach((entry) => {
+      list.append(buildUploadFileNode(state, entry));
+    });
+  }
+
+  function clearUploadEntries(state) {
+    if (!state?.entries?.length) {
+      return;
+    }
+
+    state.entries.forEach((entry) => revokeUploadEntry(entry));
+    state.entries = [];
+    renderUploadEntries(state);
+  }
+
+  function emitUploadChange(state, source) {
+    emitComponentEvent(state.component, "upload-change", {
+      files: state.entries.map((entry) => entry.file),
+      items: state.entries.map((entry) => ({
+        id: entry.id,
+        name: entry.name,
+        size: entry.file?.size || 0,
+        type: entry.file?.type || "",
+        status: entry.status,
+        url: entry.objectUrl || "",
+      })),
+      source,
+    });
+  }
+
+  function applyUploadFiles(state, files, source) {
+    if (!state?.component || !Array.isArray(files) || !files.length) {
+      return;
+    }
+
+    const nextEntries = files
+      .filter((file) => file instanceof File)
+      .map((file) => createUploadEntry(file));
+
+    if (!nextEntries.length) {
+      return;
+    }
+
+    state.managed = true;
+
+    if (!state.multiple || state.isAvatar) {
+      clearUploadEntries(state);
+      state.entries = nextEntries.slice(0, 1);
+    } else {
+      state.entries = state.entries.concat(nextEntries);
+    }
+
+    renderUploadEntries(state);
+    emitUploadChange(state, source);
+  }
+
+  function removeUploadEntry(state, id, source) {
+    if (!state?.entries?.length) {
+      return;
+    }
+
+    const index = state.entries.findIndex((entry) => entry.id === id);
+    if (index === -1) {
+      return;
+    }
+
+    const [entry] = state.entries.splice(index, 1);
+    revokeUploadEntry(entry);
+    renderUploadEntries(state);
+    emitComponentEvent(state.component, "upload-remove", {
+      file: entry.file,
+      files: state.entries.map((item) => item.file),
+      index,
+      source,
+    });
+    emitUploadChange(state, source);
+  }
+
+  function openUploadPreview(state, id, source) {
+    const entry = state?.entries?.find((item) => item.id === id);
+    if (!entry?.objectUrl) {
+      return;
+    }
+
+    window.open(entry.objectUrl, "_blank", "noopener");
+    emitComponentEvent(state.component, "upload-preview", {
+      file: entry.file,
+      id: entry.id,
+      source,
+      url: entry.objectUrl,
+    });
+  }
+
+  function clearUploadDragState(state) {
+    if (!state?.component) {
+      return;
+    }
+
+    state.dragDepth = 0;
+    delete state.component.dataset.r8DragActive;
+  }
+
+  function initUploads(root) {
+    toArray(root.querySelectorAll(".r8-upload")).forEach((component) => {
+      if (!(component instanceof HTMLElement)) {
+        return;
+      }
+
+      let state = uploadStates.get(component);
+      if (!state) {
+        let input = firstMatch(component, ".r8-upload__input");
+        if (!(input instanceof HTMLInputElement) || input.type !== "file") {
+          input = document.createElement("input");
+          input.type = "file";
+          input.className = "r8-upload__input";
+          component.prepend(input);
+        }
+
+        let list = firstMatch(component, ".r8-upload__list");
+        if (!(list instanceof HTMLElement)) {
+          list = null;
+        }
+
+        const dropzone = firstMatch(component, ".r8-upload__dropzone");
+        const triggerCandidates = toArray(component.querySelectorAll("[data-r8-upload-trigger], .r8-upload__dropzone, .r8-upload__toolbar .r8-btn"))
+          .filter((item) => item instanceof HTMLElement);
+
+        state = {
+          accept: "",
+          avatarTemplate: dropzone instanceof HTMLElement ? dropzone.innerHTML : "",
+          component,
+          disabled: false,
+          dragDepth: 0,
+          dropzone: dropzone instanceof HTMLElement ? dropzone : null,
+          entries: [],
+          input,
+          isAvatar: component.classList.contains("r8-upload--avatar"),
+          labels: getUploadLabels(component),
+          list,
+          managed: false,
+          multiple: false,
+          triggers: triggerCandidates,
+        };
+        uploadStates.set(component, state);
+      }
+
+      syncUploadConfig(state);
+
+      if (component.dataset.r8UploadReady === "true") {
+        return;
+      }
+
+      component.dataset.r8UploadReady = "true";
+
+      prepareActionLikeElement(state.dropzone);
+      bindKeyboardActivation(state.dropzone, () => {
+        if (state.disabled) {
+          return;
+        }
+
+        state.input.value = "";
+        state.input.click();
+      });
+
+      state.triggers.forEach((trigger) => {
+        if (!(trigger instanceof HTMLElement)) {
+          return;
+        }
+
+        if (trigger === state.dropzone) {
+          return;
+        }
+
+        trigger.addEventListener("click", (event) => {
+          if (state.disabled) {
+            event.preventDefault();
+            return;
+          }
+
+          state.input.value = "";
+          state.input.click();
+        });
+      });
+
+      if (state.dropzone instanceof HTMLElement) {
+        state.dropzone.addEventListener("click", (event) => {
+          if (state.disabled) {
+            event.preventDefault();
+            return;
+          }
+
+          state.input.value = "";
+          state.input.click();
+        });
+
+        state.dropzone.addEventListener("dragenter", (event) => {
+          if (state.disabled) {
+            return;
+          }
+
+          event.preventDefault();
+          state.dragDepth += 1;
+          state.component.dataset.r8DragActive = "true";
+        });
+
+        state.dropzone.addEventListener("dragover", (event) => {
+          if (state.disabled) {
+            return;
+          }
+
+          event.preventDefault();
+          state.component.dataset.r8DragActive = "true";
+        });
+
+        state.dropzone.addEventListener("dragleave", (event) => {
+          if (state.disabled) {
+            return;
+          }
+
+          event.preventDefault();
+          state.dragDepth = Math.max(0, state.dragDepth - 1);
+          if (state.dragDepth === 0) {
+            clearUploadDragState(state);
+          }
+        });
+
+        state.dropzone.addEventListener("drop", (event) => {
+          if (state.disabled) {
+            return;
+          }
+
+          event.preventDefault();
+          clearUploadDragState(state);
+          const files = toArray(event.dataTransfer?.files || []);
+          applyUploadFiles(state, files, "drop");
+        });
+      }
+
+      state.input.addEventListener("change", () => {
+        applyUploadFiles(state, toArray(state.input.files || []), "input");
+        state.input.value = "";
+      });
+
+      component.addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement) || state.disabled) {
+          return;
+        }
+
+        const action = target.closest("[data-r8-upload-action]");
+        if (!(action instanceof HTMLElement)) {
+          return;
+        }
+
+        const file = action.closest(".r8-upload__file");
+        const id = file instanceof HTMLElement ? file.dataset.r8UploadId || "" : "";
+        const kind = action.dataset.r8UploadAction || "";
+
+        if (kind === "remove") {
+          event.preventDefault();
+          if (id) {
+            removeUploadEntry(state, id, "button");
+          } else if (file instanceof HTMLElement) {
+            file.remove();
+          }
+          return;
+        }
+
+        if (kind === "preview" && id) {
+          event.preventDefault();
+          openUploadPreview(state, id, "button");
+        }
       });
     });
   }
@@ -5061,10 +6917,9 @@
       (targetSelector && document.querySelector(targetSelector)) ||
       button.closest("dialog") ||
       button.closest(".r8-drawer") ||
+      button.closest(".r8-poptip") ||
       button.closest(".r8-popover") ||
       button.closest(".r8-tooltip") ||
-      button.closest(".r8-message-box") ||
-      button.closest(".r8-notification") ||
       button.closest(".r8-alert");
 
     closeTarget(target);
@@ -5075,8 +6930,16 @@
       return;
     }
 
-    const host = button.closest(".r8-alert, .r8-notification, .r8-message-box");
+    const host = button.closest(".r8-alert, .r8-tag");
     if (host instanceof HTMLElement) {
+      if (host.classList.contains("r8-tag")) {
+        host.remove();
+        emitComponentEvent(host, "dismiss", {
+          target: host,
+        });
+        return;
+      }
+
       closeTarget(host);
       emitComponentEvent(host, "dismiss", {
         target: host,
@@ -5096,8 +6959,28 @@
     return target instanceof HTMLElement && target.classList.contains("r8-drawer");
   }
 
+  function drawerUsesModal(target) {
+    return !isDrawerTarget(target) || target.dataset.r8Modal !== "false";
+  }
+
+  function drawerClosesOnBackdrop(target) {
+    return !isDrawerTarget(target) || target.dataset.r8CloseOnBackdrop !== "false";
+  }
+
+  function drawerClosesOnEscape(target) {
+    return !isDrawerTarget(target) || target.dataset.r8CloseOnEscape !== "false";
+  }
+
+  function drawerLocksScroll(target) {
+    return !isDrawerTarget(target) || target.dataset.r8LockScroll !== "false";
+  }
+
   function isAlertTarget(target) {
     return target instanceof HTMLElement && target.classList.contains("r8-alert");
+  }
+
+  function isPoptipTarget(target) {
+    return target instanceof HTMLElement && target.classList.contains("r8-poptip");
   }
 
   function isPopoverTarget(target) {
@@ -5109,7 +6992,38 @@
   }
 
   function isFloatingOverlayTarget(target) {
-    return isPopoverTarget(target) || isTooltipTarget(target);
+    return isPoptipTarget(target) || isPopoverTarget(target) || isTooltipTarget(target);
+  }
+
+  function resolveFloatingVariant(trigger, target) {
+    const requestedVariant =
+      trigger?.dataset?.r8Variant || target?.dataset?.r8Variant || "";
+
+    if (requestedVariant === "hint" || requestedVariant === "panel") {
+      return requestedVariant;
+    }
+
+    return trigger?.dataset?.r8Toggle === "tooltip" || isTooltipTarget(target)
+      ? "hint"
+      : "panel";
+  }
+
+  function resolveFloatingTriggerMode(trigger, target) {
+    const requestedMode =
+      trigger?.dataset?.r8Trigger || target?.dataset?.r8Trigger || "";
+
+    if (
+      requestedMode === "click" ||
+      requestedMode === "hover" ||
+      requestedMode === "focus" ||
+      requestedMode === "contextmenu"
+    ) {
+      return requestedMode;
+    }
+
+    return trigger?.dataset?.r8Toggle === "tooltip" || isTooltipTarget(target)
+      ? "hover"
+      : "click";
   }
 
   function normalizeFloatingPlacement(value, fallback) {
@@ -5121,7 +7035,7 @@
   }
 
   function resolveFloatingPlacement(trigger, target) {
-    const fallback = isTooltipTarget(target) ? "top" : "bottom-start";
+    const fallback = resolveFloatingVariant(trigger, target) === "hint" ? "top" : "bottom-start";
     return normalizeFloatingPlacement(
       target?.dataset?.r8Placement || trigger?.dataset?.r8Placement || "",
       fallback,
@@ -5213,6 +7127,35 @@
     };
   }
 
+  function getFloatingOffsetContext(target) {
+    if (!(target instanceof HTMLElement)) {
+      return {
+        left: 0,
+        scrollLeft: window.scrollX,
+        scrollTop: window.scrollY,
+        top: 0,
+      };
+    }
+
+    const offsetParent = target.offsetParent;
+    if (offsetParent instanceof HTMLElement) {
+      const rect = offsetParent.getBoundingClientRect();
+      return {
+        left: rect.left + offsetParent.clientLeft,
+        scrollLeft: offsetParent.scrollLeft,
+        scrollTop: offsetParent.scrollTop,
+        top: rect.top + offsetParent.clientTop,
+      };
+    }
+
+    return {
+      left: 0,
+      scrollLeft: window.scrollX,
+      scrollTop: window.scrollY,
+      top: 0,
+    };
+  }
+
   function clearFloatingOverlayPosition(target) {
     if (!(target instanceof HTMLElement)) {
       return;
@@ -5244,9 +7187,10 @@
       : fallbackPlacement;
     const rawCoordinates = computeFloatingCoordinates(triggerRect, initialRect, placement);
     const coordinates = clampFloatingCoordinates(triggerRect, initialRect, placement, rawCoordinates);
+    const offsetContext = getFloatingOffsetContext(target);
 
-    target.style.top = `${Math.round(coordinates.top)}px`;
-    target.style.left = `${Math.round(coordinates.left)}px`;
+    target.style.top = `${Math.round(coordinates.top - offsetContext.top + offsetContext.scrollTop)}px`;
+    target.style.left = `${Math.round(coordinates.left - offsetContext.left + offsetContext.scrollLeft)}px`;
     target.dataset.r8PlacementActive = placement;
 
     if (placement.startsWith("top") || placement.startsWith("bottom")) {
@@ -5299,7 +7243,8 @@
       (drawer) =>
         drawer instanceof HTMLElement &&
         !drawer.hasAttribute("hidden") &&
-        !drawer.closest("[data-r8-overlay-scope]"),
+        !drawer.closest("[data-r8-overlay-scope]") &&
+        drawerLocksScroll(drawer),
     );
 
     document.body.style.overflow = hasOpenDrawer ? "hidden" : "";
@@ -5334,6 +7279,11 @@
       return;
     }
 
+    if (!drawerUsesModal(target)) {
+      removeDrawerBackdrop(target);
+      return;
+    }
+
     const targetId = ensureId(target, "r8-drawer");
     removeDrawerBackdrop(target);
 
@@ -5342,7 +7292,9 @@
     backdrop.dataset.r8DrawerBackdrop = targetId;
     backdrop.setAttribute("aria-hidden", "true");
     backdrop.addEventListener("click", () => {
-      closeTarget(target, trigger);
+      if (drawerClosesOnBackdrop(target)) {
+        closeTarget(target, trigger);
+      }
     });
 
     const scope = target.closest("[data-r8-overlay-scope]") || document.body;
@@ -5366,7 +7318,16 @@
     }
 
     if (isDrawerTarget(target)) {
+      const wasOpen = isOpen(target) || target.classList.contains("is-open");
       clearOverlayTimer(target);
+
+      if (wasOpen) {
+        emitComponentEvent(target, "drawer-close", {
+          target,
+          trigger,
+        });
+      }
+
       target.classList.remove("is-open");
       setDrawerBackdropOpen(target, false);
       collapseGenericTargetTriggers(target);
@@ -5374,6 +7335,14 @@
       const closeTimer = window.setTimeout(() => {
         setHidden(target, true);
         removeDrawerBackdrop(target);
+
+        if (wasOpen) {
+          emitComponentEvent(target, "drawer-closed", {
+            target,
+            trigger,
+          });
+        }
+
         emitComponentEvent(target, "target-close", {
           target,
           trigger,
@@ -5418,10 +7387,22 @@
       ensureDrawerBackdrop(target, trigger);
       setHidden(target, false);
       setExpanded(trigger, true);
+      emitComponentEvent(target, "drawer-open", {
+        target,
+        trigger,
+      });
+
       requestAnimationFrame(() => {
-        setDrawerBackdropOpen(target, true);
+        if (drawerUsesModal(target)) {
+          setDrawerBackdropOpen(target, true);
+        }
+
         target.classList.add("is-open");
         syncDrawerBodyLock();
+        emitComponentEvent(target, "drawer-opened", {
+          target,
+          trigger,
+        });
       });
       emitComponentEvent(target, "target-open", {
         target,
@@ -5469,44 +7450,70 @@
 
       setExpanded(trigger, false);
       registerGenericTarget(trigger, target);
-      bindKeyboardActivation(trigger, () => handleToggleTrigger(trigger));
+      if (isFloatingOverlayTarget(target)) {
+        const floatingMode = resolveFloatingTriggerMode(trigger, target);
+        const floatingVariant = resolveFloatingVariant(trigger, target);
 
-      if (isTooltipTarget(target)) {
-        ensureId(target, "r8-tooltip");
-        trigger.setAttribute("aria-describedby", target.id);
+        ensureId(target, "r8-poptip");
 
-        if (trigger.dataset.r8TooltipReady !== "true") {
-          trigger.dataset.r8TooltipReady = "true";
-
-          trigger.addEventListener("pointerenter", () => {
-            clearOverlayTimer(target);
-            openTarget(target, trigger);
-          });
-
-          trigger.addEventListener("pointerleave", () => {
-            const closeTimer = window.setTimeout(() => {
-              closeTarget(target, trigger);
-            }, 40);
-            overlayTimers.set(target, closeTimer);
-          });
-
-          trigger.addEventListener("focus", () => {
-            clearOverlayTimer(target);
-            openTarget(target, trigger);
-          });
-
-          trigger.addEventListener("blur", () => {
-            closeTarget(target, trigger);
-          });
-
-          target.addEventListener("pointerenter", () => {
-            clearOverlayTimer(target);
-          });
-
-          target.addEventListener("pointerleave", () => {
-            closeTarget(target, trigger);
-          });
+        if (floatingVariant === "hint" || floatingMode !== "click") {
+          trigger.removeAttribute("aria-controls");
+          trigger.setAttribute("aria-describedby", target.id);
+          target.setAttribute("role", target.getAttribute("role") || "tooltip");
+        } else {
+          trigger.removeAttribute("aria-describedby");
+          trigger.setAttribute("aria-controls", target.id);
         }
+
+        if (floatingMode === "click") {
+          bindKeyboardActivation(trigger, () => handleToggleTrigger(trigger));
+        }
+
+        if (trigger.dataset.r8FloatingReady !== "true") {
+          trigger.dataset.r8FloatingReady = "true";
+
+          if (floatingMode === "hover") {
+            trigger.addEventListener("pointerenter", () => {
+              clearOverlayTimer(target);
+              openTarget(target, trigger);
+            });
+
+            trigger.addEventListener("pointerleave", () => {
+              const closeTimer = window.setTimeout(() => {
+                closeTarget(target, trigger);
+              }, 40);
+              overlayTimers.set(target, closeTimer);
+            });
+
+            trigger.addEventListener("focus", () => {
+              clearOverlayTimer(target);
+              openTarget(target, trigger);
+            });
+
+            trigger.addEventListener("blur", () => {
+              closeTarget(target, trigger);
+            });
+
+            target.addEventListener("pointerenter", () => {
+              clearOverlayTimer(target);
+            });
+
+            target.addEventListener("pointerleave", () => {
+              closeTarget(target, trigger);
+            });
+          } else if (floatingMode === "focus") {
+            trigger.addEventListener("focus", () => {
+              clearOverlayTimer(target);
+              openTarget(target, trigger);
+            });
+
+            trigger.addEventListener("blur", () => {
+              closeTarget(target, trigger);
+            });
+          }
+        }
+      } else {
+        bindKeyboardActivation(trigger, () => handleToggleTrigger(trigger));
       }
     });
 
@@ -5560,6 +7567,10 @@
         return;
       }
 
+      if (isDrawerTarget(entry.target) && !drawerClosesOnBackdrop(entry.target)) {
+        return;
+      }
+
       const clickedInsideTrigger = entry.trigger.contains(target);
       const clickedInsideTarget = entry.target.contains(target);
       if (!clickedInsideTrigger && !clickedInsideTarget) {
@@ -5586,12 +7597,41 @@
         } else if (dismissButton instanceof HTMLElement) {
           handleDismissAction(dismissButton);
         } else if (toggleTrigger instanceof HTMLElement) {
-          event.preventDefault();
-          handleToggleTrigger(toggleTrigger);
+          const target = resolveTarget(toggleTrigger);
+          if (!(target instanceof HTMLElement) || !isFloatingOverlayTarget(target)) {
+            event.preventDefault();
+            handleToggleTrigger(toggleTrigger);
+          } else if (resolveFloatingTriggerMode(toggleTrigger, target) === "click") {
+            event.preventDefault();
+            handleToggleTrigger(toggleTrigger);
+          }
         }
 
         closeAllFloating(event.target);
       }
+    });
+
+    document.addEventListener("contextmenu", (event) => {
+      if (!(event.target instanceof HTMLElement)) {
+        return;
+      }
+
+      const toggleTrigger = event.target.closest("[data-r8-toggle][data-r8-target]");
+      if (!(toggleTrigger instanceof HTMLElement)) {
+        return;
+      }
+
+      const target = resolveTarget(toggleTrigger);
+      if (!(target instanceof HTMLElement) || !isFloatingOverlayTarget(target)) {
+        return;
+      }
+
+      if (resolveFloatingTriggerMode(toggleTrigger, target) !== "contextmenu") {
+        return;
+      }
+
+      event.preventDefault();
+      handleToggleTrigger(toggleTrigger);
     });
 
     document.addEventListener("keydown", (event) => {
@@ -5600,7 +7640,19 @@
       }
 
       floatingStates.forEach((container) => closeFloating(container));
+      navbarRegistry.forEach((navbar) => {
+        const state = navbarStates.get(navbar);
+        if (!state?.open || navbarShowsExpandedLayout(navbar)) {
+          return;
+        }
+
+        setNavbarOpen(navbar, false, { trigger: state.toggle });
+      });
       genericTargets.forEach((entry) => {
+        if (isDrawerTarget(entry.target) && !drawerClosesOnEscape(entry.target)) {
+          return;
+        }
+
         if (isOpen(entry.target) && !isAlertTarget(entry.target)) {
           closeTarget(entry.target);
         }
@@ -5609,6 +7661,7 @@
 
     window.addEventListener("resize", () => {
       syncFloatingOverlayPositions();
+      syncNavbars();
     });
 
     window.addEventListener(
@@ -5646,17 +7699,22 @@
     syncProgressBars(scope);
     initDatePickers(scope);
     initChoices(scope);
+    initNavbars(scope);
     initTabs(scope);
     initCollapse(scope);
     initCarousels(scope);
+    initImages(scope);
+    initInputs(scope);
     initInputNumbers(scope);
     initBinaryControls(scope);
     initRates(scope);
     initPagination(scope);
+    initAvatars(scope);
     initSplitters(scope);
     initSliders(scope);
     initInputTags(scope);
     initTransfers(scope);
+    initUploads(scope);
     initGenericToggles(scope);
     attachGlobalListeners();
 

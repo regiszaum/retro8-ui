@@ -19,14 +19,43 @@ const localeOptions = computed(() =>
 
 const currentLabel = computed(() => localeMeta[props.locale]?.label ?? "EN");
 
-function handleChoiceChange(event: Event) {
-  const nextLocale = (event as CustomEvent<{ value?: string }>).detail?.value;
+type ChoiceChangeDetail = {
+  value?: string;
+  option?: HTMLElement | null;
+};
 
-  if (!nextLocale || nextLocale === props.locale) {
+type Retro8Runtime = {
+  init?: (root?: Document | HTMLElement) => void;
+  refresh?: (root?: Document | HTMLElement) => void;
+};
+
+function getRuntime() {
+  return (window as Window & { Retro8UI?: Retro8Runtime }).Retro8UI;
+}
+
+async function syncLocaleSelect() {
+  await nextTick();
+
+  const container = containerRef.value;
+  if (!container) {
     return;
   }
 
-  void navigateTo(swapLocaleInPath(route.path, nextLocale));
+  const runtime = getRuntime();
+  runtime?.refresh?.(container) ?? runtime?.init?.(container);
+}
+
+function handleChoiceChange(event: Event) {
+  const detail = (event as CustomEvent<ChoiceChangeDetail>).detail;
+  const option = detail?.option;
+  const nextLocale = option?.dataset.r8Locale || detail?.value;
+  const targetPath = option?.dataset.r8Route || (nextLocale ? swapLocaleInPath(route.path, nextLocale) : "");
+
+  if (!nextLocale || nextLocale === props.locale || !targetPath) {
+    return;
+  }
+
+  void navigateTo(targetPath);
 }
 
 onMounted(() => {
@@ -36,17 +65,24 @@ onMounted(() => {
   }
 
   container.addEventListener("r8:choice-change", handleChoiceChange as EventListener);
-  (window as Window & { Retro8UI?: { init?: (root?: Document | HTMLElement) => void } }).Retro8UI?.init?.(container);
+  void syncLocaleSelect();
 });
 
 onBeforeUnmount(() => {
   containerRef.value?.removeEventListener("r8:choice-change", handleChoiceChange as EventListener);
 });
+
+watch(
+  () => [props.locale, route.path],
+  () => {
+    void syncLocaleSelect();
+  },
+);
 </script>
 
 <template>
   <div class="docs-toolbar__group docs-toolbar__group--locale" :aria-label="label">
-    <div ref="containerRef" class="r8-select docs-locale-select">
+    <div ref="containerRef" class="r8-select docs-locale-select" :data-r8-value="locale">
       <button class="r8-select__trigger" type="button" :aria-label="label">
         <span data-r8-choice-display>{{ currentLabel }}</span>
         <span class="r8-choice__caret docs-locale-select__caret" aria-hidden="true">&gt;</span>
@@ -60,6 +96,8 @@ onBeforeUnmount(() => {
           :class="{ 'is-selected': entry.id === locale }"
           type="button"
           :data-r8-value="entry.id"
+          :data-r8-locale="entry.id"
+          :data-r8-route="entry.to"
           :aria-label="entry.label"
         >
           {{ entry.label }}

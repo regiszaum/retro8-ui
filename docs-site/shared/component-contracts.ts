@@ -63,7 +63,7 @@ const choiceKinds = new Set([
   "select",
   "dropdown",
 ]);
-const overlayKinds = new Set(["dialog", "drawer", "message-box", "notification", "popover", "tooltip"]);
+const overlayKinds = new Set(["dialog", "drawer", "poptip"]);
 const binaryKinds = new Set(["checkbox", "radio", "switch", "theme-switch"]);
 const runtimeKinds = new Set([
   "button",
@@ -78,6 +78,7 @@ const runtimeKinds = new Set([
   "input-number",
   "rate",
   "pagination",
+  "navbar",
   "splitter",
   "slider",
   "input-tag",
@@ -971,11 +972,35 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
       mergeContract(contract, {
         attributes: [
           row("aria-expanded", "boolean", "false", "State exposto no header interativo de cada item.", "State exposed on each interactive item header."),
+          row("aria-controls / aria-labelledby", "string", "managed by runtime", "Conecta header e body para leitura assistiva.", "Connects header and body for assistive reading."),
+          row("aria-disabled", "boolean", "false", "Marca headers e itens bloqueados sem remover o bloco da tela.", "Marks blocked headers and items without removing the section from the UI."),
           row("hidden", "boolean", "true on closed body", "Esconde o body fechado com semantica nativa.", "Hides the closed body with native semantics."),
+        ],
+        dataAttributes: [
+          row("data-r8-accordion", `"true" | "false"`, `"false"`, "Mantem apenas um item aberto por vez dentro do mesmo grupo.", "Keeps only one item open at a time within the same group."),
+          row("data-r8-icon-position", `"left" | "right"`, `"right"`, "Move o icone de expansao para o lado esquerdo ou direito do header.", "Moves the expand icon to the left or right side of the header."),
+          row("data-r8-disabled", `"true" | "false"`, `"false"`, "Bloqueia a abertura de um item especifico.", "Blocks opening for a specific item."),
+        ],
+        cssVariables: [
+          row("--r8-collapse-icon-size", "length", "1.25rem", "Escala a area reservada para o icone do header.", "Scales the area reserved for the header icon."),
         ],
         methods: runtimeMethods,
         events: [
           event("r8:collapse-toggle", `{ open, item }`, "Emitido quando um item abre ou fecha.", "Emitted when an item opens or closes."),
+        ],
+      });
+      break;
+    case "empty":
+      mergeContract(contract, {
+        attributes: [
+          row("alt", "string", "recommended on custom images", "Texto alternativo da imagem usada em `r8-empty__media` quando ela carrega contexto relevante.", "Alternative text for the image used in `r8-empty__media` when it carries relevant context."),
+        ],
+        dataAttributes: [
+          row("data-r8-align", `"center" | "left"`, `"center"`, "Controla o alinhamento geral do bloco vazio.", "Controls the overall alignment of the empty block."),
+        ],
+        cssVariables: [
+          row("--r8-empty-media-size", "length", "8rem", "Escala a área reservada para imagem ou ilustração.", "Scales the area reserved for the image or illustration."),
+          row("--r8-empty-copy-width", "length", "28rem", "Limita a largura de leitura da cópia do estado vazio.", "Limits the reading width of the empty-state copy."),
         ],
       });
       break;
@@ -984,6 +1009,18 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         attributes: [
           row("hidden", "boolean", "true on inactive slides", "Somente o slide ativo fica exposto pelo runtime.", "Only the active slide stays exposed by the runtime."),
           row("aria-current", "boolean", "false", "Marca o dot atualmente ativo.", "Marks the currently active dot."),
+          row("aria-label", "string", "recommended on arrows and dots", "Rotula setas e dots para navegacao assistiva.", "Labels arrows and dots for assistive navigation."),
+        ],
+        dataAttributes: [
+          row("data-r8-autoplay", `"true" | "false"`, `"false"`, "Liga a troca automatica entre slides.", "Turns on automatic slide rotation."),
+          row("data-r8-interval", "number", "3400", "Define o tempo entre trocas quando o autoplay estiver ativo.", "Defines the delay between transitions when autoplay is active."),
+          row("data-r8-arrows", `"always" | "hover" | "none"`, `"always"`, "Controla quando as setas laterais ficam visiveis.", "Controls when the side arrows stay visible."),
+          row("data-r8-direction", `"prev" | "next"`, "none", "Marca a seta como navegacao para tras ou para frente.", "Marks an arrow as backward or forward navigation."),
+        ],
+        cssVariables: [
+          row("--r8-carousel-height", "length", "16rem", "Ajusta a altura util do viewport e dos slides.", "Adjusts the usable height of the viewport and slides."),
+          row("--r8-carousel-arrow-size", "length", "2.5rem", "Escala as setas laterais sem trocar o markup.", "Scales the side arrows without changing markup."),
+          row("--r8-carousel-media-fit", "string", `"cover"`, "Controla o `object-fit` das imagens dentro de `r8-carousel__media`.", "Controls the image `object-fit` inside `r8-carousel__media`."),
         ],
         methods: runtimeMethods,
         events: [
@@ -1000,6 +1037,19 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
           row("required", "boolean", "false", "Integra com validacao nativa do browser.", "Integrates with native browser validation."),
           row("aria-invalid", "boolean", "false", "Ativa invalid feedback junto com `r8-input--invalid`.", "Enables invalid feedback together with `r8-input--invalid`."),
         ],
+        dataAttributes: [
+          row("data-r8-size", `"sm" | "md" | "lg"`, `"md"`, "Escala o campo base ou o shell opcional sem uma utility externa.", "Scales the base field or optional shell without an external utility."),
+          row("data-r8-clearable", `"true" | "false"`, `"false"`, "Exibe um botao de clear dentro de `r8-input-shell` quando houver valor.", "Shows a clear button inside `r8-input-shell` when a value is present."),
+          row("data-r8-show-password", `"true" | "false"`, `"false"`, "Ativa o toggle declarativo de senha para inputs do tipo password.", "Enables a declarative password toggle for password inputs."),
+          row("data-r8-word-limit", `"true" | "false"`, `"false"`, "Mostra um contador quando `maxlength` estiver presente.", "Shows a counter when `maxlength` is present."),
+          row("data-r8-autosize", `"true" | "false"`, `"false"`, "Liga o autosize de textarea no proprio runtime da Retro8 UI.", "Turns textarea autosizing on in the Retro8 UI runtime itself."),
+          row("data-r8-min-rows / data-r8-max-rows", "number", "rows / none", "Controlam o piso e o teto do autosize de textarea.", "Control the floor and ceiling of textarea autosizing."),
+        ],
+        methods: runtimeMethods,
+        events: [
+          event("r8:input-clear", `{ value }`, "Emitido quando o botao de clear zera o campo.", "Emitted when the clear button resets the field."),
+          event("r8:input-password-toggle", `{ revealed }`, "Emitido quando o toggle alterna a visibilidade da senha.", "Emitted when the toggle changes password visibility."),
+        ],
       });
       break;
     case "input-number":
@@ -1010,9 +1060,15 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
           row("step", "number", "1", "Incremento usado pelos Buttons laterais.", "Increment used by the side buttons."),
           row("value", "number", "0", "Valor inicial do input.", "Initial input value."),
         ],
+        dataAttributes: [
+          row("data-r8-size", `"sm" | "md" | "lg"`, `"md"`, "Escala a altura do controle numerico.", "Scales the numeric control height."),
+          row("data-r8-precision", "number", "step decimals", "Arredonda e formata o valor final com casas decimais declarativas.", "Rounds and formats the final value with declarative decimals."),
+          row("data-r8-step-strictly", `"true" | "false"`, `"false"`, "Alinha digitacao e clique ao grid do step.", "Aligns typing and button clicks to the step grid."),
+          row("data-r8-controls-position", `"default" | "right"`, `"default"`, "Move os botoes para uma coluna na lateral direita.", "Moves the buttons into a right-side column."),
+        ],
         methods: runtimeMethods,
         events: [
-          event("r8:input-number-change", `{ value }`, "Emitido depois que os Buttons alteram o numero.", "Emitted after the buttons change the number."),
+          event("r8:input-number-change", `{ value, source }`, "Emitido depois de cliques, teclado ou digitacao manual normalizada.", "Emitted after button clicks, keyboard stepping, or normalized manual typing."),
         ],
       });
       break;
@@ -1022,10 +1078,36 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
           row("placeholder", "string", "none", "Placeholder do input interno para novas tags.", "Placeholder for the inner input used for new tags."),
           row("maxlength", "number", "none", "Limita o tamanho de cada nova tag no input nativo.", "Limits the size of each new tag in the native input."),
         ],
+        dataAttributes: [
+          row("data-r8-size", `"sm" | "md" | "lg"`, `"md"`, "Escala altura, chips e area de digitacao do conjunto.", "Scales the height, chips, and entry area."),
+          row("data-r8-max-tags", "number", "none", "Limita o total de tags aceitas pelo campo.", "Limits the total accepted tags."),
+          row("data-r8-delimiters", "string", "none", "Define caracteres que quebram uma entrada em varias tags.", "Defines characters that split one entry into multiple tags."),
+          row("data-r8-clearable", `"true" | "false"`, `"false"`, "Mostra um botao de clear all quando houver tags ativas.", "Shows a clear-all button when there are active tags."),
+        ],
         methods: runtimeMethods,
         events: [
-          event("r8:input-tag-add", `{ value, tag }`, "Emitido quando uma tag nova e criada pelo Enter.", "Emitted when a new tag is created on Enter."),
-          event("r8:input-tag-remove", `{ value }`, "Emitido quando uma tag existente e removida.", "Emitted when an existing tag is removed."),
+          event("r8:input-tag-add", `{ value, tag, values, source }`, "Emitido quando uma ou mais tags novas entram no conjunto.", "Emitted when one or more new tags enter the set."),
+          event("r8:input-tag-remove", `{ value, values, source }`, "Emitido quando uma tag existente e removida.", "Emitted when an existing tag is removed."),
+          event("r8:input-tag-clear", `{ values, source }`, "Emitido quando o clear all remove o conjunto inteiro.", "Emitted when clear-all removes the whole set."),
+          event("r8:input-tag-change", `{ values }`, "Emitido depois de qualquer mudanca estrutural na lista de tags.", "Emitted after any structural change in the tag list."),
+        ],
+      });
+      break;
+    case "avatar":
+      mergeContract(contract, {
+        attributes: [
+          row("alt", "string", "none", "Texto alternativo da imagem interna quando o avatar carrega midia relevante.", "Alternative text for the inner image when the avatar loads meaningful media."),
+        ],
+        dataAttributes: [
+          row("data-r8-avatar-fallback", "string", '"??"', "Define ate 2 caracteres para o fallback quando a imagem falha, esta vazia ou nao existe.", "Defines up to 2 characters for the fallback when the image fails, is empty, or does not exist."),
+          row("data-r8-fit", `"cover" | "contain" | "fill" | "none" | "scale-down"`, `"cover"`, "Controla como a imagem ocupa a moldura do avatar.", "Controls how the image fills the avatar frame."),
+        ],
+        cssVariables: [
+          row("--r8-avatar-fit", "keyword", '"cover"', "Custom property que ajusta o `object-fit` da imagem interna.", "Custom property that adjusts the inner image `object-fit`."),
+        ],
+        methods: runtimeMethods,
+        events: [
+          event("r8:avatar-fallback", `{ alt, fallback, src }`, "Emitido quando a imagem falha e o runtime troca o avatar para o fallback textual.", "Emitted when the image fails and the runtime switches the avatar to the text fallback."),
         ],
       });
       break;
@@ -1035,6 +1117,25 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
           row("accept", "string", "none", "Tipos de arquivo aceitos pelo input nativo do host app.", "Accepted file types for the host app native input."),
           row("multiple", "boolean", "false", "Permite selecao multipla no input nativo.", "Allows multi-file selection in the native input."),
           row("disabled", "boolean", "false", "Desativa dropzone e trigger do upload control.", "Disables the upload dropzone and trigger."),
+          row("aria-describedby", "idref", "none", "Conecta a dropzone ou o input a texto auxiliar com limite, formato ou feedback.", "Connects the dropzone or input to helper copy with limits, formats, or feedback."),
+        ],
+        dataAttributes: [
+          row("data-r8-drag-active", `"true" | "false"`, `"false"`, "Ativa o destaque visual da dropzone enquanto o host app acompanha dragover.", "Turns on the dropzone highlight while the host app tracks dragover."),
+          row("data-r8-upload-state", `"queued" | "uploading" | "success" | "error"`, `"queued"`, "Aplicado em `r8-upload__file` para colorir cada item conforme o estado do envio.", "Applied on `r8-upload__file` to color each item according to transfer state."),
+          row("data-r8-upload-trigger", "marker", "none", "Marca um CTA opcional que deve abrir o input nativo escondido.", "Marks an optional CTA that should open the hidden native input."),
+          row("data-r8-upload-preview-label / data-r8-upload-remove-label / data-r8-upload-selected-label / data-r8-upload-empty-label", "string", "English defaults", "Sobrescreve os labels usados pelo runtime local para preview, remove, selecionado e vazio.", "Overrides the labels used by the local runtime for preview, remove, selected, and empty states."),
+        ],
+        cssVariables: [
+          row("--r8-upload-accent", "color", "var(--r8-color-primary)", "Accent local usado na dropzone ativa e nos estados principais do shell.", "Local accent used by the active dropzone and key shell states."),
+          row("--r8-upload-min-height", "length", "9rem", "Altura minima da dropzone antes do app hospedeiro preencher a area com thumbs ou instrucoes.", "Minimum dropzone height before the host app fills the area with thumbnails or instructions."),
+          row("--r8-upload-thumb-size", "length", "3rem", "Tamanho base dos previews quadrados em lista ou avatar.", "Base size for square previews in list or avatar layouts."),
+          row("--r8-upload-progress", "percentage", "0%", "Percentual usado por `r8-upload__progress` para mostrar fila, envio parcial ou retry.", "Percentage used by `r8-upload__progress` to show queued, partial upload, or retry states."),
+        ],
+        methods: runtimeMethods,
+        events: [
+          event("r8:upload-change", `{ files, items, source }`, "Emitido quando input nativo ou dropzone recebem arquivos e a fila local e sincronizada.", "Emitted when the native input or dropzone receives files and the local queue is synchronized."),
+          event("r8:upload-remove", `{ file, files, index, source }`, "Emitido quando um item gerenciado pelo runtime local e removido da fila.", "Emitted when an item managed by the local runtime is removed from the queue."),
+          event("r8:upload-preview", `{ file, id, source, url }`, "Emitido quando uma acao de preview abre um arquivo local com object URL.", "Emitted when a preview action opens a local file through an object URL."),
         ],
       });
       break;
@@ -1063,22 +1164,103 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         dataAttributes: [
           row("data-r8-value", "number", "0", "Shortcut declarativo para atualizar o fill e o `aria-valuenow`.", "Declarative shortcut for updating the fill and `aria-valuenow`."),
           row("data-r8-variant", `"default" | "success" | "warning" | "danger"`, "none", "Aplica a tone do Progress via runtime.", "Applies the Progress tone through the runtime."),
+          row("data-r8-shape", `"line" | "circle"`, `"line"`, "Alterna entre barra linear e dial circular sem trocar a estrutura principal do componente.", "Switches between a linear bar and a circular dial without replacing the main component structure."),
+          row("data-r8-label-position", `"outside" | "inside"`, `"outside"`, "Move a leitura percentual para dentro do track quando a barra precisa ficar mais compacta.", "Moves the percentage readout inside the track when the bar needs a more compact layout."),
+          row("data-r8-indeterminate", `"true" | "false"`, `"false"`, "Ativa animacao continua quando o fluxo ainda nao tem percentual definitivo.", "Turns on continuous animation when the flow does not have a definitive percentage yet."),
+          row("data-r8-progress-value-output", "marker", "none", "Marca os nodes que o runtime deve manter sincronizados com o valor percentual atual.", "Marks the nodes that the runtime should keep synchronized with the current percentage value."),
         ],
         cssVariables: [
           row("--r8-progress-value", "percentage", "0%", "Controla a largura visual da barra interna.", "Controls the visual width of the inner bar."),
+          row("--r8-progress-height", "length", "1.5rem", "Define a espessura do track linear sem trocar classes extras.", "Defines the linear track thickness without extra classes."),
+          row("--r8-progress-dial-size", "length", "6.5rem", "Escala o tamanho total do dial circular.", "Scales the full circular dial size."),
+          row("--r8-progress-dial-thickness", "length", "0.72rem", "Controla a espessura util do anel circular.", "Controls the usable thickness of the circular ring."),
+          row("--r8-progress-bar-color / --r8-progress-track-color", "color", "theme defaults", "Permite personalizar preenchimento e trilha sem sair da API publica.", "Lets you customize fill and track colors without leaving the public API."),
+          row("--r8-progress-duration", "time", "1.15s", "Ajusta o ritmo da animacao indeterminada.", "Adjusts the indeterminate animation pace."),
         ],
         methods: runtimeMethods,
       });
       mergeContract(contract, withVariantDataAttribute(component.name, `"success" | "warning" | "danger"`));
       break;
+    case "skeleton":
+      mergeContract(contract, {
+        dataAttributes: [
+          row("data-r8-animated", `"true" | "false"`, `"true"`, "Liga ou pausa o shimmer sem trocar a estrutura do placeholder.", "Turns the shimmer on or off without replacing the placeholder structure."),
+        ],
+        cssVariables: [
+          row("--r8-skeleton-gap", "length", "var(--r8-space-3)", "Controla o espacamento interno entre as pecas do esqueleto.", "Controls internal spacing between skeleton pieces."),
+          row("--r8-skeleton-block-height / --r8-skeleton-media-height", "length", "7rem / 9rem", "Ajustam a altura de blocos grandes e areas de media.", "Adjust the height of large blocks and media areas."),
+          row("--r8-skeleton-line-height / --r8-skeleton-title-width", "length", "1rem / 48%", "Permitem afinar linhas e controlar a largura visual do titulo.", "Let you slim down lines and control the visual title width."),
+          row("--r8-skeleton-avatar-size / --r8-skeleton-button-width", "length", "3rem / 5.5rem", "Escalam avatar e CTA falsa em templates de profile ou card.", "Scale the avatar and fake CTA in profile or card templates."),
+          row("--r8-skeleton-speed", "time", "1.2s", "Ajusta a velocidade da animacao do shimmer.", "Adjusts the shimmer animation speed."),
+        ],
+      });
+      break;
+    case "table":
+      mergeContract(contract, {
+        cssVariables: [
+          row("--r8-table-max-height", "length", "16rem", "Define a altura maxima do wrapper quando o header fica sticky.", "Defines the wrapper max height when the header becomes sticky."),
+          row("--r8-table-cell-padding-x / --r8-table-cell-padding-y", "length", "var(--r8-space-3)", "Ajustam a densidade horizontal e vertical das celulas.", "Adjust the horizontal and vertical density of table cells."),
+          row("--r8-table-header-bg / --r8-table-row-bg / --r8-table-row-alt-bg", "color", "theme defaults", "Permitem personalizar header, linhas base e zebra sem trocar a estrutura.", "Let you customize the header, base rows, and zebra striping without changing the structure."),
+          row("--r8-table-hover-bg", "color", "mixed primary surface", "Controla o destaque de hover nas linhas quando `r8-table--hover` estiver ativo.", "Controls row hover highlight when `r8-table--hover` is active."),
+        ],
+      });
+      break;
+    case "breadcrumb":
+      mergeContract(contract, {
+        attributes: [
+          row("aria-label", "string", `"Breadcrumb" recommended on nav`, "Nome acessivel recomendado no `nav` que envolve a trilha.", "Recommended accessible name on the `nav` wrapping the trail."),
+          row("aria-current", `"page"`, "only on current item", "Marca o ultimo item como pagina atual para tecnologia assistiva.", "Marks the last item as the current page for assistive technology."),
+        ],
+        dataAttributes: [
+          row("data-r8-separator", `"slash" | "chevron" | "double" | "dot"`, `"slash"`, "Troca o separador visual entre os itens sem alterar a estrutura do breadcrumb.", "Changes the visual separator between items without altering the breadcrumb structure."),
+        ],
+        cssVariables: [
+          row("--r8-breadcrumb-gap", "length", "var(--r8-space-2)", "Ajusta o espacamento entre os itens e o separador.", "Adjusts spacing between items and the separator."),
+          row("--r8-breadcrumb-separator-color", "color", "var(--r8-color-accent)", "Controla a cor usada no caractere separador.", "Controls the color used for the separator character."),
+          row("--r8-breadcrumb-current-color", "color", "var(--r8-color-ink)", "Define o destaque do item atual sem transformar o breadcrumb em tabs.", "Defines the current item emphasis without turning the breadcrumb into tabs."),
+          row("--r8-breadcrumb-link-color / --r8-breadcrumb-link-hover-color", "color", "muted / primary strong", "Permitem alinhar o tom dos links com o contexto visual local.", "Let you align link tone with the local visual context."),
+        ],
+      });
+      break;
+    case "dropdown":
+      mergeContract(contract, {
+        attributes: [
+          row("aria-expanded", "boolean", "false on trigger", "Reflete o estado aberto do trigger principal do dropdown.", "Reflects the open state on the dropdown's main trigger."),
+          row("aria-disabled", "boolean", "false", "Bloqueia itens específicos do menu sem removê-los da leitura visual.", "Blocks specific menu items without removing them from visual reading."),
+        ],
+        dataAttributes: [
+          row("data-r8-command", "string", "item text fallback", "Valor emitido no evento `r8:dropdown-command` ao acionar um item.", "Value emitted in the `r8:dropdown-command` event when an item is activated."),
+          row("data-r8-close-on-select", `"true" | "false"`, `"true"`, "Quando `false`, mantém o menu aberto após selecionar uma ação.", "When `false`, keeps the menu open after selecting an action."),
+        ],
+        cssVariables: [
+          row("--r8-dropdown-menu-width", "length", "12rem", "Ajusta a largura mínima do painel de ações.", "Adjusts the minimum width of the actions panel."),
+          row("--r8-dropdown-item-padding-x / --r8-dropdown-item-padding-y", "length", "var(--r8-space-3) / var(--r8-space-2)", "Controlam a densidade interna dos itens do menu.", "Control the internal density of menu items."),
+        ],
+        methods: runtimeMethods,
+        events: [
+          event("r8:dropdown-command", `{ command, option, text, value }`, "Emitido quando uma ação do dropdown é escolhida.", "Emitted when a dropdown action is chosen."),
+          event("r8:choice-change", `{ kind, option, text, value }`, "Evento genérico compartilhado com outras famílias de escolha.", "Generic event shared with other choice families."),
+        ],
+      });
+      break;
     case "pagination":
       mergeContract(contract, {
         attributes: [
           row("aria-current", "boolean", "false", "Marca a page ativa na lista de items.", "Marks the active page inside the item list."),
+          row("aria-label", "string", "recommended on prev/next", "Nome acessível para os botões de navegação lateral.", "Accessible name for the side navigation buttons."),
+        ],
+        dataAttributes: [
+          row("data-r8-total-pages", "number", "required for dynamic pager", "Total de páginas usadas para desenhar prev/next, pager e jumper.", "Total page count used to draw prev/next, pager, and jumper."),
+          row("data-r8-current-page", "number", "1", "Página atual controlada pelo runtime.", "Current page controlled by the runtime."),
+          row("data-r8-pager-count", "odd number", "7", "Quantidade de pagers visíveis antes de colapsar com elipses.", "Visible pager count before collapsing with ellipses."),
+          row("data-r8-hide-on-single-page", `"true" | "false"`, `"false"`, "Esconde o componente quando houver só uma página.", "Hides the component when there is only one page."),
+        ],
+        cssVariables: [
+          row("--r8-pagination-control-size", "length", "2rem", "Escala o tamanho dos botões numéricos e de navegação.", "Scales the numeric and navigation button size."),
         ],
         methods: runtimeMethods,
         events: [
-          event("r8:pagination-change", `{ item, index }`, "Emitido quando a page ativa muda.", "Emitted when the active page changes."),
+          event("r8:pagination-change", `{ page, totalPages, source }`, "Emitido quando a página ativa muda por clique, nav ou jumper.", "Emitted when the active page changes through page buttons, nav, or jumper."),
         ],
       });
       break;
@@ -1114,6 +1296,11 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
           row("data-r8-toggle", `"true"`, `"true"`, "No trigger, revela ou recolhe um Alert hidden para live examples e inline callouts.", "On a trigger, reveals or hides a hidden Alert for live examples and inline callouts."),
           row("data-r8-target", "CSS selector", "required on trigger", "Aponta para o Alert controlado pelo helper declarativo.", "Points to the Alert controlled by the declarative helper."),
           row("data-r8-close", "CSS selector | empty", "nearest host", "Fecha o Alert informado ou o host mais proximo pelo helper de runtime.", "Closes the provided Alert or the nearest host through the runtime helper."),
+        ],
+        cssVariables: [
+          row("--r8-alert-background / --r8-alert-foreground / --r8-alert-accent", "color", "tone-specific", "Controlam superficie, contraste e faixa lateral do Alert.", "Control the Alert surface, contrast, and side accent rail."),
+          row("--r8-alert-gap / --r8-alert-padding", "length", "space tokens", "Ajustam a densidade interna do bloco sem reescrever a estrutura.", "Adjust the block's internal density without rewriting its structure."),
+          row("--r8-alert-icon-size", "length", "2rem", "Escala base do tile usado por `r8-alert__icon`.", "Base size of the tile used by `r8-alert__icon`."),
         ],
         methods: runtimeMethods,
         events: [
@@ -1156,14 +1343,23 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         ],
       });
       break;
-    case "popover":
-    case "tooltip":
+    case "poptip":
       mergeContract(contract, {
+        attributes: [
+          row("hidden", "boolean", "true before open", "Mantem o Poptip fora do fluxo ate o trigger ou a aplicacao abrirem o overlay.", "Keeps the Poptip out of flow until the trigger or the host app opens the overlay."),
+          row("role", `"tooltip" | custom`, "recommended for hint mode", "Use `role=\"tooltip\"` quando o Poptip estiver atuando como dica curta por hover ou foco.", "Use `role=\"tooltip\"` when the Poptip acts as a short hover or focus hint."),
+        ],
         dataAttributes: [
-          row("data-r8-toggle", `"true"`, `"true"`, `Trigger declarativo usado para abrir ${component.name}.`, `Declarative trigger used to open ${component.name}.`),
+          row("data-r8-toggle", `"poptip" | "popover" | "tooltip"`, `"poptip"`, `Trigger declarativo usado para abrir ${component.name}; aliases antigos continuam aceitos por compatibilidade.`, `Declarative trigger used to open ${component.name}; older aliases remain accepted for compatibility.`),
           row("data-r8-target", "CSS selector", "required", `Target controlado por ${component.name}.`, `Target controlled by ${component.name}.`),
           row("data-r8-close", "CSS selector | empty", "nearest host", `Fecha ${component.name} pelo helper do runtime.`, `Closes ${component.name} through the runtime helper.`),
-          row("data-r8-placement", `"top" | "top-start" | "top-end" | "bottom" | "bottom-start" | "bottom-end" | "left" | "right"`, component.name === "Tooltip" ? `"top"` : `"bottom-start"`, "Define o posicionamento flutuante relativo ao trigger.", "Defines the floating placement relative to the trigger."),
+          row("data-r8-trigger", `"click" | "hover" | "focus" | "contextmenu"`, `"click"`, "Controla se o overlay abre por clique, hover, foco ou clique de contexto.", "Controls whether the overlay opens on click, hover, focus, or context click."),
+          row("data-r8-variant", `"panel" | "hint"`, `"panel"`, "Alterna entre painel rico e dica compacta sem trocar de componente.", "Switches between a richer panel and a compact hint without switching components."),
+          row("data-r8-placement", `"top" | "top-start" | "top-end" | "bottom" | "bottom-start" | "bottom-end" | "left" | "right"`, `"bottom-start"`, "Define o posicionamento flutuante relativo ao trigger.", "Defines the floating placement relative to the trigger."),
+        ],
+        cssVariables: [
+          row("--r8-poptip-width", "length", "20rem", "Limita a largura maxima do painel ou hint para manter leitura confortavel.", "Limits the panel or hint max width so reading stays comfortable."),
+          row("--r8-poptip-background / --r8-poptip-color", "color", "surface / ink", "Permitem criar shells mais claros ou escuros sem duplicar variantes estruturais.", "Let you create lighter or darker shells without duplicating structural variants."),
         ],
         methods: runtimeMethods,
         events: [
@@ -1173,16 +1369,32 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
       });
       break;
     case "drawer":
-    case "message-box":
-    case "notification":
       mergeContract(contract, {
+        attributes: [
+          row("aria-labelledby | aria-label", "string", "recommended", `Nome acessivel recomendado para ${component.name}, especialmente quando houver titulo visual no header.`, `Recommended accessible name for ${component.name}, especially when there is a visual title in the header.`),
+          row("hidden", "boolean", "true before open", `Mantem ${component.name} fora do fluxo ate o helper declarativo ou a aplicacao hospedeira abrirem o painel.`, `Keeps ${component.name} out of flow until the declarative helper or the host application opens the panel.`),
+        ],
         dataAttributes: [
           row("data-r8-toggle", `"true"`, `"true"`, `Trigger declarativo para abrir ${component.name}.`, `Declarative trigger used to open ${component.name}.`),
           row("data-r8-target", "CSS selector", "required", `Target controlado por ${component.name}.`, `Target controlled by ${component.name}.`),
           row("data-r8-close", "CSS selector | empty", "nearest host", `Fecha ${component.name} pelo helper do runtime.`, `Closes ${component.name} through the runtime helper.`),
+          row("data-r8-modal", `"true" | "false"`, `"true"`, "Controla se o Drawer cria backdrop proprio ao abrir.", "Controls whether the Drawer creates its own backdrop when opening."),
+          row("data-r8-close-on-backdrop", `"true" | "false"`, `"true"`, "Quando `false`, impede fechamento por clique fora ou no backdrop.", "When `false`, prevents closing through outside click or backdrop click."),
+          row("data-r8-close-on-escape", `"true" | "false"`, `"true"`, "Quando `false`, mantem o painel aberto mesmo ao pressionar Escape.", "When `false`, keeps the panel open even when Escape is pressed."),
+          row("data-r8-lock-scroll", `"true" | "false"`, `"true"`, "Permite desligar o bloqueio de scroll do `body` em drawers globais.", "Lets you disable `body` scroll locking for global drawers."),
+        ],
+        cssVariables: [
+          row("--r8-drawer-size", "length", "24rem", "Controla a largura dos drawers laterais e a altura dos drawers verticais.", "Controls the width of side drawers and the height of vertical drawers."),
+          row("--r8-drawer-min-size", "length", "18rem", "Define o tamanho minimo do painel antes dos limites do viewport entrarem em acao.", "Defines the panel minimum size before viewport limits kick in."),
+          row("--r8-drawer-header-surface / --r8-drawer-footer-surface", "color", "surface-2 / surface-3", "Permitem alinhar header e footer a shells claros, escuros ou mais tematicos.", "Let you tune the header and footer for lighter, darker, or more thematic shells."),
+          row("--r8-drawer-body-padding", "length", "var(--r8-space-4)", "Ajusta a densidade do corpo sem alterar a estrutura interna do painel.", "Adjusts body density without changing the panel's internal structure."),
         ],
         methods: runtimeMethods,
         events: [
+          event("r8:drawer-open", `{ target, trigger }`, `Emitido quando ${component.name} entra no ciclo de abertura.`, `Emitted when ${component.name} enters its opening cycle.`),
+          event("r8:drawer-opened", `{ target, trigger }`, `Emitido apos a transicao principal de abertura do ${component.name}.`, `Emitted after the main ${component.name} opening transition.`),
+          event("r8:drawer-close", `{ target, trigger }`, `Emitido quando ${component.name} inicia o fechamento.`, `Emitted when ${component.name} starts closing.`),
+          event("r8:drawer-closed", `{ target, trigger }`, `Emitido apos a transicao principal de fechamento do ${component.name}.`, `Emitted after the main ${component.name} closing transition.`),
           event("r8:target-open", `{ target, trigger }`, `Emitido quando ${component.name} abre pelo helper declarativo.`, `Emitted when ${component.name} opens through the declarative helper.`),
           event("r8:target-close", `{ target, trigger }`, `Emitido quando ${component.name} fecha pelo helper declarativo.`, `Emitted when ${component.name} closes through the declarative helper.`),
         ],
@@ -1219,6 +1431,17 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         ],
       });
       break;
+    case "switch":
+      mergeContract(contract, {
+        cssVariables: [
+          row("--r8-switch-enabled-bg", "color", "var(--r8-color-success)", "Cor do track quando o Switch estiver ligado ou com `aria-checked=\"true\"`.", "Track color when the Switch is on or using `aria-checked=\"true\"`."),
+          row("--r8-switch-disabled-bg", "color", "var(--r8-color-surface-2)", "Cor do track quando o Switch estiver desligado, mas ainda interativo.", "Track color when the Switch is off but still interactive."),
+          row("--r8-switch-blocked-bg", "color", "var(--r8-color-disabled-bg)", "Cor do track quando o controle em si estiver desabilitado e sem interacao.", "Track color when the control itself is disabled and non-interactive."),
+          row("--r8-switch-thumb-bg", "color", "var(--r8-color-surface-raised)", "Cor base do thumb enquanto o Switch estiver interativo.", "Base thumb color while the Switch remains interactive."),
+          row("--r8-switch-thumb-blocked-bg", "color", "var(--r8-color-surface)", "Cor do thumb quando o Switch estiver em estado desabilitado.", "Thumb color when the Switch is in a disabled state."),
+        ],
+      });
+      break;
     case "theme-switch":
       mergeContract(contract, {
         attributes: [
@@ -1239,11 +1462,98 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         attributes: [
           row("alt", "string", "recommended", "Texto alternativo quando a media real for um `<img>` no frame.", "Alternative text when the real media is an `<img>` inside the frame."),
           row("loading", `"lazy" | "eager"`, `"lazy"`, "Comportamento nativo de carregamento do asset visual.", "Native loading behavior for the visual asset."),
+          row("src", "string", "required on real `<img>`", "Fonte da imagem real dentro do frame.", "Source for the real image inside the frame."),
+        ],
+        dataAttributes: [
+          row("data-r8-fit", `"cover" | "contain" | "fill" | "none" | "scale-down"`, `"cover"`, "Controla como a imagem ocupa a moldura.", "Controls how the image fills the frame."),
+          row("data-r8-ratio", `"square" | "landscape" | "wide" | "portrait"`, "none", "Aplica proporções rápidas para thumbnails, cards ou hero previews.", "Applies quick ratios for thumbnails, cards, or hero previews."),
+        ],
+        cssVariables: [
+          row("--r8-image-height", "length", "12rem", "Define a altura útil quando nenhuma proporção pronta estiver ativa.", "Defines the usable height when no preset ratio is active."),
+          row("--r8-image-fit", "keyword", `"cover"`, "Custom property que ajusta o `object-fit` da mídia.", "Custom property that adjusts the media `object-fit`."),
+        ],
+        methods: runtimeMethods,
+        events: [
+          event("r8:image-load", `{ alt, src }`, "Emitido quando a imagem termina de carregar com sucesso.", "Emitted when the image finishes loading successfully."),
+          event("r8:image-error", `{ alt, src }`, "Emitido quando a mídia falha e o componente entra em estado de erro.", "Emitted when the media fails and the component enters its error state."),
         ],
       });
       break;
     case "navbar":
       mergeContract(contract, withVariantDataAttribute(component.name, `"dark"`));
+      mergeContract(contract, {
+        attributes: [
+          row(
+            "aria-label",
+            "string",
+            "recommended on `<nav>`",
+            "Nome acessivel do landmark de navegacao quando o header nao tiver titulo explicito por perto.",
+            "Accessible landmark name when the header does not have a nearby explicit title.",
+          ),
+          row(
+            "aria-controls / aria-expanded",
+            "string / boolean",
+            "managed by runtime",
+            "Mantem a relacao entre o toggle e o bloco `r8-navbar__collapse` em layouts colapsaveis.",
+            "Keeps the relationship between the toggle and the `r8-navbar__collapse` block in collapsible layouts.",
+          ),
+        ],
+        dataAttributes: [
+          row(
+            "data-r8-expand",
+            `"never" | "sm" | "md" | "lg" | "xl" | "xxl" | "always"`,
+            `"always"`,
+            "Define em qual breakpoint o navbar deixa de colapsar, seguindo a ideia do `navbar-expand-*` do Bootstrap.",
+            "Defines the breakpoint where the navbar stops collapsing, following the Bootstrap `navbar-expand-*` idea.",
+          ),
+          row(
+            "data-r8-open",
+            `"true" | "false"`,
+            `"false"`,
+            "Abre o bloco colapsado no primeiro paint, util para previews locais e demos guiadas.",
+            "Opens the collapsed block on first paint, useful for local previews and guided demos.",
+          ),
+        ],
+        cssVariables: [
+          row(
+            "--r8-navbar-bg / --r8-navbar-color / --r8-navbar-muted",
+            "color",
+            "surface / ink / ink-muted",
+            "Controlam o shell do navbar e o contraste interno de brand, texto e links auxiliares.",
+            "Control the navbar shell and the inner contrast for the brand, text, and secondary links.",
+          ),
+          row(
+            "--r8-navbar-padding-x / --r8-navbar-padding-y / --r8-navbar-gap",
+            "length",
+            "theme defaults",
+            "Ajustam a densidade horizontal e vertical do header sem alterar a estrutura interna.",
+            "Adjust the header horizontal and vertical density without changing its inner structure.",
+          ),
+          row(
+            "--r8-navbar-collapse-max-height",
+            "length",
+            "18rem",
+            "Define a altura maxima do menu scrollavel quando o navbar estiver em coluna colapsada.",
+            "Defines the maximum height of the scrollable menu when the navbar runs in collapsed column mode.",
+          ),
+          row(
+            "--r8-navbar-hover-bg / --r8-navbar-accent-bg / --r8-navbar-accent-color",
+            "color",
+            "theme defaults",
+            "Permitem personalizar hover e estado ativo sem criar uma variante estrutural nova.",
+            "Let you customize hover and active states without creating a new structural variant.",
+          ),
+        ],
+        methods: runtimeMethods,
+        events: [
+          event(
+            "r8:navbar-toggle",
+            `{ open, navbar, toggle, collapse, expandedLayout, trigger }`,
+            "Emitido quando o toggle abre ou fecha a navegacao colapsavel do navbar.",
+            "Emitted when the toggle opens or closes the navbar collapsible navigation.",
+          ),
+        ],
+      });
       break;
     case "badge":
       mergeContract(contract, withVariantDataAttribute(component.name, `"primary" | "secondary" | "tertiary" | "success" | "warning" | "danger" | "info" | "dark" | "light"`));

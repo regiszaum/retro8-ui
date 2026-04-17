@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import DocsGenericPlayground from "~/components/docs/DocsGenericPlayground.vue";
+import DocsDateTimePickerPlayground from "~/components/docs/DocsDateTimePickerPlayground.vue";
+import DocsInputNumberPlayground from "~/components/docs/DocsInputNumberPlayground.vue";
+import DocsInputPlayground from "~/components/docs/DocsInputPlayground.vue";
+import DocsInputTagPlayground from "~/components/docs/DocsInputTagPlayground.vue";
 import { getComponentNeighbors } from "~/utils/docs-data";
 import { buildDocsPath } from "~/utils/docs-routing";
 
@@ -14,6 +19,40 @@ type Retro8Runtime = {
 
 const previewSurface = ref<HTMLElement | null>(null);
 const neighbors = computed(() => getComponentNeighbors(props.component.id));
+const genericPlaygroundIds = new Set([
+  "radio",
+  "rate",
+  "select",
+  "slider",
+  "switch",
+  "theme-switch",
+  "transfer",
+  "upload",
+  "avatar",
+  "badge",
+  "card",
+  "carousel",
+  "collapse",
+  "empty",
+  "image",
+  "pagination",
+  "progress",
+  "skeleton",
+  "table",
+  "tag",
+  "breadcrumb",
+  "dropdown",
+  "steps",
+  "tabs",
+  "alert",
+  "navbar",
+  "dialog",
+  "drawer",
+  "loading",
+  "poptip",
+  "divider",
+  "watermark",
+]);
 const componentTables = computed(() => {
   const columns = props.site.componentPage.tableColumns;
 
@@ -175,7 +214,12 @@ watch(
     <DocsColorPlayground v-if="component.id === 'color'" :site="site" />
     <DocsColorPickerPlayground v-if="component.id === 'color-picker'" :site="site" />
     <DocsDatePickerPlayground v-if="component.id === 'date-picker'" :site="site" />
+    <DocsDateTimePickerPlayground v-if="component.id === 'datetime-picker'" :site="site" />
     <DocsIconPlayground v-if="component.id === 'icon'" :site="site" />
+    <DocsInputPlayground v-if="component.id === 'input'" :site="site" />
+    <DocsInputNumberPlayground v-if="component.id === 'input-number'" :site="site" />
+    <DocsInputTagPlayground v-if="component.id === 'input-tag'" :site="site" />
+    <DocsGenericPlayground v-if="genericPlaygroundIds.has(component.id)" :component="component" :locale="locale" />
     <DocsLinkPlayground v-if="component.id === 'link'" :site="site" />
     <DocsLayoutContainerPlayground v-if="component.id === 'layout-container'" :site="site" />
     <DocsSplitterPlayground v-if="component.id === 'splitter'" :site="site" />

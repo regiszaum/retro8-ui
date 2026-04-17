@@ -35,4 +35,21 @@
   .r8-tabs__panel[hidden] {
     display: none;
   }
+
+  .r8-tabs--vertical {
+    align-items: start;
+    display: grid;
+    gap: var(--r8-space-4);
+    grid-template-columns: minmax(11rem, 14rem) minmax(0, 1fr);
+  }
+
+  .r8-tabs--vertical .r8-tabs__list {
+    display: grid;
+    gap: var(--r8-space-2);
+  }
+
+  .r8-tabs--vertical .r8-tabs__tab {
+    justify-content: flex-start;
+    width: 100%;
+  }
 }

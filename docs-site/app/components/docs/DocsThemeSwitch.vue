@@ -49,18 +49,17 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="docs-toolbar__group docs-toolbar__group--theme" :aria-label="label">
-    <button
-      ref="switchRef"
-      class="r8-theme-switch docs-theme-switch"
-      :class="{ 'is-checked': isDark }"
-      type="button"
-      role="switch"
-      :aria-checked="String(isDark)"
-      :aria-label="switchAriaLabel"
-      :title="switchAriaLabel"
-    >
-      <span class="r8-theme-switch__glyph" aria-hidden="true" />
-    </button>
-  </div>
+  <button
+    ref="switchRef"
+    class="r8-theme-switch docs-theme-switch"
+    :class="{ 'is-checked': isDark }"
+    data-r8-size="sm"
+    type="button"
+    role="switch"
+    :aria-checked="String(isDark)"
+    :aria-label="switchAriaLabel"
+    :title="switchAriaLabel"
+  >
+    <span class="r8-theme-switch__glyph" aria-hidden="true" />
+  </button>
 </template>

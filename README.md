@@ -20,7 +20,7 @@ You do not need Tailwind CSS in the consuming project. Tailwind is used only to 
 - Framework-agnostic by design.
 - Semantic class API instead of utility-heavy consumer markup.
 - Strong retro 8-bit visual language with thick borders, hard shadows, and pixel-shift interactions.
-- Optional JavaScript runtime for dropdowns, dialogs, tabs, drawers, tooltips, and other interactive patterns.
+- Optional JavaScript runtime for dropdowns, dialogs, tabs, drawers, poptips, and other interactive patterns.
 - Clear design tokens for color, spacing, borders, shadows, typography, and interaction states.
 - Public documentation site with bilingual content, component routes, light mode, dark mode, and live previews.
 
@@ -30,7 +30,7 @@ You do not need Tailwind CSS in the consuming project. Tailwind is used only to 
 - Optional runtime. JavaScript is available when behavior is needed, but it is not required for static styling.
 - Semantic API. Consumers work with `r8-*` classes, not internal Tailwind utilities.
 - Framework independence. The same assets should work anywhere CSS and browser JavaScript work.
-- Scalable architecture. Tokens, components, utilities, examples, and docs are organized for maintainability and future npm publishing.
+- Scalable architecture. Tokens, components, utilities, and docs-site are organized for maintainability and future npm publishing.
 
 ## Installation
 
@@ -202,7 +202,7 @@ The current runtime covers patterns such as:
 - sliders;
 - input tags;
 - transfer lists;
-- popovers, tooltips, notifications, and dismissible feedback surfaces.
+- poptips, dialogs, and dismissible feedback surfaces.
 
 You can use the bundled runtime or replace it with your own application logic if your stack already manages state and accessibility behavior.
 
@@ -210,7 +210,7 @@ You can use the bundled runtime or replace it with your own application logic if
 
 The current catalog includes:
 
-- 57 core components across the main catalog, plus retro8-ui-specific extras;
+- 50 core components across the main catalog, plus retro8-ui-specific extras;
 - grouped categories across Basic, Configuration, Form, Data, Navigation, Feedback, and Others;
 - native `retro8-ui` extras such as `Panel`, `Window`, and `Navbar`.
 
@@ -298,9 +298,7 @@ Builds everything and previews the generated documentation locally.
 ```text
 retro8-ui/
 ├── dist/                    # Compiled CSS and JS outputs.
-├── docs/                    # Internal project notes.
 ├── docs-site/               # Public Nuxt documentation app.
-├── examples/                # Plain HTML usage examples.
 ├── scripts/                 # Build helpers.
 ├── src/
 │   ├── scripts/             # Optional runtime source.
@@ -322,11 +320,6 @@ retro8-ui/
 - PostCSS, Autoprefixer, and cssnano handle the CSS pipeline.
 - The JavaScript runtime is intentionally lightweight and browser-first.
 - The documentation app is separate from the library package, so the product remains framework-agnostic.
-
-## Examples
-
-- `examples/index.html` contains a general showcase.
-- `examples/dashboard.html` contains a dashboard-style composition example.
 
 ## License
 

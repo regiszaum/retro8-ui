@@ -17,8 +17,24 @@
     box-shadow: 2px 0 0 0 color-mix(in srgb, var(--r8-color-surface-raised) 90%, transparent);
   }
 
+  .r8-divider--dashed {
+    border-top-style: dashed;
+  }
+
+  .r8-divider--vertical.r8-divider--dashed {
+    border-left-style: dashed;
+  }
+
   .r8-divider__label {
     @apply inline-flex bg-r8-surface px-r8-2 font-display text-r8-xs uppercase tracking-r8 text-r8-ink-muted;
     transform: translateY(-0.7rem);
+  }
+
+  .r8-divider--label-start .r8-divider__label {
+    margin-right: auto;
+  }
+
+  .r8-divider--label-end .r8-divider__label {
+    margin-left: auto;
   }
 }
