@@ -1674,7 +1674,7 @@ function buildConfig(id: string): PlaygroundConfig {
       ${
         state.search
           ? `<form class="r8-navbar__form" role="search">
-        <input class="r8-input" type="search" placeholder="${escapeAttribute(localize("Buscar docs", "Search docs"))}" aria-label="${escapeAttribute(localize("Buscar docs", "Search docs"))}" />
+        <input class="r8-input" data-r8-size="sm" type="search" placeholder="${escapeAttribute(localize("Buscar docs", "Search docs"))}" aria-label="${escapeAttribute(localize("Buscar docs", "Search docs"))}" />
         <button class="r8-btn r8-btn--sm r8-btn--primary" type="button">${escapeHtml(localize("Buscar", "Search"))}</button>
       </form>`
           : ""

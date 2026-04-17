@@ -5381,7 +5381,7 @@ const retroExtraComponents = [
         </ul>
         <p class="r8-navbar__text">Build 0.3 synced</p>
         <form class="r8-navbar__form" role="search">
-          <input class="r8-input" type="search" placeholder="Search docs" aria-label="Search docs" />
+          <input class="r8-input" data-r8-size="sm" type="search" placeholder="Search docs" aria-label="Search docs" />
           <button class="r8-btn r8-btn--sm r8-btn--primary" type="button">Search</button>
         </form>
         <div class="r8-navbar__actions">
@@ -5414,7 +5414,7 @@ const retroExtraComponents = [
       <span class="r8-navbar__text">Stable channel</span>
 
       <form class="r8-navbar__form" role="search">
-        <input class="r8-input" type="search" placeholder="Search docs" aria-label="Search docs" />
+        <input class="r8-input" data-r8-size="sm" type="search" placeholder="Search docs" aria-label="Search docs" />
         <button class="r8-btn r8-btn--sm r8-btn--primary" type="submit">Search</button>
       </form>
 
@@ -5490,6 +5490,315 @@ const retroExtraComponents = [
         description: l(
           "Ativa o tema escuro do navbar sem duplicar a estrutura do markup.",
           "Enables the dark navbar theme without duplicating the markup structure.",
+        ),
+      },
+    ],
+  },
+  {
+    id: "inventory-page",
+    name: "Inventory Page",
+    group: "retro-extras",
+    core: false,
+    summary: l(
+      "Exemplo de pagina completa montada com shell retro, inventario tabular e bloco lateral com opcoes de editar perfil.",
+      "Complete page example built with a retro shell, tabular inventory, and a side block with profile editing options.",
+    ),
+    classes: [
+      "r8-window",
+      "r8-window__titlebar",
+      "r8-window__body",
+      "r8-window__statusbar",
+      "r8-navbar",
+      "r8-navbar__menu",
+      "r8-navbar__item",
+      "r8-container",
+      "r8-container--aside-end",
+      "r8-container__main",
+      "r8-container__aside",
+      "r8-panel",
+      "r8-panel--muted",
+      "r8-panel__header",
+      "r8-panel__body",
+      "r8-panel__footer",
+      "r8-avatar",
+      "r8-avatar--lg",
+      "r8-avatar--round",
+      "r8-table-wrap",
+      "r8-table",
+      "r8-table--sm",
+      "r8-table--hover",
+      "r8-table__cell--numeric",
+      "r8-badge",
+      "r8-btn",
+      "r8-btn--sm",
+      "r8-btn--primary",
+      "r8-btn--secondary",
+    ],
+    preview: `<div class="docs-demo__stack docs-demo__stack--inventory-page">
+  <section class="r8-window">
+    <div class="r8-window__titlebar">
+      <span class="r8-window__title">Inventory station</span>
+      <div class="r8-window__controls" aria-hidden="true">
+        <span class="r8-window__control"></span>
+        <span class="r8-window__control"></span>
+        <span class="r8-window__control"></span>
+      </div>
+    </div>
+    <div class="r8-window__body r8-stack">
+      <nav class="r8-navbar" data-r8-expand="never" data-r8-open="true" aria-label="Inventory page navigation">
+        <div class="r8-navbar__container">
+          <a class="r8-navbar__brand" href="#0">
+            <img src="/brand/logo-ui.png" alt="Retro8 UI" />
+            <span>retro8-ui</span>
+          </a>
+          <button class="r8-navbar__toggle" type="button" aria-label="Toggle navigation">
+            <span class="r8-navbar__toggle-icon" aria-hidden="true"></span>
+          </button>
+          <div class="r8-navbar__collapse">
+            <ul class="r8-navbar__menu">
+              <li><a class="r8-navbar__item" aria-current="page" href="#0">Inventory</a></li>
+              <li><a class="r8-navbar__item" href="#0">Orders</a></li>
+              <li><a class="r8-navbar__item" href="#0">Audit log</a></li>
+            </ul>
+            <p class="r8-navbar__text">Shift A synced</p>
+            <div class="r8-navbar__actions">
+              <button class="r8-btn r8-btn--sm" type="button">New item</button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div class="r8-container r8-container--aside-end" style="--r8-container-aside-width: 20rem; --r8-container-min-height: 20rem;">
+        <main class="r8-container__main">
+          <section class="r8-panel">
+            <div class="r8-panel__header">
+              <h3 class="r8-panel__title">Inventory list</h3>
+              <p class="r8-panel__meta">12 items tracked</p>
+            </div>
+            <div class="r8-panel__body">
+              <div class="r8-table-wrap">
+                <table class="r8-table r8-table--sm r8-table--hover">
+                  <thead>
+                    <tr>
+                      <th>Item</th>
+                      <th>Status</th>
+                      <th class="r8-table__cell--numeric">Qty</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Copper keycard</td>
+                      <td><span class="r8-badge r8-badge--warning">rare</span></td>
+                      <td class="r8-table__cell--numeric">2</td>
+                    </tr>
+                    <tr>
+                      <td>Signal decoder</td>
+                      <td><span class="r8-badge r8-badge--info">active</span></td>
+                      <td class="r8-table__cell--numeric">7</td>
+                    </tr>
+                    <tr>
+                      <td>Repair kit</td>
+                      <td><span class="r8-badge r8-badge--success">stocked</span></td>
+                      <td class="r8-table__cell--numeric">14</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="r8-panel__footer">
+              <button class="r8-btn r8-btn--primary r8-btn--sm" type="button">Sync inventory</button>
+              <button class="r8-btn r8-btn--sm" type="button">Export CSV</button>
+            </div>
+          </section>
+        </main>
+
+        <aside class="r8-container__aside">
+          <section class="r8-panel r8-panel--muted">
+            <div class="r8-panel__header">
+              <h3 class="r8-panel__title">Profile</h3>
+              <p class="r8-panel__meta">Quartermaster</p>
+            </div>
+            <div class="r8-panel__body r8-stack">
+              <div class="r8-row">
+                <span class="r8-avatar r8-avatar--lg r8-avatar--round" data-r8-avatar-fallback="NP">
+                  <img src="/imgs/p1.png" alt="Nova Pike" />
+                </span>
+                <div class="r8-stack">
+                  <strong>Nova Pike</strong>
+                  <small>Ops lead</small>
+                </div>
+              </div>
+              <div class="r8-cluster">
+                <span class="r8-badge r8-badge--success">online</span>
+                <span class="r8-badge r8-badge--info">admin</span>
+              </div>
+              <button class="r8-btn r8-btn--primary r8-btn--sm" type="button">Edit profile</button>
+              <button class="r8-btn r8-btn--secondary r8-btn--sm" type="button">Edit avatar</button>
+              <button class="r8-btn r8-btn--sm" type="button">Update password</button>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </div>
+    <div class="r8-window__statusbar">Inventory page scaffold with profile editing actions</div>
+  </section>
+</div>`,
+    code: `<section class="r8-window">
+  <div class="r8-window__titlebar">
+    <span class="r8-window__title">Inventory station</span>
+  </div>
+
+  <div class="r8-window__body r8-stack">
+    <nav class="r8-navbar" data-r8-expand="lg" aria-label="Inventory page navigation">
+      <div class="r8-navbar__container">
+        <a class="r8-navbar__brand" href="/">
+          <img src="/brand/logo-ui.png" alt="Retro8 UI" />
+          <span>retro8-ui</span>
+        </a>
+        <button class="r8-navbar__toggle" type="button" aria-label="Toggle navigation">
+          <span class="r8-navbar__toggle-icon" aria-hidden="true"></span>
+        </button>
+        <div class="r8-navbar__collapse">
+          <ul class="r8-navbar__menu">
+            <li><a class="r8-navbar__item" aria-current="page" href="/inventory">Inventory</a></li>
+            <li><a class="r8-navbar__item" href="/orders">Orders</a></li>
+            <li><a class="r8-navbar__item" href="/audit-log">Audit log</a></li>
+          </ul>
+          <div class="r8-navbar__actions">
+            <button class="r8-btn r8-btn--sm" type="button">New item</button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="r8-container r8-container--aside-end" style="--r8-container-aside-width: 20rem;">
+      <main class="r8-container__main">
+        <section class="r8-panel">
+          <div class="r8-panel__header">
+            <h3 class="r8-panel__title">Inventory list</h3>
+            <p class="r8-panel__meta">12 items tracked</p>
+          </div>
+          <div class="r8-panel__body">
+            <div class="r8-table-wrap">
+              <table class="r8-table r8-table--sm r8-table--hover">
+                <thead>
+                  <tr>
+                    <th>Item</th>
+                    <th>Status</th>
+                    <th class="r8-table__cell--numeric">Qty</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Copper keycard</td>
+                    <td><span class="r8-badge r8-badge--warning">rare</span></td>
+                    <td class="r8-table__cell--numeric">2</td>
+                  </tr>
+                  <tr>
+                    <td>Signal decoder</td>
+                    <td><span class="r8-badge r8-badge--info">active</span></td>
+                    <td class="r8-table__cell--numeric">7</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <aside class="r8-container__aside">
+        <section class="r8-panel r8-panel--muted">
+          <div class="r8-panel__header">
+            <h3 class="r8-panel__title">Profile</h3>
+            <p class="r8-panel__meta">Quartermaster</p>
+          </div>
+          <div class="r8-panel__body r8-stack">
+            <div class="r8-row">
+              <span class="r8-avatar r8-avatar--lg r8-avatar--round" data-r8-avatar-fallback="NP">
+                <img src="/imgs/p1.png" alt="Nova Pike" />
+              </span>
+              <div class="r8-stack">
+                <strong>Nova Pike</strong>
+                <small>Ops lead</small>
+              </div>
+            </div>
+            <button class="r8-btn r8-btn--primary r8-btn--sm" type="button">Edit profile</button>
+            <button class="r8-btn r8-btn--secondary r8-btn--sm" type="button">Edit avatar</button>
+            <button class="r8-btn r8-btn--sm" type="button">Update password</button>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </div>
+
+  <div class="r8-window__statusbar">Inventory page scaffold</div>
+</section>`,
+    anatomy: ll(
+      [
+        "Use `r8-window` como moldura principal da pagina e reserve `r8-window__statusbar` para telemetria curta ou contexto operacional.",
+        "`r8-navbar` funciona como topo da pagina e organiza navegacao, acao primaria e status da sessao no mesmo bloco.",
+        "`r8-container r8-container--aside-end` separa area principal e rail lateral sem precisar de grid customizado no app.",
+        "No miolo, `r8-panel` + `r8-table-wrap` + `r8-table` sustentam a listagem de inventario com scroll horizontal seguro.",
+        "No rail, `r8-avatar`, badges e botoes `Edit profile` montam um bloco claro para manutencao de perfil.",
+      ],
+      [
+        "Use `r8-window` as the main page frame and reserve `r8-window__statusbar` for short telemetry or operational context.",
+        "`r8-navbar` acts as the page top bar, grouping navigation, a primary action, and session status in one block.",
+        "`r8-container r8-container--aside-end` separates the main area and side rail without custom app grid code.",
+        "In the content area, `r8-panel` + `r8-table-wrap` + `r8-table` support inventory listing with safe horizontal scrolling.",
+        "On the rail, `r8-avatar`, badges, and `Edit profile` buttons build a clear profile maintenance block.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Mantenha landmarks reais (`nav`, `main`, `aside`) para leitores de tela entenderem a estrutura da pagina.",
+        "No avatar de perfil, preserve `alt` util e fallback curto (`data-r8-avatar-fallback`) para falha de imagem.",
+        "Na tabela, use headers claros e `r8-table__cell--numeric` para reforcar leitura de quantidade.",
+        "Acoes de perfil devem ser botoes com labels diretos (`Edit profile`, `Edit avatar`) e sem depender apenas de icone.",
+        "Se o navbar colapsar, valide foco no toggle e em links para manter navegacao por teclado previsivel.",
+      ],
+      [
+        "Keep real landmarks (`nav`, `main`, `aside`) so screen readers can understand the page structure.",
+        "For profile avatars, keep a useful `alt` and a short fallback (`data-r8-avatar-fallback`) for image failures.",
+        "In the table, use clear headers and `r8-table__cell--numeric` to improve quantity readability.",
+        "Profile actions should be buttons with direct labels (`Edit profile`, `Edit avatar`) rather than icon-only controls.",
+        "If the navbar collapses, validate focus flow through toggle and links to keep keyboard navigation predictable.",
+      ],
+    ),
+    api: [
+      {
+        name: "r8-window + r8-window__body + r8-window__statusbar",
+        description: l(
+          "Shell externo para enquadrar a pagina e exibir estado operacional persistente na base.",
+          "Outer shell used to frame the page and show persistent operational state at the bottom.",
+        ),
+      },
+      {
+        name: "r8-navbar / r8-navbar__menu / r8-navbar__actions",
+        description: l(
+          "Topo navegavel da pagina com links primarios e acao rapida de inventario.",
+          "Navigable top bar with primary links and a quick inventory action.",
+        ),
+      },
+      {
+        name: "r8-container--aside-end / r8-container__main / r8-container__aside",
+        description: l(
+          "Distribui listagem principal e painel de perfil em duas colunas com largura lateral configuravel.",
+          "Distributes main listing and profile panel into two columns with configurable side width.",
+        ),
+      },
+      {
+        name: "r8-panel / r8-table-wrap / r8-table",
+        description: l(
+          "Bloco de inventario com hierarquia editorial e tabela responsiva para dados operacionais.",
+          "Inventory block with editorial hierarchy and a responsive table for operational data.",
+        ),
+      },
+      {
+        name: "r8-avatar / data-r8-avatar-fallback / r8-btn--sm",
+        description: l(
+          "Compoe a area de perfil com identidade visual e acoes de manutencao como editar perfil, avatar e senha.",
+          "Composes the profile area with visual identity and maintenance actions such as editing profile, avatar, and password.",
         ),
       },
     ],

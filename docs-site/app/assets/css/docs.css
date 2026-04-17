@@ -1238,6 +1238,10 @@ html[data-theme="light"] .docs-theme-switch:focus-visible {
   justify-items: start;
 }
 
+.docs-demo__stack--inventory-page {
+  justify-items: start;
+}
+
 .docs-demo__stack--select > .r8-select {
   width: min(100%, 28rem);
 }
@@ -1260,6 +1264,10 @@ html[data-theme="light"] .docs-theme-switch:focus-visible {
 
 .docs-demo__stack--navbar > .r8-navbar {
   width: min(100%, 42rem);
+}
+
+.docs-demo__stack--inventory-page > .r8-window {
+  width: 100%;
 }
 
 .docs-demo__stack--cascader > .r8-cascader {
