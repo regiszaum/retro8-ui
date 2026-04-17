@@ -1048,6 +1048,7 @@ html[data-theme="light"] .docs-theme-switch:focus-visible {
 .docs-token-card > .r8-panel__body {
   flex: 1 1 auto;
   min-height: 0;
+  overflow-x: auto;
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-gutter: stable;
@@ -1129,21 +1130,26 @@ html[data-theme="light"] .docs-theme-switch:focus-visible {
 
 .docs-token-list__pair {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-columns: minmax(12rem, 1fr) minmax(12rem, 1fr);
   gap: 0.75rem;
   align-items: start;
+  min-width: 24.75rem;
 }
 
 .docs-token-list__pair code {
   min-width: 0;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
-.docs-token-list__value {
-  width: 100%;
+.docs-token-list__pair .docs-token-list__value {
+  width: auto;
+  min-width: 12rem;
   max-width: 100%;
   justify-self: end;
   text-align: right;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 .docs-token-list__content small {
@@ -2253,6 +2259,8 @@ dialog.r8-dialog {
   }
 
   .docs-token-list__value {
+    min-width: 0;
+    max-width: 100%;
     justify-self: start;
     text-align: left;
   }
