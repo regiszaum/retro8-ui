@@ -2,6 +2,12 @@ import { componentOrder } from "./shared/component-catalog";
 
 const docsLocales = ["en", "pt-br"];
 const guidePages = ["getting-started", "tokens", "icons", "components"];
+const appBaseURL = process.env.NUXT_APP_BASE_URL || "/";
+const normalizedBaseURL = appBaseURL.endsWith("/") ? appBaseURL : `${appBaseURL}/`;
+
+function withBase(path: string) {
+  return `${normalizedBaseURL}${path.replace(/^\/+/, "")}`;
+}
 
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
@@ -39,9 +45,9 @@ export default defineNuxtConfig({
         },
       ],
       link: [
-        { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
-        { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon/favicon-32x32.png" },
-        { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon/favicon-16x16.png" },
+        { rel: "icon", type: "image/x-icon", href: withBase("favicon.ico") },
+        { rel: "icon", type: "image/png", sizes: "32x32", href: withBase("favicon/favicon-32x32.png") },
+        { rel: "icon", type: "image/png", sizes: "16x16", href: withBase("favicon/favicon-16x16.png") },
       ],
     },
   },
