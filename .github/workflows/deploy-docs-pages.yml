@@ -37,10 +37,21 @@ jobs:
       - name: Install docs-site dependencies
         run: npm --prefix docs-site ci
 
-      - name: Build library and docs-site
+      - name: Build library assets
+        run: npm run build
+
+      - name: Generate docs-site
+        working-directory: docs-site
         env:
           NUXT_APP_BASE_URL: /${{ github.event.repository.name }}/
-        run: npm run build:docs
+        run: npm run generate
+
+      - name: Debug generated output
+        run: |
+          ls -la docs-site
+          ls -la docs-site/.output || true
+          ls -la docs-site/.output/public || true
+          ls -la .output || true
 
       - name: Prepare pages artifact
         run: |
@@ -49,12 +60,16 @@ jobs:
 
           if [ -d docs-site/.output/public ]; then
             cp -R docs-site/.output/public .pages-artifact
+          elif [ -d .output/public ]; then
+            cp -R .output/public .pages-artifact
           elif [ -d docs-site/dist ]; then
             cp -R docs-site/dist .pages-artifact
           else
             echo "ERROR: no static output folder found."
-            echo "Expected docs-site/.output/public or docs-site/dist"
+            echo "Expected docs-site/.output/public, .output/public or docs-site/dist"
             ls -la docs-site
+            ls -la . || true
+            ls -la .output || true
             exit 2
           fi
 
