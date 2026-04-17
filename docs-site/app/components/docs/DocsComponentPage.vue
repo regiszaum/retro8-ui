@@ -6,6 +6,7 @@ import DocsInputPlayground from "~/components/docs/DocsInputPlayground.vue";
 import DocsInputTagPlayground from "~/components/docs/DocsInputTagPlayground.vue";
 import { getComponentNeighbors } from "~/utils/docs-data";
 import { buildDocsPath } from "~/utils/docs-routing";
+import { rewriteDocsAssetPaths } from "~/utils/docs-assets";
 
 const props = defineProps<{
   component: any;
@@ -18,7 +19,9 @@ type Retro8Runtime = {
 };
 
 const previewSurface = ref<HTMLElement | null>(null);
+const runtimeConfig = useRuntimeConfig();
 const neighbors = computed(() => getComponentNeighbors(props.component.id));
+const previewMarkup = computed(() => rewriteDocsAssetPaths(props.component.preview || "", runtimeConfig.app.baseURL));
 const genericPlaygroundIds = new Set([
   "radio",
   "rate",
@@ -156,7 +159,7 @@ watch(
           <span class="r8-window__title">{{ site.componentPage.previewLabel }}</span>
         </div>
         <div class="r8-window__body">
-          <div ref="previewSurface" class="docs-preview__surface" v-html="component.preview" />
+          <div ref="previewSurface" class="docs-preview__surface" v-html="previewMarkup" />
         </div>
         <div class="r8-window__statusbar">
           {{ site.componentPage.previewStatus }}
