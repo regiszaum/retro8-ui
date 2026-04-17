@@ -40,64 +40,32 @@ jobs:
       - name: Build library assets
         run: npm run build
 
-      - name: Build docs-site for GitHub Pages
+      - name: Generate docs-site and prepare artifact
         working-directory: docs-site
         env:
           NUXT_APP_BASE_URL: /${{ github.event.repository.name }}/
         run: |
-          npx nuxt build --preset github_pages
-          echo "Nuxt build finished."
-
-      - name: Debug generated output
-        run: |
-          ls -la docs-site
-          ls -la docs-site/.output || true
-          ls -la docs-site/.output/public || true
-          ls -la .output || true
-          ls -la docs-site/node_modules/.cache || true
-          ls -la docs-site/node_modules/.cache/nuxt || true
-          ls -la docs-site/node_modules/.cache/nuxt/.output || true
-          ls -la docs-site/node_modules/.cache/nuxt/.output/public || true
-
-      - name: Prepare pages artifact
-        run: |
           set -euo pipefail
-          rm -rf .pages-artifact
+          npm run generate
 
-          OUTPUT_DIR=""
-
-          if [ -d docs-site/.output/public ]; then
-            OUTPUT_DIR="docs-site/.output/public"
-          elif [ -d .output/public ]; then
-            OUTPUT_DIR=".output/public"
-          elif [ -d docs-site/dist ]; then
-            OUTPUT_DIR="docs-site/dist"
-          elif [ -d docs-site/node_modules/.cache/nuxt/.output/public ]; then
-            OUTPUT_DIR="docs-site/node_modules/.cache/nuxt/.output/public"
-          fi
-
-          if [ -z "${OUTPUT_DIR}" ]; then
-            OUTPUT_DIR="$(find . -type f -path '*/.output/public/index.html' -print -quit | xargs -r dirname || true)"
-          fi
-
-          if [ -z "${OUTPUT_DIR}" ]; then
-            echo "ERROR: no static output folder found."
-            echo "Expected docs-site/.output/public, .output/public, docs-site/dist or cache output"
-            find . -maxdepth 6 -type d -name '.output' | sed -n '1,120p' || true
-            find . -maxdepth 6 -type f -name 'index.html' | sed -n '1,120p' || true
-            ls -la docs-site
-            ls -la . || true
+          if [ ! -d .output/public ]; then
+            echo "ERROR: docs-site/.output/public not found after generate."
+            pwd
+            ls -la
+            find . -maxdepth 8 -type f -name 'index.html' | sed -n '1,120p' || true
             exit 2
           fi
 
-          echo "Using output directory: ${OUTPUT_DIR}"
-          cp -R "${OUTPUT_DIR}" .pages-artifact
+          rm -rf "${GITHUB_WORKSPACE}/.pages-artifact"
+          cp -R .output/public "${GITHUB_WORKSPACE}/.pages-artifact"
 
-          if [ ! -f .pages-artifact/index.html ]; then
+          if [ ! -f "${GITHUB_WORKSPACE}/.pages-artifact/index.html" ]; then
             echo "ERROR: .pages-artifact/index.html not found."
-            find .pages-artifact -maxdepth 2 -type f | head -n 100
+            find "${GITHUB_WORKSPACE}/.pages-artifact" -maxdepth 2 -type f | head -n 100
             exit 2
           fi
+
+          ls -la "${GITHUB_WORKSPACE}/.pages-artifact" | sed -n '1,80p'
 
       - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v4
