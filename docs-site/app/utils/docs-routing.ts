@@ -1,6 +1,6 @@
 import { localeMeta } from "~/utils/docs-data";
 
-export const guideOrder = ["getting-started", "tokens", "icons", "components"] as const;
+export const guideOrder = ["getting-started", "tokens", "icons", "components", "llms.txt"] as const;
 
 export function isDocsLocale(value: string) {
   return value in localeMeta;

@@ -1,0 +1,75 @@
+# Retro8 UI
+
+> Retro8 UI is a framework-agnostic retro 8-bit UI library shipped as compiled CSS, an optional JavaScript runtime, and semantic `r8-*` classes.
+
+## Overview
+
+- [Documentation Home (EN)](https://regiszaum.github.io/retro8-ui/en): Main entry point for the English docs.
+- [Documentation Home (PT-BR)](https://regiszaum.github.io/retro8-ui/pt-br): Main entry point for the Portuguese docs.
+- [Quick Start](https://regiszaum.github.io/retro8-ui/en/getting-started): Installation and basic consumption flow.
+- [Component Catalog](https://regiszaum.github.io/retro8-ui/en/components): Grouped component index.
+- [Tokens](https://regiszaum.github.io/retro8-ui/en/tokens): Foundation tokens and visual system.
+- [Icons](https://regiszaum.github.io/retro8-ui/en/icons): Recommended icon pairing.
+- [llms.txt Guide Page](https://regiszaum.github.io/retro8-ui/en/llms.txt): Human-facing guide for this file.
+
+## Components
+
+- [Button](https://regiszaum.github.io/retro8-ui/en/components/button): Component documentation.
+- [Border](https://regiszaum.github.io/retro8-ui/en/components/border): Component documentation.
+- [Color](https://regiszaum.github.io/retro8-ui/en/components/color): Component documentation.
+- [Layout Container](https://regiszaum.github.io/retro8-ui/en/components/layout-container): Component documentation.
+- [Icon](https://regiszaum.github.io/retro8-ui/en/components/icon): Component documentation.
+- [Link](https://regiszaum.github.io/retro8-ui/en/components/link): Component documentation.
+- [Splitter](https://regiszaum.github.io/retro8-ui/en/components/splitter): Component documentation.
+- [Typography](https://regiszaum.github.io/retro8-ui/en/components/typography): Component documentation.
+- [Config Provider](https://regiszaum.github.io/retro8-ui/en/components/config-provider): Component documentation.
+- [Autocomplete](https://regiszaum.github.io/retro8-ui/en/components/autocomplete): Component documentation.
+- [Cascader](https://regiszaum.github.io/retro8-ui/en/components/cascader): Component documentation.
+- [Checkbox](https://regiszaum.github.io/retro8-ui/en/components/checkbox): Component documentation.
+- [Color Picker](https://regiszaum.github.io/retro8-ui/en/components/color-picker): Component documentation.
+- [Date Picker](https://regiszaum.github.io/retro8-ui/en/components/date-picker): Component documentation.
+- [Datetime Picker](https://regiszaum.github.io/retro8-ui/en/components/datetime-picker): Component documentation.
+- [Form](https://regiszaum.github.io/retro8-ui/en/components/form): Component documentation.
+- [Input](https://regiszaum.github.io/retro8-ui/en/components/input): Component documentation.
+- [Input Number](https://regiszaum.github.io/retro8-ui/en/components/input-number): Component documentation.
+- [Input Tag](https://regiszaum.github.io/retro8-ui/en/components/input-tag): Component documentation.
+- [Radio](https://regiszaum.github.io/retro8-ui/en/components/radio): Component documentation.
+- [Rate](https://regiszaum.github.io/retro8-ui/en/components/rate): Component documentation.
+- [Select](https://regiszaum.github.io/retro8-ui/en/components/select): Component documentation.
+- [Slider](https://regiszaum.github.io/retro8-ui/en/components/slider): Component documentation.
+- [Switch](https://regiszaum.github.io/retro8-ui/en/components/switch): Component documentation.
+- [Theme Switch](https://regiszaum.github.io/retro8-ui/en/components/theme-switch): Component documentation.
+- [Transfer](https://regiszaum.github.io/retro8-ui/en/components/transfer): Component documentation.
+- [Upload](https://regiszaum.github.io/retro8-ui/en/components/upload): Component documentation.
+- [Avatar](https://regiszaum.github.io/retro8-ui/en/components/avatar): Component documentation.
+- [Badge](https://regiszaum.github.io/retro8-ui/en/components/badge): Component documentation.
+- [Card](https://regiszaum.github.io/retro8-ui/en/components/card): Component documentation.
+- [Carousel](https://regiszaum.github.io/retro8-ui/en/components/carousel): Component documentation.
+- [Collapse](https://regiszaum.github.io/retro8-ui/en/components/collapse): Component documentation.
+- [Empty](https://regiszaum.github.io/retro8-ui/en/components/empty): Component documentation.
+- [Image](https://regiszaum.github.io/retro8-ui/en/components/image): Component documentation.
+- [Pagination](https://regiszaum.github.io/retro8-ui/en/components/pagination): Component documentation.
+- [Progress](https://regiszaum.github.io/retro8-ui/en/components/progress): Component documentation.
+- [Skeleton](https://regiszaum.github.io/retro8-ui/en/components/skeleton): Component documentation.
+- [Table](https://regiszaum.github.io/retro8-ui/en/components/table): Component documentation.
+- [Tag](https://regiszaum.github.io/retro8-ui/en/components/tag): Component documentation.
+- [Breadcrumb](https://regiszaum.github.io/retro8-ui/en/components/breadcrumb): Component documentation.
+- [Dropdown](https://regiszaum.github.io/retro8-ui/en/components/dropdown): Component documentation.
+- [Steps](https://regiszaum.github.io/retro8-ui/en/components/steps): Component documentation.
+- [Tabs](https://regiszaum.github.io/retro8-ui/en/components/tabs): Component documentation.
+- [Alert](https://regiszaum.github.io/retro8-ui/en/components/alert): Component documentation.
+- [Dialog](https://regiszaum.github.io/retro8-ui/en/components/dialog): Component documentation.
+- [Drawer](https://regiszaum.github.io/retro8-ui/en/components/drawer): Component documentation.
+- [Loading](https://regiszaum.github.io/retro8-ui/en/components/loading): Component documentation.
+- [Poptip](https://regiszaum.github.io/retro8-ui/en/components/poptip): Component documentation.
+- [Divider](https://regiszaum.github.io/retro8-ui/en/components/divider): Component documentation.
+- [Watermark](https://regiszaum.github.io/retro8-ui/en/components/watermark): Component documentation.
+- [Panel](https://regiszaum.github.io/retro8-ui/en/components/panel): Component documentation.
+- [Window](https://regiszaum.github.io/retro8-ui/en/components/window): Component documentation.
+- [Navbar](https://regiszaum.github.io/retro8-ui/en/components/navbar): Component documentation.
+- [Inventory Page](https://regiszaum.github.io/retro8-ui/en/components/inventory-page): Component documentation.
+
+## Project Links
+
+- [GitHub Repository](https://github.com/regiszaum/retro8-ui): Source code and issues.
+- [NPM Package](https://www.npmjs.com/package/retro8-ui): Published package details.

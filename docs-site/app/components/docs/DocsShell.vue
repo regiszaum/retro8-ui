@@ -11,19 +11,17 @@ const props = defineProps<{
 
 const site = computed(() => getSiteContent(props.locale));
 
-const topLinks = computed(() => [
-  { id: "getting-started", label: site.value.nav.topLinks[0].label, to: buildDocsPath(props.locale, ["getting-started"]) },
-  { id: "components", label: site.value.nav.topLinks[1].label, to: buildDocsPath(props.locale, ["components"]) },
-  { id: "tokens", label: site.value.nav.topLinks[2].label, to: buildDocsPath(props.locale, ["tokens"]) },
-  { id: "icons", label: site.value.nav.topLinks[3].label, to: buildDocsPath(props.locale, ["icons"]) },
-]);
+const topLinks = computed(() =>
+  site.value.nav.topLinks.map((link: { label: string; to: string }) => ({
+    id: link.to,
+    label: link.label,
+    to: buildDocsPath(props.locale, [link.to]),
+  })),
+);
 
 const guideLinks = computed(() => [
   { id: "home", label: site.value.nav.homeLabel, to: buildDocsPath(props.locale) },
-  { id: "getting-started", label: site.value.nav.topLinks[0].label, to: buildDocsPath(props.locale, ["getting-started"]) },
-  { id: "components", label: site.value.nav.topLinks[1].label, to: buildDocsPath(props.locale, ["components"]) },
-  { id: "tokens", label: site.value.nav.topLinks[2].label, to: buildDocsPath(props.locale, ["tokens"]) },
-  { id: "icons", label: site.value.nav.topLinks[3].label, to: buildDocsPath(props.locale, ["icons"]) },
+  ...topLinks.value,
 ]);
 
 const componentSections = computed(() => site.value.componentSections);
