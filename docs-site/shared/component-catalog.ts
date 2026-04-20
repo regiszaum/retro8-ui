@@ -2264,16 +2264,65 @@ const formComponents = [
     preview: `<form class="r8-form">
   <div class="r8-form__row">
     <label class="r8-form__item">
-      <span class="r8-form__label">Pilot</span>
-      <input class="r8-input" type="text" value="PIX-07" />
-      <span class="r8-form__help">Use a short codename.</span>
+      <span class="r8-form__label">Pilot email</span>
+      <input class="r8-input" type="email" value="pilot@retro8.dev" />
+      <span class="r8-form__help">Use the monitored inbox for alerts.</span>
     </label>
     <label class="r8-form__item">
-      <span class="r8-form__label">Role</span>
-      <select class="r8-input">
-        <option>Engineer</option>
-      </select>
+      <span class="r8-form__label">Access code</span>
+      <input class="r8-input" type="password" value="retro-88" />
+      <span class="r8-form__help">Rotate this secret every mission.</span>
     </label>
+  </div>
+  <div class="r8-form__row">
+    <label class="r8-form__item">
+      <span class="r8-form__label">Role</span>
+      <div class="r8-select" data-r8-value="explorer">
+        <button class="r8-select__trigger" type="button">
+          <span data-r8-choice-display>Explorer</span>
+          <span class="r8-choice__caret" aria-hidden="true">&gt;</span>
+        </button>
+        <div class="r8-select__menu" hidden>
+          <button class="r8-select__option" type="button" data-r8-value="engineer">Engineer</button>
+          <button class="r8-select__option" type="button" data-r8-value="medic">Medic</button>
+          <button class="r8-select__option is-selected" type="button" data-r8-value="explorer">Explorer</button>
+        </div>
+      </div>
+      <span class="r8-form__help">Pick who owns this route.</span>
+    </label>
+    <div class="r8-form__item">
+      <p class="r8-form__legend">Readiness</p>
+      <div class="r8-rate" role="radiogroup" aria-label="Readiness">
+        <span class="r8-rate__item is-active" role="radio" aria-checked="true">*</span>
+        <span class="r8-rate__item is-active" role="radio" aria-checked="true">*</span>
+        <span class="r8-rate__item is-active" role="radio" aria-checked="true">*</span>
+        <span class="r8-rate__item" role="radio" aria-checked="false">*</span>
+        <span class="r8-rate__item" role="radio" aria-checked="false">*</span>
+      </div>
+      <span class="r8-form__help">Quick confidence score before submit.</span>
+    </div>
+  </div>
+  <div class="r8-form__row">
+    <div class="r8-form__item" data-r8-radio-group>
+      <p class="r8-form__legend">Sync mode</p>
+      <div class="r8-stack">
+        <label class="r8-radio is-checked" data-r8-value="online">
+          <span class="r8-radio__box" aria-hidden="true"></span>
+          <span>Online</span>
+        </label>
+        <label class="r8-radio" data-r8-value="offline">
+          <span class="r8-radio__box" aria-hidden="true"></span>
+          <span>Offline</span>
+        </label>
+      </div>
+    </div>
+    <div class="r8-form__item">
+      <p class="r8-form__legend">Agreement</p>
+      <label class="r8-checkbox is-checked">
+        <span class="r8-checkbox__box" aria-hidden="true"></span>
+        <span>Allow scheduled notifications</span>
+      </label>
+    </div>
   </div>
   <div class="r8-form__actions">
     <button class="r8-btn r8-btn--primary" type="button">Save</button>
@@ -2286,8 +2335,8 @@ const formComponents = [
     name: "Input",
     group: "form",
     summary: l(
-      "Campo base para texto e textarea com shell opcional para clear, contador, toggle de senha e autosize.",
-      "Base text and textarea field with an optional shell for clear, counting, password toggle, and autosize.",
+      "Campo base para texto, email, senha, textarea e number com shell opcional para clear, contador, toggle de senha e autosize.",
+      "Base text, email, password, textarea, and number field with an optional shell for clear, counting, password toggle, and autosize.",
     ),
     classes: [
       "r8-field",
@@ -2314,9 +2363,21 @@ const formComponents = [
     <span class="r8-help">Clear and live count come from the optional shell runtime.</span>
   </label>
   <label class="r8-field">
+    <span class="r8-label">Pilot email</span>
+    <div class="r8-input-shell" data-r8-clearable="true">
+      <input class="r8-input" type="email" value="pilot@retro8.dev" placeholder="pilot@retro8.dev" />
+    </div>
+  </label>
+  <label class="r8-field">
     <span class="r8-label">Access code</span>
     <div class="r8-input-shell" data-r8-show-password="true">
       <input class="r8-input" type="password" value="retro-88" placeholder="Enter access code" />
+    </div>
+  </label>
+  <label class="r8-field">
+    <span class="r8-label">Crew count</span>
+    <div class="r8-input-shell" data-r8-clearable="true">
+      <input class="r8-input" type="number" min="0" max="12" step="1" value="7" placeholder="Enter quantity" />
     </div>
   </label>
   <label class="r8-field">
@@ -2334,19 +2395,40 @@ const formComponents = [
 </label>
 
 <label class="r8-field">
+  <span class="r8-label">Pilot email</span>
+  <div class="r8-input-shell" data-r8-clearable="true">
+    <input class="r8-input" type="email" placeholder="pilot@retro8.dev" value="pilot@retro8.dev" />
+  </div>
+</label>
+
+<label class="r8-field">
+  <span class="r8-label">Access code</span>
+  <div class="r8-input-shell" data-r8-show-password="true">
+    <input class="r8-input" type="password" placeholder="Enter access code" value="retro-88" />
+  </div>
+</label>
+
+<label class="r8-field">
+  <span class="r8-label">Crew count</span>
+  <div class="r8-input-shell" data-r8-clearable="true">
+    <input class="r8-input" type="number" min="0" max="12" step="1" value="7" />
+  </div>
+</label>
+
+<label class="r8-field">
   <span class="r8-label">Mission notes</span>
   <textarea class="r8-input" data-r8-autosize="true" data-r8-min-rows="3" data-r8-max-rows="6" maxlength="96">No anomalies detected.</textarea>
 </label>`,
     anatomy: ll(
       [
-        "`r8-input` continua sendo a surface base para texto, senha, select e textarea.",
+        "`r8-input` continua sendo a surface base para texto, email, senha, number, select e textarea.",
         "`r8-input-shell` envolve o campo quando ele precisa de prefixo, sufixo, clear, contador ou toggle de senha.",
         "`r8-input__prefix` e `r8-input__suffix` adicionam contexto curto sem trocar a semantica do input nativo.",
         "`r8-input__actions` agrupa clear, toggle e contador no lado direito do shell.",
         "`data-r8-autosize` deixa o textarea crescer com o conteudo sem um layout extra de framework.",
       ],
       [
-        "`r8-input` remains the base surface for text, password, select, and textarea fields.",
+        "`r8-input` remains the base surface for text, email, password, number, select, and textarea fields.",
         "`r8-input-shell` wraps the field when it needs prefix, suffix, clear, counting, or password reveal actions.",
         "`r8-input__prefix` and `r8-input__suffix` add small context cues without changing the native input semantics.",
         "`r8-input__actions` groups clear, reveal, and count affordances on the right side of the shell.",

@@ -205,11 +205,7 @@ watch([behavior, isClearable, isLoading, hasRichOptions], async () => {
         <div class="docs-autocomplete-playground__field-grid">
           <label class="r8-field">
             <span class="r8-label">{{ strings.behaviorField }}</span>
-            <select v-model="behavior" class="r8-input">
-              <option v-for="option in behaviorOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="behavior" :options="behaviorOptions" />
           </label>
         </div>
 

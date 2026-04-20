@@ -11,20 +11,25 @@ const props = defineProps<{
 
 const site = computed(() => getSiteContent(props.locale));
 
-const topLinks = computed(() => [
-  { id: "getting-started", label: site.value.nav.topLinks[0].label, to: buildDocsPath(props.locale, ["getting-started"]) },
-  { id: "components", label: site.value.nav.topLinks[1].label, to: buildDocsPath(props.locale, ["components"]) },
-  { id: "tokens", label: site.value.nav.topLinks[2].label, to: buildDocsPath(props.locale, ["tokens"]) },
-  { id: "icons", label: site.value.nav.topLinks[3].label, to: buildDocsPath(props.locale, ["icons"]) },
-]);
+const topLinks = computed(() =>
+  site.value.nav.topLinks.map((link: { label: string; to: string }) => ({
+    id: link.to,
+    label: link.label,
+    to: buildDocsPath(props.locale, [link.to]),
+  })),
+);
 
 const guideLinks = computed(() => [
   { id: "home", label: site.value.nav.homeLabel, to: buildDocsPath(props.locale) },
-  { id: "getting-started", label: site.value.nav.topLinks[0].label, to: buildDocsPath(props.locale, ["getting-started"]) },
-  { id: "components", label: site.value.nav.topLinks[1].label, to: buildDocsPath(props.locale, ["components"]) },
-  { id: "tokens", label: site.value.nav.topLinks[2].label, to: buildDocsPath(props.locale, ["tokens"]) },
-  { id: "icons", label: site.value.nav.topLinks[3].label, to: buildDocsPath(props.locale, ["icons"]) },
+  ...topLinks.value,
 ]);
+const aiLinks = computed(() =>
+  site.value.nav.aiLinks.map((link: { label: string; to: string }) => ({
+    id: link.to,
+    label: link.label,
+    to: buildDocsPath(props.locale, [link.to]),
+  })),
+);
 
 const componentSections = computed(() => site.value.componentSections);
 const sidebarBodyRef = ref<HTMLElement | null>(null);
@@ -189,6 +194,20 @@ watch(
               <p class="docs-sidebar__eyebrow">{{ site.nav.guideTitle }}</p>
               <NuxtLink
                 v-for="link in guideLinks"
+                :key="link.id"
+                class="docs-sidebar__link"
+                :to="link.to"
+                :aria-current="isActive(link.to) ? 'page' : undefined"
+              >
+                <span class="docs-sidebar__dot" aria-hidden="true" />
+                <span>{{ link.label }}</span>
+              </NuxtLink>
+            </div>
+
+            <div v-if="aiLinks.length" class="docs-sidebar__group">
+              <p class="docs-sidebar__eyebrow">{{ site.nav.aiTitle }}</p>
+              <NuxtLink
+                v-for="link in aiLinks"
                 :key="link.id"
                 class="docs-sidebar__link"
                 :to="link.to"

@@ -103,29 +103,17 @@ function getToggleClass(enabled: boolean) {
 
           <label class="r8-field">
             <span class="r8-label">{{ strings.toneField }}</span>
-            <select v-model="tone" class="r8-input">
-              <option v-for="option in toneOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="tone" :options="toneOptions" />
           </label>
 
           <label class="r8-field">
             <span class="r8-label">{{ strings.widthField }}</span>
-            <select v-model="width" class="r8-input">
-              <option v-for="option in widthOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="width" :options="widthOptions" />
           </label>
 
           <label class="r8-field">
             <span class="r8-label">{{ strings.edgeField }}</span>
-            <select v-model="edge" class="r8-input">
-              <option v-for="option in edgeOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="edge" :options="edgeOptions" />
           </label>
         </div>
 

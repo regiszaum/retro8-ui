@@ -163,11 +163,7 @@ function resetPlayground() {
 
           <label class="r8-field">
             <span class="r8-label">{{ strings.headingLevelField }}</span>
-            <select v-model="headingLevel" class="r8-input">
-              <option v-for="option in headingOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="headingLevel" :options="headingOptions" />
           </label>
 
           <label class="r8-field">
@@ -177,38 +173,22 @@ function resetPlayground() {
 
           <label class="r8-field">
             <span class="r8-label">{{ strings.toneField }}</span>
-            <select v-model="tone" class="r8-input">
-              <option v-for="option in toneOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="tone" :options="toneOptions" />
           </label>
 
           <label class="r8-field">
             <span class="r8-label">{{ strings.sizeField }}</span>
-            <select v-model="size" class="r8-input">
-              <option v-for="option in sizeOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="size" :options="sizeOptions" />
           </label>
 
           <label class="r8-field">
             <span class="r8-label">{{ strings.flowField }}</span>
-            <select v-model="flow" class="r8-input">
-              <option v-for="option in flowOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="flow" :options="flowOptions" />
           </label>
 
           <label class="r8-field">
             <span class="r8-label">{{ strings.measureField }}</span>
-            <select v-model="measure" class="r8-input">
-              <option v-for="option in measureOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="measure" :options="measureOptions" />
           </label>
         </div>
 

@@ -239,11 +239,7 @@ watch([triggerMode, separator, filterPlaceholder, isFilterable, isClearable, isS
         <div class="docs-cascader-playground__field-grid">
           <label class="r8-field">
             <span class="r8-label">{{ strings.triggerField }}</span>
-            <select v-model="triggerMode" class="r8-input">
-              <option v-for="option in triggerOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="triggerMode" :options="triggerOptions" />
           </label>
 
           <label class="r8-field">

@@ -143,20 +143,12 @@ function resetPlayground() {
 
           <label class="r8-field">
             <span class="r8-label">{{ strings.toneField }}</span>
-            <select v-model="tone" class="r8-input">
-              <option v-for="option in toneOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="tone" :options="toneOptions" />
           </label>
 
           <label class="r8-field">
             <span class="r8-label">{{ strings.surfaceField }}</span>
-            <select v-model="surface" class="r8-input">
-              <option v-for="option in surfaceOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="surface" :options="surfaceOptions" />
           </label>
         </div>
       </div>

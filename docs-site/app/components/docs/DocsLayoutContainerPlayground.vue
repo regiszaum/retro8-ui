@@ -149,29 +149,17 @@ function getToggleClass(enabled: boolean) {
         <div class="docs-layout-container-playground__field-grid">
           <label class="r8-field">
             <span class="r8-label">{{ strings.layoutField }}</span>
-            <select v-model="layout" class="r8-input">
-              <option v-for="option in layoutOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="layout" :options="layoutOptions" />
           </label>
 
           <label class="r8-field">
             <span class="r8-label">{{ strings.asideWidthField }}</span>
-            <select v-model="asideWidth" class="r8-input">
-              <option v-for="option in asideWidthOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="asideWidth" :options="asideWidthOptions" />
           </label>
 
           <label class="r8-field">
             <span class="r8-label">{{ strings.chromeHeightField }}</span>
-            <select v-model="chromeHeight" class="r8-input">
-              <option v-for="option in chromeHeightOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="chromeHeight" :options="chromeHeightOptions" />
           </label>
         </div>
 

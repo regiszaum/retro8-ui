@@ -158,38 +158,22 @@ function getToggleClass(enabled: boolean) {
 
           <label class="r8-field">
             <span class="r8-label">{{ strings.toneField }}</span>
-            <select v-model="tone" class="r8-input">
-              <option v-for="option in toneOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="tone" :options="toneOptions" />
           </label>
 
           <label class="r8-field">
             <span class="r8-label">{{ strings.opacityField }}</span>
-            <select v-model="opacity" class="r8-input">
-              <option v-for="option in opacityOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="opacity" :options="opacityOptions" />
           </label>
 
           <label class="r8-field">
             <span class="r8-label">{{ strings.underlineField }}</span>
-            <select v-model="underlineMode" class="r8-input">
-              <option v-for="option in underlineModeOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="underlineMode" :options="underlineModeOptions" />
           </label>
 
           <label class="r8-field">
             <span class="r8-label">{{ strings.offsetField }}</span>
-            <select v-model="underlineOffset" class="r8-input">
-              <option v-for="option in underlineOffsetOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="underlineOffset" :options="underlineOffsetOptions" />
           </label>
         </div>
 

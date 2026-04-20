@@ -229,29 +229,17 @@ onMounted(async () => {
 
           <label class="r8-field">
             <span class="r8-label">{{ strings.localeField }}</span>
-            <select v-model="locale" class="r8-input">
-              <option v-for="option in localeOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="locale" :options="localeOptions" />
           </label>
 
           <label class="r8-field">
             <span class="r8-label">{{ strings.weekStartField }}</span>
-            <select v-model="weekStart" class="r8-input">
-              <option v-for="option in weekStartOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="weekStart" :options="weekStartOptions" />
           </label>
 
           <label class="r8-field">
             <span class="r8-label">{{ strings.timeStepField }}</span>
-            <select v-model="timeStep" class="r8-input">
-              <option v-for="option in timeStepOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="timeStep" :options="timeStepOptions" />
           </label>
         </div>
 

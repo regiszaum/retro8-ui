@@ -1,7 +1,7 @@
 import { componentOrder } from "./shared/component-catalog";
 
 const docsLocales = ["en", "pt-br"];
-const guidePages = ["getting-started", "tokens", "icons", "components"];
+const guidePages = ["getting-started", "tokens", "icons", "components", "llms.txt"];
 const appBaseURL = process.env.NUXT_APP_BASE_URL || "/";
 const normalizedBaseURL = appBaseURL.endsWith("/") ? appBaseURL : `${appBaseURL}/`;
 
