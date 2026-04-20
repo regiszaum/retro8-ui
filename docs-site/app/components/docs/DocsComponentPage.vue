@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import DocsGenericPlayground from "~/components/docs/DocsGenericPlayground.vue";
 import DocsDateTimePickerPlayground from "~/components/docs/DocsDateTimePickerPlayground.vue";
+import DocsFormPlayground from "~/components/docs/DocsFormPlayground.vue";
 import DocsInputNumberPlayground from "~/components/docs/DocsInputNumberPlayground.vue";
 import DocsInputPlayground from "~/components/docs/DocsInputPlayground.vue";
 import DocsInputTagPlayground from "~/components/docs/DocsInputTagPlayground.vue";
@@ -218,6 +219,7 @@ watch(
     <DocsColorPickerPlayground v-if="component.id === 'color-picker'" :site="site" />
     <DocsDatePickerPlayground v-if="component.id === 'date-picker'" :site="site" />
     <DocsDateTimePickerPlayground v-if="component.id === 'datetime-picker'" :site="site" />
+    <DocsFormPlayground v-if="component.id === 'form'" :site="site" />
     <DocsIconPlayground v-if="component.id === 'icon'" :site="site" />
     <DocsInputPlayground v-if="component.id === 'input'" :site="site" />
     <DocsInputNumberPlayground v-if="component.id === 'input-number'" :site="site" />

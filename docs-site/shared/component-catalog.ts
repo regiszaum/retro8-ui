@@ -2264,16 +2264,65 @@ const formComponents = [
     preview: `<form class="r8-form">
   <div class="r8-form__row">
     <label class="r8-form__item">
-      <span class="r8-form__label">Pilot</span>
-      <input class="r8-input" type="text" value="PIX-07" />
-      <span class="r8-form__help">Use a short codename.</span>
+      <span class="r8-form__label">Pilot email</span>
+      <input class="r8-input" type="email" value="pilot@retro8.dev" />
+      <span class="r8-form__help">Use the monitored inbox for alerts.</span>
     </label>
     <label class="r8-form__item">
-      <span class="r8-form__label">Role</span>
-      <select class="r8-input">
-        <option>Engineer</option>
-      </select>
+      <span class="r8-form__label">Access code</span>
+      <input class="r8-input" type="password" value="retro-88" />
+      <span class="r8-form__help">Rotate this secret every mission.</span>
     </label>
+  </div>
+  <div class="r8-form__row">
+    <label class="r8-form__item">
+      <span class="r8-form__label">Role</span>
+      <div class="r8-select" data-r8-value="explorer">
+        <button class="r8-select__trigger" type="button">
+          <span data-r8-choice-display>Explorer</span>
+          <span class="r8-choice__caret" aria-hidden="true">&gt;</span>
+        </button>
+        <div class="r8-select__menu" hidden>
+          <button class="r8-select__option" type="button" data-r8-value="engineer">Engineer</button>
+          <button class="r8-select__option" type="button" data-r8-value="medic">Medic</button>
+          <button class="r8-select__option is-selected" type="button" data-r8-value="explorer">Explorer</button>
+        </div>
+      </div>
+      <span class="r8-form__help">Pick who owns this route.</span>
+    </label>
+    <div class="r8-form__item">
+      <p class="r8-form__legend">Readiness</p>
+      <div class="r8-rate" role="radiogroup" aria-label="Readiness">
+        <span class="r8-rate__item is-active" role="radio" aria-checked="true">*</span>
+        <span class="r8-rate__item is-active" role="radio" aria-checked="true">*</span>
+        <span class="r8-rate__item is-active" role="radio" aria-checked="true">*</span>
+        <span class="r8-rate__item" role="radio" aria-checked="false">*</span>
+        <span class="r8-rate__item" role="radio" aria-checked="false">*</span>
+      </div>
+      <span class="r8-form__help">Quick confidence score before submit.</span>
+    </div>
+  </div>
+  <div class="r8-form__row">
+    <div class="r8-form__item" data-r8-radio-group>
+      <p class="r8-form__legend">Sync mode</p>
+      <div class="r8-stack">
+        <label class="r8-radio is-checked" data-r8-value="online">
+          <span class="r8-radio__box" aria-hidden="true"></span>
+          <span>Online</span>
+        </label>
+        <label class="r8-radio" data-r8-value="offline">
+          <span class="r8-radio__box" aria-hidden="true"></span>
+          <span>Offline</span>
+        </label>
+      </div>
+    </div>
+    <div class="r8-form__item">
+      <p class="r8-form__legend">Agreement</p>
+      <label class="r8-checkbox is-checked">
+        <span class="r8-checkbox__box" aria-hidden="true"></span>
+        <span>Allow scheduled notifications</span>
+      </label>
+    </div>
   </div>
   <div class="r8-form__actions">
     <button class="r8-btn r8-btn--primary" type="button">Save</button>

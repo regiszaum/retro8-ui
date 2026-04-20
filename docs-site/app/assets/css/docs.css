@@ -1312,6 +1312,7 @@ html[data-theme="light"] .docs-theme-switch:focus-visible {
 .docs-color-playground,
 .docs-color-picker-playground,
 .docs-date-picker-playground,
+.docs-form-playground,
 .docs-icon-playground,
 .docs-input-playground,
 .docs-input-number-playground,
@@ -1342,6 +1343,12 @@ html[data-theme="light"] .docs-theme-switch:focus-visible {
 .docs-date-picker-playground__preview,
 .docs-date-picker-playground__events,
 .docs-date-picker-playground__markup,
+.docs-form-playground__header,
+.docs-form-playground__intro,
+.docs-form-playground__controls,
+.docs-form-playground__preview,
+.docs-form-playground__events,
+.docs-form-playground__markup,
 .docs-checkbox-playground__header,
 .docs-checkbox-playground__intro,
 .docs-checkbox-playground__controls,
@@ -1430,6 +1437,7 @@ html[data-theme="light"] .docs-theme-switch:focus-visible {
 .docs-autocomplete-playground__header,
 .docs-cascader-playground__header,
 .docs-date-picker-playground__header,
+.docs-form-playground__header,
 .docs-checkbox-playground__header,
 .docs-button-playground__header,
 .docs-border-playground__header,
@@ -1452,6 +1460,7 @@ html[data-theme="light"] .docs-theme-switch:focus-visible {
 .docs-autocomplete-playground__intro > .docs-panel__meta,
 .docs-cascader-playground__intro > .docs-panel__meta,
 .docs-date-picker-playground__intro > .docs-panel__meta,
+.docs-form-playground__intro > .docs-panel__meta,
 .docs-checkbox-playground__intro > .docs-panel__meta,
 .docs-button-playground__intro > .docs-panel__meta,
 .docs-border-playground__intro > .docs-panel__meta,
@@ -1473,6 +1482,7 @@ html[data-theme="light"] .docs-theme-switch:focus-visible {
 .docs-autocomplete-playground__body,
 .docs-cascader-playground__body,
 .docs-date-picker-playground__body,
+.docs-form-playground__body,
 .docs-checkbox-playground__body,
 .docs-button-playground__body,
 .docs-border-playground__body,
@@ -1497,6 +1507,7 @@ html[data-theme="light"] .docs-theme-switch:focus-visible {
 .docs-autocomplete-playground__field-grid,
 .docs-cascader-playground__field-grid,
 .docs-date-picker-playground__field-grid,
+.docs-form-playground__field-grid,
 .docs-checkbox-playground__field-grid,
 .docs-button-playground__field-grid,
 .docs-border-playground__field-grid,
@@ -1520,6 +1531,7 @@ html[data-theme="light"] .docs-theme-switch:focus-visible {
 .docs-autocomplete-playground__toggles,
 .docs-cascader-playground__toggles,
 .docs-date-picker-playground__toggles,
+.docs-form-playground__toggles,
 .docs-checkbox-playground__toggles,
 .docs-button-playground__toggles,
 .docs-border-playground__toggles,
@@ -1542,6 +1554,7 @@ html[data-theme="light"] .docs-theme-switch:focus-visible {
 .docs-autocomplete-playground__stage,
 .docs-cascader-playground__stage,
 .docs-date-picker-playground__stage,
+.docs-form-playground__stage,
 .docs-checkbox-playground__stage,
 .docs-button-playground__stage,
 .docs-border-playground__stage,
@@ -1596,6 +1609,7 @@ html[data-theme="light"] .docs-theme-switch:focus-visible {
 .docs-autocomplete-playground__code,
 .docs-cascader-playground__code,
 .docs-date-picker-playground__code,
+.docs-form-playground__code,
 .docs-checkbox-playground__code,
 .docs-button-playground__code,
 .docs-border-playground__code,
@@ -1721,6 +1735,18 @@ html[data-theme="light"] .docs-theme-switch:focus-visible {
   margin: 0;
 }
 
+.docs-form-playground__surface {
+  width: min(100%, 40rem);
+}
+
+.docs-form-playground__surface > * {
+  width: 100%;
+}
+
+.docs-form-playground__surface .r8-stack {
+  margin: 0;
+}
+
 .docs-input-number-playground__surface {
   width: min(100%, 28rem);
 }
@@ -1791,6 +1817,7 @@ html[data-theme="light"] .docs-theme-switch:focus-visible {
 .docs-autocomplete-playground__event-log,
 .docs-cascader-playground__event-log,
 .docs-date-picker-playground__event-log,
+.docs-form-playground__event-log,
 .docs-checkbox-playground__event-log,
 .docs-color-picker-playground__event-log,
 .docs-input-playground__event-log,
@@ -1807,6 +1834,7 @@ html[data-theme="light"] .docs-theme-switch:focus-visible {
 .docs-autocomplete-playground__event-log > .r8-text,
 .docs-cascader-playground__event-log > .r8-text,
 .docs-date-picker-playground__event-log > .r8-text,
+.docs-form-playground__event-log > .r8-text,
 .docs-checkbox-playground__event-log > .r8-text,
 .docs-color-picker-playground__event-log > .r8-text,
 .docs-input-playground__event-log > .r8-text,
@@ -2215,6 +2243,7 @@ dialog.r8-dialog {
   .docs-autocomplete-playground__body,
   .docs-cascader-playground__body,
   .docs-date-picker-playground__body,
+  .docs-form-playground__body,
   .docs-checkbox-playground__body,
   .docs-button-playground__body,
   .docs-border-playground__body,
@@ -2306,6 +2335,7 @@ dialog.r8-dialog {
 
   .docs-autocomplete-playground__header,
   .docs-cascader-playground__header,
+  .docs-form-playground__header,
   .docs-checkbox-playground__header,
   .docs-button-playground__header,
   .docs-border-playground__header,
@@ -2322,6 +2352,7 @@ dialog.r8-dialog {
 
   .docs-autocomplete-playground__field-grid,
   .docs-cascader-playground__field-grid,
+  .docs-form-playground__field-grid,
   .docs-checkbox-playground__field-grid,
   .docs-button-playground__field-grid,
   .docs-border-playground__field-grid,
