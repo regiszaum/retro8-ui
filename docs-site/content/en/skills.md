@@ -14,7 +14,7 @@ Use skills when you need more consistent answers for repeatable tasks, such as g
 
 ## Relation to llms.txt
 
-- [`/llms.txt`](/llms.txt) provides a route map for automated ingestion.
+- [`/llms.txt`](../llms.txt) provides a route map for automated ingestion.
 - This page explains how to turn that context into practical rules for assistants.
 - Use both together to guide agents with official links and clear instructions.
 

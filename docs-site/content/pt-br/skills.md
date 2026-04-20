@@ -14,7 +14,7 @@ Use skills quando voce quiser respostas mais consistentes para tarefas repetidas
 
 ## Relacao com llms.txt
 
-- [`/llms.txt`](/llms.txt) entrega um mapa de rotas para consumo automatico.
+- [`/llms.txt`](../llms.txt) entrega um mapa de rotas para consumo automatico.
 - Esta pagina explica como transformar esse contexto em regras praticas para o assistente.
 - Use os dois juntos para guiar agentes com links oficiais e instrucoes claras.
 

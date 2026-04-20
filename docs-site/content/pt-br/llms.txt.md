@@ -8,7 +8,7 @@ Esta pagina documenta o feed `llms.txt` da Retro8 UI.
 
 Use quando voce quiser que assistentes de IA e ferramentas de automacao consumam um mapa curto das rotas de docs.
 
-- URL do feed: [`/llms.txt`](/llms.txt)
+- URL do feed: <a href="../llms.txt" target="_blank" rel="noopener noreferrer">`/llms.txt`</a>
 - Repositorio: [GitHub](https://github.com/regiszaum/retro8-ui)
 - Pacote: [NPM](https://www.npmjs.com/package/retro8-ui)
 
