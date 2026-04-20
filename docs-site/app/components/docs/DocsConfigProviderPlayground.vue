@@ -167,38 +167,22 @@ function resetPlayground() {
         <div class="docs-config-provider-playground__field-grid">
           <label class="r8-field">
             <span class="r8-label">{{ strings.themeField }}</span>
-            <select v-model="theme" class="r8-input">
-              <option v-for="option in themeOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="theme" :options="themeOptions" />
           </label>
 
           <label class="r8-field">
             <span class="r8-label">{{ strings.densityField }}</span>
-            <select v-model="density" class="r8-input">
-              <option v-for="option in densityOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="density" :options="densityOptions" />
           </label>
 
           <label class="r8-field">
             <span class="r8-label">{{ strings.accentField }}</span>
-            <select v-model="accent" class="r8-input">
-              <option v-for="option in accentOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="accent" :options="accentOptions" />
           </label>
 
           <label class="r8-field">
             <span class="r8-label">{{ strings.shellField }}</span>
-            <select v-model="shell" class="r8-input">
-              <option v-for="option in shellOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="shell" :options="shellOptions" />
           </label>
         </div>
 

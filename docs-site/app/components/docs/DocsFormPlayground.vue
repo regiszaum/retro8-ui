@@ -314,20 +314,12 @@ onMounted(async () => {
 
           <label class="r8-field">
             <span class="r8-label">{{ strings.roleField }}</span>
-            <select v-model="roleValue" class="r8-input">
-              <option v-for="option in roleOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="roleValue" :options="roleOptions" />
           </label>
 
           <label class="r8-field">
             <span class="r8-label">{{ strings.channelField }}</span>
-            <select v-model="channelValue" class="r8-input">
-              <option v-for="option in channelOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="channelValue" :options="channelOptions" />
           </label>
 
           <label class="r8-field">

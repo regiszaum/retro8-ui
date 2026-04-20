@@ -244,20 +244,12 @@ watch([labelText, placeholderText, size, mode, clearable, showAlpha], async () =
 
           <label class="r8-field">
             <span class="r8-label">{{ strings.modeField }}</span>
-            <select v-model="mode" class="r8-input">
-              <option v-for="option in modeOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="mode" :options="modeOptions" />
           </label>
 
           <label class="r8-field">
             <span class="r8-label">{{ strings.sizeField }}</span>
-            <select v-model="size" class="r8-input">
-              <option v-for="option in sizeOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="size" :options="sizeOptions" />
           </label>
         </div>
 

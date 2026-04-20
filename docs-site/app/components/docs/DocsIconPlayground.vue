@@ -197,29 +197,17 @@ function getToggleClass(enabled: boolean) {
 
           <label class="r8-field">
             <span class="r8-label">{{ strings.sourceField }}</span>
-            <select v-model="source" class="r8-input">
-              <option v-for="option in sourceOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="source" :options="sourceOptions" />
           </label>
 
           <label class="r8-field">
             <span class="r8-label">{{ strings.toneField }}</span>
-            <select v-model="tone" class="r8-input">
-              <option v-for="option in toneOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="tone" :options="toneOptions" />
           </label>
 
           <label class="r8-field">
             <span class="r8-label">{{ strings.sizeField }}</span>
-            <select v-model="size" class="r8-input">
-              <option v-for="option in sizeOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="size" :options="sizeOptions" />
           </label>
         </div>
 

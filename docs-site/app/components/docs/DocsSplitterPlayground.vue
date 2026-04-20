@@ -186,11 +186,7 @@ watch([orientation, position, min, max, step, handleSize, isDisabled], async () 
         <div class="docs-splitter-playground__field-grid">
           <label class="r8-field">
             <span class="r8-label">{{ strings.orientationField }}</span>
-            <select v-model="orientation" class="r8-input">
-              <option v-for="option in orientationOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="orientation" :options="orientationOptions" />
           </label>
 
           <label class="r8-field">
@@ -215,11 +211,7 @@ watch([orientation, position, min, max, step, handleSize, isDisabled], async () 
 
           <label class="r8-field">
             <span class="r8-label">{{ strings.handleSizeField }}</span>
-            <select v-model="handleSize" class="r8-input">
-              <option v-for="option in handleSizeOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-model="handleSize" :options="handleSizeOptions" />
           </label>
         </div>
 

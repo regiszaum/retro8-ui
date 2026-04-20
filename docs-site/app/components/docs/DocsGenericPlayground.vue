@@ -2400,11 +2400,7 @@ watch(
               :step="field.step || 1"
             />
 
-            <select v-else v-model="state[field.key]" class="r8-input">
-              <option v-for="item in field.options" :key="item.value" :value="item.value">
-                {{ item.label }}
-              </option>
-            </select>
+            <DocsControlSelect v-else v-model="state[field.key]" :options="field.options" />
           </label>
         </div>
 
