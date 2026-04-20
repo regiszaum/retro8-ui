@@ -104,7 +104,7 @@
     --tw-contain-paint:  ;
     --tw-contain-style:  ;
 }
-:root {
+  :root {
     color-scheme: light;
     --r8-color-bg: #0f172a;
     --r8-color-surface: #f8fafc;
@@ -188,7 +188,8 @@
     --r8-motion-lift: -1px;
     --r8-motion-press: 2px;
   }
-:where([data-theme="dark"], [data-r8-theme="dark"], .r8-theme-dark) {
+
+  :where([data-theme="dark"], [data-r8-theme="dark"], .r8-theme-dark) {
     color-scheme: dark;
     --r8-color-bg: #020617;
     --r8-color-surface: #0f172a;
@@ -244,30 +245,35 @@
     --r8-shadow-pressed: 1px 1px 0 0 rgba(2, 6, 23, 0.82);
     --r8-shadow-inset: inset 0 0 0 var(--r8-border-thin) rgba(2, 6, 23, 0.52);
   }
-@media (prefers-reduced-motion: reduce) {
+
+  @media (prefers-reduced-motion: reduce) {
     :root {
       --r8-motion-step: 0ms;
       --r8-motion-lift: 0px;
       --r8-motion-press: 0px;
     }
   }
-*,
+  *,
   ::before,
   ::after {
     box-sizing: border-box;
   }
-:where(img, svg) {
+
+  :where(img, svg) {
     display: block;
     max-width: 100%;
   }
-:where(button, input, select, textarea) {
+
+  :where(button, input, select, textarea) {
     font: inherit;
     color: inherit;
   }
-:where(dialog) {
+
+  :where(dialog) {
     color: inherit;
   }
-:where(.r8-btn, .r8-input, .r8-panel, .r8-window, .r8-badge, .r8-dialog, .r8-tabs, .r8-progress, .r8-navbar) {
+
+  :where(.r8-btn, .r8-input, .r8-panel, .r8-window, .r8-badge, .r8-dialog, .r8-tabs, .r8-progress, .r8-navbar) {
     font-family: var(--r8-font-body);
   }
 .\!container {
