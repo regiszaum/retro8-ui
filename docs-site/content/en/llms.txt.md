@@ -19,6 +19,7 @@ Use it when you want AI assistants and automation tools to ingest a concise rout
 - [Component catalog](/en/components)
 - [Tokens](/en/tokens)
 - [Icons](/en/icons)
+- [Skills](/en/skills)
 
 ## Locale shortcuts
 

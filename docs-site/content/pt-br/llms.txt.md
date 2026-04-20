@@ -19,6 +19,7 @@ Use quando voce quiser que assistentes de IA e ferramentas de automacao consumam
 - [Catalogo de componentes](/pt-br/components)
 - [Tokens](/pt-br/tokens)
 - [Icones](/pt-br/icons)
+- [Skills](/pt-br/skills)
 
 ## Atalhos de idioma
 

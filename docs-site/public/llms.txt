@@ -11,6 +11,8 @@
 - [Tokens](https://regiszaum.github.io/retro8-ui/en/tokens): Foundation tokens and visual system.
 - [Icons](https://regiszaum.github.io/retro8-ui/en/icons): Recommended icon pairing.
 - [llms.txt Guide Page](https://regiszaum.github.io/retro8-ui/en/llms.txt): Human-facing guide for this file.
+- [Skills Guide (EN)](https://regiszaum.github.io/retro8-ui/en/skills): AI skills guide for documentation workflows.
+- [Skills Guide (PT-BR)](https://regiszaum.github.io/retro8-ui/pt-br/skills): Versao em portugues do guia de skills.
 
 ## Components
 
