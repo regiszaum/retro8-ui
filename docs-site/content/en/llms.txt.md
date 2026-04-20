@@ -8,9 +8,14 @@ This page documents the `llms.txt` feed for Retro8 UI.
 
 Use it when you want AI assistants and automation tools to ingest a concise route map of the docs.
 
-- Feed URL: <a href="../llms.txt" target="_blank" rel="noopener noreferrer">`/llms.txt`</a>
+- Feed URL: <a href="https://regiszaum.github.io/retro8-ui/llms.txt" target="_blank" rel="noopener noreferrer">`/retro8-ui/llms.txt`</a>
 - Repository: [GitHub](https://github.com/regiszaum/retro8-ui)
 - Package: [NPM](https://www.npmjs.com/package/retro8-ui)
+
+<p>
+  <a class="r8-btn r8-btn--sm r8-btn--primary" href="../llms.txt" download="llms.txt">Download llms.txt</a>
+  <a class="r8-btn r8-btn--sm r8-btn--secondary" href="https://regiszaum.github.io/retro8-ui/llms.txt" target="_blank" rel="noopener noreferrer">Open in a new tab</a>
+</p>
 
 ## Main documentation links
 
