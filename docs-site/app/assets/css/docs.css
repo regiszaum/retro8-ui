@@ -2131,12 +2131,12 @@ dialog.r8-dialog {
   margin-top: 0.5rem;
 }
 
-.docs-prose a {
+.docs-prose a:not(.r8-btn) {
   color: var(--docs-link);
   text-decoration-thickness: 2px;
 }
 
-.docs-prose a:hover {
+.docs-prose a:not(.r8-btn):hover {
   color: var(--docs-link-hover);
 }
 

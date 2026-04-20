@@ -25,7 +25,17 @@ const isExternalHref = computed(() => {
 
 const isHashLink = computed(() => href.value.startsWith("#"));
 const isStaticFilePath = computed(() => /^\/[^?#]+\.[a-z0-9]+(?:[?#].*)?$/i.test(href.value));
-const shouldUseNativeAnchor = computed(() => isExternalHref.value || isHashLink.value || isStaticFilePath.value);
+const hasDownloadAttr = computed(() => {
+  const attributes = attrs as Record<string, unknown>;
+  return Object.prototype.hasOwnProperty.call(attributes, "download");
+});
+
+const shouldUseNativeAnchor = computed(() => (
+  isExternalHref.value
+  || isHashLink.value
+  || isStaticFilePath.value
+  || hasDownloadAttr.value
+));
 
 const resolvedRel = computed(() => {
   if (props.rel) {
