@@ -2286,8 +2286,8 @@ const formComponents = [
     name: "Input",
     group: "form",
     summary: l(
-      "Campo base para texto e textarea com shell opcional para clear, contador, toggle de senha e autosize.",
-      "Base text and textarea field with an optional shell for clear, counting, password toggle, and autosize.",
+      "Campo base para texto, email, senha, textarea e number com shell opcional para clear, contador, toggle de senha e autosize.",
+      "Base text, email, password, textarea, and number field with an optional shell for clear, counting, password toggle, and autosize.",
     ),
     classes: [
       "r8-field",
@@ -2314,9 +2314,21 @@ const formComponents = [
     <span class="r8-help">Clear and live count come from the optional shell runtime.</span>
   </label>
   <label class="r8-field">
+    <span class="r8-label">Pilot email</span>
+    <div class="r8-input-shell" data-r8-clearable="true">
+      <input class="r8-input" type="email" value="pilot@retro8.dev" placeholder="pilot@retro8.dev" />
+    </div>
+  </label>
+  <label class="r8-field">
     <span class="r8-label">Access code</span>
     <div class="r8-input-shell" data-r8-show-password="true">
       <input class="r8-input" type="password" value="retro-88" placeholder="Enter access code" />
+    </div>
+  </label>
+  <label class="r8-field">
+    <span class="r8-label">Crew count</span>
+    <div class="r8-input-shell" data-r8-clearable="true">
+      <input class="r8-input" type="number" min="0" max="12" step="1" value="7" placeholder="Enter quantity" />
     </div>
   </label>
   <label class="r8-field">
@@ -2334,19 +2346,40 @@ const formComponents = [
 </label>
 
 <label class="r8-field">
+  <span class="r8-label">Pilot email</span>
+  <div class="r8-input-shell" data-r8-clearable="true">
+    <input class="r8-input" type="email" placeholder="pilot@retro8.dev" value="pilot@retro8.dev" />
+  </div>
+</label>
+
+<label class="r8-field">
+  <span class="r8-label">Access code</span>
+  <div class="r8-input-shell" data-r8-show-password="true">
+    <input class="r8-input" type="password" placeholder="Enter access code" value="retro-88" />
+  </div>
+</label>
+
+<label class="r8-field">
+  <span class="r8-label">Crew count</span>
+  <div class="r8-input-shell" data-r8-clearable="true">
+    <input class="r8-input" type="number" min="0" max="12" step="1" value="7" />
+  </div>
+</label>
+
+<label class="r8-field">
   <span class="r8-label">Mission notes</span>
   <textarea class="r8-input" data-r8-autosize="true" data-r8-min-rows="3" data-r8-max-rows="6" maxlength="96">No anomalies detected.</textarea>
 </label>`,
     anatomy: ll(
       [
-        "`r8-input` continua sendo a surface base para texto, senha, select e textarea.",
+        "`r8-input` continua sendo a surface base para texto, email, senha, number, select e textarea.",
         "`r8-input-shell` envolve o campo quando ele precisa de prefixo, sufixo, clear, contador ou toggle de senha.",
         "`r8-input__prefix` e `r8-input__suffix` adicionam contexto curto sem trocar a semantica do input nativo.",
         "`r8-input__actions` agrupa clear, toggle e contador no lado direito do shell.",
         "`data-r8-autosize` deixa o textarea crescer com o conteudo sem um layout extra de framework.",
       ],
       [
-        "`r8-input` remains the base surface for text, password, select, and textarea fields.",
+        "`r8-input` remains the base surface for text, email, password, number, select, and textarea fields.",
         "`r8-input-shell` wraps the field when it needs prefix, suffix, clear, counting, or password reveal actions.",
         "`r8-input__prefix` and `r8-input__suffix` add small context cues without changing the native input semantics.",
         "`r8-input__actions` groups clear, reveal, and count affordances on the right side of the shell.",

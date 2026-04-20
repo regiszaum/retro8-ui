@@ -2988,6 +2988,17 @@
     min-height: 7rem;
     resize: vertical;
   }
+:where(input.r8-input[type="number"]) {
+    -webkit-appearance: textfield;
+       -moz-appearance: textfield;
+            appearance: textfield;
+    font-variant-numeric: tabular-nums;
+  }
+:where(input.r8-input[type="number"])::-webkit-outer-spin-button,
+  :where(input.r8-input[type="number"])::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 :where(select.r8-input) {
     -webkit-appearance: none;
        -moz-appearance: none;

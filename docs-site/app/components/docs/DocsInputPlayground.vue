@@ -3,7 +3,7 @@ const props = defineProps<{
   site: any;
 }>();
 
-type InputKind = "text" | "password" | "textarea";
+type InputKind = "text" | "email" | "password" | "textarea" | "number";
 type InputSize = "sm" | "md" | "lg";
 type Retro8Runtime = {
   init?: (root?: Document | HTMLElement) => unknown;
@@ -19,6 +19,9 @@ const size = ref<InputSize>("md");
 const placeholderText = ref(strings.value.defaultPlaceholder);
 const valueText = ref(strings.value.defaultValue);
 const maxLength = ref(18);
+const numberMin = ref(0);
+const numberMax = ref(12);
+const numberStep = ref(1);
 const clearable = ref(true);
 const wordLimit = ref(true);
 const passwordToggle = ref(true);
@@ -28,8 +31,10 @@ const eventLog = ref<string[]>([strings.value.eventIdle]);
 
 const typeOptions = computed(() => [
   { value: "text", label: strings.value.options.text },
+  { value: "email", label: strings.value.options.email },
   { value: "password", label: strings.value.options.password },
   { value: "textarea", label: strings.value.options.textarea },
+  { value: "number", label: strings.value.options.number },
 ]);
 
 const sizeOptions = computed(() => [
@@ -38,24 +43,54 @@ const sizeOptions = computed(() => [
   { value: "lg", label: strings.value.options.lg },
 ]);
 
+const isTextarea = computed(() => fieldType.value === "textarea");
+const isPassword = computed(() => fieldType.value === "password");
+const isNumber = computed(() => fieldType.value === "number");
+const supportsMaxLength = computed(() => !isNumber.value);
+const showWordLimitToggle = computed(() => !isNumber.value);
+const showAutosizeToggle = computed(() => isTextarea.value);
+const showPasswordToggle = computed(() => isPassword.value);
+const showNumberControls = computed(() => isNumber.value);
+const usesShellPrefix = computed(() => fieldType.value === "text");
+const usesShellWordLimit = computed(() => showWordLimitToggle.value && wordLimit.value && maxLength.value > 0);
+
+const previewFieldLabel = computed(() => {
+  switch (fieldType.value) {
+    case "email":
+      return "Pilot email";
+    case "password":
+      return "Access code";
+    case "textarea":
+      return "Mission notes";
+    case "number":
+      return "Crew count";
+    default:
+      return "Pilot name";
+  }
+});
+
 const resolvedPlaceholder = computed(() => placeholderText.value.trim() || strings.value.defaultPlaceholder);
 const previewKey = computed(() =>
   [
     fieldType.value,
     size.value,
     resolvedPlaceholder.value,
-    maxLength.value,
+    supportsMaxLength.value ? maxLength.value : "nolimit",
+    numberMin.value,
+    numberMax.value,
+    numberStep.value,
     clearable.value ? "clear" : "plain",
-    wordLimit.value ? "count" : "nocount",
-    passwordToggle.value ? "toggle" : "static",
-    autosize.value ? "autosize" : "fixed",
+    usesShellWordLimit.value ? "count" : "nocount",
+    isPassword.value && passwordToggle.value ? "toggle" : "static",
+    isTextarea.value && autosize.value ? "autosize" : "fixed",
     invalid.value ? "invalid" : "valid",
   ].join(":"),
 );
 
 const markup = computed(() => {
   const invalidAttr = invalid.value ? ' aria-invalid="true"' : "";
-  if (fieldType.value === "textarea") {
+
+  if (isTextarea.value) {
     const attrs = [
       'class="r8-input"',
       `data-r8-size="${size.value}"`,
@@ -69,22 +104,25 @@ const markup = computed(() => {
       attrs.push('data-r8-max-rows="6"');
     }
 
-    return `<label class="r8-field">\n  <span class="r8-label">Mission notes</span>\n  <textarea ${attrs.join(" ")}${invalidAttr}>${escapeHtml(valueText.value)}</textarea>\n  <span class="r8-help">${escapeHtml(strings.value.helperCopy)}</span>\n</label>`;
+    return `<label class="r8-field">\n  <span class="r8-label">${previewFieldLabel.value}</span>\n  <textarea ${attrs.join(" ")}${invalidAttr}>${escapeHtml(valueText.value)}</textarea>\n  <span class="r8-help">${escapeHtml(strings.value.helperCopy)}</span>\n</label>`;
   }
 
   const shellAttrs = [`class="r8-input-shell"`, `data-r8-size="${size.value}"`];
   if (clearable.value) {
     shellAttrs.push('data-r8-clearable="true"');
   }
-  if (wordLimit.value) {
+  if (usesShellWordLimit.value) {
     shellAttrs.push('data-r8-word-limit="true"');
   }
-  if (fieldType.value === "password" && passwordToggle.value) {
+  if (isPassword.value && passwordToggle.value) {
     shellAttrs.push('data-r8-show-password="true"');
   }
 
-  const prefix = fieldType.value === "text" ? '\n    <span class="r8-input__prefix">@</span>' : "";
-  return `<label class="r8-field">\n  <span class="r8-label">Pilot name</span>\n  <div ${shellAttrs.join(" ")}>${prefix}\n    <input class="r8-input" type="${fieldType.value}" data-r8-size="${size.value}" maxlength="${maxLength.value}" placeholder="${escapeAttribute(resolvedPlaceholder.value)}" value="${escapeAttribute(valueText.value)}"${invalidAttr} />\n  </div>\n  <span class="r8-help">${escapeHtml(strings.value.helperCopy)}</span>\n</label>`;
+  const prefix = usesShellPrefix.value ? '\n    <span class="r8-input__prefix">@</span>' : "";
+  const maxLengthAttr = supportsMaxLength.value ? ` maxlength="${maxLength.value}"` : "";
+  const numberAttrs = isNumber.value ? ` min="${numberMin.value}" max="${numberMax.value}" step="${numberStep.value}"` : "";
+
+  return `<label class="r8-field">\n  <span class="r8-label">${previewFieldLabel.value}</span>\n  <div ${shellAttrs.join(" ")}>${prefix}\n    <input class="r8-input" type="${fieldType.value}" data-r8-size="${size.value}"${maxLengthAttr}${numberAttrs} placeholder="${escapeAttribute(resolvedPlaceholder.value)}" value="${escapeAttribute(valueText.value)}"${invalidAttr} />\n  </div>\n  <span class="r8-help">${escapeHtml(strings.value.helperCopy)}</span>\n</label>`;
 });
 
 function escapeAttribute(value: string) {
@@ -95,12 +133,51 @@ function escapeHtml(value: string) {
   return value.replace(/&/g, "&amp;").replace(/</g, "&lt;");
 }
 
+function applyTypePreset(nextType: InputKind) {
+  if (nextType === "text") {
+    placeholderText.value = strings.value.defaultPlaceholder;
+    valueText.value = strings.value.defaultValue;
+    maxLength.value = 18;
+    return;
+  }
+
+  if (nextType === "email") {
+    placeholderText.value = "pilot@retro8.dev";
+    valueText.value = "pilot@retro8.dev";
+    maxLength.value = 48;
+    return;
+  }
+
+  if (nextType === "password") {
+    placeholderText.value = "Enter access code";
+    valueText.value = "retro-88";
+    maxLength.value = 32;
+    return;
+  }
+
+  if (nextType === "textarea") {
+    placeholderText.value = "No anomalies detected.";
+    valueText.value = "No anomalies detected. Keep scanners warm and confirm route once the console sync finishes.";
+    maxLength.value = 96;
+    return;
+  }
+
+  placeholderText.value = "Enter quantity";
+  valueText.value = "7";
+  numberMin.value = 0;
+  numberMax.value = 12;
+  numberStep.value = 1;
+}
+
 function resetPlayground() {
   fieldType.value = "text";
   size.value = "md";
   placeholderText.value = strings.value.defaultPlaceholder;
   valueText.value = strings.value.defaultValue;
   maxLength.value = 18;
+  numberMin.value = 0;
+  numberMax.value = 12;
+  numberStep.value = 1;
   clearable.value = true;
   wordLimit.value = true;
   passwordToggle.value = true;
@@ -159,7 +236,11 @@ function initPreviewRuntime() {
   bindPreviewEvents();
 }
 
-watch([fieldType, size, placeholderText, maxLength, clearable, wordLimit, passwordToggle, autosize, invalid], async () => {
+watch(fieldType, (nextType) => {
+  applyTypePreset(nextType);
+});
+
+watch([fieldType, size, placeholderText, maxLength, numberMin, numberMax, numberStep, clearable, wordLimit, passwordToggle, autosize, invalid], async () => {
   await nextTick();
   initPreviewRuntime();
 });
@@ -208,12 +289,27 @@ onMounted(async () => {
 
           <label class="r8-field">
             <span class="r8-label">{{ strings.placeholderField }}</span>
-            <input v-model="placeholderText" class="r8-input" maxlength="32" />
+            <input v-model="placeholderText" class="r8-input" maxlength="40" />
           </label>
 
-          <label class="r8-field">
+          <label v-if="supportsMaxLength" class="r8-field">
             <span class="r8-label">{{ strings.maxLengthField }}</span>
             <input v-model.number="maxLength" class="r8-input" type="number" min="4" max="120" />
+          </label>
+
+          <label v-if="showNumberControls" class="r8-field">
+            <span class="r8-label">{{ strings.minField }}</span>
+            <input v-model.number="numberMin" class="r8-input" type="number" min="-9999" max="9999" />
+          </label>
+
+          <label v-if="showNumberControls" class="r8-field">
+            <span class="r8-label">{{ strings.maxField }}</span>
+            <input v-model.number="numberMax" class="r8-input" type="number" min="-9999" max="9999" />
+          </label>
+
+          <label v-if="showNumberControls" class="r8-field">
+            <span class="r8-label">{{ strings.stepField }}</span>
+            <input v-model.number="numberStep" class="r8-input" type="number" min="0.1" step="0.1" />
           </label>
         </div>
 
@@ -223,10 +319,17 @@ onMounted(async () => {
             <button :class="getToggleClass(clearable)" type="button" :aria-pressed="clearable ? 'true' : 'false'" @click="clearable = !clearable">
               {{ strings.clearableLabel }}
             </button>
-            <button :class="getToggleClass(wordLimit)" type="button" :aria-pressed="wordLimit ? 'true' : 'false'" @click="wordLimit = !wordLimit">
+            <button
+              v-if="showWordLimitToggle"
+              :class="getToggleClass(wordLimit)"
+              type="button"
+              :aria-pressed="wordLimit ? 'true' : 'false'"
+              @click="wordLimit = !wordLimit"
+            >
               {{ strings.wordLimitLabel }}
             </button>
             <button
+              v-if="showPasswordToggle"
               :class="getToggleClass(passwordToggle)"
               type="button"
               :aria-pressed="passwordToggle ? 'true' : 'false'"
@@ -234,7 +337,13 @@ onMounted(async () => {
             >
               {{ strings.passwordToggleLabel }}
             </button>
-            <button :class="getToggleClass(autosize)" type="button" :aria-pressed="autosize ? 'true' : 'false'" @click="autosize = !autosize">
+            <button
+              v-if="showAutosizeToggle"
+              :class="getToggleClass(autosize)"
+              type="button"
+              :aria-pressed="autosize ? 'true' : 'false'"
+              @click="autosize = !autosize"
+            >
               {{ strings.autosizeLabel }}
             </button>
             <button :class="getToggleClass(invalid)" type="button" :aria-pressed="invalid ? 'true' : 'false'" @click="invalid = !invalid">
@@ -249,9 +358,9 @@ onMounted(async () => {
           <span class="r8-label">{{ strings.previewLabel }}</span>
           <div ref="previewSurface" class="docs-input-playground__surface">
             <label class="r8-field">
-              <span class="r8-label">{{ fieldType === "textarea" ? "Mission notes" : "Pilot name" }}</span>
+              <span class="r8-label">{{ previewFieldLabel }}</span>
 
-              <template v-if="fieldType === 'textarea'">
+              <template v-if="isTextarea">
                 <textarea
                   :key="previewKey"
                   class="r8-input"
@@ -271,15 +380,18 @@ onMounted(async () => {
                   class="r8-input-shell"
                   :data-r8-size="size"
                   :data-r8-clearable="clearable ? 'true' : null"
-                  :data-r8-word-limit="wordLimit ? 'true' : null"
-                  :data-r8-show-password="fieldType === 'password' && passwordToggle ? 'true' : null"
+                  :data-r8-word-limit="usesShellWordLimit ? 'true' : null"
+                  :data-r8-show-password="isPassword && passwordToggle ? 'true' : null"
                 >
-                  <span v-if="fieldType === 'text'" class="r8-input__prefix">@</span>
+                  <span v-if="usesShellPrefix" class="r8-input__prefix">@</span>
                   <input
                     class="r8-input"
                     :data-r8-size="size"
                     :type="fieldType"
-                    :maxlength="maxLength"
+                    :maxlength="supportsMaxLength ? maxLength : null"
+                    :min="isNumber ? numberMin : null"
+                    :max="isNumber ? numberMax : null"
+                    :step="isNumber ? numberStep : null"
                     :placeholder="resolvedPlaceholder"
                     :value="valueText"
                     :aria-invalid="invalid ? 'true' : null"
