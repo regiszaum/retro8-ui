@@ -1,6 +1,6 @@
 {
   "name": "retro8-ui",
-  "version": "0.3.0",
+  "version": "0.3.3",
   "description": "Retro8 UI component library authored with Tailwind CSS and shipped as framework-agnostic CSS and optional JavaScript.",
   "license": "MIT",
   "repository": {
