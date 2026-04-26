@@ -104,7 +104,7 @@
     --tw-contain-paint:  ;
     --tw-contain-style:  ;
 }
-:root {
+  :root {
     color-scheme: light;
     --r8-color-bg: #0f172a;
     --r8-color-surface: #f8fafc;
@@ -188,7 +188,8 @@
     --r8-motion-lift: -1px;
     --r8-motion-press: 2px;
   }
-:where([data-theme="dark"], [data-r8-theme="dark"], .r8-theme-dark) {
+
+  :where([data-theme="dark"], [data-r8-theme="dark"], .r8-theme-dark) {
     color-scheme: dark;
     --r8-color-bg: #020617;
     --r8-color-surface: #0f172a;
@@ -244,30 +245,35 @@
     --r8-shadow-pressed: 1px 1px 0 0 rgba(2, 6, 23, 0.82);
     --r8-shadow-inset: inset 0 0 0 var(--r8-border-thin) rgba(2, 6, 23, 0.52);
   }
-@media (prefers-reduced-motion: reduce) {
+
+  @media (prefers-reduced-motion: reduce) {
     :root {
       --r8-motion-step: 0ms;
       --r8-motion-lift: 0px;
       --r8-motion-press: 0px;
     }
   }
-*,
+  *,
   ::before,
   ::after {
     box-sizing: border-box;
   }
-:where(img, svg) {
+
+  :where(img, svg) {
     display: block;
     max-width: 100%;
   }
-:where(button, input, select, textarea) {
+
+  :where(button, input, select, textarea) {
     font: inherit;
     color: inherit;
   }
-:where(dialog) {
+
+  :where(dialog) {
     color: inherit;
   }
-:where(.r8-btn, .r8-input, .r8-panel, .r8-window, .r8-badge, .r8-dialog, .r8-tabs, .r8-progress, .r8-navbar) {
+
+  :where(.r8-btn, .r8-input, .r8-panel, .r8-window, .r8-badge, .r8-dialog, .r8-tabs, .r8-progress, .r8-navbar) {
     font-family: var(--r8-font-body);
   }
 .\!container {
@@ -3548,6 +3554,9 @@
     --r8-skeleton-title-width: 48%;
     --r8-skeleton-avatar-size: 3rem;
     --r8-skeleton-button-width: 5.5rem;
+    --r8-skeleton-shape-width: 6rem;
+    --r8-skeleton-shape-height: 1rem;
+    --r8-skeleton-shape-radius: 0;
     --r8-skeleton-speed: 1.2s;
     display: grid;
     gap: var(--r8-skeleton-gap);
@@ -3580,8 +3589,9 @@
   .r8-skeleton__title,
   .r8-skeleton__avatar,
   .r8-skeleton__media,
-  .r8-skeleton__button {
-    animation: r8-skeleton-shift var(--r8-skeleton-speed) linear infinite;
+  .r8-skeleton__button,
+  .r8-skeleton__shape {
+    animation: r8-skeleton-shift var(--r8-skeleton-speed, 1.2s) linear infinite;
     background:
       linear-gradient(
         90deg,
@@ -3621,11 +3631,25 @@
     min-height: var(--r8-skeleton-media-height);
     width: 100%;
   }
+.r8-skeleton__shape {
+    border-radius: var(--r8-skeleton-shape-radius);
+    display: block;
+    height: var(--r8-skeleton-shape-height);
+    width: min(100%, var(--r8-skeleton-shape-width));
+  }
+.r8-skeleton__shape--circle,
+  .r8-skeleton__shape[data-r8-shape="circle"] {
+    border-radius: 999px;
+  }
+.r8-skeleton__shape--rectangle,
+  .r8-skeleton__shape[data-r8-shape="rectangle"] {
+    border-radius: var(--r8-skeleton-shape-radius);
+  }
 .r8-skeleton__button {
     min-height: 2rem;
     width: min(100%, var(--r8-skeleton-button-width));
   }
-.r8-skeleton[data-r8-animated="false"] :is(.r8-skeleton__block, .r8-skeleton__line, .r8-skeleton__title, .r8-skeleton__avatar, .r8-skeleton__media, .r8-skeleton__button) {
+.r8-skeleton[data-r8-animated="false"] :is(.r8-skeleton__block, .r8-skeleton__line, .r8-skeleton__title, .r8-skeleton__avatar, .r8-skeleton__media, .r8-skeleton__button, .r8-skeleton__shape) {
     animation: none;
   }
 @media (prefers-reduced-motion: reduce) {
@@ -3634,7 +3658,8 @@
     .r8-skeleton__title,
     .r8-skeleton__avatar,
     .r8-skeleton__media,
-    .r8-skeleton__button {
+    .r8-skeleton__button,
+    .r8-skeleton__shape {
       animation: none;
     }
   }

@@ -622,6 +622,9 @@
     --r8-skeleton-title-width: 48%;
     --r8-skeleton-avatar-size: 3rem;
     --r8-skeleton-button-width: 5.5rem;
+    --r8-skeleton-shape-width: 6rem;
+    --r8-skeleton-shape-height: 1rem;
+    --r8-skeleton-shape-radius: 0;
     --r8-skeleton-speed: 1.2s;
     display: grid;
     gap: var(--r8-skeleton-gap);
@@ -659,8 +662,9 @@
   .r8-skeleton__title,
   .r8-skeleton__avatar,
   .r8-skeleton__media,
-  .r8-skeleton__button {
-    animation: r8-skeleton-shift var(--r8-skeleton-speed) linear infinite;
+  .r8-skeleton__button,
+  .r8-skeleton__shape {
+    animation: r8-skeleton-shift var(--r8-skeleton-speed, 1.2s) linear infinite;
     background:
       linear-gradient(
         90deg,
@@ -708,12 +712,29 @@
     width: 100%;
   }
 
+  .r8-skeleton__shape {
+    border-radius: var(--r8-skeleton-shape-radius);
+    display: block;
+    height: var(--r8-skeleton-shape-height);
+    width: min(100%, var(--r8-skeleton-shape-width));
+  }
+
+  .r8-skeleton__shape--circle,
+  .r8-skeleton__shape[data-r8-shape="circle"] {
+    border-radius: 999px;
+  }
+
+  .r8-skeleton__shape--rectangle,
+  .r8-skeleton__shape[data-r8-shape="rectangle"] {
+    border-radius: var(--r8-skeleton-shape-radius);
+  }
+
   .r8-skeleton__button {
     min-height: 2rem;
     width: min(100%, var(--r8-skeleton-button-width));
   }
 
-  .r8-skeleton[data-r8-animated="false"] :is(.r8-skeleton__block, .r8-skeleton__line, .r8-skeleton__title, .r8-skeleton__avatar, .r8-skeleton__media, .r8-skeleton__button) {
+  .r8-skeleton[data-r8-animated="false"] :is(.r8-skeleton__block, .r8-skeleton__line, .r8-skeleton__title, .r8-skeleton__avatar, .r8-skeleton__media, .r8-skeleton__button, .r8-skeleton__shape) {
     animation: none;
   }
 
@@ -723,7 +744,8 @@
     .r8-skeleton__title,
     .r8-skeleton__avatar,
     .r8-skeleton__media,
-    .r8-skeleton__button {
+    .r8-skeleton__button,
+    .r8-skeleton__shape {
       animation: none;
     }
   }

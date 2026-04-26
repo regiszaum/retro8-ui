@@ -3931,8 +3931,8 @@ const dataComponents = [
     name: "Skeleton",
     group: "data",
     summary: l(
-      "Placeholder estrutural para loading de cards, listas e perfis, com avatar, media, linhas e animacao opcional no mesmo sistema visual.",
-      "Structural loading placeholder for cards, lists, and profiles, with avatar, media, lines, and optional animation in the same visual system.",
+      "Placeholder estrutural para loading de cards, listas e perfis, com avatar, media, linhas e bloco livre para circle/rectangle com dimensoes customizadas.",
+      "Structural loading placeholder for cards, lists, and profiles, with avatar, media, lines, and a free shape block for circle/rectangle custom sizing.",
     ),
     classes: [
       "r8-skeleton",
@@ -3948,6 +3948,9 @@ const dataComponents = [
       "r8-skeleton__line--medium",
       "r8-skeleton__line--short",
       "r8-skeleton__button",
+      "r8-skeleton__shape",
+      "r8-skeleton__shape--circle",
+      "r8-skeleton__shape--rectangle",
     ],
     preview: `<div class="r8-skeleton r8-skeleton--card">
   <div class="r8-skeleton__media"></div>
@@ -3988,19 +3991,26 @@ const dataComponents = [
     <div class="r8-skeleton__line r8-skeleton__line--medium"></div>
     <div class="r8-skeleton__line r8-skeleton__line--short"></div>
   </div>
+
+  <div class="r8-skeleton">
+    <div class="r8-skeleton__shape r8-skeleton__shape--circle" style="--r8-skeleton-shape-width: 3rem; --r8-skeleton-shape-height: 3rem;"></div>
+    <div class="r8-skeleton__shape r8-skeleton__shape--rectangle" style="--r8-skeleton-shape-width: 11rem; --r8-skeleton-shape-height: 1.1rem;"></div>
+  </div>
 </div>`,
     anatomy: ll(
       [
         "`r8-skeleton` e o wrapper base. Ele organiza as pecas falsas e aceita variaveis para espacamento, alturas e velocidade do shimmer.",
-        "`r8-skeleton__media`, `__avatar`, `__title`, `__line` e `__button` permitem aproximar o placeholder do layout real sem inventar markup aleatorio.",
+        "`r8-skeleton__media`, `__avatar`, `__title`, `__line`, `__button` e `__shape` permitem aproximar o placeholder do layout real sem inventar markup aleatorio.",
         "`r8-skeleton--card` adiciona moldura e padding quando o loading precisa reservar o mesmo volume de um card real.",
         "As variantes de largura como `r8-skeleton__line--medium` e `--short` ajudam a quebrar a repeticao e deixam a leitura mais natural.",
+        "Use `r8-skeleton__shape--circle` ou `--rectangle` e ajuste `--r8-skeleton-shape-width`/`--r8-skeleton-shape-height` para montar placeholders livres.",
       ],
       [
         "`r8-skeleton` is the base wrapper. It arranges the fake pieces and accepts variables for spacing, heights, and shimmer speed.",
-        "`r8-skeleton__media`, `__avatar`, `__title`, `__line`, and `__button` let you match the placeholder to the real layout without inventing random markup.",
+        "`r8-skeleton__media`, `__avatar`, `__title`, `__line`, `__button`, and `__shape` let you match the placeholder to the real layout without inventing random markup.",
         "`r8-skeleton--card` adds frame and padding when loading needs to reserve the same footprint as a real card.",
         "Width variants such as `r8-skeleton__line--medium` and `--short` help break repetition and make the placeholder feel more natural.",
+        "Use `r8-skeleton__shape--circle` or `--rectangle` and tune `--r8-skeleton-shape-width`/`--r8-skeleton-shape-height` for free-form placeholders.",
       ],
     ),
     accessibility: ll(
@@ -4024,10 +4034,24 @@ const dataComponents = [
         ),
       },
       {
+        name: "data-r8-shape",
+        description: l(
+          "Quando aplicado em `r8-skeleton__shape`, alterna entre rectangle e circle sem trocar classes.",
+          "When applied on `r8-skeleton__shape`, switches between rectangle and circle without replacing classes.",
+        ),
+      },
+      {
         name: "r8-skeleton__media / __avatar / __title / __button",
         description: l(
           "Pecas estruturais para aproximar o loading de cards, perfis, listas e CTAs reais.",
           "Structural pieces for matching cards, profiles, lists, and real CTAs during loading.",
+        ),
+      },
+      {
+        name: "r8-skeleton__shape / __shape--circle / __shape--rectangle",
+        description: l(
+          "Bloco livre para criar circle ou rectangle com largura/altura customizadas por instancia.",
+          "Free shape block for creating circle or rectangle placeholders with per-instance custom width/height.",
         ),
       },
       {
@@ -4038,10 +4062,10 @@ const dataComponents = [
         ),
       },
       {
-        name: "--r8-skeleton-media-height / --r8-skeleton-avatar-size / --r8-skeleton-speed",
+        name: "--r8-skeleton-media-height / --r8-skeleton-avatar-size / --r8-skeleton-shape-width / --r8-skeleton-shape-height / --r8-skeleton-shape-radius / --r8-skeleton-speed",
         description: l(
-          "Ajusta altura da media, escala do avatar e ritmo da animacao sem sair da API publica.",
-          "Adjusts media height, avatar scale, and animation pace without leaving the public API.",
+          "Ajusta altura de media, escala do avatar, geometria livre (width/height/radius) e ritmo da animacao sem sair da API publica.",
+          "Adjusts media height, avatar scale, free geometry (width/height/radius), and animation pace without leaving the public API.",
         ),
       },
     ],
