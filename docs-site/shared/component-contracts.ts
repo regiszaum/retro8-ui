@@ -1072,6 +1072,25 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         ],
       });
       break;
+    case "input-otp":
+      mergeContract(contract, {
+        attributes: [
+          row("aria-label", "string", "recommended on wrapper", "Nome acessivel do conjunto de digitos OTP.", "Accessible name for the OTP digit group."),
+          row("maxlength", "number", "1 per slot", "Cada slot usa `maxlength=1` para manter um unico caractere por posicao.", "Each slot uses `maxlength=1` to keep one character per position."),
+        ],
+        dataAttributes: [
+          row("data-r8-otp-length", `"4" | "6" | "8"`, `"6"`, "Define o comprimento esperado e pode gerar slots automaticamente.", "Defines the expected length and can auto-generate slots."),
+          row("data-r8-size", `"sm" | "md" | "lg"`, `"md"`, "Escala as dimensoes visuais dos slots do OTP.", "Scales the OTP slot visual dimensions."),
+          row("data-r8-otp-mask", `"true" | "false"`, `"false"`, "Alterna os slots para modo mascarado sem quebrar navegacao e paste.", "Toggles masked slot mode without breaking navigation and paste."),
+          row("data-r8-otp-autofocus", `"true" | "false"`, `"false"`, "Foca automaticamente o primeiro slot livre no init.", "Auto-focuses the first available slot on init."),
+        ],
+        methods: runtimeMethods,
+        events: [
+          event("r8:input-otp-change", `{ value, complete, length, source }`, "Emitido em cada mudanca de digito, backspace, autofill ou paste.", "Emitted on every digit change, backspace, autofill, or paste."),
+          event("r8:input-otp-complete", `{ value, length, source }`, "Emitido quando todos os slots ficam preenchidos.", "Emitted when all slots are filled."),
+        ],
+      });
+      break;
     case "input-tag":
       mergeContract(contract, {
         attributes: [

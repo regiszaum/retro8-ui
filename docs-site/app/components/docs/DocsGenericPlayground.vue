@@ -578,6 +578,8 @@ function getDefaults(id: string): Record<string, any> {
         ratio: "wide",
         status: "ready",
       };
+    case "input-otp":
+      return { autofocused: false, disabled: false, length: "6", masked: false, size: "md", value: "824159" };
     case "pagination":
       return { active: 2, background: false, hideSingle: false, jumper: false, pagerCount: 7, size: "md", summary: true, total: 9 };
     case "progress":
@@ -1360,6 +1362,42 @@ function buildConfig(id: string): PlaygroundConfig {
   <figcaption class="r8-image__caption">${escapeHtml(String(state.caption || ""))}</figcaption>
 </figure>`,
       };
+
+    case "input-otp": {
+      const lengthValue = String(state.length || "6");
+      const safeLength = ["4", "6", "8"].includes(lengthValue) ? Number(lengthValue) : 6;
+      const size = String(state.size || "md");
+      const sanitizedValue = String(state.value || "").replace(/\D+/g, "").slice(0, safeLength);
+      const slotAriaPrefix = localize("Dígito do código", "Code digit");
+      const slots = Array.from({ length: safeLength }, (_, index) => `  <input class="r8-input-otp__slot" type="${state.masked ? "password" : "text"}" inputmode="numeric" pattern="[0-9]*" maxlength="1" value="${escapeAttribute(sanitizedValue[index] || "")}"${state.disabled ? " disabled" : ""} aria-label="${escapeAttribute(`${slotAriaPrefix} ${index + 1}`)}" />`).join("\n");
+      return {
+        defaults: getDefaults(id),
+        fields: [
+          {
+            key: "length",
+            label: localize("Comprimento", "Length"),
+            options: [option("4", "4 dígitos", "4 digits"), option("6", "6 dígitos", "6 digits"), option("8", "8 dígitos", "8 digits")],
+            type: "select",
+          },
+          {
+            key: "size",
+            label: localize("Tamanho", "Size"),
+            options: [option("sm", "Pequeno", "Small"), option("md", "Médio", "Medium"), option("lg", "Grande", "Large")],
+            type: "select",
+          },
+          { key: "value", label: localize("Valor", "Value"), maxlength: 8, type: "text" },
+        ],
+        surface: "compact",
+        toggles: [
+          { key: "masked", label: localize("Mascarado", "Masked") },
+          { key: "autofocused", label: localize("Auto foco", "Auto focus") },
+          { key: "disabled", label: localize("Desabilitado", "Disabled") },
+        ],
+        render: () => `<div class="r8-input-otp" data-r8-otp-length="${safeLength}" data-r8-size="${size}"${state.masked ? ' data-r8-otp-mask="true"' : ""}${state.autofocused ? ' data-r8-otp-autofocus="true"' : ""}${state.disabled ? ' aria-disabled="true"' : ""}>
+${slots}
+</div>`,
+      };
+    }
 
     case "pagination": {
       const total = clamp(asNumber(state.total, 9), 1, 30);

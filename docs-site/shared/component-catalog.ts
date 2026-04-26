@@ -2488,6 +2488,78 @@ const formComponents = [
     ],
   },
   {
+    id: "input-otp",
+    name: "Input OTP",
+    group: "form",
+    summary: l(
+      "Entrada de codigo OTP com slots individuais, navegacao por teclado, paste completo e comprimentos de 4, 6 ou 8 digitos.",
+      "OTP code input with individual slots, keyboard navigation, full-code paste support, and 4, 6, or 8 digit lengths.",
+    ),
+    classes: ["r8-input-otp", "r8-input-otp__slot", "r8-input-otp__separator", "is-complete", "is-disabled"],
+    preview: `<div class="r8-input-otp" data-r8-otp-length="6" aria-label="Verification code"></div>`,
+    code: `<div class="docs-demo__stack">
+  <div class="r8-input-otp" data-r8-otp-length="4" aria-label="4 digit code"></div>
+  <div class="r8-input-otp" data-r8-otp-length="6" data-r8-size="sm" aria-label="6 digit code"></div>
+  <div class="r8-input-otp" data-r8-otp-length="8" data-r8-size="lg" data-r8-otp-mask="true" aria-label="8 digit code"></div>
+</div>`,
+    anatomy: ll(
+      [
+        "`r8-input-otp` e o wrapper raiz dos slots e controla tamanho, estado disabled e comprimento esperado.",
+        "`r8-input-otp__slot` representa cada digito do codigo e aceita digitacao, navegacao por setas e foco automatico.",
+        "`r8-input-otp__separator` e opcional para agrupar visualmente blocos como 3+3 ou 4+4 sem quebrar o runtime.",
+        "Com `data-r8-otp-length`, o runtime pode gerar os slots automaticamente para 4, 6 ou 8 digitos.",
+      ],
+      [
+        "`r8-input-otp` is the root wrapper for slots and controls size, disabled state, and expected length.",
+        "`r8-input-otp__slot` represents each code digit and supports typing, arrow navigation, and automatic focus movement.",
+        "`r8-input-otp__separator` is optional for visually grouping chunks such as 3+3 or 4+4 without breaking runtime behavior.",
+        "With `data-r8-otp-length`, the runtime can auto-generate slots for 4, 6, or 8 digits.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Defina `aria-label` ou `label` claro no wrapper para indicar o contexto do codigo (login, 2FA, validacao etc.).",
+        "Mantenha cada slot com `maxlength=\"1\"` para preservar o fluxo de teclado e evitar ambiguidade de leitura.",
+        "Quando o codigo for sensivel, use `data-r8-otp-mask=\"true\"` e evite expor o valor completo em texto proximo.",
+      ],
+      [
+        "Set a clear `aria-label` or linked `label` on the wrapper so the code context is explicit (login, 2FA, validation, etc.).",
+        "Keep each slot at `maxlength=\"1\"` to preserve keyboard flow and avoid ambiguous screen-reader output.",
+        "When the code is sensitive, use `data-r8-otp-mask=\"true\"` and avoid exposing the full value in nearby plain text.",
+      ],
+    ),
+    api: [
+      {
+        name: "data-r8-otp-length",
+        description: l(
+          "Define comprimento esperado do OTP e gera slots automaticos para 4, 6 ou 8 digitos.",
+          "Defines the expected OTP length and auto-generates slots for 4, 6, or 8 digits.",
+        ),
+      },
+      {
+        name: "data-r8-size",
+        description: l(
+          "Escala dimensao dos slots em `sm`, `md` ou `lg` sem alterar o markup base.",
+          "Scales slot dimensions with `sm`, `md`, or `lg` without changing base markup.",
+        ),
+      },
+      {
+        name: "data-r8-otp-mask",
+        description: l(
+          "Alterna os slots para modo mascarado mantendo o fluxo de preenchimento e navegacao.",
+          "Toggles masked slot mode while preserving the fill and navigation flow.",
+        ),
+      },
+      {
+        name: "r8:input-otp-change / r8:input-otp-complete",
+        description: l(
+          "Eventos com valor atual e status de completude para sincronizar validacao, submit e feedback.",
+          "Events with current value and completion state for validation, submit flows, and feedback.",
+        ),
+      },
+    ],
+  },
+  {
     id: "input-number",
     name: "Input Number",
     group: "form",
