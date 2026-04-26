@@ -5180,6 +5180,320 @@
     });
   }
 
+  function sanitizeInputOtpDigits(value) {
+    return String(value || "").replace(/\D+/g, "");
+  }
+
+  function getInputOtpSlots(component) {
+    return toArray(component.querySelectorAll(".r8-input-otp__slot")).filter((item) => item instanceof HTMLInputElement);
+  }
+
+  function getInputOtpSettings(component, slotCount = 0) {
+    const parsedLength = parseFiniteNumber(component.dataset.r8OtpLength || "");
+    const roundedLength = parsedLength !== null ? Math.round(parsedLength) : null;
+    const length = [4, 6, 8].includes(roundedLength) ? roundedLength : slotCount > 0 ? slotCount : 6;
+    return {
+      length,
+      masked: matchesTrue(component.dataset.r8OtpMask || "false"),
+      disabled: component.hasAttribute("disabled") || component.getAttribute("aria-disabled") === "true",
+      autofocus: matchesTrue(component.dataset.r8OtpAutofocus || "false"),
+    };
+  }
+
+  function createInputOtpSlot(index, masked) {
+    const slot = document.createElement("input");
+    slot.className = "r8-input-otp__slot";
+    slot.type = masked ? "password" : "text";
+    slot.setAttribute("inputmode", "numeric");
+    slot.setAttribute("pattern", "[0-9]*");
+    slot.autocomplete = index === 0 ? "one-time-code" : "off";
+    slot.maxLength = 1;
+    slot.setAttribute("aria-label", `Code digit ${index + 1}`);
+    return slot;
+  }
+
+  function ensureInputOtpSlots(component, settings) {
+    let slots = getInputOtpSlots(component);
+    const isGenerated = component.dataset.r8InputOtpGenerated === "true";
+    const shouldRegenerate = slots.length === 0 || (isGenerated && slots.length !== settings.length);
+    if (shouldRegenerate) {
+      toArray(component.querySelectorAll(".r8-input-otp__slot, .r8-input-otp__separator")).forEach((node) => {
+        if (node instanceof HTMLElement) {
+          node.remove();
+        }
+      });
+
+      const fragment = document.createDocumentFragment();
+      for (let index = 0; index < settings.length; index += 1) {
+        fragment.append(createInputOtpSlot(index, settings.masked));
+      }
+      component.append(fragment);
+      component.dataset.r8InputOtpGenerated = "true";
+      slots = getInputOtpSlots(component);
+    } else if (isGenerated) {
+      component.dataset.r8InputOtpGenerated = "true";
+    } else {
+      component.dataset.r8InputOtpGenerated = "false";
+    }
+
+    return {
+      regenerated: shouldRegenerate,
+      slots,
+    };
+  }
+
+  function focusInputOtpSlot(slot) {
+    if (!(slot instanceof HTMLInputElement) || slot.disabled) {
+      return;
+    }
+
+    try {
+      slot.focus({ preventScroll: true });
+    } catch (error) {
+      slot.focus();
+    }
+    slot.select();
+  }
+
+  function commitInputOtpState(component, slots, source, options = {}) {
+    slots.forEach((slot) => {
+      slot.value = sanitizeInputOtpDigits(slot.value).slice(0, 1);
+    });
+
+    const value = slots.map((slot) => slot.value).join("");
+    const complete = slots.length > 0 && slots.every((slot) => slot.value.length === 1);
+    component.dataset.r8Value = value;
+    component.classList.toggle("is-complete", complete);
+    component.classList.toggle("is-disabled", slots.every((slot) => slot.disabled));
+
+    if (options.silent !== true) {
+      emitComponentEvent(component, "input-otp-change", {
+        complete,
+        length: slots.length,
+        source,
+        value,
+      });
+    }
+
+    return { complete, value };
+  }
+
+  function initInputOtps(root) {
+    toArray(root.querySelectorAll(".r8-input-otp")).forEach((component) => {
+      if (!(component instanceof HTMLElement)) {
+        return;
+      }
+
+      const detectedSlots = getInputOtpSlots(component);
+      const settings = getInputOtpSettings(component, detectedSlots.length);
+      component.dataset.r8OtpLength = String(settings.length);
+      const ensured = ensureInputOtpSlots(component, settings);
+      const { slots } = ensured;
+      if (slots.length === 0) {
+        return;
+      }
+
+      if (ensured.regenerated && component.dataset.r8InputOtpReady === "true") {
+        component.dataset.r8InputOtpReady = "false";
+      }
+
+      slots.forEach((slot, index) => {
+        if (!Object.prototype.hasOwnProperty.call(slot.dataset, "r8OtpBaseDisabled")) {
+          slot.dataset.r8OtpBaseDisabled = slot.disabled ? "true" : "false";
+        }
+
+        const baseDisabled = matchesTrue(slot.dataset.r8OtpBaseDisabled || "false");
+        slot.disabled = settings.disabled || baseDisabled;
+        slot.type = settings.masked ? "password" : "text";
+        slot.setAttribute("inputmode", "numeric");
+        slot.setAttribute("pattern", "[0-9]*");
+        slot.autocomplete = index === 0 ? "one-time-code" : "off";
+        slot.maxLength = 1;
+        if (!slot.getAttribute("aria-label")) {
+          slot.setAttribute("aria-label", `Code digit ${index + 1}`);
+        }
+      });
+
+      const initialState = commitInputOtpState(component, slots, "init", { silent: true });
+
+      if (settings.autofocus && !settings.disabled) {
+        const firstEmpty = slots.find((slot) => !slot.disabled && slot.value === "");
+        focusInputOtpSlot(firstEmpty || slots[0]);
+      }
+
+      if (component.dataset.r8InputOtpReady === "true") {
+        return;
+      }
+
+      component.dataset.r8InputOtpReady = "true";
+      let lastComplete = initialState.complete;
+
+      const focusPrevious = (index) => {
+        for (let cursor = index - 1; cursor >= 0; cursor -= 1) {
+          const slot = slots[cursor];
+          if (slot instanceof HTMLInputElement && !slot.disabled) {
+            focusInputOtpSlot(slot);
+            return slot;
+          }
+        }
+        return null;
+      };
+
+      const focusNext = (index) => {
+        for (let cursor = index + 1; cursor < slots.length; cursor += 1) {
+          const slot = slots[cursor];
+          if (slot instanceof HTMLInputElement && !slot.disabled) {
+            focusInputOtpSlot(slot);
+            return slot;
+          }
+        }
+        return null;
+      };
+
+      const emitState = (source) => {
+        const state = commitInputOtpState(component, slots, source);
+        if (state.complete && !lastComplete) {
+          emitComponentEvent(component, "input-otp-complete", {
+            length: slots.length,
+            source,
+            value: state.value,
+          });
+        }
+        lastComplete = state.complete;
+        return state;
+      };
+
+      const fillFromIndex = (startIndex, rawValue, source) => {
+        const digits = sanitizeInputOtpDigits(rawValue);
+        if (!digits) {
+          return false;
+        }
+
+        for (let offset = 0; offset < digits.length; offset += 1) {
+          const slot = slots[startIndex + offset];
+          if (!(slot instanceof HTMLInputElement) || slot.disabled) {
+            continue;
+          }
+          slot.value = digits[offset] || "";
+        }
+
+        const state = emitState(source);
+        if (state.complete) {
+          focusInputOtpSlot(slots[slots.length - 1]);
+          return true;
+        }
+
+        const nextEmpty = slots.find((slot, index) => index >= startIndex && !slot.disabled && slot.value === "");
+        if (nextEmpty) {
+          focusInputOtpSlot(nextEmpty);
+        }
+        return true;
+      };
+
+      slots.forEach((slot, index) => {
+        slot.addEventListener("focus", () => {
+          slot.select();
+        });
+
+        slot.addEventListener("input", () => {
+          const digits = sanitizeInputOtpDigits(slot.value);
+          if (!digits) {
+            slot.value = "";
+            emitState("input");
+            return;
+          }
+
+          if (digits.length > 1) {
+            slot.value = "";
+            fillFromIndex(index, digits, "input");
+            return;
+          }
+
+          slot.value = digits[0];
+          focusNext(index);
+          emitState("input");
+        });
+
+        slot.addEventListener("keydown", (event) => {
+          if (event.key === "Backspace") {
+            event.preventDefault();
+            if (slot.value !== "") {
+              slot.value = "";
+              emitState("keyboard");
+              return;
+            }
+
+            const previous = focusPrevious(index);
+            if (previous instanceof HTMLInputElement && previous.value !== "") {
+              previous.value = "";
+              emitState("keyboard");
+            }
+            return;
+          }
+
+          if (event.key === "Delete") {
+            event.preventDefault();
+            if (slot.value !== "") {
+              slot.value = "";
+              emitState("keyboard");
+            }
+            return;
+          }
+
+          if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            focusPrevious(index);
+            return;
+          }
+
+          if (event.key === "ArrowRight") {
+            event.preventDefault();
+            focusNext(index);
+            return;
+          }
+
+          if (event.key === "Home") {
+            event.preventDefault();
+            focusInputOtpSlot(slots[0]);
+            return;
+          }
+
+          if (event.key === "End") {
+            event.preventDefault();
+            const firstEmpty = slots.find((item) => !item.disabled && item.value === "");
+            focusInputOtpSlot(firstEmpty || slots[slots.length - 1]);
+            return;
+          }
+
+          if (event.key.length === 1 && !event.altKey && !event.ctrlKey && !event.metaKey && /\D/.test(event.key)) {
+            event.preventDefault();
+          }
+        });
+
+        slot.addEventListener("paste", (event) => {
+          const pastedText = event.clipboardData?.getData("text") || "";
+          const digits = sanitizeInputOtpDigits(pastedText);
+          if (!digits) {
+            return;
+          }
+
+          event.preventDefault();
+          fillFromIndex(index, digits, "paste");
+        });
+      });
+
+      component.addEventListener("click", (event) => {
+        const target = event.target;
+        if (target instanceof HTMLElement && target.closest(".r8-input-otp__slot")) {
+          return;
+        }
+
+        const firstEmpty = slots.find((slot) => !slot.disabled && slot.value === "");
+        focusInputOtpSlot(firstEmpty || slots[slots.length - 1]);
+      });
+    });
+  }
+
   function getInputNumberSettings(component, input) {
     const rawStep = String(input.step || component.dataset.r8Step || "1");
     const step = Math.abs(parseFiniteNumber(rawStep) || 1);
@@ -7705,6 +8019,7 @@
     initCarousels(scope);
     initImages(scope);
     initInputs(scope);
+    initInputOtps(scope);
     initInputNumbers(scope);
     initBinaryControls(scope);
     initRates(scope);

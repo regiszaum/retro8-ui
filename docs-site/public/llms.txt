@@ -33,6 +33,7 @@
 - [Datetime Picker](https://regiszaum.github.io/retro8-ui/en/components/datetime-picker): Component documentation.
 - [Form](https://regiszaum.github.io/retro8-ui/en/components/form): Component documentation.
 - [Input](https://regiszaum.github.io/retro8-ui/en/components/input): Component documentation.
+- [Input OTP](https://regiszaum.github.io/retro8-ui/en/components/input-otp): Component documentation.
 - [Input Number](https://regiszaum.github.io/retro8-ui/en/components/input-number): Component documentation.
 - [Input Tag](https://regiszaum.github.io/retro8-ui/en/components/input-tag): Component documentation.
 - [Radio](https://regiszaum.github.io/retro8-ui/en/components/radio): Component documentation.

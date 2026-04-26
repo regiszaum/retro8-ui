@@ -56,6 +56,7 @@ const genericPlaygroundIds = new Set([
   "poptip",
   "divider",
   "watermark",
+  "input-otp",
 ]);
 const componentTables = computed(() => {
   const columns = props.site.componentPage.tableColumns;

@@ -1072,6 +1072,25 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
         ],
       });
       break;
+    case "input-otp":
+      mergeContract(contract, {
+        attributes: [
+          row("aria-label", "string", "recommended on wrapper", "Nome acessivel do conjunto de digitos OTP.", "Accessible name for the OTP digit group."),
+          row("maxlength", "number", "1 per slot", "Cada slot usa `maxlength=1` para manter um unico caractere por posicao.", "Each slot uses `maxlength=1` to keep one character per position."),
+        ],
+        dataAttributes: [
+          row("data-r8-otp-length", `"4" | "6" | "8"`, `"6"`, "Define o comprimento esperado e pode gerar slots automaticamente.", "Defines the expected length and can auto-generate slots."),
+          row("data-r8-size", `"sm" | "md" | "lg"`, `"md"`, "Escala as dimensoes visuais dos slots do OTP.", "Scales the OTP slot visual dimensions."),
+          row("data-r8-otp-mask", `"true" | "false"`, `"false"`, "Alterna os slots para modo mascarado sem quebrar navegacao e paste.", "Toggles masked slot mode without breaking navigation and paste."),
+          row("data-r8-otp-autofocus", `"true" | "false"`, `"false"`, "Foca automaticamente o primeiro slot livre no init.", "Auto-focuses the first available slot on init."),
+        ],
+        methods: runtimeMethods,
+        events: [
+          event("r8:input-otp-change", `{ value, complete, length, source }`, "Emitido em cada mudanca de digito, backspace, autofill ou paste.", "Emitted on every digit change, backspace, autofill, or paste."),
+          event("r8:input-otp-complete", `{ value, length, source }`, "Emitido quando todos os slots ficam preenchidos.", "Emitted when all slots are filled."),
+        ],
+      });
+      break;
     case "input-tag":
       mergeContract(contract, {
         attributes: [
@@ -1185,12 +1204,14 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
       mergeContract(contract, {
         dataAttributes: [
           row("data-r8-animated", `"true" | "false"`, `"true"`, "Liga ou pausa o shimmer sem trocar a estrutura do placeholder.", "Turns the shimmer on or off without replacing the placeholder structure."),
+          row("data-r8-shape", `"rectangle" | "circle"`, `"rectangle"`, "Quando aplicado em `r8-skeleton__shape`, alterna o bloco livre entre rectangle e circle.", "When applied on `r8-skeleton__shape`, switches the free block between rectangle and circle."),
         ],
         cssVariables: [
           row("--r8-skeleton-gap", "length", "var(--r8-space-3)", "Controla o espacamento interno entre as pecas do esqueleto.", "Controls internal spacing between skeleton pieces."),
           row("--r8-skeleton-block-height / --r8-skeleton-media-height", "length", "7rem / 9rem", "Ajustam a altura de blocos grandes e areas de media.", "Adjust the height of large blocks and media areas."),
           row("--r8-skeleton-line-height / --r8-skeleton-title-width", "length", "1rem / 48%", "Permitem afinar linhas e controlar a largura visual do titulo.", "Let you slim down lines and control the visual title width."),
           row("--r8-skeleton-avatar-size / --r8-skeleton-button-width", "length", "3rem / 5.5rem", "Escalam avatar e CTA falsa em templates de profile ou card.", "Scale the avatar and fake CTA in profile or card templates."),
+          row("--r8-skeleton-shape-width / --r8-skeleton-shape-height / --r8-skeleton-shape-radius", "length", "6rem / 1rem / 0", "Definem largura, altura e radius do bloco livre para montar skeleton rectangle ou circle.", "Define width, height, and radius for the free block so you can assemble rectangle or circle skeletons."),
           row("--r8-skeleton-speed", "time", "1.2s", "Ajusta a velocidade da animacao do shimmer.", "Adjusts the shimmer animation speed."),
         ],
       });

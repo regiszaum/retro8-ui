@@ -472,9 +472,13 @@ function buildSkeletonLines(lines: number) {
   }).join("\n  ");
 }
 
-function buildSkeletonTemplate(template: string, lines: number, animated: boolean, count: number) {
+function buildSkeletonTemplate(template: string, lines: number, animated: boolean, count: number, shape: string, width: number, height: number) {
   const animatedAttr = animated ? "" : ' data-r8-animated="false"';
   const safeCount = clamp(count, 1, 4);
+  const safeShape = shape === "circle" ? "circle" : "rectangle";
+  const shapeClass = safeShape === "circle" ? "r8-skeleton__shape--circle" : "r8-skeleton__shape--rectangle";
+  const safeWidth = clamp(width, 16, 460);
+  const safeHeight = clamp(height, 8, 320);
 
   const buildOne = () => {
     switch (template) {
@@ -512,6 +516,10 @@ function buildSkeletonTemplate(template: string, lines: number, animated: boolea
       <div class="r8-skeleton__line r8-skeleton__line--short"></div>
     </div>
   </div>
+</div>`;
+      case "shape":
+        return `<div class="r8-skeleton"${animatedAttr}>
+  <div class="${classList("r8-skeleton__shape", shapeClass)}" data-r8-shape="${safeShape}" style="--r8-skeleton-shape-width: ${safeWidth}px; --r8-skeleton-shape-height: ${safeHeight}px;"></div>
 </div>`;
       default:
         return `<div class="r8-skeleton"${animatedAttr}>
@@ -570,6 +578,8 @@ function getDefaults(id: string): Record<string, any> {
         ratio: "wide",
         status: "ready",
       };
+    case "input-otp":
+      return { autofocused: false, disabled: false, length: "6", masked: false, size: "md", value: "824159" };
     case "pagination":
       return { active: 2, background: false, hideSingle: false, jumper: false, pagerCount: 7, size: "md", summary: true, total: 9 };
     case "progress":
@@ -585,7 +595,7 @@ function getDefaults(id: string): Record<string, any> {
         value: 32,
       };
     case "skeleton":
-      return { animated: true, count: 1, lines: 3, template: "card" };
+      return { animated: true, count: 1, height: 16, lines: 3, shape: "rectangle", template: "card", width: 176 };
     case "table":
       return { compact: false, fixedHead: false, hover: true, rows: 4, statusRows: true, striped: true, truncate: true };
     case "tag":
@@ -1353,6 +1363,42 @@ function buildConfig(id: string): PlaygroundConfig {
 </figure>`,
       };
 
+    case "input-otp": {
+      const lengthValue = String(state.length || "6");
+      const safeLength = ["4", "6", "8"].includes(lengthValue) ? Number(lengthValue) : 6;
+      const size = String(state.size || "md");
+      const sanitizedValue = String(state.value || "").replace(/\D+/g, "").slice(0, safeLength);
+      const slotAriaPrefix = localize("Dígito do código", "Code digit");
+      const slots = Array.from({ length: safeLength }, (_, index) => `  <input class="r8-input-otp__slot" type="${state.masked ? "password" : "text"}" inputmode="numeric" pattern="[0-9]*" maxlength="1" value="${escapeAttribute(sanitizedValue[index] || "")}"${state.disabled ? " disabled" : ""} aria-label="${escapeAttribute(`${slotAriaPrefix} ${index + 1}`)}" />`).join("\n");
+      return {
+        defaults: getDefaults(id),
+        fields: [
+          {
+            key: "length",
+            label: localize("Comprimento", "Length"),
+            options: [option("4", "4 dígitos", "4 digits"), option("6", "6 dígitos", "6 digits"), option("8", "8 dígitos", "8 digits")],
+            type: "select",
+          },
+          {
+            key: "size",
+            label: localize("Tamanho", "Size"),
+            options: [option("sm", "Pequeno", "Small"), option("md", "Médio", "Medium"), option("lg", "Grande", "Large")],
+            type: "select",
+          },
+          { key: "value", label: localize("Valor", "Value"), maxlength: 8, type: "text" },
+        ],
+        surface: "compact",
+        toggles: [
+          { key: "masked", label: localize("Mascarado", "Masked") },
+          { key: "autofocused", label: localize("Auto foco", "Auto focus") },
+          { key: "disabled", label: localize("Desabilitado", "Disabled") },
+        ],
+        render: () => `<div class="r8-input-otp" data-r8-otp-length="${safeLength}" data-r8-size="${size}"${state.masked ? ' data-r8-otp-mask="true"' : ""}${state.autofocused ? ' data-r8-otp-autofocus="true"' : ""}${state.disabled ? ' aria-disabled="true"' : ""}>
+${slots}
+</div>`,
+      };
+    }
+
     case "pagination": {
       const total = clamp(asNumber(state.total, 9), 1, 30);
       const active = clamp(asNumber(state.active, 2), 1, total);
@@ -1477,9 +1523,14 @@ function buildConfig(id: string): PlaygroundConfig {
     }
 
     case "skeleton": {
-      const lines = clamp(asNumber(state.lines, 3), 2, 5);
       const template = String(state.template || "card");
+      const isShapeTemplate = template === "shape";
+      const lines = clamp(asNumber(state.lines, 3), 2, 5);
       const count = clamp(asNumber(state.count, 1), 1, 4);
+      const shape = String(state.shape || "rectangle") === "circle" ? "circle" : "rectangle";
+      const defaultShapeSize = shape === "circle" ? 56 : 176;
+      const width = clamp(asNumber(state.width, defaultShapeSize), 16, 460);
+      const height = clamp(asNumber(state.height, shape === "circle" ? defaultShapeSize : 16), 8, 320);
       return {
         defaults: getDefaults(id),
         fields: [
@@ -1491,15 +1542,27 @@ function buildConfig(id: string): PlaygroundConfig {
               option("profile", "Perfil", "Profile"),
               option("list", "Lista", "List"),
               option("rows", "Linhas", "Rows"),
+              option("shape", "Shape livre", "Free shape"),
             ],
             type: "select",
           },
-          { key: "lines", label: localize("Linhas", "Lines"), max: 5, min: 2, type: "number" },
+          ...(isShapeTemplate
+            ? [
+                {
+                  key: "shape",
+                  label: localize("Forma", "Shape"),
+                  options: [option("rectangle", "Rectangle", "Rectangle"), option("circle", "Circle", "Circle")],
+                  type: "select" as const,
+                },
+                { key: "width", label: localize("Width (px)", "Width (px)"), max: 460, min: 16, type: "number" as const },
+                { key: "height", label: localize("Height (px)", "Height (px)"), max: 320, min: 8, type: "number" as const },
+              ]
+            : [{ key: "lines", label: localize("Linhas", "Lines"), max: 5, min: 2, type: "number" as const }]),
           { key: "count", label: localize("Quantidade", "Count"), max: 4, min: 1, type: "number" },
         ],
-        surface: template === "card" || template === "profile" || count > 1 ? "wide" : "default",
+        surface: isShapeTemplate ? (count > 1 || width > 240 ? "wide" : "default") : template === "card" || template === "profile" || count > 1 ? "wide" : "default",
         toggles: [{ key: "animated", label: localize("Animado", "Animated") }],
-        render: () => buildSkeletonTemplate(template, lines, Boolean(state.animated), count),
+        render: () => buildSkeletonTemplate(template, lines, Boolean(state.animated), count, shape, width, height),
       };
     }
 

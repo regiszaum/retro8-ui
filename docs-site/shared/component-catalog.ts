@@ -2488,6 +2488,78 @@ const formComponents = [
     ],
   },
   {
+    id: "input-otp",
+    name: "Input OTP",
+    group: "form",
+    summary: l(
+      "Entrada de codigo OTP com slots individuais, navegacao por teclado, paste completo e comprimentos de 4, 6 ou 8 digitos.",
+      "OTP code input with individual slots, keyboard navigation, full-code paste support, and 4, 6, or 8 digit lengths.",
+    ),
+    classes: ["r8-input-otp", "r8-input-otp__slot", "r8-input-otp__separator", "is-complete", "is-disabled"],
+    preview: `<div class="r8-input-otp" data-r8-otp-length="6" aria-label="Verification code"></div>`,
+    code: `<div class="docs-demo__stack">
+  <div class="r8-input-otp" data-r8-otp-length="4" aria-label="4 digit code"></div>
+  <div class="r8-input-otp" data-r8-otp-length="6" data-r8-size="sm" aria-label="6 digit code"></div>
+  <div class="r8-input-otp" data-r8-otp-length="8" data-r8-size="lg" data-r8-otp-mask="true" aria-label="8 digit code"></div>
+</div>`,
+    anatomy: ll(
+      [
+        "`r8-input-otp` e o wrapper raiz dos slots e controla tamanho, estado disabled e comprimento esperado.",
+        "`r8-input-otp__slot` representa cada digito do codigo e aceita digitacao, navegacao por setas e foco automatico.",
+        "`r8-input-otp__separator` e opcional para agrupar visualmente blocos como 3+3 ou 4+4 sem quebrar o runtime.",
+        "Com `data-r8-otp-length`, o runtime pode gerar os slots automaticamente para 4, 6 ou 8 digitos.",
+      ],
+      [
+        "`r8-input-otp` is the root wrapper for slots and controls size, disabled state, and expected length.",
+        "`r8-input-otp__slot` represents each code digit and supports typing, arrow navigation, and automatic focus movement.",
+        "`r8-input-otp__separator` is optional for visually grouping chunks such as 3+3 or 4+4 without breaking runtime behavior.",
+        "With `data-r8-otp-length`, the runtime can auto-generate slots for 4, 6, or 8 digits.",
+      ],
+    ),
+    accessibility: ll(
+      [
+        "Defina `aria-label` ou `label` claro no wrapper para indicar o contexto do codigo (login, 2FA, validacao etc.).",
+        "Mantenha cada slot com `maxlength=\"1\"` para preservar o fluxo de teclado e evitar ambiguidade de leitura.",
+        "Quando o codigo for sensivel, use `data-r8-otp-mask=\"true\"` e evite expor o valor completo em texto proximo.",
+      ],
+      [
+        "Set a clear `aria-label` or linked `label` on the wrapper so the code context is explicit (login, 2FA, validation, etc.).",
+        "Keep each slot at `maxlength=\"1\"` to preserve keyboard flow and avoid ambiguous screen-reader output.",
+        "When the code is sensitive, use `data-r8-otp-mask=\"true\"` and avoid exposing the full value in nearby plain text.",
+      ],
+    ),
+    api: [
+      {
+        name: "data-r8-otp-length",
+        description: l(
+          "Define comprimento esperado do OTP e gera slots automaticos para 4, 6 ou 8 digitos.",
+          "Defines the expected OTP length and auto-generates slots for 4, 6, or 8 digits.",
+        ),
+      },
+      {
+        name: "data-r8-size",
+        description: l(
+          "Escala dimensao dos slots em `sm`, `md` ou `lg` sem alterar o markup base.",
+          "Scales slot dimensions with `sm`, `md`, or `lg` without changing base markup.",
+        ),
+      },
+      {
+        name: "data-r8-otp-mask",
+        description: l(
+          "Alterna os slots para modo mascarado mantendo o fluxo de preenchimento e navegacao.",
+          "Toggles masked slot mode while preserving the fill and navigation flow.",
+        ),
+      },
+      {
+        name: "r8:input-otp-change / r8:input-otp-complete",
+        description: l(
+          "Eventos com valor atual e status de completude para sincronizar validacao, submit e feedback.",
+          "Events with current value and completion state for validation, submit flows, and feedback.",
+        ),
+      },
+    ],
+  },
+  {
     id: "input-number",
     name: "Input Number",
     group: "form",
@@ -3931,8 +4003,8 @@ const dataComponents = [
     name: "Skeleton",
     group: "data",
     summary: l(
-      "Placeholder estrutural para loading de cards, listas e perfis, com avatar, media, linhas e animacao opcional no mesmo sistema visual.",
-      "Structural loading placeholder for cards, lists, and profiles, with avatar, media, lines, and optional animation in the same visual system.",
+      "Placeholder estrutural para loading de cards, listas e perfis, com avatar, media, linhas e bloco livre para circle/rectangle com dimensoes customizadas.",
+      "Structural loading placeholder for cards, lists, and profiles, with avatar, media, lines, and a free shape block for circle/rectangle custom sizing.",
     ),
     classes: [
       "r8-skeleton",
@@ -3948,6 +4020,9 @@ const dataComponents = [
       "r8-skeleton__line--medium",
       "r8-skeleton__line--short",
       "r8-skeleton__button",
+      "r8-skeleton__shape",
+      "r8-skeleton__shape--circle",
+      "r8-skeleton__shape--rectangle",
     ],
     preview: `<div class="r8-skeleton r8-skeleton--card">
   <div class="r8-skeleton__media"></div>
@@ -3988,19 +4063,26 @@ const dataComponents = [
     <div class="r8-skeleton__line r8-skeleton__line--medium"></div>
     <div class="r8-skeleton__line r8-skeleton__line--short"></div>
   </div>
+
+  <div class="r8-skeleton">
+    <div class="r8-skeleton__shape r8-skeleton__shape--circle" style="--r8-skeleton-shape-width: 3rem; --r8-skeleton-shape-height: 3rem;"></div>
+    <div class="r8-skeleton__shape r8-skeleton__shape--rectangle" style="--r8-skeleton-shape-width: 11rem; --r8-skeleton-shape-height: 1.1rem;"></div>
+  </div>
 </div>`,
     anatomy: ll(
       [
         "`r8-skeleton` e o wrapper base. Ele organiza as pecas falsas e aceita variaveis para espacamento, alturas e velocidade do shimmer.",
-        "`r8-skeleton__media`, `__avatar`, `__title`, `__line` e `__button` permitem aproximar o placeholder do layout real sem inventar markup aleatorio.",
+        "`r8-skeleton__media`, `__avatar`, `__title`, `__line`, `__button` e `__shape` permitem aproximar o placeholder do layout real sem inventar markup aleatorio.",
         "`r8-skeleton--card` adiciona moldura e padding quando o loading precisa reservar o mesmo volume de um card real.",
         "As variantes de largura como `r8-skeleton__line--medium` e `--short` ajudam a quebrar a repeticao e deixam a leitura mais natural.",
+        "Use `r8-skeleton__shape--circle` ou `--rectangle` e ajuste `--r8-skeleton-shape-width`/`--r8-skeleton-shape-height` para montar placeholders livres.",
       ],
       [
         "`r8-skeleton` is the base wrapper. It arranges the fake pieces and accepts variables for spacing, heights, and shimmer speed.",
-        "`r8-skeleton__media`, `__avatar`, `__title`, `__line`, and `__button` let you match the placeholder to the real layout without inventing random markup.",
+        "`r8-skeleton__media`, `__avatar`, `__title`, `__line`, `__button`, and `__shape` let you match the placeholder to the real layout without inventing random markup.",
         "`r8-skeleton--card` adds frame and padding when loading needs to reserve the same footprint as a real card.",
         "Width variants such as `r8-skeleton__line--medium` and `--short` help break repetition and make the placeholder feel more natural.",
+        "Use `r8-skeleton__shape--circle` or `--rectangle` and tune `--r8-skeleton-shape-width`/`--r8-skeleton-shape-height` for free-form placeholders.",
       ],
     ),
     accessibility: ll(
@@ -4024,10 +4106,24 @@ const dataComponents = [
         ),
       },
       {
+        name: "data-r8-shape",
+        description: l(
+          "Quando aplicado em `r8-skeleton__shape`, alterna entre rectangle e circle sem trocar classes.",
+          "When applied on `r8-skeleton__shape`, switches between rectangle and circle without replacing classes.",
+        ),
+      },
+      {
         name: "r8-skeleton__media / __avatar / __title / __button",
         description: l(
           "Pecas estruturais para aproximar o loading de cards, perfis, listas e CTAs reais.",
           "Structural pieces for matching cards, profiles, lists, and real CTAs during loading.",
+        ),
+      },
+      {
+        name: "r8-skeleton__shape / __shape--circle / __shape--rectangle",
+        description: l(
+          "Bloco livre para criar circle ou rectangle com largura/altura customizadas por instancia.",
+          "Free shape block for creating circle or rectangle placeholders with per-instance custom width/height.",
         ),
       },
       {
@@ -4038,10 +4134,10 @@ const dataComponents = [
         ),
       },
       {
-        name: "--r8-skeleton-media-height / --r8-skeleton-avatar-size / --r8-skeleton-speed",
+        name: "--r8-skeleton-media-height / --r8-skeleton-avatar-size / --r8-skeleton-shape-width / --r8-skeleton-shape-height / --r8-skeleton-shape-radius / --r8-skeleton-speed",
         description: l(
-          "Ajusta altura da media, escala do avatar e ritmo da animacao sem sair da API publica.",
-          "Adjusts media height, avatar scale, and animation pace without leaving the public API.",
+          "Ajusta altura de media, escala do avatar, geometria livre (width/height/radius) e ritmo da animacao sem sair da API publica.",
+          "Adjusts media height, avatar scale, free geometry (width/height/radius), and animation pace without leaving the public API.",
         ),
       },
     ],
