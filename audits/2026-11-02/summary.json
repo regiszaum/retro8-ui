@@ -1,0 +1,559 @@
+{
+  "routes": 55,
+  "status200": 55,
+  "pt200": 55,
+  "pageErrors": [],
+  "hydration": 55,
+  "a11yPages": 18,
+  "layoutByWidth": [
+    {
+      "width": 1440,
+      "pagesWithElementsBeyondViewport": 2
+    },
+    {
+      "width": 768,
+      "pagesWithElementsBeyondViewport": 25
+    },
+    {
+      "width": 390,
+      "pagesWithElementsBeyondViewport": 55
+    },
+    {
+      "width": 320,
+      "pagesWithElementsBeyondViewport": 55
+    }
+  ],
+  "accessibility": [
+    {
+      "id": "button",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": [
+            {
+              "target": [
+                ".r8-btn--success"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.29 (foreground color: #ffffff, background color: #16a34a, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                ".r8-btn--info"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.68 (foreground color: #ffffff, background color: #0891b2, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "color",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": [
+            {
+              "target": [
+                ".r8-text--subtle"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.07 (foreground color: #94a3b8, background color: #e2e8f0, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "link",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": [
+            {
+              "target": [
+                ".r8-link--muted"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.34 (foreground color: #727e8f, background color: #e2e8f0, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "autocomplete",
+      "violations": [
+        {
+          "id": "aria-allowed-attr",
+          "impact": "critical",
+          "description": "Ensure an element's role supports its ARIA attributes",
+          "nodes": [
+            {
+              "target": [
+                ".docs-demo__stack > .r8-autocomplete[data-r8-clearable=\"true\"][data-r8-empty-label=\"No pilots matched this query.\"] > .r8-autocomplete__trigger"
+              ],
+              "summary": "Fix all of the following:\n  ARIA attribute is not allowed: aria-expanded=\"false\""
+            },
+            {
+              "target": [
+                "div[data-r8-trigger-on-focus=\"false\"] > .r8-autocomplete__trigger"
+              ],
+              "summary": "Fix all of the following:\n  ARIA attribute is not allowed: aria-expanded=\"false\""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "date-picker",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": [
+            {
+              "target": [
+                "button[aria-controls=\"r8-date-picker-popup-1\"] > .r8-badge.r8-badge--info"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.68 (foreground color: #ffffff, background color: #0891b2, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                "#r8-date-picker-popup-1 > .r8-date-picker__calendar > .r8-date-picker__weekdays.has-week-numbers > .r8-date-picker__weekday--week.r8-date-picker__weekday"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.8pt (10.4px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                "#r8-date-picker-popup-1 > .r8-date-picker__calendar > .r8-date-picker__grid[role=\"grid\"][aria-label=\"Calendar March 2026\"] > .r8-date-picker__week-number[aria-hidden=\"true\"]:nth-child(1)"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.8pt (10.4px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                "#r8-date-picker-popup-1 > .r8-date-picker__calendar > .r8-date-picker__grid[role=\"grid\"][aria-label=\"Calendar March 2026\"] > .r8-date-picker__week-number[aria-hidden=\"true\"]:nth-child(9)"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.8pt (10.4px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                "#r8-date-picker-popup-1 > .r8-date-picker__calendar > .r8-date-picker__grid[role=\"grid\"][aria-label=\"Calendar March 2026\"] > .r8-date-picker__week-number[aria-hidden=\"true\"]:nth-child(17)"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.8pt (10.4px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "datetime-picker",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": [
+            {
+              "target": [
+                "button[aria-controls=\"r8-datetime-picker-panel-1\"] > .r8-badge.r8-badge--success"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.29 (foreground color: #ffffff, background color: #16a34a, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                "#r8-datetime-picker-panel-1 > .r8-datetime-picker__layout > .r8-date-picker__calendar > .r8-date-picker__grid[role=\"grid\"][aria-label=\"Calendar March 2026\"] > .is-other-month[data-r8-date=\"2026-04-01\"][aria-label=\"Apr 01, 2026\"] > .r8-date-picker__day-number"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 8.6pt (11.52px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                "#r8-datetime-picker-panel-1 > .r8-datetime-picker__layout > .r8-date-picker__calendar > .r8-date-picker__grid[role=\"grid\"][aria-label=\"Calendar March 2026\"] > .is-other-month[data-r8-date=\"2026-04-02\"][aria-label=\"Apr 02, 2026\"] > .r8-date-picker__day-number"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 8.6pt (11.52px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                "#r8-datetime-picker-panel-1 > .r8-datetime-picker__layout > .r8-date-picker__calendar > .r8-date-picker__grid[role=\"grid\"][aria-label=\"Calendar March 2026\"] > .is-other-month[data-r8-date=\"2026-04-03\"][aria-label=\"Apr 03, 2026\"] > .r8-date-picker__day-number"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 8.6pt (11.52px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                "#r8-datetime-picker-panel-1 > .r8-datetime-picker__layout > .r8-date-picker__calendar > .r8-date-picker__grid[role=\"grid\"][aria-label=\"Calendar March 2026\"] > .is-other-month[data-r8-date=\"2026-04-04\"][aria-label=\"Apr 04, 2026\"] > .r8-date-picker__day-number"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 8.6pt (11.52px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "input-number",
+      "violations": [
+        {
+          "id": "label",
+          "impact": "critical",
+          "description": "Ensure every form element has a label",
+          "nodes": [
+            {
+              "target": [
+                ".docs-preview__surface > .r8-input-number[data-r8-step-strictly=\"true\"][data-r8-precision=\"2\"] > .r8-input-number__input[max=\"12\"][step=\"0.25\"]"
+              ],
+              "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rate",
+      "violations": [
+        {
+          "id": "aria-required-attr",
+          "impact": "critical",
+          "description": "Ensure elements with ARIA roles have all required ARIA attributes",
+          "nodes": [
+            {
+              "target": [
+                ".docs-preview__surface > .r8-rate[data-r8-rate-ready=\"true\"] > .is-active.r8-rate__item[role=\"radio\"]:nth-child(1)"
+              ],
+              "summary": "Fix any of the following:\n  Required ARIA attribute not present: aria-checked"
+            },
+            {
+              "target": [
+                ".docs-preview__surface > .r8-rate[data-r8-rate-ready=\"true\"] > .is-active.r8-rate__item[role=\"radio\"]:nth-child(2)"
+              ],
+              "summary": "Fix any of the following:\n  Required ARIA attribute not present: aria-checked"
+            },
+            {
+              "target": [
+                ".docs-preview__surface > .r8-rate[data-r8-rate-ready=\"true\"] > .is-active.r8-rate__item[role=\"radio\"]:nth-child(3)"
+              ],
+              "summary": "Fix any of the following:\n  Required ARIA attribute not present: aria-checked"
+            },
+            {
+              "target": [
+                ".docs-preview__surface > .r8-rate[data-r8-rate-ready=\"true\"] > .r8-rate__item[role=\"radio\"]:nth-child(4)"
+              ],
+              "summary": "Fix any of the following:\n  Required ARIA attribute not present: aria-checked"
+            },
+            {
+              "target": [
+                ".docs-preview__surface > .r8-rate[data-r8-rate-ready=\"true\"] > .r8-rate__item[role=\"radio\"]:nth-child(5)"
+              ],
+              "summary": "Fix any of the following:\n  Required ARIA attribute not present: aria-checked"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "slider",
+      "violations": [
+        {
+          "id": "aria-allowed-attr",
+          "impact": "critical",
+          "description": "Ensure an element's role supports its ARIA attributes",
+          "nodes": [
+            {
+              "target": [
+                ".docs-preview__surface > .r8-slider[data-r8-slider-ready=\"true\"][role=\"group\"]"
+              ],
+              "summary": "Fix all of the following:\n  ARIA attributes are not allowed: aria-valuemin=\"0\", aria-valuemax=\"100\", aria-valuenow=\"68\", aria-valuetext=\"68%\""
+            }
+          ]
+        },
+        {
+          "id": "aria-input-field-name",
+          "impact": "serious",
+          "description": "Ensure every ARIA input field has an accessible name",
+          "nodes": [
+            {
+              "target": [
+                ".docs-preview__surface > .r8-slider[data-r8-slider-ready=\"true\"][role=\"group\"] > .r8-slider__track[role=\"slider\"][aria-orientation=\"horizontal\"]"
+              ],
+              "summary": "Fix any of the following:\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "upload",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": [
+            {
+              "target": [
+                ".docs-demo__stack > div[data-r8-upload-preview-label=\"Preview\"][data-r8-upload-remove-label=\"Remove\"][data-r8-upload-selected-label=\"Selected\"] > .r8-upload__list > .r8-upload__file[data-r8-upload-state=\"uploading\"] > .r8-upload__actions > .r8-upload__action[type=\"button\"]:nth-child(1)"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.19 (foreground color: #2563eb, background color: #e2e8f0, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                ".r8-upload__file[data-r8-upload-state=\"uploading\"] > .r8-upload__actions > .r8-upload__action[data-r8-upload-action=\"remove\"][type=\"button\"]"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.19 (foreground color: #2563eb, background color: #e2e8f0, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                ".docs-demo__stack > div[data-r8-upload-preview-label=\"Preview\"][data-r8-upload-remove-label=\"Remove\"][data-r8-upload-selected-label=\"Selected\"] > .r8-upload__list > .r8-upload__file[data-r8-upload-state=\"success\"] > .r8-upload__actions > .r8-upload__action[type=\"button\"]:nth-child(1)"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.67 (foreground color: #16a34a, background color: #e2e8f0, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                ".r8-upload__file[data-r8-upload-state=\"success\"] > .r8-upload__actions > .r8-upload__action[data-r8-upload-action=\"remove\"][type=\"button\"]"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.67 (foreground color: #16a34a, background color: #e2e8f0, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        },
+        {
+          "id": "label",
+          "impact": "critical",
+          "description": "Ensure every form element has a label",
+          "nodes": [
+            {
+              "target": [
+                ".docs-demo__stack > div[data-r8-upload-preview-label=\"Preview\"][data-r8-upload-remove-label=\"Remove\"][data-r8-upload-selected-label=\"Selected\"] > .r8-upload__toolbar > .r8-upload__input[type=\"file\"]"
+              ],
+              "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+            },
+            {
+              "target": [
+                "input[accept=\"\"]"
+              ],
+              "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "badge",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": [
+            {
+              "target": [
+                ".r8-badge--success"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.29 (foreground color: #ffffff, background color: #16a34a, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                ".r8-badge--info"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.68 (foreground color: #ffffff, background color: #0891b2, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "progress",
+      "violations": [
+        {
+          "id": "aria-progressbar-name",
+          "impact": "serious",
+          "description": "Ensure every ARIA progressbar node has an accessible name",
+          "nodes": [
+            {
+              "target": [
+                ".docs-demo__stack > .r8-progress[data-r8-value=\"32\"][aria-valuetext=\"32%\"]"
+              ],
+              "summary": "Fix any of the following:\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute"
+            },
+            {
+              "target": [
+                ".r8-progress--warning"
+              ],
+              "summary": "Fix any of the following:\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute"
+            },
+            {
+              "target": [
+                ".r8-progress--success"
+              ],
+              "summary": "Fix any of the following:\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute"
+            }
+          ]
+        },
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": [
+            {
+              "target": [
+                ".r8-progress__inside-value"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 1.23 (foreground color: #ffffff, background color: #e2e8f0, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tag",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": [
+            {
+              "target": [
+                ".r8-cluster > .r8-tag--success.r8-tag"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.29 (foreground color: #ffffff, background color: #16a34a, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "alert",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": [
+            {
+              "target": [
+                ".r8-alert--success > .r8-alert__layout > .r8-alert__icon[aria-hidden=\"true\"]"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.86 (foreground color: #15803d, background color: #d4e6dd, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                ".r8-alert__link"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.97 (foreground color: #15803d, background color: #d8e9e1, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "panel",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": [
+            {
+              "target": [
+                ".r8-badge--success"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.29 (foreground color: #ffffff, background color: #16a34a, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                ".r8-badge--info"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.68 (foreground color: #ffffff, background color: #0891b2, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "window",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": [
+            {
+              "target": [
+                ".docs-preview__surface > .r8-window > .r8-window__titlebar > .r8-window__title"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.45 (foreground color: #0f172a, background color: #2563eb, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                ".r8-badge--info"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.68 (foreground color: #ffffff, background color: #0891b2, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "navbar",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": [
+            {
+              "target": [
+                "#r8-navbar-collapse-16 > .r8-navbar__actions > .r8-badge.r8-badge--info"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.68 (foreground color: #ffffff, background color: #0891b2, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "inventory-page",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": [
+            {
+              "target": [
+                ".docs-demo__stack > .r8-window > .r8-window__titlebar > .r8-window__title"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.45 (foreground color: #0f172a, background color: #2563eb, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                "td:nth-child(2) > .r8-badge--info.r8-badge"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.68 (foreground color: #ffffff, background color: #0891b2, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                "td:nth-child(2) > .r8-badge--success.r8-badge"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.29 (foreground color: #ffffff, background color: #16a34a, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                ".r8-cluster > .r8-badge--success.r8-badge"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.29 (foreground color: #ffffff, background color: #16a34a, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                ".r8-cluster > .r8-badge--info.r8-badge"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.68 (foreground color: #ffffff, background color: #0891b2, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

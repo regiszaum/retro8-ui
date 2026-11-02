@@ -1,0 +1,186 @@
+[
+  {
+    "name": "checkbox click, Space, disabled and refresh idempotence",
+    "status": "pass"
+  },
+  {
+    "name": "switch click and keyboard",
+    "status": "pass"
+  },
+  {
+    "name": "theme-switch click and keyboard",
+    "status": "pass"
+  },
+  {
+    "name": "radio selection exclusivity",
+    "status": "pass"
+  },
+  {
+    "name": "tabs click switches visible panel",
+    "status": "pass"
+  },
+  {
+    "name": "tabs ArrowRight navigates to next tab",
+    "status": "fail",
+    "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'Stats'\n- 'Crew'",
+    "errors": []
+  },
+  {
+    "name": "rating selects a single radio option",
+    "status": "fail",
+    "error": "Expected values to be strictly equal:\n\n4 !== 1\n",
+    "errors": []
+  },
+  {
+    "name": "rating disabled prevents change",
+    "status": "fail",
+    "error": "Expected values to be strictly equal:\n\n5 !== 3\n",
+    "errors": []
+  },
+  {
+    "name": "select opens selects option and Escape closes",
+    "status": "fail",
+    "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'engineer'\n- 'Engineer'",
+    "errors": []
+  },
+  {
+    "name": "select keyboard opens and selects",
+    "status": "pass"
+  },
+  {
+    "name": "collapse click and keyboard",
+    "status": "pass"
+  },
+  {
+    "name": "slider keyboard clamps at bounds",
+    "status": "pass"
+  },
+  {
+    "name": "slider disabled prevents keyboard change",
+    "status": "fail",
+    "error": "Expected values to be strictly equal:\n\n'73' !== '68'\n",
+    "errors": []
+  },
+  {
+    "name": "input-number increment and max clamping",
+    "status": "pass"
+  },
+  {
+    "name": "input-number strict step with max not aligned stays within max",
+    "status": "fail",
+    "error": "value exceeded max: 1.20",
+    "errors": []
+  },
+  {
+    "name": "input-number readonly prevents increment",
+    "status": "fail",
+    "error": "Expected values to be strictly equal:\n\n'3.75' !== '3.50'\n",
+    "errors": []
+  },
+  {
+    "name": "input-tag add remove and treat XSS as text",
+    "status": "pass"
+  },
+  {
+    "name": "transfer moves selected item",
+    "status": "pass"
+  },
+  {
+    "name": "transfer items reachable and usable by keyboard",
+    "status": "fail",
+    "error": "item not focusable",
+    "errors": []
+  },
+  {
+    "name": "dialog open close and Escape",
+    "status": "pass"
+  },
+  {
+    "name": "dialog aria-expanded tracks open state",
+    "status": "fail",
+    "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'false'\n- 'true'",
+    "errors": []
+  },
+  {
+    "name": "drawer open and Escape",
+    "status": "pass"
+  },
+  {
+    "name": "modal drawer moves focus into drawer",
+    "status": "fail",
+    "error": "focus remained outside modal drawer",
+    "errors": []
+  },
+  {
+    "name": "upload filename HTML rendered safely and remove works",
+    "status": "pass"
+  },
+  {
+    "name": "OTP typing sanitizes and advances focus",
+    "status": "pass"
+  },
+  {
+    "name": "date-picker selects available date",
+    "status": "pass"
+  },
+  {
+    "name": "autocomplete types filters and selects",
+    "status": "pass"
+  },
+  {
+    "name": "carousel next arrow changes active slide",
+    "status": "pass"
+  },
+  {
+    "name": "pagination next updates current page",
+    "status": "pass"
+  },
+  {
+    "name": "dynamic standalone component auto initializes",
+    "status": "fail",
+    "error": "Expected values to be strictly equal:\n\nnull !== 'true'\n",
+    "errors": []
+  },
+  {
+    "name": "init(element) initializes the element itself",
+    "status": "fail",
+    "error": "Expected values to be strictly equal:\n\nnull !== 'true'\n",
+    "errors": []
+  },
+  {
+    "name": "input clear updates native value",
+    "status": "pass"
+  },
+  {
+    "name": "password reveal toggles type",
+    "status": "pass"
+  },
+  {
+    "name": "navbar toggles and Escape closes",
+    "status": "pass"
+  },
+  {
+    "name": "splitter keyboard resize and disabled state",
+    "status": "pass"
+  },
+  {
+    "name": "poptip opens and closes via button",
+    "status": "pass"
+  },
+  {
+    "name": "dropdown emits chosen command and closes",
+    "status": "pass"
+  },
+  {
+    "name": "color-picker swatch commits color",
+    "status": "pass"
+  },
+  {
+    "name": "datetime-picker selects date and time",
+    "status": "pass"
+  },
+  {
+    "name": "cascader filters and selects leaf",
+    "status": "pass"
+  }
+]

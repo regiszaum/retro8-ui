@@ -2570,12 +2570,12 @@ const formComponents = [
     classes: ["r8-input-number", "r8-input-number__button", "r8-input-number__input"],
     preview: `<div class="r8-input-number" data-r8-step-strictly="true" data-r8-precision="2" data-r8-controls-position="right">
   <button class="r8-input-number__button" type="button">-</button>
-  <input class="r8-input-number__input" type="number" min="0" max="12" step="0.25" value="3.5" />
+  <input class="r8-input-number__input" type="number" aria-label="Quantity" min="0" max="12" step="0.25" value="3.5" />
   <button class="r8-input-number__button" type="button">+</button>
 </div>`,
     code: `<div class="r8-input-number" data-r8-step-strictly="true" data-r8-precision="2" data-r8-controls-position="right">
   <button class="r8-input-number__button" type="button">-</button>
-  <input class="r8-input-number__input" type="number" min="0" max="12" step="0.25" value="3.5" />
+  <input class="r8-input-number__input" type="number" aria-label="Quantity" min="0" max="12" step="0.25" value="3.5" />
   <button class="r8-input-number__button" type="button">+</button>
 </div>`,
     anatomy: ll(

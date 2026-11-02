@@ -1,0 +1,18 @@
+[
+  {
+    "type": "error",
+    "text": "Failed to load resource: net::ERR_FAILED"
+  },
+  {
+    "type": "error",
+    "text": "Hydration completed but contains mismatches."
+  },
+  {
+    "type": "error",
+    "text": "Failed to load resource: net::ERR_FAILED"
+  },
+  {
+    "type": "error",
+    "text": "Hydration completed but contains mismatches."
+  }
+]

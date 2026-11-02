@@ -44,6 +44,13 @@ export default defineNuxtConfig({
             "})(window,document,'script','dataLayer','GTM-PMGV2ZFJ');",
         },
       ],
+      noscript: [
+        {
+          key: "gtm-noscript",
+          tagPosition: "bodyOpen",
+          innerHTML: '<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PMGV2ZFJ" height="0" width="0" style="display:none;visibility:hidden" title="Google Tag Manager"></iframe>',
+        },
+      ],
       link: [
         { rel: "icon", type: "image/x-icon", href: withBase("favicon.ico") },
         { rel: "icon", type: "image/png", sizes: "32x32", href: withBase("favicon/favicon-32x32.png") },

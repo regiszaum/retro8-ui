@@ -1,0 +1,86 @@
+[
+  {
+    "id": "button",
+    "width": 390,
+    "layout": {
+      "viewport": 390,
+      "main": 374,
+      "scroll": 390,
+      "preview": 370
+    }
+  },
+  {
+    "id": "button",
+    "width": 320,
+    "layout": {
+      "viewport": 320,
+      "main": 304,
+      "scroll": 320,
+      "preview": 300
+    }
+  },
+  {
+    "id": "input-otp",
+    "width": 390,
+    "layout": {
+      "viewport": 390,
+      "main": 374,
+      "scroll": 390,
+      "preview": 370
+    }
+  },
+  {
+    "id": "input-otp",
+    "width": 320,
+    "layout": {
+      "viewport": 320,
+      "main": 304,
+      "scroll": 320,
+      "preview": 300
+    }
+  },
+  {
+    "id": "table",
+    "width": 390,
+    "layout": {
+      "viewport": 390,
+      "main": 374,
+      "scroll": 390,
+      "preview": 370
+    }
+  },
+  {
+    "id": "table",
+    "width": 320,
+    "layout": {
+      "viewport": 320,
+      "main": 304,
+      "scroll": 320,
+      "preview": 300
+    }
+  },
+  {
+    "id": "inventory-page",
+    "width": 390,
+    "layout": {
+      "viewport": 390,
+      "main": 374,
+      "scroll": 390,
+      "preview": 370
+    }
+  },
+  {
+    "id": "inventory-page",
+    "width": 320,
+    "layout": {
+      "viewport": 320,
+      "main": 304,
+      "scroll": 320,
+      "preview": 300
+    }
+  },
+  {
+    "guide": "QUICK START",
+    "paragraphs": 14
+  }
+]

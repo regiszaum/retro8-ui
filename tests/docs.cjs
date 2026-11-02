@@ -1,0 +1,212 @@
+const { chromium } = require("playwright");
+const { AxeBuilder } = require("@axe-core/playwright");
+const fs = require("fs");
+const path = require("node:path");
+require("tsx/cjs");
+const root = path.resolve(__dirname, "..");
+const catalog = require(
+  path.join(root, "docs-site/shared/component-catalog.ts"),
+).componentCatalog;
+const outputDir =
+  process.env.R8_AUDIT_OUTPUT ||
+  path.join(require("node:os").tmpdir(), "retro8-audit-reproduction");
+fs.mkdirSync(outputDir, { recursive: true });
+const baseURL = process.env.R8_AUDIT_URL || "http://127.0.0.1:3100";
+(async () => {
+  const browser = await chromium.launch({ headless: true });
+  const out = [];
+  const queue = [...catalog];
+  await Promise.all(
+    [0, 1].map(async (worker) => {
+      const context = await browser.newContext({
+        viewport: { width: 1440, height: 1000 },
+      });
+      await context.route("https://www.googletagmanager.com/**", (r) =>
+        r.abort(),
+      );
+      const page = await context.newPage();
+      let errors = [],
+        consoleErrors = [];
+      page.on("pageerror", (e) => errors.push(e.message));
+      page.on("console", (m) => {
+        if (
+          m.type() === "error" &&
+          !m.text().includes("ERR_FAILED") &&
+          !new URL(m.location().url || baseURL, baseURL).pathname.endsWith(
+            "/missing-avatar.png",
+          )
+        )
+          consoleErrors.push(m.text());
+      });
+      while (queue.length) {
+        const component = queue.shift();
+        errors = [];
+        consoleErrors = [];
+        const result = { id: component.id, layouts: [] };
+        try {
+          const response = await page.goto(
+            baseURL + "/en/components/" + component.id,
+            { waitUntil: "networkidle", timeout: 45000 },
+          );
+          result.status = response.status();
+          await page.waitForFunction(
+            () =>
+              !!window.Retro8UI &&
+              document.body.dataset.r8GlobalReady === "true",
+          );
+          await page.evaluate(() => document.fonts.ready);
+          if (
+            (await page
+              .locator(".docs-theme-switch")
+              .getAttribute("aria-checked")) === "true"
+          )
+            await page.locator(".docs-theme-switch").click();
+          for (const width of [1440, 768, 390, 320]) {
+            await page.setViewportSize({ width, height: 1000 });
+            await page.waitForTimeout(80);
+            result.layouts.push(
+              await page.evaluate((width) => {
+                const overflow = [];
+                const clipped = [];
+                for (const el of document.querySelectorAll("main *")) {
+                  const rect = el.getBoundingClientRect();
+                  const style = getComputedStyle(el);
+                  if (
+                    !rect.width ||
+                    !rect.height ||
+                    style.position === "fixed" ||
+                    el.parentElement?.closest(".r8-table-wrap") ||
+                    el.closest(
+                      "[hidden],pre,.docs-code-block,.docs-api-table__viewport",
+                    )
+                  )
+                    continue;
+                  if (rect.right > width + 2 && rect.left >= 0)
+                    overflow.push({
+                      tag: el.tagName,
+                      class:
+                        typeof el.className === "string" ? el.className : "",
+                      right: Math.round(rect.right),
+                      width: Math.round(rect.width),
+                      text: el.textContent.trim().slice(0, 70),
+                    });
+                  if (
+                    el.matches(".docs-preview__surface,.r8-window__body") &&
+                    el.scrollWidth > el.clientWidth + 2
+                  )
+                    clipped.push({
+                      class: el.className,
+                      scroll: el.scrollWidth,
+                      client: el.clientWidth,
+                    });
+                }
+                return {
+                  width,
+                  document: document.documentElement.scrollWidth,
+                  overflow: overflow.slice(0, 18),
+                  clipped,
+                };
+              }, width),
+            );
+          }
+          await page.setViewportSize({ width: 1440, height: 1000 });
+          result.a11y = [];
+          result.themes = ["light", "dark"];
+          for (const theme of result.themes) {
+            const toggle = page.locator(".docs-theme-switch");
+            if (
+              ((await toggle.getAttribute("aria-checked")) === "true") !==
+              (theme === "dark")
+            )
+              await toggle.click();
+            await page.waitForTimeout(60);
+            const a = await new AxeBuilder({ page })
+              .include(".docs-preview__surface")
+              .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+              .analyze();
+            result.a11y.push(
+              ...a.violations.map((v) => ({
+                theme,
+                id: v.id,
+                impact: v.impact,
+                description: v.description,
+                nodes: v.nodes
+                  .map((n) => ({ target: n.target, summary: n.failureSummary }))
+                  .slice(0, 5),
+              })),
+            );
+          }
+          result.images = await page
+            .locator(".docs-preview__surface img")
+            .evaluateAll((imgs) =>
+              imgs
+                .filter((i) => !i.complete || !i.naturalWidth)
+                .map((i) => i.getAttribute("src")),
+            );
+          result.errors = [...new Set(errors)];
+          result.consoleErrors = [...new Set(consoleErrors)].slice(0, 10);
+          const pt = await context.request.get(
+            baseURL + "/pt-br/components/" + component.id,
+          );
+          result.ptStatus = pt.status();
+          if (
+            process.env.R8_AUDIT_SCREENSHOTS === "1" &&
+            result.layouts.some(
+              (l) =>
+                l.overflow.length ||
+                l.document > l.width + 2 ||
+                l.clipped.length,
+            )
+          ) {
+            await page.setViewportSize({ width: 390, height: 1000 });
+            await page.screenshot({
+              path: path.join(outputDir, component.id + "-mobile.png"),
+              fullPage: true,
+            });
+          }
+        } catch (e) {
+          result.error = e.message;
+        }
+        out.push(result);
+        fs.writeFileSync(
+          path.join(outputDir, "scan.json"),
+          JSON.stringify(out, null, 2),
+        );
+        console.log(
+          component.id,
+          result.status,
+          result.layouts
+            .filter(
+              (l) =>
+                l.overflow.length ||
+                l.document > l.width + 2 ||
+                l.clipped.length,
+            )
+            .map((l) => l.width),
+          result.a11y?.map((v) => v.id),
+          result.errors || result.error,
+        );
+      }
+      await context.close();
+    }),
+  );
+  await browser.close();
+  process.exitCode = out.some(
+    (r) =>
+      r.error ||
+      r.status !== 200 ||
+      r.ptStatus !== 200 ||
+      r.errors?.length ||
+      r.consoleErrors?.length ||
+      r.a11y?.length ||
+      r.layouts.some(
+        (l) =>
+          l.overflow.length || l.document > l.width + 2 || l.clipped.length,
+      ),
+  )
+    ? 1
+    : 0;
+})().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});

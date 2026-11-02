@@ -44,7 +44,9 @@
 
   .r8-progress__inside-value {
     align-items: center;
-    color: var(--r8-color-surface-3);
+    color: var(--r8-color-ink);
+    background-color: var(--r8-progress-track-color);
+    padding-inline: 0.25rem;
     display: none;
     font-family: var(--r8-font-display);
     font-size: var(--r8-font-size-xs);

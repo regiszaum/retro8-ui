@@ -1,0 +1,47 @@
+{
+  "date": "2026-11-02",
+  "runtime": {
+    "total": 53,
+    "passed": 53
+  },
+  "minifiedDistribution": {
+    "total": 53,
+    "passed": 53
+  },
+  "documentation": {
+    "pages": 55,
+    "http200English": 55,
+    "http200Portuguese": 55,
+    "viewportWidths": [
+      1440,
+      768,
+      390,
+      320
+    ],
+    "layoutFailures": 0,
+    "accessibilityThemes": [
+      "light",
+      "dark"
+    ],
+    "accessibilityViolations": 0,
+    "pageErrors": 0,
+    "consoleErrors": 0
+  },
+  "prerenderedRoutes": 254,
+  "rootAudit": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 0,
+    "critical": 0,
+    "total": 0
+  },
+  "docsAudit": {
+    "info": 0,
+    "low": 7,
+    "moderate": 0,
+    "high": 0,
+    "critical": 0,
+    "total": 7
+  }
+}

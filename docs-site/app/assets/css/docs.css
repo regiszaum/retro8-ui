@@ -860,6 +860,7 @@ html[data-theme="light"] .docs-theme-switch:focus-visible {
 
 .docs-main {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.25rem;
   min-width: 0;
 }
@@ -2396,4 +2397,23 @@ dialog.r8-dialog {
   .docs-brand__mark {
     height: 1.75rem;
   }
+}
+
+/* Grid content must shrink before tables and examples scroll internally. */
+.docs-main > *,
+.docs-section > *,
+.docs-component__layout > *,
+.docs-component__meta > *,
+.docs-api-table,
+.docs-playground-markup {
+  min-width: 0;
+}
+
+.docs-main :where(pre) {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.docs-preview__surface {
+  background: var(--docs-preview-bg);
 }

@@ -1,0 +1,1354 @@
+{
+  "standalone": [
+    {
+      "id": "button",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "button",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "button",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "border",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "border",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "border",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "color",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "color",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "color",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "layout-container",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "layout-container",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "layout-container",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "icon",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "icon",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "icon",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "link",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "link",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "link",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "splitter",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "splitter",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "splitter",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "typography",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "typography",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "typography",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "config-provider",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "config-provider",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "config-provider",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "autocomplete",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "autocomplete",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "autocomplete",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "cascader",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "cascader",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "cascader",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "checkbox",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "checkbox",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "checkbox",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "color-picker",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "color-picker",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "color-picker",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "date-picker",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "date-picker",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "date-picker",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "datetime-picker",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "datetime-picker",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "datetime-picker",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "form",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "form",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "form",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "input",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "input",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "input",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "input-otp",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "input-otp",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "input-otp",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "input-number",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "input-number",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "input-number",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "input-tag",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "input-tag",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "input-tag",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "radio",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "radio",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "radio",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "rate",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "rate",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "rate",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "select",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "select",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "select",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "slider",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "slider",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "slider",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "switch",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "switch",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "switch",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "theme-switch",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "theme-switch",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "theme-switch",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "transfer",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "transfer",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "transfer",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "upload",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "upload",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "upload",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "avatar",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "avatar",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "avatar",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "badge",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "badge",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "badge",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "card",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "card",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "card",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "carousel",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "carousel",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "carousel",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "collapse",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "collapse",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "collapse",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "empty",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "empty",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "empty",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "image",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "image",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "image",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "pagination",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "pagination",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "pagination",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "progress",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "progress",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "progress",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "skeleton",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "skeleton",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "skeleton",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "table",
+      "width": 320,
+      "scroll": 320,
+      "offenders": [
+        {
+          "class": "r8-table r8-table--striped r8-table--hover",
+          "right": 439
+        },
+        {
+          "class": "",
+          "right": 438
+        },
+        {
+          "class": "",
+          "right": 438
+        },
+        {
+          "class": "",
+          "right": 387
+        },
+        {
+          "class": "",
+          "right": 438
+        },
+        {
+          "class": "",
+          "right": 438
+        },
+        {
+          "class": "r8-table__row--success",
+          "right": 438
+        },
+        {
+          "class": "r8-table__cell--truncate",
+          "right": 387
+        }
+      ]
+    },
+    {
+      "id": "table",
+      "width": 390,
+      "scroll": 390,
+      "offenders": [
+        {
+          "class": "r8-table r8-table--striped r8-table--hover",
+          "right": 439
+        },
+        {
+          "class": "",
+          "right": 438
+        },
+        {
+          "class": "",
+          "right": 438
+        },
+        {
+          "class": "",
+          "right": 438
+        },
+        {
+          "class": "",
+          "right": 438
+        },
+        {
+          "class": "r8-table__row--success",
+          "right": 438
+        },
+        {
+          "class": "r8-table__cell--numeric",
+          "right": 438
+        },
+        {
+          "class": "r8-table__row--warning",
+          "right": 438
+        }
+      ]
+    },
+    {
+      "id": "table",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "tag",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "tag",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "tag",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "breadcrumb",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "breadcrumb",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "breadcrumb",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "dropdown",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "dropdown",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "dropdown",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "steps",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "steps",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "steps",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "tabs",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "tabs",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "tabs",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "alert",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "alert",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "alert",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "dialog",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "dialog",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "dialog",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "drawer",
+      "width": 320,
+      "scroll": 632,
+      "offenders": []
+    },
+    {
+      "id": "drawer",
+      "width": 390,
+      "scroll": 772,
+      "offenders": []
+    },
+    {
+      "id": "drawer",
+      "width": 768,
+      "scroll": 1528,
+      "offenders": []
+    },
+    {
+      "id": "loading",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "loading",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "loading",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "poptip",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "poptip",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "poptip",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "divider",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "divider",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "divider",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "watermark",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "watermark",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "watermark",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "panel",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "panel",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "panel",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "window",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "window",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "window",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "navbar",
+      "width": 320,
+      "scroll": 320,
+      "offenders": []
+    },
+    {
+      "id": "navbar",
+      "width": 390,
+      "scroll": 390,
+      "offenders": []
+    },
+    {
+      "id": "navbar",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    },
+    {
+      "id": "inventory-page",
+      "width": 320,
+      "scroll": 320,
+      "offenders": [
+        {
+          "class": "r8-container__main",
+          "right": 332
+        },
+        {
+          "class": "r8-container__aside",
+          "right": 372
+        },
+        {
+          "class": "r8-panel__header",
+          "right": 380
+        },
+        {
+          "class": "r8-panel__body r8-stack",
+          "right": 380
+        },
+        {
+          "class": "r8-avatar r8-avatar--lg r8-avatar--round is-fallback is-image",
+          "right": 376
+        },
+        {
+          "class": "r8-avatar__fallback",
+          "right": 389
+        },
+        {
+          "class": "r8-stack",
+          "right": 406
+        },
+        {
+          "class": "",
+          "right": 406
+        }
+      ]
+    },
+    {
+      "id": "inventory-page",
+      "width": 390,
+      "scroll": 390,
+      "offenders": [
+        {
+          "class": "r8-stack",
+          "right": 406
+        },
+        {
+          "class": "",
+          "right": 406
+        },
+        {
+          "class": "",
+          "right": 406
+        },
+        {
+          "class": "r8-badge r8-badge--success",
+          "right": 421
+        },
+        {
+          "class": "r8-badge r8-badge--info",
+          "right": 413
+        }
+      ]
+    },
+    {
+      "id": "inventory-page",
+      "width": 768,
+      "scroll": 768,
+      "offenders": []
+    }
+  ],
+  "dark": [
+    {
+      "id": "button",
+      "overflow": {
+        "scroll": 390,
+        "viewport": 390
+      },
+      "a11y": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "nodes": [
+            {
+              "target": [
+                ".r8-btn--success"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.29 (foreground color: #ffffff, background color: #16a34a, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                ".r8-btn--info"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.68 (foreground color: #ffffff, background color: #0891b2, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tabs",
+      "overflow": {
+        "scroll": 390,
+        "viewport": 390
+      },
+      "a11y": []
+    },
+    {
+      "id": "transfer",
+      "overflow": {
+        "scroll": 390,
+        "viewport": 390
+      },
+      "a11y": []
+    },
+    {
+      "id": "form",
+      "overflow": {
+        "scroll": 390,
+        "viewport": 390
+      },
+      "a11y": []
+    },
+    {
+      "id": "drawer",
+      "overflow": {
+        "scroll": 390,
+        "viewport": 390
+      },
+      "a11y": []
+    },
+    {
+      "id": "color-picker",
+      "overflow": {
+        "scroll": 390,
+        "viewport": 390
+      },
+      "a11y": []
+    },
+    {
+      "id": "datetime-picker",
+      "overflow": {
+        "scroll": 390,
+        "viewport": 390
+      },
+      "a11y": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "nodes": [
+            {
+              "target": [
+                "button[aria-controls=\"r8-datetime-picker-panel-16\"] > .r8-badge.r8-badge--success"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.29 (foreground color: #ffffff, background color: #16a34a, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                "button[aria-label=\"01 de abr. de 2026\"] > .r8-date-picker__day-number"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 8.6pt (11.52px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                "button[aria-label=\"02 de abr. de 2026\"] > .r8-date-picker__day-number"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 8.6pt (11.52px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "carousel",
+      "overflow": {
+        "scroll": 390,
+        "viewport": 390
+      },
+      "a11y": []
+    },
+    {
+      "id": "input-otp",
+      "overflow": {
+        "scroll": 390,
+        "viewport": 390
+      },
+      "a11y": []
+    },
+    {
+      "id": "input-number",
+      "overflow": {
+        "scroll": 390,
+        "viewport": 390
+      },
+      "a11y": [
+        {
+          "id": "label",
+          "impact": "critical",
+          "nodes": [
+            {
+              "target": [
+                ".docs-preview__surface > .r8-input-number[data-r8-step-strictly=\"true\"][data-r8-precision=\"2\"] > .r8-input-number__input[max=\"12\"][step=\"0.25\"]"
+              ],
+              "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rate",
+      "overflow": {
+        "scroll": 390,
+        "viewport": 390
+      },
+      "a11y": [
+        {
+          "id": "aria-required-attr",
+          "impact": "critical",
+          "nodes": [
+            {
+              "target": [
+                ".docs-preview__surface > .r8-rate[data-r8-rate-ready=\"true\"] > .is-active.r8-rate__item[role=\"radio\"]:nth-child(1)"
+              ],
+              "summary": "Fix any of the following:\n  Required ARIA attribute not present: aria-checked"
+            },
+            {
+              "target": [
+                ".docs-preview__surface > .r8-rate[data-r8-rate-ready=\"true\"] > .is-active.r8-rate__item[role=\"radio\"]:nth-child(2)"
+              ],
+              "summary": "Fix any of the following:\n  Required ARIA attribute not present: aria-checked"
+            },
+            {
+              "target": [
+                ".docs-preview__surface > .r8-rate[data-r8-rate-ready=\"true\"] > .is-active.r8-rate__item[role=\"radio\"]:nth-child(3)"
+              ],
+              "summary": "Fix any of the following:\n  Required ARIA attribute not present: aria-checked"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "slider",
+      "overflow": {
+        "scroll": 390,
+        "viewport": 390
+      },
+      "a11y": [
+        {
+          "id": "aria-allowed-attr",
+          "impact": "critical",
+          "nodes": [
+            {
+              "target": [
+                ".docs-preview__surface > .r8-slider[data-r8-slider-ready=\"true\"][role=\"group\"]"
+              ],
+              "summary": "Fix all of the following:\n  ARIA attributes are not allowed: aria-valuemin=\"0\", aria-valuemax=\"100\", aria-valuenow=\"68\", aria-valuetext=\"68%\""
+            }
+          ]
+        },
+        {
+          "id": "aria-input-field-name",
+          "impact": "serious",
+          "nodes": [
+            {
+              "target": [
+                ".docs-preview__surface > .r8-slider[data-r8-slider-ready=\"true\"][role=\"group\"] > .r8-slider__track[role=\"slider\"][aria-orientation=\"horizontal\"]"
+              ],
+              "summary": "Fix any of the following:\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "drawer": {
+    "focusOpen": {
+      "active": "<button class=\"r8-btn r8-btn--primary\" type=\"button\" data-r8-toggle=\"drawer\" data-r8-target=\"#docs-drawer-preview\" data-r8-button-ready=\"true\" data-r8-base-disabled=\"false\" data-r8-base-aria-pressed=\"false\" data-r8-toggle-ready=\"true\" aria-expanded=\"true\">\n      Open drawer\n    </button>",
+      "inside": false
+    },
+    "closed": {
+      "hidden": true,
+      "display": "grid",
+      "rect": {
+        "x": 916.953125,
+        "y": 583.3125,
+        "width": 382,
+        "height": 316,
+        "top": 583.3125,
+        "right": 1298.953125,
+        "bottom": 899.3125,
+        "left": 916.953125
+      }
+    },
+    "focusClosed": true
+  },
+  "security": {
+    "tag": {
+      "executed": false,
+      "images": 0,
+      "labels": [
+        "HUD",
+        "PIXEL",
+        "<img src=x onerror=window.__auditXss=1>"
+      ]
+    }
+  },
+  "selectLabel": "engineer",
+  "tabsArrow": "Stats",
+  "numericMax": "1.20"
+}

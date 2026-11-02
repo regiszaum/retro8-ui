@@ -1,0 +1,214 @@
+[
+  {
+    "name": "checkbox click, Space, disabled and refresh idempotence",
+    "status": "pass"
+  },
+  {
+    "name": "switch click and keyboard",
+    "status": "pass"
+  },
+  {
+    "name": "theme-switch click and keyboard",
+    "status": "pass"
+  },
+  {
+    "name": "radio selection exclusivity",
+    "status": "pass"
+  },
+  {
+    "name": "tabs click switches visible panel",
+    "status": "pass"
+  },
+  {
+    "name": "tabs ArrowRight navigates to next tab",
+    "status": "pass"
+  },
+  {
+    "name": "rating selects a single radio option",
+    "status": "pass"
+  },
+  {
+    "name": "rating disabled prevents change",
+    "status": "pass"
+  },
+  {
+    "name": "select opens selects option and Escape closes",
+    "status": "pass"
+  },
+  {
+    "name": "select keyboard opens and selects",
+    "status": "pass"
+  },
+  {
+    "name": "collapse click and keyboard",
+    "status": "pass"
+  },
+  {
+    "name": "slider keyboard clamps at bounds",
+    "status": "pass"
+  },
+  {
+    "name": "slider disabled prevents keyboard change",
+    "status": "pass"
+  },
+  {
+    "name": "input-number increment and max clamping",
+    "status": "pass"
+  },
+  {
+    "name": "input-number strict step with max not aligned stays within max",
+    "status": "pass"
+  },
+  {
+    "name": "input-number readonly prevents increment",
+    "status": "pass"
+  },
+  {
+    "name": "input-tag add remove and treat XSS as text",
+    "status": "pass"
+  },
+  {
+    "name": "transfer moves selected item",
+    "status": "pass"
+  },
+  {
+    "name": "transfer items reachable and usable by keyboard",
+    "status": "pass"
+  },
+  {
+    "name": "dialog open close and Escape",
+    "status": "pass"
+  },
+  {
+    "name": "dialog aria-expanded tracks open state",
+    "status": "pass"
+  },
+  {
+    "name": "drawer open and Escape",
+    "status": "pass"
+  },
+  {
+    "name": "modal drawer moves focus into drawer",
+    "status": "pass"
+  },
+  {
+    "name": "upload filename HTML rendered safely and remove works",
+    "status": "pass"
+  },
+  {
+    "name": "OTP typing sanitizes and advances focus",
+    "status": "pass"
+  },
+  {
+    "name": "date-picker selects available date",
+    "status": "pass"
+  },
+  {
+    "name": "autocomplete types filters and selects",
+    "status": "pass"
+  },
+  {
+    "name": "carousel next arrow changes active slide",
+    "status": "pass"
+  },
+  {
+    "name": "pagination next updates current page",
+    "status": "pass"
+  },
+  {
+    "name": "dynamic standalone component auto initializes",
+    "status": "pass"
+  },
+  {
+    "name": "init(element) initializes the element itself",
+    "status": "pass"
+  },
+  {
+    "name": "input clear updates native value",
+    "status": "pass"
+  },
+  {
+    "name": "password reveal toggles type",
+    "status": "pass"
+  },
+  {
+    "name": "navbar toggles and Escape closes",
+    "status": "pass"
+  },
+  {
+    "name": "splitter keyboard resize and disabled state",
+    "status": "pass"
+  },
+  {
+    "name": "poptip opens and closes via button",
+    "status": "pass"
+  },
+  {
+    "name": "dropdown emits chosen command and closes",
+    "status": "pass"
+  },
+  {
+    "name": "color-picker swatch commits color",
+    "status": "pass"
+  },
+  {
+    "name": "datetime-picker selects date and time",
+    "status": "pass"
+  },
+  {
+    "name": "cascader filters and selects leaf",
+    "status": "pass"
+  },
+  {
+    "name": "closed drawer is hidden and excluded from focus and layout",
+    "status": "pass"
+  },
+  {
+    "name": "modal drawer traps Tab, restores focus and inert state",
+    "status": "pass"
+  },
+  {
+    "name": "nonmodal drawer leaves surrounding controls usable",
+    "status": "pass"
+  },
+  {
+    "name": "native dialog close resets expanded state",
+    "status": "pass"
+  },
+  {
+    "name": "tabs skip disabled tabs and support End and Home",
+    "status": "pass"
+  },
+  {
+    "name": "initial rating has exactly one checked radio and keyboard selection",
+    "status": "pass"
+  },
+  {
+    "name": "strict numeric step remains valid against min and max",
+    "status": "pass"
+  },
+  {
+    "name": "select keeps machine value separate from its display label",
+    "status": "pass"
+  },
+  {
+    "name": "input-tag add event reports the inserted token once",
+    "status": "pass"
+  },
+  {
+    "name": "disabled slider rejects pointer changes",
+    "status": "pass"
+  },
+  {
+    "name": "removing an open modal restores inert background",
+    "status": "pass"
+  },
+  {
+    "name": "closing a modal preserves preexisting inert elements",
+    "status": "pass"
+  },
+  {
+    "name": "OTP digits fit a narrow component surface",
+    "status": "pass"
+  }
+]

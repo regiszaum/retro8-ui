@@ -397,6 +397,8 @@
   }
 
   .r8-input-otp {
+    max-width: 100%;
+    min-width: 0;
     --r8-input-otp-gap: var(--r8-space-2);
     --r8-input-otp-slot-height: 3rem;
     --r8-input-otp-slot-width: 2.75rem;
@@ -416,6 +418,8 @@
   }
 
   .r8-input-otp__slot {
+    flex: 0 1 var(--r8-input-otp-slot-width);
+    min-width: 0;
     @apply border-r8 border-r8-border bg-r8-surface-3 font-display text-r8-sm text-r8-ink shadow-r8-inset;
     appearance: textfield;
     font-variant-numeric: tabular-nums;
@@ -1676,6 +1680,8 @@
   }
 
   .r8-transfer__panel {
+    min-width: 0;
+    overflow-wrap: anywhere;
     align-content: start;
     align-self: start;
     border: var(--r8-border-thick) solid var(--r8-color-border);
@@ -1954,7 +1960,7 @@
   .r8-upload__action {
     background: var(--r8-color-surface-2);
     border: var(--r8-border-thin) solid var(--r8-color-border);
-    color: var(--r8-upload-file-accent);
+    color: var(--r8-color-ink);
     cursor: pointer;
     font-family: var(--r8-font-body);
     font-size: calc(var(--r8-font-size-sm) - 0.0625rem);
@@ -2019,4 +2025,15 @@
   .r8-upload--avatar .r8-upload__copy {
     text-align: center;
   }
+  @media (max-width: 480px) {
+    .r8-transfer {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .r8-transfer__actions {
+      display: flex;
+      justify-content: center;
+    }
+  }
+
 }

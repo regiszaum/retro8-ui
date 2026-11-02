@@ -270,6 +270,23 @@ This keeps the core package focused on layout, surfaces, and interaction pattern
 
 ## Development
 
+Use Node 22.22.3 or newer within the supported Node 22/24/26 release lines for the documentation tooling. The distributed library still supports Node 18 and browser consumers.
+
+Install dependencies in both the root and `docs-site` before working on the documentation. The browser regression suite is available after the root install:
+
+```bash
+npx playwright install chromium
+npm test
+npm run test:dist
+```
+
+`npm test` checks the source runtime. `npm run test:dist` checks the minified distribution. Both use the compiled stylesheet, so rebuild after CSS changes.
+
+With the documentation server running on port 3100, `npm run test:docs` checks all component pages at four viewport widths and runs axe in both themes. Set `R8_AUDIT_URL` to use another server. Test artifacts are written outside the repository, to `/tmp/retro8-audit-reproduction` by default; `R8_AUDIT_OUTPUT` selects another directory.
+
+For applications that hydrate server-rendered HTML, import and initialize the runtime after hydration. Set `window.Retro8UIAutoInit = false` before importing it to opt out of automatic initialization, then call `window.Retro8UI.init(document)` after the application mounts.
+
+
 ### Scripts
 
 ```bash

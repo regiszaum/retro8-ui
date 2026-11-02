@@ -51,16 +51,22 @@
     "dev:docs": "npm --prefix docs-site run dev",
     "dev": "npm run build:css && npm run build:js && npm-run-all --parallel dev:css dev:js dev:docs",
     "build:docs": "npm run build && npm --prefix docs-site run generate",
-    "preview": "npm run build:docs && npm --prefix docs-site run preview"
+    "preview": "npm run build:docs && npm --prefix docs-site run preview",
+    "test": "node tests/runtime.cjs",
+    "test:dist": "node tests/runtime.cjs --dist",
+    "test:docs": "node tests/docs.cjs"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "autoprefixer": "^10.4.19",
     "cssnano": "^6.1.2",
-    "npm-run-all": "^4.1.5",
+    "npm-run-all2": "^8.0.4",
+    "playwright": "^1.64.1",
     "postcss": "^8.4.38",
     "postcss-cli": "^10.1.0",
     "postcss-import": "^16.1.0",
     "tailwindcss": "^3.4.13",
-    "terser": "^5.39.2"
+    "terser": "^5.39.2",
+    "tsx": "^4.23.15"
   }
 }

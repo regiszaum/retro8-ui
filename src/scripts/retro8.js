@@ -53,6 +53,8 @@
   const genericTargets = new Set();
   const navbarRegistry = new Set();
   const observers = new WeakSet();
+  const drawerFocusStates = new WeakMap();
+  const modalDrawers = [];
   const drawerTransitionMs = 270;
   const floatingOverlayGap = 12;
   const floatingViewportPadding = 12;
@@ -85,6 +87,21 @@
 
   function toArray(value) {
     return Array.from(value || []);
+  }
+
+  function findAll(root, selector) {
+    const elements = Array.from(root.querySelectorAll(selector));
+    if (root instanceof HTMLElement && root.matches(selector)) {
+      elements.unshift(root);
+    }
+    return elements;
+  }
+
+  function isControlDisabled(element) {
+    return element.hasAttribute("disabled") ||
+      element.getAttribute("aria-disabled") === "true" ||
+      element.dataset.r8Disabled === "true" ||
+      element.classList.contains("is-disabled");
   }
 
   function isElement(value) {
@@ -508,7 +525,7 @@
   }
 
   function syncButtons(root) {
-    toArray(root.querySelectorAll(".r8-btn")).forEach((button) => {
+    toArray(findAll(root, ".r8-btn")).forEach((button) => {
       if (!(button instanceof HTMLElement)) {
         return;
       }
@@ -590,7 +607,7 @@
     ];
 
     families.forEach((family) => {
-      toArray(root.querySelectorAll(family.selector)).forEach((element) => {
+      toArray(findAll(root, family.selector)).forEach((element) => {
         if (!(element instanceof HTMLElement)) {
           return;
         }
@@ -617,6 +634,10 @@
 
     const inlineBackground = element.style?.background || element.style?.backgroundColor;
     return inlineBackground ? inlineBackground.trim() : "";
+  }
+
+  function getChoiceLabel(option) {
+    return option?.dataset.r8Label?.trim() || option?.textContent?.trim() || getTextValue(option);
   }
 
   function getChoiceDisplay(trigger) {
@@ -963,7 +984,11 @@
       return;
     }
 
-    setExpanded(state.trigger, expanded);
+    if (state.kind === "autocomplete") {
+      state.trigger?.removeAttribute("aria-expanded");
+    } else {
+      setExpanded(state.trigger, expanded);
+    }
 
     if (state.input instanceof HTMLElement) {
       state.input.setAttribute("aria-expanded", expanded ? "true" : "false");
@@ -1605,7 +1630,7 @@
       return;
     }
 
-    const value = getTextValue(option);
+    const value = family.kind === "color" || family.kind === "autocomplete" ? getTextValue(option) : getChoiceLabel(option);
     const display = getChoiceDisplay(state.trigger);
 
     if (family.kind === "autocomplete") {
@@ -2032,7 +2057,7 @@
       const detail = {
         kind: family.kind || "choice",
         option,
-        text: getTextValue(option),
+        text: getChoiceLabel(option),
         value: getTextValue(option),
       };
 
@@ -2171,7 +2196,7 @@
   }
 
   function initAvatars(root) {
-    toArray(root.querySelectorAll(".r8-avatar")).forEach((component) => {
+    toArray(findAll(root, ".r8-avatar")).forEach((component) => {
       if (!(component instanceof HTMLElement)) {
         return;
       }
@@ -2226,7 +2251,7 @@
   }
 
   function initImages(root) {
-    toArray(root.querySelectorAll(".r8-image")).forEach((component) => {
+    toArray(findAll(root, ".r8-image")).forEach((component) => {
       if (!(component instanceof HTMLElement)) {
         return;
       }
@@ -2462,7 +2487,7 @@
     });
 
     setHidden(panel, true);
-    setExpanded(trigger, false);
+    trigger.removeAttribute("aria-expanded");
 
     trigger.addEventListener("click", () => {
       input.focus();
@@ -4407,7 +4432,7 @@
   }
 
   function initDatePickers(root) {
-    toArray(root.querySelectorAll(".r8-date-picker")).forEach((container) => {
+    toArray(findAll(root, ".r8-date-picker")).forEach((container) => {
       initDatePicker(container, {
         kind: "date",
         triggerSelector: ".r8-date-picker__trigger",
@@ -4415,7 +4440,7 @@
       });
     });
 
-    toArray(root.querySelectorAll(".r8-datetime-picker")).forEach((container) => {
+    toArray(findAll(root, ".r8-datetime-picker")).forEach((container) => {
       initDatePicker(container, {
         kind: "datetime",
         triggerSelector: ".r8-datetime-picker__trigger",
@@ -4426,7 +4451,7 @@
 
   function initChoices(root) {
     choiceFamilies.forEach((family) => {
-      toArray(root.querySelectorAll(family.root)).forEach((container) => {
+      toArray(findAll(root, family.root)).forEach((container) => {
         if (!(container instanceof HTMLElement) || container.dataset.r8ChoiceReady === "true") {
           return;
         }
@@ -4507,7 +4532,7 @@
   }
 
   function initTabs(root) {
-    toArray(root.querySelectorAll(".r8-tabs")).forEach((tabs) => {
+    toArray(findAll(root, ".r8-tabs")).forEach((tabs) => {
       if (!(tabs instanceof HTMLElement) || tabs.dataset.r8TabsReady === "true") {
         return;
       }
@@ -4524,6 +4549,8 @@
 
       items.forEach((tab, index) => {
         prepareActionLikeElement(tab, "tab");
+        tab.setAttribute("role", "tab");
+        ensureId(tab, "r8-tab");
         const panel =
           panels.find((item) => item.id && item.id === tab.getAttribute("aria-controls")) ||
           panels[index] ||
@@ -4536,10 +4563,13 @@
 
         if (panel) {
           tab.setAttribute("aria-controls", panel.id);
+          panel.setAttribute("role", "tabpanel");
+          panel.setAttribute("aria-labelledby", tab.id);
         }
       });
 
       function activateTab(targetTab, options = {}) {
+        if (!targetTab || isControlDisabled(targetTab)) return;
         const silent = options.silent === true;
         items.forEach((tab) => {
           const isActive = tab === targetTab;
@@ -4572,14 +4602,30 @@
       items.forEach((tab) => {
         tab.addEventListener("click", () => activateTab(tab));
         bindKeyboardActivation(tab, () => activateTab(tab));
+        tab.addEventListener("keydown", (event) => {
+          const vertical = tabs.classList.contains("r8-tabs--vertical") || tabList?.getAttribute("aria-orientation") === "vertical";
+          const forward = vertical ? "ArrowDown" : "ArrowRight";
+          const backward = vertical ? "ArrowUp" : "ArrowLeft";
+          if (![forward, backward, "Home", "End"].includes(event.key)) return;
+          event.preventDefault();
+          const enabled = items.filter((item) => !isControlDisabled(item));
+          const index = enabled.indexOf(tab);
+          const next = event.key === "Home" ? enabled[0] : event.key === "End" ? enabled[enabled.length - 1] :
+            enabled[(index + (event.key === forward ? 1 : -1) + enabled.length) % enabled.length];
+          if (next) {
+            activateTab(next);
+            next.focus();
+          }
+        });
       });
 
-      activateTab(items.find((item) => item.getAttribute("aria-selected") === "true") || items[0], { silent: true });
+      if (tabList && tabs.classList.contains("r8-tabs--vertical")) tabList.setAttribute("aria-orientation", "vertical");
+      activateTab(items.find((item) => item.getAttribute("aria-selected") === "true" && !isControlDisabled(item)) || items.find((item) => !isControlDisabled(item)), { silent: true });
     });
   }
 
   function initCollapse(root) {
-    toArray(root.querySelectorAll(".r8-collapse__item")).forEach((item) => {
+    toArray(findAll(root, ".r8-collapse__item")).forEach((item) => {
       if (!(item instanceof HTMLElement) || item.dataset.r8CollapseReady === "true") {
         return;
       }
@@ -4758,7 +4804,7 @@
   }
 
   function initNavbars(root) {
-    toArray(root.querySelectorAll(".r8-navbar")).forEach((navbar) => {
+    toArray(findAll(root, ".r8-navbar")).forEach((navbar) => {
       if (!(navbar instanceof HTMLElement) || navbar.dataset.r8NavbarReady === "true") {
         return;
       }
@@ -4825,7 +4871,7 @@
   }
 
   function initCarousels(root) {
-    toArray(root.querySelectorAll(".r8-carousel")).forEach((carousel) => {
+    toArray(findAll(root, ".r8-carousel")).forEach((carousel) => {
       if (!(carousel instanceof HTMLElement) || carousel.dataset.r8CarouselReady === "true") {
         return;
       }
@@ -5160,11 +5206,11 @@
   }
 
   function initInputs(root) {
-    toArray(root.querySelectorAll(".r8-input-shell")).forEach((shell) => {
+    toArray(findAll(root, ".r8-input-shell")).forEach((shell) => {
       initInputShell(shell);
     });
 
-    toArray(root.querySelectorAll("textarea.r8-input")).forEach((textarea) => {
+    toArray(findAll(root, "textarea.r8-input")).forEach((textarea) => {
       if (!(textarea instanceof HTMLTextAreaElement)) {
         return;
       }
@@ -5279,7 +5325,7 @@
   }
 
   function initInputOtps(root) {
-    toArray(root.querySelectorAll(".r8-input-otp")).forEach((component) => {
+    toArray(findAll(root, ".r8-input-otp")).forEach((component) => {
       if (!(component instanceof HTMLElement)) {
         return;
       }
@@ -5510,6 +5556,7 @@
             ? stepDigits
             : null,
       stepStrictly: matchesTrue(component.dataset.r8StepStrictly || "false"),
+      readonly: input.readOnly,
       disabled:
         input.disabled || component.hasAttribute("disabled") || component.getAttribute("aria-disabled") === "true",
     };
@@ -5522,7 +5569,10 @@
 
     const base = settings.min !== null ? settings.min : 0;
     const offset = (value - base) / settings.step;
-    return base + Math.round(offset) * settings.step;
+    const minIndex = settings.min !== null ? Math.ceil((settings.min - base) / settings.step - 1e-9) : -Infinity;
+    const maxIndex = settings.max !== null ? Math.floor((settings.max - base) / settings.step + 1e-9) : Infinity;
+    if (minIndex > maxIndex) return value;
+    return base + clamp(Math.round(offset), minIndex, maxIndex) * settings.step;
   }
 
   function formatInputNumberValue(value, precision) {
@@ -5553,7 +5603,8 @@
     );
     value = settings.precision !== null ? roundToPrecision(value, settings.precision) : value;
     value = alignInputNumberToStep(value, settings);
-    return settings.precision !== null ? roundToPrecision(value, settings.precision) : value;
+    value = settings.precision !== null ? roundToPrecision(value, settings.precision) : value;
+    return clamp(value, settings.min ?? -Infinity, settings.max ?? Infinity);
   }
 
   function syncInputNumberState(component, input, buttons) {
@@ -5566,19 +5617,19 @@
 
     if (decrementButton instanceof HTMLButtonElement) {
       decrementButton.disabled =
-        settings.disabled ||
+        settings.disabled || settings.readonly ||
         (currentValue !== null && settings.min !== null && currentValue <= settings.min + epsilon);
     }
 
     if (incrementButton instanceof HTMLButtonElement) {
       incrementButton.disabled =
-        settings.disabled ||
+        settings.disabled || settings.readonly ||
         (currentValue !== null && settings.max !== null && currentValue >= settings.max - epsilon);
     }
   }
 
   function initInputNumbers(root) {
-    toArray(root.querySelectorAll(".r8-input-number")).forEach((component) => {
+    toArray(findAll(root, ".r8-input-number")).forEach((component) => {
       if (!(component instanceof HTMLElement)) {
         return;
       }
@@ -5630,7 +5681,7 @@
 
       const stepValue = (direction, source) => {
         const settings = getInputNumberSettings(component, input);
-        if (settings.disabled) {
+        if (settings.disabled || settings.readonly) {
           return;
         }
 
@@ -5669,6 +5720,8 @@
       });
 
       input.addEventListener("keydown", (event) => {
+        const settings = getInputNumberSettings(component, input);
+        if (settings.disabled || settings.readonly) return;
         if (event.key === "ArrowUp") {
           event.preventDefault();
           stepValue(1, "keyboard");
@@ -5803,7 +5856,7 @@
   }
 
   function initBinaryControls(root) {
-    toArray(root.querySelectorAll(".r8-checkbox, .r8-radio, .r8-switch, .r8-theme-switch")).forEach((control) => {
+    toArray(findAll(root, ".r8-checkbox, .r8-radio, .r8-switch, .r8-theme-switch")).forEach((control) => {
       if (!(control instanceof HTMLElement)) {
         return;
       }
@@ -5859,7 +5912,7 @@
   }
 
   function initRates(root) {
-    toArray(root.querySelectorAll(".r8-rate")).forEach((component) => {
+    toArray(findAll(root, ".r8-rate")).forEach((component) => {
       if (!(component instanceof HTMLElement) || component.dataset.r8RateReady === "true") {
         return;
       }
@@ -5867,28 +5920,40 @@
       component.dataset.r8RateReady = "true";
       const items = toArray(component.querySelectorAll(".r8-rate__item")).filter((item) => item instanceof HTMLElement);
 
-      function activate(index) {
-        items.forEach((item, itemIndex) => {
-          const isActive = itemIndex <= index;
-          item.classList.toggle("is-active", isActive);
-          item.setAttribute("aria-checked", isActive ? "true" : "false");
-        });
-
-        emitComponentEvent(component, "rate-change", {
-          value: index + 1,
-        });
+      component.setAttribute("role", "radiogroup");
+      if (!component.hasAttribute("aria-label") && !component.hasAttribute("aria-labelledby")) {
+        component.setAttribute("aria-label", "Rating");
       }
-
+      const initialIndex = items.reduce((last, item, index) => item.classList.contains("is-active") ? index : last, -1);
+      function activate(index, { silent = false } = {}) {
+        if (!silent && (isControlDisabled(component) || isControlDisabled(items[index]))) return;
+        items.forEach((item, itemIndex) => {
+          item.classList.toggle("is-active", itemIndex <= index);
+          item.setAttribute("aria-checked", itemIndex === index ? "true" : "false");
+          item.tabIndex = itemIndex === (index < 0 ? 0 : index) ? 0 : -1;
+        });
+        if (!silent) emitComponentEvent(component, "rate-change", { value: index + 1 });
+      }
       items.forEach((item, index) => {
         prepareActionLikeElement(item, "radio");
+        item.setAttribute("role", "radio");
+        if (!item.hasAttribute("aria-label")) item.setAttribute("aria-label", `${index + 1} of ${items.length}`);
         item.addEventListener("click", () => activate(index));
         bindKeyboardActivation(item, () => activate(index));
+        item.addEventListener("keydown", (event) => {
+          if (!["ArrowRight", "ArrowUp", "ArrowLeft", "ArrowDown", "Home", "End"].includes(event.key) || isControlDisabled(component)) return;
+          event.preventDefault();
+          const next = event.key === "Home" ? 0 : event.key === "End" ? items.length - 1 :
+            (index + (["ArrowRight", "ArrowUp"].includes(event.key) ? 1 : -1) + items.length) % items.length;
+          if (!isControlDisabled(items[next])) { activate(next); items[next].focus(); }
+        });
       });
+      activate(initialIndex, { silent: true });
     });
   }
 
   function initPagination(root) {
-    toArray(root.querySelectorAll(".r8-pagination")).forEach((component) => {
+    toArray(findAll(root, ".r8-pagination")).forEach((component) => {
       if (!(component instanceof HTMLElement) || component.dataset.r8PaginationReady === "true") {
         return;
       }
@@ -6098,7 +6163,7 @@
   }
 
   function initSplitters(root) {
-    toArray(root.querySelectorAll(".r8-splitter")).forEach((component) => {
+    toArray(findAll(root, ".r8-splitter")).forEach((component) => {
       if (!(component instanceof HTMLElement) || component.dataset.r8SplitterReady === "true") {
         return;
       }
@@ -6252,8 +6317,6 @@
     const value = clamp(Number.isFinite(parsedValue) ? parsedValue : 0, 0, 100);
     component.style.setProperty("--r8-progress-value", `${value}%`);
     component.dataset.r8Value = String(value);
-    component.setAttribute("aria-valuenow", String(value));
-    component.setAttribute("aria-valuetext", `${value}%`);
 
     const track = component.querySelector(".r8-slider__track");
     if (track instanceof HTMLElement) {
@@ -6274,7 +6337,7 @@
   }
 
   function syncProgressBars(root) {
-    toArray(root.querySelectorAll(".r8-progress")).forEach((component) => {
+    toArray(findAll(root, ".r8-progress")).forEach((component) => {
       if (!(component instanceof HTMLElement)) {
         return;
       }
@@ -6283,6 +6346,11 @@
         component.setAttribute("role", "progressbar");
       }
 
+      if (!component.hasAttribute("aria-label") && !component.hasAttribute("aria-labelledby")) {
+        const label = component.querySelector(".r8-progress__label span:first-child");
+        if (label) component.setAttribute("aria-labelledby", ensureId(label, "r8-progress-label"));
+        else component.setAttribute("aria-label", "Progress");
+      }
       component.setAttribute("aria-valuemin", "0");
       component.setAttribute("aria-valuemax", "100");
 
@@ -6318,7 +6386,7 @@
   }
 
   function initSliders(root) {
-    toArray(root.querySelectorAll(".r8-slider")).forEach((component) => {
+    toArray(findAll(root, ".r8-slider")).forEach((component) => {
       if (!(component instanceof HTMLElement) || component.dataset.r8SliderReady === "true") {
         return;
       }
@@ -6331,8 +6399,12 @@
 
       prepareActionLikeElement(track, "slider");
       component.setAttribute("role", component.getAttribute("role") || "group");
-      component.setAttribute("aria-valuemin", "0");
-      component.setAttribute("aria-valuemax", "100");
+      ["aria-valuemin", "aria-valuemax", "aria-valuenow", "aria-valuetext"].forEach((attribute) => component.removeAttribute(attribute));
+      if (!track.hasAttribute("aria-label") && !track.hasAttribute("aria-labelledby")) {
+        const output = component.querySelector("[data-r8-slider-output], .r8-text");
+        if (output) track.setAttribute("aria-labelledby", ensureId(output, "r8-slider-label"));
+        else track.setAttribute("aria-label", "Value");
+      }
       track.setAttribute("aria-valuemin", "0");
       track.setAttribute("aria-valuemax", "100");
       track.setAttribute("aria-orientation", "horizontal");
@@ -6345,6 +6417,7 @@
       );
 
       const setFromPointer = (clientX) => {
+        if (isControlDisabled(component) || isControlDisabled(track)) return;
         const rect = track.getBoundingClientRect();
         const ratio = rect.width === 0 ? 0 : (clientX - rect.left) / rect.width;
         updateSlider(component, Math.round(clamp(ratio, 0, 1) * 100));
@@ -6362,6 +6435,7 @@
       };
 
       track.addEventListener("pointerdown", (event) => {
+        if (isControlDisabled(component) || isControlDisabled(track)) return;
         track.focus();
         setFromPointer(event.clientX);
         window.addEventListener("pointermove", onPointerMove);
@@ -6369,6 +6443,7 @@
       });
 
       track.addEventListener("keydown", (event) => {
+        if (isControlDisabled(component) || isControlDisabled(track)) return;
         const currentValue = Number(component.dataset.r8Value || "0") || 0;
 
         if (event.key === "ArrowLeft" || event.key === "ArrowDown") {
@@ -6408,6 +6483,7 @@
       });
 
       bindKeyboardActivation(track, () => {
+        if (isControlDisabled(component) || isControlDisabled(track)) return;
         updateSlider(component, (Number(component.dataset.r8Value || "0") || 0) + 5);
       });
     });
@@ -6484,7 +6560,7 @@
   }
 
   function initInputTags(root) {
-    toArray(root.querySelectorAll(".r8-input-tag")).forEach((component) => {
+    toArray(findAll(root, ".r8-input-tag")).forEach((component) => {
       if (!(component instanceof HTMLElement)) {
         return;
       }
@@ -6555,7 +6631,7 @@
           emitComponentEvent(component, "input-tag-add", {
             value: token,
             tag: lastTag,
-            values: getInputTagValues(component).concat(token),
+            values: getInputTagValues(component),
             source,
           });
           addedAny = true;
@@ -6666,7 +6742,7 @@
   }
 
   function initTransfers(root) {
-    toArray(root.querySelectorAll(".r8-transfer")).forEach((component) => {
+    toArray(findAll(root, ".r8-transfer")).forEach((component) => {
       if (!(component instanceof HTMLElement) || component.dataset.r8TransferReady === "true") {
         return;
       }
@@ -6675,23 +6751,39 @@
       const panels = toArray(component.querySelectorAll(".r8-transfer__panel")).filter((item) => item instanceof HTMLElement);
       const actionButtons = toArray(component.querySelectorAll(".r8-transfer__actions .r8-btn")).filter((item) => item instanceof HTMLElement);
 
+      panels.forEach((panel) => {
+        panel.setAttribute("role", "group");
+        const header = panel.querySelector(".r8-transfer__header");
+        if (header && !panel.hasAttribute("aria-labelledby")) panel.setAttribute("aria-labelledby", ensureId(header, "r8-transfer-label"));
+      });
+      toArray(component.querySelectorAll(".r8-transfer__item")).forEach((item) => {
+        prepareActionLikeElement(item, "checkbox");
+        item.setAttribute("aria-checked", String(item.classList.contains("is-selected")));
+      });
+      component.addEventListener("keydown", (event) => {
+        if (event.target instanceof HTMLElement && event.target.matches(".r8-transfer__item") && [" ", "Enter"].includes(event.key)) {
+          event.preventDefault();
+          event.target.click();
+        }
+      });
       component.addEventListener("click", (event) => {
         const target = event.target;
-        if (!(target instanceof HTMLElement)) {
+        if (!(target instanceof HTMLElement) || isControlDisabled(component)) {
           return;
         }
 
         const item = target.closest(".r8-transfer__item");
-        if (!item) {
+        if (!item || isControlDisabled(item)) {
           return;
         }
 
         item.classList.toggle("is-selected");
+        item.setAttribute("aria-checked", String(item.classList.contains("is-selected")));
       });
 
       actionButtons.forEach((button, index) => {
         button.addEventListener("click", () => {
-          if (panels.length < 2) {
+          if (panels.length < 2 || isControlDisabled(component) || isControlDisabled(button)) {
             return;
           }
 
@@ -6701,6 +6793,7 @@
           const movedItems = [];
           toArray(source.querySelectorAll(".r8-transfer__item.is-selected")).forEach((item) => {
             item.classList.remove("is-selected");
+            item.setAttribute("aria-checked", "false");
             destination.appendChild(item);
             movedItems.push(item);
           });
@@ -7000,7 +7093,7 @@
   }
 
   function initUploads(root) {
-    toArray(root.querySelectorAll(".r8-upload")).forEach((component) => {
+    toArray(findAll(root, ".r8-upload")).forEach((component) => {
       if (!(component instanceof HTMLElement)) {
         return;
       }
@@ -7043,6 +7136,11 @@
         uploadStates.set(component, state);
       }
 
+      if (!state.input.hasAttribute("aria-label") && !state.input.hasAttribute("aria-labelledby")) {
+        const label = component.querySelector(".r8-upload__title, [data-r8-upload-trigger], .r8-upload__dropzone strong");
+        if (label) state.input.setAttribute("aria-labelledby", ensureId(label, "r8-upload-label"));
+        else state.input.setAttribute("aria-label", "Choose files");
+      }
       syncUploadConfig(state);
 
       if (component.dataset.r8UploadReady === "true") {
@@ -7615,6 +7713,64 @@
     scope.append(backdrop);
   }
 
+  function drawerFocusables(target) {
+    return toArray(target.querySelectorAll('a[href], button, input, select, textarea, [tabindex], [contenteditable="true"]')).filter(
+      (element) => element instanceof HTMLElement && element.tabIndex >= 0 &&
+        !element.matches(":disabled") && !element.closest("[hidden], [inert]") && element.getClientRects().length > 0,
+    );
+  }
+
+  function activeModalDrawer() {
+    for (let index = modalDrawers.length - 1; index >= 0; index -= 1) {
+      const drawer = modalDrawers[index];
+      if (drawer.isConnected && !drawer.hidden) return drawer;
+    }
+    return null;
+  }
+
+  function focusDrawer(target) {
+    const first = drawerFocusables(target)[0];
+    if (first) first.focus({ preventScroll: true });
+    else { target.tabIndex = -1; target.focus({ preventScroll: true }); }
+  }
+
+  function activateDrawerFocus(target, trigger) {
+    if (!drawerUsesModal(target) || drawerFocusStates.has(target)) return;
+    const previousFocus = document.activeElement;
+    const inertElements = [];
+    let branch = target;
+    while (branch.parentElement) {
+      for (const sibling of branch.parentElement.children) {
+        if (sibling !== branch && sibling instanceof HTMLElement && !sibling.matches(".r8-drawer-backdrop, script, style")) {
+          inertElements.push({ element: sibling, inert: sibling.inert });
+          sibling.inert = true;
+        }
+      }
+      branch = branch.parentElement;
+      if (branch === document.body) break;
+    }
+    drawerFocusStates.set(target, { trigger: trigger || previousFocus, inertElements });
+    modalDrawers.push(target);
+    target.setAttribute("role", "dialog");
+    target.setAttribute("aria-modal", "true");
+    focusDrawer(target);
+  }
+
+  function releaseDrawerFocus(target) {
+    const state = drawerFocusStates.get(target);
+    if (!state) return;
+    const wasActive = activeModalDrawer() === target;
+    const restoreFocus = wasActive || target.contains(document.activeElement);
+    state.inertElements.forEach(({ element, inert }) => { element.inert = inert; });
+    drawerFocusStates.delete(target);
+    const index = modalDrawers.indexOf(target);
+    if (index >= 0) modalDrawers.splice(index, 1);
+    target.removeAttribute("aria-modal");
+    if (restoreFocus && state.trigger instanceof HTMLElement && state.trigger.isConnected && !state.trigger.closest("[inert]")) {
+      state.trigger.focus({ preventScroll: true });
+    }
+  }
+
   function closeTarget(target, trigger = null) {
     if (!target) {
       return;
@@ -7623,6 +7779,7 @@
     if (isDialog(target)) {
       if (target.open) {
         target.close();
+        collapseGenericTargetTriggers(target);
         emitComponentEvent(target, "target-close", {
           target,
           trigger,
@@ -7647,6 +7804,7 @@
       collapseGenericTargetTriggers(target);
 
       const closeTimer = window.setTimeout(() => {
+        releaseDrawerFocus(target);
         setHidden(target, true);
         removeDrawerBackdrop(target);
 
@@ -7688,6 +7846,7 @@
     if (isDialog(target)) {
       if (!target.open) {
         target.showModal();
+        setExpanded(trigger, true);
         emitComponentEvent(target, "target-open", {
           target,
           trigger,
@@ -7711,7 +7870,9 @@
           setDrawerBackdropOpen(target, true);
         }
 
+        if (target.hidden) return;
         target.classList.add("is-open");
+        activateDrawerFocus(target, trigger);
         syncDrawerBodyLock();
         emitComponentEvent(target, "drawer-opened", {
           target,
@@ -7746,7 +7907,7 @@
   }
 
   function initGenericToggles(root) {
-    toArray(root.querySelectorAll("[data-r8-toggle][data-r8-target]")).forEach((trigger) => {
+    toArray(findAll(root, "[data-r8-toggle][data-r8-target]")).forEach((trigger) => {
       if (!(trigger instanceof HTMLElement) || trigger.dataset.r8ToggleReady === "true") {
         return;
       }
@@ -7764,6 +7925,10 @@
 
       setExpanded(trigger, false);
       registerGenericTarget(trigger, target);
+      if (isDialog(target) && target.dataset.r8DialogReady !== "true") {
+        target.dataset.r8DialogReady = "true";
+        target.addEventListener("close", () => collapseGenericTargetTriggers(target));
+      }
       if (isFloatingOverlayTarget(target)) {
         const floatingMode = resolveFloatingTriggerMode(trigger, target);
         const floatingVariant = resolveFloatingVariant(trigger, target);
@@ -7831,7 +7996,7 @@
       }
     });
 
-    toArray(root.querySelectorAll("[data-r8-close]")).forEach((button) => {
+    toArray(findAll(root, "[data-r8-close]")).forEach((button) => {
       if (!(button instanceof HTMLElement) || button.dataset.r8CloseReady === "true") {
         return;
       }
@@ -7841,7 +8006,7 @@
       bindKeyboardActivation(button, () => handleCloseAction(button));
     });
 
-    toArray(root.querySelectorAll("[data-r8-dismiss]")).forEach((button) => {
+    toArray(findAll(root, "[data-r8-dismiss]")).forEach((button) => {
       if (!(button instanceof HTMLElement) || button.dataset.r8DismissReady === "true") {
         return;
       }
@@ -7852,7 +8017,7 @@
     });
   }
 
-  function closeAllFloating(target) {
+  function closeAllFloating(target, eventPath = []) {
     floatingStates.forEach((container) => {
       if (!container.isConnected) {
         floatingStates.delete(container);
@@ -7864,8 +8029,8 @@
         return;
       }
 
-      const clickedInsideTrigger = state.trigger instanceof HTMLElement && state.trigger.contains(target);
-      const clickedInsidePanel = state.panel instanceof HTMLElement && state.panel.contains(target);
+      const clickedInsideTrigger = state.trigger instanceof HTMLElement && (state.trigger.contains(target) || eventPath.includes(state.trigger));
+      const clickedInsidePanel = state.panel instanceof HTMLElement && (state.panel.contains(target) || eventPath.includes(state.panel));
       if (!clickedInsideTrigger && !clickedInsidePanel) {
         closeFloating(container);
       }
@@ -7885,8 +8050,8 @@
         return;
       }
 
-      const clickedInsideTrigger = entry.trigger.contains(target);
-      const clickedInsideTarget = entry.target.contains(target);
+      const clickedInsideTrigger = entry.trigger.contains(target) || eventPath.includes(entry.trigger);
+      const clickedInsideTarget = entry.target.contains(target) || eventPath.includes(entry.target);
       if (!clickedInsideTrigger && !clickedInsideTarget) {
         closeTarget(entry.target);
       }
@@ -7921,7 +8086,7 @@
           }
         }
 
-        closeAllFloating(event.target);
+        closeAllFloating(event.target, event.composedPath());
       }
     });
 
@@ -7948,11 +8113,34 @@
       handleToggleTrigger(toggleTrigger);
     });
 
+    document.addEventListener("focusin", (event) => {
+      const drawer = activeModalDrawer();
+      if (drawer && !drawer.contains(event.target)) focusDrawer(drawer);
+    });
+
     document.addEventListener("keydown", (event) => {
+      const drawer = activeModalDrawer();
+      if (drawer && event.key === "Tab") {
+        const items = drawerFocusables(drawer);
+        const first = items[0];
+        const last = items[items.length - 1];
+        if (!first || !drawer.contains(document.activeElement) ||
+            (event.shiftKey && document.activeElement === first) ||
+            (!event.shiftKey && document.activeElement === last)) {
+          event.preventDefault();
+          if (first) (event.shiftKey ? last : first).focus();
+          else focusDrawer(drawer);
+        }
+        return;
+      }
       if (event.key !== "Escape") {
         return;
       }
 
+      if (drawer) {
+        if (drawerClosesOnEscape(drawer)) closeTarget(drawer);
+        return;
+      }
       floatingStates.forEach((container) => closeFloating(container));
       navbarRegistry.forEach((navbar) => {
         const state = navbarStates.get(navbar);
@@ -7993,6 +8181,15 @@
     }
 
     const observer = new MutationObserver((entries) => {
+      if (entries.some((entry) => entry.removedNodes.length > 0)) {
+        modalDrawers.slice().reverse().forEach((drawer) => {
+          if (!drawer.isConnected) {
+            clearOverlayTimer(drawer);
+            releaseDrawerFocus(drawer);
+            removeDrawerBackdrop(drawer);
+          }
+        });
+      }
       entries.forEach((entry) => {
         entry.addedNodes.forEach((node) => {
           if (node instanceof HTMLElement) {
@@ -8045,8 +8242,12 @@
   window.Retro8UI = {
     init,
     refresh: init,
-    version: "0.3.0",
+    version: "0.4.0",
   };
+
+  if (window.Retro8UIAutoInit === false) {
+    return;
+  }
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => init(document), { once: true });

@@ -1599,7 +1599,7 @@ ${slots}
             ? `<div class="r8-table-wrap r8-table-wrap--fixed" style="--r8-table-max-height: 12rem;">
   ${tableMarkup}
 </div>`
-            : tableMarkup,
+            : `<div class="r8-table-wrap">${tableMarkup}</div>`,
       };
     }
 

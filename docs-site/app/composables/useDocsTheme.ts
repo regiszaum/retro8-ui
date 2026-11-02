@@ -7,7 +7,8 @@ function getPreferredTheme(): DocsTheme {
     return "dark";
   }
 
-  const stored = localStorage.getItem(THEME_KEY);
+  let stored: string | null = null;
+  try { stored = localStorage.getItem(THEME_KEY); } catch { /* Storage can be unavailable. */ }
   if (stored === "light" || stored === "dark") {
     return stored;
   }
@@ -21,7 +22,7 @@ function applyTheme(theme: DocsTheme) {
   }
 
   document.documentElement.dataset.theme = theme;
-  localStorage.setItem(THEME_KEY, theme);
+  try { localStorage.setItem(THEME_KEY, theme); } catch { /* The theme still works without persistence. */ }
 }
 
 export function useDocsTheme() {
@@ -33,13 +34,11 @@ export function useDocsTheme() {
     applyTheme(value);
   };
 
-  if (import.meta.client && !initialized.value) {
-    initialized.value = true;
-    theme.value = getPreferredTheme();
-    applyTheme(theme.value);
-  }
-
   onMounted(() => {
+    if (!initialized.value) {
+      initialized.value = true;
+      theme.value = getPreferredTheme();
+    }
     applyTheme(theme.value);
   });
 
