@@ -87,20 +87,26 @@ const componentPageStrings = computed(() => props.site.componentPage);
             <div class="r8-panel__header">
               <h2 class="r8-panel__title">{{ group.title }}</h2>
             </div>
-            <div class="r8-panel__body">
+            <div class="r8-panel__body r8-focus-ring" tabindex="0" role="region" :aria-label="group.title">
               <ul class="docs-token-list">
                 <li v-for="item in group.items" :key="`${group.title}-${item.token}`" class="docs-token-list__item">
                   <span
                     v-if="group.type === 'color'"
                     class="docs-token-list__swatch"
-                    :style="{ background: item.value }"
+                    :style="{ background: `var(${item.token})` }"
+                    :title="site.home.tokenSwatchLabel"
+                    aria-hidden="true"
                   />
                   <span v-else class="docs-token-list__swatch docs-token-list__swatch--ghost" aria-hidden="true" />
                   <span class="docs-token-list__content">
                     <strong>{{ item.label }}</strong>
                     <span class="docs-token-list__pair">
                       <code>{{ item.token }}</code>
-                      <code class="docs-token-list__value">{{ item.value }}</code>
+                      <span v-if="item.darkValue && item.darkValue !== item.value" class="docs-token-list__values">
+                        <span><small>{{ site.home.tokenLightLabel }}</small><code>{{ item.value }}</code></span>
+                        <span><small>{{ site.home.tokenDarkLabel }}</small><code>{{ item.darkValue }}</code></span>
+                      </span>
+                      <code v-else class="docs-token-list__value">{{ item.value }}</code>
                     </span>
                     <small v-if="item.description">{{ item.description }}</small>
                   </span>
@@ -123,7 +129,7 @@ const componentPageStrings = computed(() => props.site.componentPage);
               <h2 class="r8-panel__title">{{ group.title }}</h2>
               <p v-if="group.meta" class="docs-panel__meta">{{ group.meta }}</p>
             </div>
-            <div class="r8-panel__body">
+            <div class="r8-panel__body r8-focus-ring" tabindex="0" role="region" :aria-label="group.title">
               <ul class="docs-token-list">
                 <li v-for="item in group.items" :key="`${group.title}-${item.token}`" class="docs-token-list__item">
                   <span class="docs-token-list__swatch docs-token-list__swatch--ghost" aria-hidden="true" />
@@ -168,6 +174,9 @@ const componentPageStrings = computed(() => props.site.componentPage);
   </section>
 
   <section v-if="pageId === 'components'" class="docs-section">
+    <div class="r8-row docs-catalog-counts">
+      <span v-for="stat in site.home.stats" :key="stat.label" class="r8-badge">{{ stat.value }} {{ stat.label }}</span>
+    </div>
     <DocsComponentCatalog :locale="locale" :sections="site.home.componentSections" />
   </section>
 </template>

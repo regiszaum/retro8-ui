@@ -54,7 +54,8 @@
     "preview": "npm run build:docs && npm --prefix docs-site run preview",
     "test": "node tests/runtime.cjs",
     "test:dist": "node tests/runtime.cjs --dist",
-    "test:docs": "node tests/docs.cjs"
+    "test:docs": "node tests/docs.cjs",
+    "test:content": "node --test tests/content.cjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",

@@ -12,72 +12,72 @@ export const componentGroups = [
   {
     id: "basic",
     core: true,
-    title: l("Basic", "Basic"),
+    title: l("Básicos", "Basic"),
     description: l(
-      "Primitivos visuais, layout e blocos semanticos para montar interfaces retro com consistencia.",
+      "Primitivos visuais, layout e blocos semânticos para montar interfaces retrô com consistência.",
       "Visual primitives, layout helpers and semantic building blocks for consistent retro interfaces.",
     ),
   },
   {
     id: "configuration",
     core: true,
-    title: l("Configuration", "Configuration"),
+    title: l("Configuração", "Configuration"),
     description: l(
-      "Camada de configuration visual para trocar contexto, skin ou theme local sem mudar a API publica.",
+      "Configuração visual local para alterar tema e densidade sem mudar a API pública.",
       "Visual configuration layer for swapping local context, skins or themes without changing the public API.",
     ),
   },
   {
     id: "form",
     core: true,
-    title: l("Form", "Form"),
+    title: l("Formulários", "Form"),
     description: l(
-      "Campos, seletores e shells de entrada de dados pensados para HTML nativo e integracao sem runtime obrigatorio.",
-      "Fields, selectors and data-entry shells designed for native HTML and runtime-free integration.",
+      "Campos, seletores e estruturas de formulário com comportamento HTML nativo ou interações do runtime opcional.",
+      "Form controls and data-entry structures with native HTML behavior or optional runtime interactions.",
     ),
   },
   {
     id: "data",
     core: true,
-    title: l("Data", "Data"),
+    title: l("Dados", "Data"),
     description: l(
-      "Componentes de leitura, visualizacao e estrutura para dashboards, listas, tabelas e estados de conteudo.",
+      "Componentes de leitura, visualização e estrutura para dashboards, listas, tabelas e estados de conteúdo.",
       "Reading, visualization and structure components for dashboards, lists, tables and content states.",
     ),
   },
   {
     id: "navigation",
     core: true,
-    title: l("Navigation", "Navigation"),
+    title: l("Navegação", "Navigation"),
     description: l(
-      "Padroes de deslocamento, orientacao e fluxo entre areas da interface com personalidade retro.",
+      "Padrões de deslocamento, orientação e fluxo entre áreas da interface com personalidade retrô.",
       "Movement, orientation and flow patterns between interface areas with a retro personality.",
     ),
   },
   {
     id: "feedback",
     core: true,
-    title: l("Feedback", "Feedback"),
+    title: l("Retorno visual", "Feedback"),
     description: l(
-      "Superficies visuais para alertas, overlays e estados temporarios que o app hospedeiro pode controlar.",
+      "Superfícies visuais para alertas, overlays e estados temporários que a aplicação hospedeira pode controlar.",
       "Visual surfaces for alerts, overlays and temporary states that the host app can control.",
     ),
   },
   {
     id: "others",
     core: true,
-    title: l("Others", "Others"),
+    title: l("Outros", "Others"),
     description: l(
-      "Pecas auxiliares que aparecem com frequencia em interfaces reais, como separadores e watermark.",
+      "Peças auxiliares que aparecem com frequência em interfaces reais, como separadores e watermark.",
       "Utility pieces that show up often in real interfaces, such as dividers and watermarks.",
     ),
   },
   {
     id: "retro-extras",
     core: false,
-    title: l("retro8 extras", "retro8 extras"),
+    title: l("Extras Retro8", "retro8 extras"),
     description: l(
-      "Componentes nativos da Retro8 UI que complementam o catalogo principal com pecas proprias do sistema.",
+      "Componentes nativos da Retro8 UI que complementam o catálogo principal com peças próprias do sistema.",
       "Retro8 UI native components that extend the main catalog with system-specific pieces.",
     ),
   },
@@ -110,8 +110,8 @@ const basicComponents = [
     name: "Button",
     group: "basic",
     summary: l(
-      "Botao de acao com hover e active em pixel shift, ideal para CTAs e controles de interface.",
-      "Action button with pixel-shift hover and active states, ideal for CTAs and interface controls.",
+      "Botão de ação com estados de foco, carregamento e pressão em estilo pixelado.",
+      "Action button with pixelated hover, pressed, focus, and loading states.",
     ),
     classes: [
       "r8-btn",
@@ -189,10 +189,10 @@ const basicComponents = [
 </div>`,
     anatomy: ll(
       [
-        "`r8-btn` e o shell base e funciona melhor em `<button>` para acoes e em `<a>` apenas quando a navegacao pedir visual de CTA.",
-        "Modifiers como `--primary`, `--ghost`, `--sm`, `--lg` e `--block` ajustam tom, escala e largura sem trocar a estrutura base.",
-        "`r8-btn__icon` adiciona um glyph curto antes ou depois do label mantendo alinhamento previsivel.",
-        "`r8-btn__spinner` representa loading visual e pode ser usado manualmente ou pelo helper declarativo.",
+        "`r8-btn` é a estrutura base e funciona melhor em `<button>` para ações e em `<a>` apenas quando a navegação pedir visual de CTA.",
+        "Modificadores como `--primary`, `--ghost`, `--sm`, `--lg` e `--block` ajustam tom, escala e largura sem trocar a estrutura base.",
+        "`r8-btn__icon` adiciona um símbolo curto antes ou depois do rótulo mantendo alinhamento previsível.",
+        "`r8-btn__spinner` representa carregamento visual e pode ser usado manualmente ou pelo auxiliar declarativo.",
       ],
       [
         "`r8-btn` is the base shell and works best on `<button>` for actions and on `<a>` only when navigation needs CTA styling.",
@@ -203,11 +203,11 @@ const basicComponents = [
     ),
     accessibility: ll(
       [
-        "Prefira `<button>` para acoes reais e use `<a>` apenas quando houver navegacao de verdade.",
-        "Dentro de forms, defina `type=\"button\"` nas acoes que nao devem submeter o formulario.",
-        "Use `aria-pressed` somente quando o Button representar um state persistente de liga/desliga ou selecionado.",
+        "Prefira `<button>` para ações reais e use `<a>` apenas quando houver navegação de verdade.",
+        "Dentro de forms, defina `type=\"button\"` nas ações que não devem submeter o formulário.",
+        "Use `aria-pressed` somente quando o Button representar um estado persistente de liga/desliga ou selecionado.",
         "Quando um link for exibido como Button e estiver indisponivel, exponha `aria-disabled=\"true\"` e proteja ou remova o `href`.",
-        "States de loading devem manter texto visivel; nao dependa apenas do spinner para comunicar o que esta acontecendo.",
+        "Estados de carregamento devem manter texto visível; não dependa apenas do spinner para comunicar o que esta acontecendo.",
       ],
       [
         "Prefer `<button>` for real actions and use `<a>` only when there is actual navigation.",
@@ -221,35 +221,35 @@ const basicComponents = [
       {
         name: "r8-btn",
         description: l(
-          "Classe base para a superficie clicavel com textura retro, foco visivel e estados de hover/press.",
+          "Classe base para a superfície clicável com textura retrô, foco visível e estados de hover/press.",
           "Base class for the clickable surface with retro texture, visible focus and hover/press states.",
         ),
       },
       {
         name: "r8-btn--primary / --secondary / --tertiary / --success / --info / --danger / --dark / --light / --ghost",
         description: l(
-          "Modifiers semanticos para trocar o peso visual da acao sem mudar a estrutura do markup.",
+          "Modificadores semânticos para trocar o peso visual da ação sem mudar a estrutura da marcação.",
           "Semantic modifiers for changing the visual weight of the action without changing the markup structure.",
         ),
       },
       {
         name: "r8-btn--sm / --lg / --block",
         description: l(
-          "Ajustam escala e largura do Button para toolbars compactas, CTAs maiores ou acoes em largura total.",
+          "Ajustam escala e largura do Button para toolbars compactas, CTAs maiores ou ações em largura total.",
           "Adjust the Button scale and width for compact toolbars, larger CTAs or full-width actions.",
         ),
       },
       {
         name: "r8-btn__icon / r8-btn__spinner",
         description: l(
-          "Slots visuais para glyphs curtos e indicacao de loading dentro do proprio Button.",
+          "Slots visuais para símbolos curtos e indicacao de carregamento dentro do próprio Button.",
           "Visual slots for short glyphs and a loading indicator inside the Button itself.",
         ),
       },
       {
         name: "data-r8-variant / data-r8-size / data-r8-loading / data-r8-active",
         description: l(
-          "Helpers declarativos para sincronizar variant, tamanho, loading e state pressed sem concatenacao manual.",
+          "Auxiliares declarativos para sincronizar variante, tamanho, carregamento e estado pressed sem concatenacao manual.",
           "Declarative helpers for syncing variant, size, loading and pressed state without manual class concatenation.",
         ),
       },
@@ -260,8 +260,8 @@ const basicComponents = [
     name: "Border",
     group: "basic",
     summary: l(
-      "Surface utilitaria para aplicar borda retro com controle de espessura, tom, lado isolado e modo ghost.",
-      "Utility surface for applying a retro border with control over width, tone, isolated edge and ghost mode.",
+      "Borda retrô com espessura, cor, lados e sombra configuráveis.",
+      "Retro border with configurable width, color, edges, and shadow.",
     ),
     classes: [
       "r8-border-showcase",
@@ -329,10 +329,10 @@ const basicComponents = [
 </div>`,
     anatomy: ll(
       [
-        "`r8-border-sample` e um wrapper visual generico para destacar blocos, avisos curtos, cards auxiliares e trilhos laterais.",
-        "Modifiers como `--thin` e `--ghost` ajustam peso e preenchimento sem trocar o elemento hospedeiro.",
-        "Tons semanticos como `--primary`, `--success` e `--danger` ajudam a puxar a borda para o contexto certo sem depender so do background.",
-        "Modifiers de lado unico como `--top`, `--end`, `--bottom` e `--start` funcionam bem para separadores, cabecalhos e faixas laterais.",
+        "`r8-border-sample` é um contêiner visual genérico para destacar blocos, avisos curtos, cards auxiliares e trilhos laterais.",
+        "Modificadores como `--thin` e `--ghost` ajustam peso e preenchimento sem trocar o elemento hospedeiro.",
+        "Tons semânticos como `--primary`, `--success` e `--danger` ajudam a puxar a borda para o contexto certo sem depender só do fundo.",
+        "Modificadores de lado único como `--top`, `--end`, `--bottom` e `--start` funcionam bem para separadores, cabeçalhos e faixas laterais.",
       ],
       [
         "`r8-border-sample` is a generic visual wrapper for highlighted blocks, short notices, helper cards and side rails.",
@@ -343,9 +343,9 @@ const basicComponents = [
     ),
     accessibility: ll(
       [
-        "Border e apenas tratamento visual; escolha o elemento semantico certo, como `<section>`, `<article>` ou `<aside>`, de acordo com o conteudo.",
-        "Nao dependa so da cor da borda para comunicar state critico ou sucesso; mantenha texto, icone ou label explicito.",
-        "Quando usar borda em um unico lado, preserve espacamento suficiente para que a faixa continue perceptivel sem colidir com o conteudo.",
+        "Border e apenas tratamento visual; escolha o elemento semântico certo, como `<section>`, `<article>` ou `<aside>`, de acordo com o conteúdo.",
+        "Não dependa só da cor da borda para comunicar estado crítico ou sucesso; mantenha texto, ícone ou rótulo explicito.",
+        "Quando usar borda em um único lado, preserve espaçamento suficiente para que a faixa continue perceptivel sem colidir com o conteúdo.",
       ],
       [
         "Border is a visual treatment only; choose the right semantic host, such as `<section>`, `<article>` or `<aside>`, based on the content.",
@@ -357,35 +357,35 @@ const basicComponents = [
       {
         name: "r8-border-sample",
         description: l(
-          "Classe base para uma surface emoldurada com borda dura, fundo opcional e sombra seca no estilo Retro8 UI.",
+          "Classe base para uma superfície emoldurada com borda dura, fundo opcional e sombra seca no estilo Retro8 UI.",
           "Base class for a framed surface with a hard border, optional fill and dry shadow in the Retro8 UI style.",
         ),
       },
       {
         name: "r8-border-sample--thin / --ghost",
         description: l(
-          "Ajustam espessura e preenchimento para surfaces mais discretas ou outlines transparentes.",
+          "Ajustam espessura e preenchimento para superfícies mais discretas ou outlines transparentes.",
           "Adjust thickness and fill for quieter surfaces or transparent outlines.",
         ),
       },
       {
         name: "r8-border-sample--primary / --secondary / --success / --info / --danger",
         description: l(
-          "Trocam o tom da borda usando cores semanticas ja presentes nos tokens da biblioteca.",
+          "Trocam o tom da borda usando cores semânticas já presentes nos tokens da biblioteca.",
           "Change the border tone using semantic colors already present in the library tokens.",
         ),
       },
       {
         name: "r8-border-sample--top / --end / --bottom / --start",
         description: l(
-          "Mantem apenas uma face da borda visivel para casos de separacao, encaixe lateral ou destaque de faixa.",
+          "Mantém apenas uma face da borda visível para casos de separacao, encaixe lateral ou destaque de faixa.",
           "Keep only one border edge visible for separator, docked or side-rail scenarios.",
         ),
       },
       {
         name: "--r8-border-sample-*",
         description: l(
-          "Custom properties para ajustar cor, largura, sombra e background sem precisar criar novos modifiers fixos.",
+          "Propriedades CSS para ajustar cor, largura, sombra e fundo sem precisar criar novos modificadores fixos.",
           "Custom properties for dialing color, width, shadow and background without creating new fixed modifiers.",
         ),
       },
@@ -396,8 +396,8 @@ const basicComponents = [
     name: "Color",
     group: "basic",
     summary: l(
-      "Organiza a paleta semantica da UI e os helpers de cor para texto, com foco em contraste e leitura rapida.",
-      "Organizes the UI semantic palette and text color helpers, with a focus on contrast and fast readability.",
+      "Paleta semântica e classes de cor para texto, superfícies e estados da interface.",
+      "Semantic palette and text color classes for surfaces, content, and interface states.",
     ),
     classes: [
       "r8-color-grid",
@@ -536,9 +536,9 @@ const basicComponents = [
 </section>`,
     anatomy: ll(
       [
-        "`r8-color-grid` organiza swatches em uma grade responsiva para inspecionar a paleta rapidamente.",
+        "`r8-color-grid` organiza amostras de cor em uma grade responsiva para inspecionar a paleta rapidamente.",
         "`r8-color-card`, `__swatch` e `__meta` formam o bloco visual de cada token de cor exibido na documentacao.",
-        "`r8-text` e os modifiers `--*` aplicam cor semantica ao texto corrido sem precisar criar estilos locais para cada contexto.",
+        "`r8-text` e os modificadores `--*` aplicam cor semântica ao texto corrido sem precisar criar estilos locais para cada contexto.",
       ],
       [
         "`r8-color-grid` organizes swatches in a responsive grid so the palette can be scanned quickly.",
@@ -548,8 +548,8 @@ const basicComponents = [
     ),
     accessibility: ll(
       [
-        "Nao use cor sozinha para comunicar meaning; combine o tom com texto claro, icone ou label visivel.",
-        "Tons claros como `r8-text--light` funcionam melhor sobre surfaces escuras ou coloridas com contraste suficiente.",
+        "Não use cor sozinha para comunicar meaning; combine o tom com texto claro, ícone ou rótulo visível.",
+        "Tons claros como `r8-text--light` funcionam melhor sobre superfícies escuras ou coloridas com contraste suficiente.",
         "Para metadata discreta, prefira `--muted` ou `--subtle` em vez de reduzir opacidade e comprometer a leitura.",
       ],
       [
@@ -569,7 +569,7 @@ const basicComponents = [
       {
         name: "r8-text",
         description: l(
-          "Classe base para texto corrido, labels e pequenos blocos de copy onde a cor pode variar semanticamente.",
+          "Classe base para texto corrido, rótulos e pequenos blocos de texto onde a cor pode variar semanticamente.",
           "Base class for body copy, labels and short text blocks where color may vary semantically.",
         ),
       },
@@ -583,7 +583,7 @@ const basicComponents = [
       {
         name: "r8-text--primary / --secondary / --tertiary / --success / --warning / --info / --danger",
         description: l(
-          "Aplicam os tons semanticos principais da Retro8 UI diretamente no texto.",
+          "Aplicam os tons semânticos principais da Retro8 UI diretamente no texto.",
           "Apply the main Retro8 UI semantic tones directly to text.",
         ),
       },
@@ -601,8 +601,8 @@ const basicComponents = [
     name: "Layout Container",
     group: "basic",
     summary: l(
-      "Shell estrutural para montar layouts com header, aside, main e footer, agora com direcao e largura lateral ajustaveis.",
-      "Structural shell for layouts with header, aside, main and footer, now with adjustable direction and sidebar width.",
+      "Estrutura de página com cabeçalho, conteúdo principal, barra lateral e rodapé.",
+      "Page structure with a header, main content, sidebar, and footer.",
     ),
     classes: [
       "r8-container",
@@ -651,11 +651,11 @@ const basicComponents = [
 </div>`,
     anatomy: ll(
       [
-        "`r8-container` e o wrapper estrutural que distribui os blocos principais do shell e aceita nesting quando a hierarquia pedir.",
-        "`r8-container__header` e `r8-container__footer` ocupam a largura total e funcionam bem para barras de contexto, status e acoes.",
-        "`r8-container__aside` cria a coluna lateral e pode ficar no inicio ou no fim usando `r8-container--aside-end`.",
-        "`r8-container__main` recebe a area principal e continua responsiva mesmo quando o aside desaparece.",
-        "`r8-container--stack` simplifica o shell para um fluxo vertical sem sidebar, util para paginas simples ou areas compactas.",
+        "`r8-container` é o contêiner estrutural que distribui os blocos principais da estrutura e aceita nesting quando a hierarquia pedir.",
+        "`r8-container__header` e `r8-container__footer` ocupam a largura total e funcionam bem para barras de contexto, status e ações.",
+        "`r8-container__aside` cria a coluna lateral e pode ficar no início ou no fim usando `r8-container--aside-end`.",
+        "`r8-container__main` recebe a área principal e continua responsiva mesmo quando o aside desaparece.",
+        "`r8-container--stack` simplifica a estrutura para um fluxo vertical sem sidebar, útil para páginas simples ou áreas compactas.",
       ],
       [
         "`r8-container` is the structural wrapper that distributes the main shell regions and accepts nesting when the hierarchy needs it.",
@@ -667,9 +667,9 @@ const basicComponents = [
     ),
     accessibility: ll(
       [
-        "Use elementos semanticos nativos como `<header>`, `<aside>`, `<main>` e `<footer>` sempre que eles fizerem sentido para a estrutura real.",
-        "Mantenha apenas um `<main>` por pagina ou por landmark principal do app para evitar landmarks duplicados.",
-        "Se o aside for navegacao, exponha links e headings claros; se for painel auxiliar, rotule o bloco para orientar assistive tech.",
+        "Use elementos semânticos nativos como `<header>`, `<aside>`, `<main>` e `<footer>` sempre que eles fizerem sentido para a estrutura real.",
+        "Mantenha apenas um `<main>` por página ou por landmark principal do app para evitar landmarks duplicados.",
+        "Se o aside for navegação, exponha links e títulos claros; se for painel auxiliar, rotule o bloco para orientar tecnologias assistivas.",
       ],
       [
         "Use native semantic elements such as `<header>`, `<aside>`, `<main>` and `<footer>` whenever they match the real structure.",
@@ -681,28 +681,28 @@ const basicComponents = [
       {
         name: "r8-container",
         description: l(
-          "Classe base do shell, com gap, altura minima e largura lateral controladas por CSS variables.",
+          "Classe base da estrutura, com espaçamento, altura mínima e largura lateral controladas por CSS variables.",
           "Base shell class, with gap, minimum height and sidebar width controlled by CSS variables.",
         ),
       },
       {
         name: "r8-container--aside-end / r8-container--stack",
         description: l(
-          "Modifiers para mover o aside para a direita logica ou simplificar o layout para um fluxo vertical.",
+          "Modificadores para mover o aside para a direita lógica ou simplificar o layout para um fluxo vertical.",
           "Modifiers for moving the aside to the logical end or simplifying the layout into a vertical flow.",
         ),
       },
       {
         name: "r8-container__header / __aside / __main / __footer",
         description: l(
-          "Regioes semanticas do shell que podem ser combinadas conforme a necessidade do layout.",
+          "Regioes semânticas da estrutura que podem ser combinadas conforme a necessidade do layout.",
           "Semantic shell regions that can be combined based on the layout needs.",
         ),
       },
       {
         name: "--r8-container-*",
         description: l(
-          "Custom properties para ajustar gap, largura do aside, altura minima e alturas do header/footer sem criar novos modifiers fixos.",
+          "Propriedades CSS para ajustar espaçamento, largura do aside, altura mínima e alturas do cabeçalho/rodapé sem criar novos modificadores fixos.",
           "Custom properties for adjusting gap, aside width, minimum height and header/footer heights without creating new fixed modifiers.",
         ),
       },
@@ -713,8 +713,8 @@ const basicComponents = [
     name: "Icon",
     group: "basic",
     summary: l(
-      "Moldura visual para encaixar icones externos, cursores pixelados ou glyphs curtos sem acoplar um pacote de icones na library.",
-      "Visual frame for external icon packs, pixel cursor assets or short glyphs without coupling the library to a bundled icon set.",
+      "Moldura visual para ícones externos, imagens de cursores ou símbolos de texto, sem pacote de ícones obrigatório.",
+      "Visual frame for external icons, cursor images, or text glyphs, with no required icon package.",
     ),
     classes: ["r8-icon-grid", "r8-icon-tile", "r8-icon-tile__glyph", "r8-icon-tile__label"],
     preview: `<div class="docs-demo__stack">
@@ -816,10 +816,10 @@ const basicComponents = [
 </div>`,
     anatomy: ll(
       [
-        "`r8-icon-grid` organiza galerias de icones, cursores ou estados visuais em uma grade leve e responsiva.",
-        "`r8-icon-tile` emoldura cada item com a mesma surface retro usada em outros blocos da UI, mantendo consistencia com cards e samples.",
+        "`r8-icon-grid` organiza galerias de ícones, cursores ou estados visuais em uma grade leve e responsiva.",
+        "`r8-icon-tile` emoldura cada item com a mesma superfície retrô usada em outros blocos da UI, mantendo consistência com cards e samples.",
         "`r8-icon-tile__glyph` aceita texto curto, `<img>` ou `<svg>` inline, entao voce pode encaixar assets externos sem trocar a estrutura.",
-        "`r8-icon-tile__label` nomeia o item e ajuda a explicar o significado do icone quando ele aparece fora de um contexto maior.",
+        "`r8-icon-tile__label` nomeia o item e ajuda a explicar o significado do ícone quando ele aparece fora de um contexto maior.",
       ],
       [
         "`r8-icon-grid` organizes icon galleries, cursor assets or state markers in a light responsive grid.",
@@ -830,10 +830,10 @@ const basicComponents = [
     ),
     accessibility: ll(
       [
-        "Se o icone for apenas decorativo, marque o glyph como `aria-hidden=\"true\"` e use `alt=\"\"` em imagens para evitar redundancia.",
-        "Quando o icone carregar significado proprio, mantenha label visivel ou um nome acessivel claro no elemento interativo hospedeiro.",
-        "O tile nao e interativo por si so; se o icone abrir uma acao ou navegacao, hospede a estrutura dentro de `<button>` ou `<a>` sem perder o label.",
-        "Nao dependa so do icone para comunicar estado importante; combine com texto, cor e contexto visivel.",
+        "Se o ícone for apenas decorativo, marque o símbolo como `aria-hidden=\"true\"` e use `alt=\"\"` em imagens para evitar redundancia.",
+        "Quando o ícone carregar significado próprio, mantenha rótulo visível ou um nome acessível claro no elemento interativo hospedeiro.",
+        "O bloco não e interativo por si só; se o ícone abrir uma ação ou navegação, hospede a estrutura dentro de `<button>` ou `<a>` sem perder o rótulo.",
+        "Não dependa só do ícone para comunicar estado importante; combine com texto, cor e contexto visível.",
       ],
       [
         "If the icon is purely decorative, mark the glyph as `aria-hidden=\"true\"` and use `alt=\"\"` on images to avoid redundancy.",
@@ -846,35 +846,35 @@ const basicComponents = [
       {
         name: "r8-icon-grid",
         description: l(
-          "Grid responsiva para listar opcoes de pacote, estados de cursor, acoes iconicas ou galerias curtas dentro da documentacao e do produto.",
+          "Grid responsiva para listar opções de pacote, estados de cursor, ações iconicas ou galerias curtas dentro da documentacao e do produto.",
           "Responsive grid for listing package options, cursor states, icon actions or short galleries in docs and product surfaces.",
         ),
       },
       {
         name: "r8-icon-tile",
         description: l(
-          "Tile base com moldura retro para agrupar um glyph e seu label sem precisar montar um card bespoke.",
+          "Bloco base com moldura retrô para agrupar um símbolo e seu rótulo sem precisar montar um card bespoke.",
           "Base tile with a retro frame for grouping a glyph and its label without building a bespoke card.",
         ),
       },
       {
         name: "r8-icon-tile__glyph",
         description: l(
-          "Janela visual do icone. Funciona com texto curto, `<img>` ou `<svg>` inline e aceita customizacao por CSS variables.",
+          "Janela visual do ícone. Funciona com texto curto, `<img>` ou `<svg>` inline e aceita customizacao por CSS variables.",
           "Visual icon frame. Works with short text, `<img>` or inline `<svg>` and accepts CSS variable overrides.",
         ),
       },
       {
         name: "r8-icon-tile__label",
         description: l(
-          "Label em caixa alta para nomear o asset, estado ou significado do icone de forma previsivel.",
+          "Rótulo em caixa alta para nomear o asset, estado ou significado do ícone de forma previsível.",
           "Uppercase label for naming the asset, state or icon meaning predictably.",
         ),
       },
       {
         name: "--r8-icon-glyph-*",
         description: l(
-          "Custom properties para ajustar tamanho, cor de frente, background e borda do glyph quando o contexto pedir outra enfase.",
+          "Propriedades CSS para ajustar tamanho, cor de frente, fundo e borda do símbolo quando o contexto pedir outra ênfase.",
           "Custom properties for adjusting glyph size, foreground color, background and border when the context needs different emphasis.",
         ),
       },
@@ -885,8 +885,8 @@ const basicComponents = [
     name: "Link",
     group: "basic",
     summary: l(
-      "Link textual com tom semantico, controle de underline e opacidade suave para navegação inline e ações secundarias.",
-      "Text link with semantic tone, underline control and gentle opacity handling for inline navigation and secondary actions.",
+      "Link de texto com cores semânticas e controle de sublinhado e opacidade.",
+      "Text link with semantic colors and configurable underlines and opacity.",
     ),
     classes: [
       "r8-link",
@@ -956,10 +956,10 @@ const basicComponents = [
 </div>`,
     anatomy: ll(
       [
-        "`r8-link` e a base para anchors, `NuxtLink` e outras navegacoes textuais curtas que precisam manter a linguagem visual da Retro8 UI.",
-        "Modifiers de tom como `--secondary`, `--warning`, `--danger` e `--muted` mudam a cor sem perder foco visivel nem comportamento de hover.",
+        "`r8-link` é a base para anchors, `NuxtLink` e outras navegacoes textuais curtas que precisam manter a linguagem visual da Retro8 UI.",
+        "Modificadores de tom como `--secondary`, `--warning`, `--danger` e `--muted` mudam a cor sem perder foco visível nem comportamento de hover.",
         "`r8-link--quiet` reduz a presenca visual do link, enquanto `r8-link--underline` deixa o sublinhado sempre presente antes mesmo do hover.",
-        "CSS variables `--r8-link-*` refinam opacidade, cor e offset do underline sem multiplicar modifiers utilitarios.",
+        "CSS variables `--r8-link-*` refinam opacidade, cor e offset do sublinhado sem multiplicar modificadores utilitarios.",
       ],
       [
         "`r8-link` is the base for anchors, `NuxtLink`, and other short text navigation patterns that should stay within the Retro8 UI visual language.",
@@ -970,10 +970,10 @@ const basicComponents = [
     ),
     accessibility: ll(
       [
-        "Mantenha texto de destino explicito; evite labels vagas como 'clique aqui' quando o link aparecer fora de contexto.",
-        "Se usar `target=\"_blank\"`, combine com `rel=\"noreferrer noopener\"` e deixe claro quando a navegacao abrir outra aba.",
-        "Opacidade mais baixa pode prejudicar contraste; use `r8-link--quiet` e overrides de opacity com moderacao, principalmente em texto corrido pequeno.",
-        "Para links indisponiveis, exponha `aria-disabled=\"true\"` e proteja ou remova o `href` para evitar navegacao acidental.",
+        "Mantenha texto de destino explicito; evite rótulos vagas como 'clique aqui' quando o link aparecer fora de contexto.",
+        "Se usar `target=\"_blank\"`, combine com `rel=\"noreferrer noopener\"` e deixe claro quando a navegação abrir outra aba.",
+        "Opacidade mais baixa pode prejudicar contraste; use `r8-link--quiet` e overrides de opacity com moderação, principalmente em texto corrido pequeno.",
+        "Para links indisponiveis, exponha `aria-disabled=\"true\"` e proteja ou remova o `href` para evitar navegação acidental.",
       ],
       [
         "Keep destination text explicit; avoid vague labels such as 'click here' when the link appears outside its surrounding context.",
@@ -986,28 +986,28 @@ const basicComponents = [
       {
         name: "r8-link",
         description: l(
-          "Classe base para links textuais com foco visivel, hover com pixel shift e underline controlado por CSS variables.",
+          "Classe base para links textuais com foco visível, hover com pixel shift e sublinhado controlado por CSS variables.",
           "Base class for text links with visible focus, pixel-shift hover, and underline driven by CSS variables.",
         ),
       },
       {
         name: "r8-link--secondary / --tertiary / --success / --warning / --info / --danger / --dark / --muted",
         description: l(
-          "Modifiers semanticos para mudar o tom do link sem trocar a estrutura do anchor ou do router link.",
+          "Modificadores semânticos para mudar o tom do link sem trocar a estrutura do anchor ou do router link.",
           "Semantic modifiers for changing the link tone without changing the anchor or router-link structure.",
         ),
       },
       {
         name: "r8-link--quiet / --underline",
         description: l(
-          "Presets seguros para reduzir a opacidade base do link ou manter o underline visivel desde o estado idle.",
+          "Presets seguros para reduzir a opacidade base do link ou manter o sublinhado visível desde o estado idle.",
           "Safe presets for lowering the base link opacity or keeping the underline visible from the idle state.",
         ),
       },
       {
         name: "--r8-link-*",
         description: l(
-          "Custom properties para ajustar cor, opacity, underline opacity e underline offset seguindo o contexto da tela.",
+          "Propriedades CSS para ajustar cor, opacity, sublinhado opacity e sublinhado offset seguindo o contexto da tela.",
           "Custom properties for tuning color, opacity, underline opacity, and underline offset to match the screen context.",
         ),
       },
@@ -1018,8 +1018,8 @@ const basicComponents = [
     name: "Splitter",
     group: "basic",
     summary: l(
-      "Layout redimensionavel com handle pixelado, suporte horizontal ou vertical, disable drag e eventos de resize para apps mais densos.",
-      "Resizable layout with a pixelated handle, horizontal or vertical support, disable-drag mode, and resize events for denser app shells.",
+      "Divisor redimensionável horizontal ou vertical, com controle por ponteiro e teclado.",
+      "Horizontal or vertical resizable divider with pointer and keyboard controls.",
     ),
     classes: [
       "r8-splitter",
@@ -1068,10 +1068,10 @@ const basicComponents = [
 </div>`,
     anatomy: ll(
       [
-        "`r8-splitter` e o shell base que distribui dois panes e um handle central governado pelo runtime.",
-        "`r8-splitter__pane` representa cada area redimensionavel e pode receber qualquer conteudo, de listas a paines de preview.",
-        "`r8-splitter__handle` e o separador focavel usado para pointer drag e ajuste por teclado.",
-        "`r8-splitter--vertical` troca o eixo do layout quando a divisao precisa acontecer em linhas, nao colunas.",
+        "`r8-splitter` é a estrutura base que distribui dois painéis e uma alça central controlada pelo runtime.",
+        "`r8-splitter__pane` representa cada área redimensionável e pode receber qualquer conteúdo, de listas a painéis de prévia.",
+        "`r8-splitter__handle` é o separador focável usado para arraste com ponteiro e ajuste por teclado.",
+        "`r8-splitter--vertical` troca o eixo do layout quando a divisão precisa acontecer em linhas, não colunas.",
       ],
       [
         "`r8-splitter` is the base shell that distributes two panes and a central handle governed by the runtime.",
@@ -1082,10 +1082,10 @@ const basicComponents = [
     ),
     accessibility: ll(
       [
-        "Mantenha um `aria-label` claro no handle para explicar o que esta sendo redimensionado.",
-        "O handle ja expoe `role=\"separator\"`, orientation e valores ARIA; preserve isso se voce personalizar o host.",
-        "Use `data-r8-splitter-disabled=\"true\"` quando o layout estiver travado para nao sugerir drag em um estado indisponivel.",
-        "Em areas criticas, deixe cada pane com headings ou landmarks claros para que a divisao espacial faca sentido tambem em leitores de tela.",
+        "Mantenha um `aria-label` claro na alça para explicar o que esta sendo redimensionado.",
+        "O alça já expoe `role=\"separator\"`, orientation e valores ARIA; preserve isso se voce personalizar o elemento.",
+        "Use `data-r8-splitter-disabled=\"true\"` quando o layout estiver travado para não sugerir arraste em um estado indisponivel.",
+        "Em áreas criticas, deixe cada painel com títulos ou landmarks claros para que a divisão espacial faca sentido também em leitores de tela.",
       ],
       [
         "Keep a clear `aria-label` on the handle so it explains what is being resized.",
@@ -1098,28 +1098,28 @@ const basicComponents = [
       {
         name: "r8-splitter / r8-splitter--vertical",
         description: l(
-          "Shell base para o layout redimensionavel, com variant vertical quando a divisao precisa acontecer em linhas.",
+          "Estrutura base para o layout redimensionável, com variante vertical quando a divisão precisa acontecer em linhas.",
           "Base shell for the resizable layout, with a vertical variant when the split needs to happen in rows.",
         ),
       },
       {
         name: "r8-splitter__pane / r8-splitter__handle",
         description: l(
-          "Os panes recebem o conteudo real e o handle fica responsavel pela interacao de resize via pointer e teclado.",
+          "Os painéis recebem o conteúdo real e a alça fica responsável pela interação de redimensionamento via ponteiro e teclado.",
           "The panes host the real content while the handle is responsible for resize interaction through pointer and keyboard.",
         ),
       },
       {
         name: "data-r8-splitter-position / -min / -max / -step / -disabled",
         description: l(
-          "Controlam posicao inicial, limites, passo de teclado e bloqueio de interacao sem exigir JS customizado no host app.",
+          "Controlam posição inicial, limites, passo de teclado e bloqueio de interação sem exigir JS customizado na aplicação hospedeira.",
           "Control initial position, limits, keyboard step, and interaction lock without requiring custom JS in the host app.",
         ),
       },
       {
         name: "--r8-splitter-*",
         description: l(
-          "Custom properties para ajustar posicao, tamanho do handle, acento visual do grip e fundo dos panes.",
+          "Propriedades CSS para ajustar posição, tamanho da alça, acento visual do grip e fundo dos painéis.",
           "Custom properties for adjusting position, handle size, grip accent, and pane background.",
         ),
       },
@@ -1130,8 +1130,8 @@ const basicComponents = [
     name: "Typography",
     group: "basic",
     summary: l(
-      "Sistema tipografico para hierarquia retro, largura de leitura confortavel, escala de texto e tons semanticos de apoio.",
-      "Typographic system for retro hierarchy, comfortable reading measure, text scale, and supporting semantic tones.",
+      "Classes de tipografia para títulos, texto, largura de leitura e hierarquia visual.",
+      "Typography classes for headings, body text, reading width, and visual hierarchy.",
     ),
     classes: [
       "r8-typography",
@@ -1198,11 +1198,11 @@ const basicComponents = [
 <p class="r8-text r8-text--lg r8-text--loose">Large relaxed copy helps banners, empty states and longer explanatory messages.</p>`,
     anatomy: ll(
       [
-        "`r8-typography` e o wrapper para headings, paragrafos, listas, code, blockquotes e pequenos apoios como `small`.",
-        "`r8-typography--measure` limita a largura da leitura para blocos mais longos sem criar um wrapper extra.",
-        "`r8-typography--compact` e `r8-typography--loose` ajustam gap e line-height do bloco inteiro para contextos mais densos ou mais relaxados.",
-        "`r8-text` funciona dentro ou fora do bloco tipografico quando voce precisa aplicar tom, escala ou line-height em um trecho especifico.",
-        "Os modifiers de escala `r8-text--xs / --sm / --base / --lg` usam os tokens da UI em vez de tamanhos arbitrarios soltos.",
+        "`r8-typography` é o contêiner para títulos, parágrafos, listas, code, blockquotes e pequenos apoios como `small`.",
+        "`r8-typography--measure` limita a largura da leitura para blocos mais longos sem criar um contêiner extra.",
+        "`r8-typography--compact` e `r8-typography--loose` ajustam espaçamento e line-height do bloco inteiro para contextos mais densos ou mais relaxados.",
+        "`r8-text` funciona dentro ou fora do bloco tipográfico quando você precisa aplicar tom, escala ou line-height em um trecho específico.",
+        "Os modificadores de escala `r8-text--xs / --sm / --base / --lg` usam os tokens da UI em vez de tamanhos arbitrários soltos.",
       ],
       [
         "`r8-typography` is the wrapper for headings, paragraphs, lists, code, blockquotes, and lighter support copy such as `small`.",
@@ -1214,10 +1214,10 @@ const basicComponents = [
     ),
     accessibility: ll(
       [
-        "Mantenha a ordem semantica de headings (`h1`, `h2`, `h3`) mesmo quando o visual parecer resolvido com apenas classes.",
-        "Use os tons semanticos como apoio, nao como unico canal para erro, sucesso ou alerta; sempre combine com contexto textual.",
-        "Prefira `r8-typography--measure` e line-heights mais relaxados quando houver paragrafos longos ou instrucoes importantes.",
-        "Use os modos compactos com parcimonia em areas densas; leitura longa com line-height apertado cansa mais rapido.",
+        "Mantenha a ordem semântica de títulos (`h1`, `h2`, `h3`) mesmo quando o visual parecer resolvido com apenas classes.",
+        "Use os tons semânticos como apoio, não como único canal para erro, sucesso ou alerta; sempre combine com contexto textual.",
+        "Prefira `r8-typography--measure` e line-heights mais relaxados quando houver parágrafos longos ou instruções importantes.",
+        "Use os modos compactos com parcimonia em áreas densas; leitura longa com line-height apertado cansa mais rapido.",
       ],
       [
         "Keep semantic heading order (`h1`, `h2`, `h3`) even when the visual hierarchy looks solved by classes alone.",
@@ -1230,21 +1230,21 @@ const basicComponents = [
       {
         name: "r8-typography",
         description: l(
-          "Wrapper base para hierarquia tipografica, com headings retro, corpo em mono legivel e suporte a listas, blockquotes, code e small.",
+          "Wrapper base para hierarquia tipografica, com títulos retrô, corpo em mono legível e suporte a listas, blockquotes, code e small.",
           "Base wrapper for typographic hierarchy, with retro headings, readable mono body copy, and support for lists, blockquotes, code, and small text.",
         ),
       },
       {
         name: "r8-typography--compact / --loose / --measure",
         description: l(
-          "Modifiers para densidade vertical e largura de leitura sem precisar criar wrappers ou CSS local para cada bloco.",
+          "Modificadores para densidade vertical e largura de leitura sem precisar criar contêineres ou CSS local para cada bloco.",
           "Modifiers for vertical density and reading width without creating extra wrappers or local CSS for every prose block.",
         ),
       },
       {
         name: "r8-text",
         description: l(
-          "Classe base para copys curtas, labels e paragrafos que precisam de ajustes fora ou dentro de um bloco tipografico.",
+          "Classe base para textos curtas, rótulos e parágrafos que precisam de ajustes fora ou dentro de um bloco tipográfico.",
           "Base class for short copy, labels, and paragraphs that need adjustments outside or inside a prose block.",
         ),
       },
@@ -1258,21 +1258,21 @@ const basicComponents = [
       {
         name: "r8-text--compact / --loose",
         description: l(
-          "Ajustam line-height de um trecho especifico quando a densidade precisa fugir do valor padrao do bloco.",
+          "Ajustam line-height de um trecho específico quando a densidade precisa fugir do valor padrão do bloco.",
           "Adjust line-height for a specific line or paragraph when density needs to differ from the block default.",
         ),
       },
       {
         name: "r8-text--muted / --subtle / --primary / --secondary / --tertiary / --success / --warning / --info / --danger / --dark / --light",
         description: l(
-          "Tons semanticos para apoio visual, enfase contextual e contraste explicito em superficies mais claras ou escuras.",
+          "Tons semânticos para apoio visual, ênfase contextual e contraste explicito em superfícies mais claras ou escuras.",
           "Semantic tones for visual support, contextual emphasis, and explicit contrast on lighter or darker surfaces.",
         ),
       },
       {
         name: "--r8-text-* / --r8-typography-*",
         description: l(
-          "Custom properties para trocar familia, escala, line-height, gap e largura de leitura sem abrir novos modifiers fixos.",
+          "Propriedades CSS para trocar família, escala, line-height, espaçamento e largura de leitura sem abrir novos modificadores fixos.",
           "Custom properties for swapping family, scale, line-height, gap, and reading width without expanding the modifier surface.",
         ),
       },
@@ -1286,8 +1286,8 @@ const configurationComponents = [
     name: "Config Provider",
     group: "configuration",
     summary: l(
-      "Escopo local de tokens para trocar skin, densidade e acentos sem afetar o restante da interface.",
-      "Local token scope for swapping skin, density, and accents without affecting the rest of the interface.",
+      "Escopo local de tokens para ajustar tema, densidade e cores sem alterar o restante da interface.",
+      "Local token scope for adjusting theme, density, and colors without changing the surrounding interface.",
     ),
     classes: [
       "r8-config-provider",
@@ -1365,11 +1365,11 @@ const configurationComponents = [
 </section>`,
     anatomy: ll(
       [
-        "`r8-config-provider` cria um escopo local de tokens; tudo dentro dele herda cores, sombras, spacing e tipografia desse contexto.",
-        "As variantes `--night`, `--terminal` e `--danger` trocam a skin local sem exigir um theme switch global no documento inteiro.",
-        "`--compact` e `--comfortable` ajustam densidade local ao reescrever tokens de spacing e escala tipografica dentro do scope.",
-        "Voce pode combinar classes com `data-theme` e `data-density` quando o host app controla estado por atributo.",
-        "Nested providers funcionam para sobrescrever apenas uma ilha da interface, mantendo o resto do shell intacto.",
+        "`r8-config-provider` cria um escopo local de tokens; tudo dentro dele herda cores, sombras, espaçamento e tipografia desse contexto.",
+        "As variantes `--night`, `--terminal` e `--danger` trocam o tema local sem exigir um interruptor global de tema no documento inteiro.",
+        "`--compact` e `--comfortable` ajustam densidade local ao reescrever tokens de espaçamento e escala tipográfica dentro do escopo.",
+        "Você pode combinar classes com `data-theme` e `data-density` quando a aplicação hospedeira controla estado por atributo.",
+        "Escopos aninhados funcionam para sobrescrever apenas uma ilha da interface, mantendo o resto da estrutura intacto.",
       ],
       [
         "`r8-config-provider` creates a local token scope; everything inside inherits colors, shadows, spacing, and typography from that context.",
@@ -1381,10 +1381,10 @@ const configurationComponents = [
     ),
     accessibility: ll(
       [
-        "Use o `Config Provider` para contraste e densidade, mas mantenha labels, headings e estado textual visiveis mesmo quando o tema mudar.",
-        "Temas locais escuros ou danger precisam continuar respeitando contraste suficiente entre surface, texto e foco.",
-        "Se usar nested providers, preserve a ordem semantica da interface; o escopo visual nao deve confundir landmarks ou hierarquia real.",
-        "Atributos como `data-theme` ajudam quando a mudanca vem do host app, mas a experiencia acessivel continua dependendo do markup interno correto.",
+        "Use o `Config Provider` para contraste e densidade, mas mantenha rótulos, títulos e estado textual visíveis mesmo quando o tema mudar.",
+        "Temas locais escuros ou danger precisam continuar respeitando contraste suficiente entre superfície, texto e foco.",
+        "Se usar aninhados providers, preserve a ordem semântica da interface; o escopo visual não deve confundir landmarks ou hierarquia real.",
+        "Atributos como `data-theme` ajudam quando a mudança vem da aplicação hospedeira, mas a experiência acessível continua dependendo da marcação interna correta.",
       ],
       [
         "Use `Config Provider` for contrast and density, but keep labels, headings, and state text visible even when the local theme changes.",
@@ -1397,42 +1397,42 @@ const configurationComponents = [
       {
         name: "r8-config-provider",
         description: l(
-          "Wrapper base do scope local, usado para reaplicar tokens de cor, sombra, spacing e tipografia apenas nos descendants.",
+          "Wrapper base do escopo local, usado para reaplicar tokens de cor, sombra, espaçamento e tipografia apenas nos descendentes.",
           "Base local-scope wrapper used to reapply color, shadow, spacing, and typography tokens only to descendants.",
         ),
       },
       {
         name: "r8-config-provider--night / --terminal / --danger",
         description: l(
-          "Presets de skin para trocar o visual local sem alterar o restante da aplicacao.",
+          "Presets de tema para trocar o visual local sem alterar o restante da aplicação.",
           "Skin presets for changing the local visual language without altering the rest of the application.",
         ),
       },
       {
         name: "r8-config-provider--compact / --comfortable",
         description: l(
-          "Presets de densidade local, inspirados na ideia de configuracao global de tamanho, mas resolvidos via tokens em cascata.",
+          "Presets de densidade local, inspirados na ideia de configuração global de tamanho, mas resolvidos via tokens em cascata.",
           "Local density presets inspired by global size configuration, but solved through cascading tokens.",
         ),
       },
       {
         name: "data-theme / data-density",
         description: l(
-          "Aliases por atributo para integrar o scope com switches externos, CMS ou shells que controlam estado sem tocar classes.",
+          "Aliases por atributo para integrar o escopo com switches externos, CMS ou estruturas que controlam estado sem tocar classes.",
           "Attribute aliases for integrating the scope with external switches, CMS data, or shells that drive state without touching classes.",
         ),
       },
       {
         name: "--r8-color-* / --r8-shadow-* / --r8-font-size-* / --r8-space-*",
         description: l(
-          "Tokens globais da Retro8 UI continuam sobrescreviveis localmente para criar acentos e densidades especificas dentro do scope.",
+          "Tokens globais da Retro8 UI continuam sobrescreviveis localmente para criar acentos e densidades específicas dentro do escopo.",
           "Retro8 UI global tokens remain locally overridable so you can create scope-specific accents and density inside the provider.",
         ),
       },
       {
         name: "--r8-config-provider-*",
         description: l(
-          "Custom properties do wrapper para ajustar padding, gap, surface, borda, sombra e cor base do proprio provider.",
+          "Propriedades CSS do contêiner para ajustar espaçamento interno, espaçamento, superfície, borda, sombra e cor base do próprio provider.",
           "Wrapper custom properties for adjusting padding, gap, surface, border, shadow, and the provider shell base color.",
         ),
       },
@@ -1446,8 +1446,8 @@ const formComponents = [
     name: "Autocomplete",
     group: "form",
     summary: l(
-      "Campo de busca com sugestoes locais, teclado, clear opcional e suporte a estados de loading, empty e templates mais ricos nas options.",
-      "Search field with local suggestions, keyboard support, optional clear, and support for loading, empty, and richer option templates.",
+      "Campo de busca com sugestões locais, navegação por teclado e estados de carregamento e lista vazia.",
+      "Search field with local suggestions, keyboard navigation, and loading and empty states.",
     ),
     classes: [
       "r8-autocomplete",
@@ -1550,11 +1550,11 @@ const formComponents = [
 </div>`,
     anatomy: ll(
       [
-        "`r8-autocomplete` e o wrapper raiz que conecta trigger, input, panel e options no mesmo scope do runtime.",
-        "`r8-autocomplete__trigger` agrupa o input, o clear opcional e um badge de contagem ou feedback curto.",
-        "`r8-autocomplete__option` aceita markup rico; use `data-r8-value` para controlar o texto que volta ao input e `data-r8-search` para indexacao extra.",
-        "`r8-autocomplete__empty` e `r8-autocomplete__loading` funcionam como feedback visual para busca vazia ou remota.",
-        "`r8-autocomplete__clear` e opcional e aparece apenas quando o scope estiver marcado como clearable e houver texto digitado.",
+        "`r8-autocomplete` é o contêiner raiz que conecta acionador, input, painel e opções no mesmo escopo do runtime.",
+        "`r8-autocomplete__trigger` agrupa o input, o botão opcional de limpar e um badge de contagem ou retorno visual curto.",
+        "`r8-autocomplete__option` aceita marcação rico; use `data-r8-value` para controlar o texto que volta ao input e `data-r8-search` para indexacao extra.",
+        "`r8-autocomplete__empty` e `r8-autocomplete__loading` funcionam como retorno visual para busca vazia ou remota.",
+        "`r8-autocomplete__clear` e opcional e aparece apenas quando o escopo estiver marcado como clearable e houver texto digitado.",
       ],
       [
         "`r8-autocomplete` is the root wrapper that keeps trigger, input, panel, and options in the same runtime scope.",
@@ -1566,10 +1566,10 @@ const formComponents = [
     ),
     accessibility: ll(
       [
-        "Mantenha `aria-label` ou um label visivel associado ao input, porque o campo atua como combobox e precisa de nome acessivel claro.",
-        "Quando usar markup rico nas options, preserve um `data-r8-value` curto e objetivo para o valor que volta ao input.",
-        "Use `data-r8-trigger-on-focus=\"false\"` quando a lista so fizer sentido depois da primeira digitacao, evitando ruído na abertura do campo.",
-        "Em loading remoto, prefira feedback textual visivel e atualize as options no DOM antes de chamar `Retro8UI.refresh()` no subtree.",
+        "Mantenha `aria-label` ou um rótulo visível associado ao input, porque o campo atua como combobox e precisa de nome acessível claro.",
+        "Quando usar marcação rico nas opções, preserve um `data-r8-value` curto e objetivo para o valor que volta ao input.",
+        "Use `data-r8-trigger-on-focus=\"false\"` quando a lista só fizer sentido depois da primeira digitacao, evitando ruído na abertura do campo.",
+        "Em carregamento remoto, prefira retorno visual textual visível e atualize as opções no DOM antes de chamar `Retro8UI.refresh()` no árvore de elementos.",
       ],
       [
         "Keep `aria-label` or a visible associated label on the input, because the field behaves like a combobox and needs a clear accessible name.",
@@ -1582,14 +1582,14 @@ const formComponents = [
       {
         name: "r8-autocomplete",
         description: l(
-          "Wrapper base do combobox, com filtro local, teclado e selecao sincronizados pelo runtime.",
+          "Wrapper base do combobox, com filtro local, teclado e seleção sincronizados pelo runtime.",
           "Base combobox wrapper with local filtering, keyboard navigation, and selection synchronized by the runtime.",
         ),
       },
       {
         name: "r8-autocomplete__trigger / __input / __menu / __option",
         description: l(
-          "Partes semanticas do componente para trigger, campo digitavel, lista e items selecionaveis.",
+          "Partes semânticas do componente para acionador, campo digitavel, lista e items selecionaveis.",
           "Semantic parts for the trigger, typing field, list, and selectable items.",
         ),
       },
@@ -1603,14 +1603,14 @@ const formComponents = [
       {
         name: "data-r8-clearable / data-r8-trigger-on-focus / data-r8-empty-label / data-r8-loading / data-r8-loading-label",
         description: l(
-          "Helpers declarativos para controlar abertura no foco, clear, feedback vazio e loading remoto pelo proprio markup.",
+          "Auxiliares declarativos para controlar abertura no foco, limpeza, retorno visual vazio e carregamento remoto pelo próprio marcação.",
           "Declarative helpers for controlling open-on-focus, clear behavior, empty feedback, and remote loading through markup itself.",
         ),
       },
       {
         name: "data-r8-value / data-r8-search",
         description: l(
-          "Permitem separar o texto exibido no option do valor final e enriquecer a indexacao do filtro local.",
+          "Permitem separar o texto exibido no opção do valor final e enriquecer a indexacao do filtro local.",
           "Let you separate the visible option text from the final value and enrich local filter indexing.",
         ),
       },
@@ -1621,8 +1621,8 @@ const formComponents = [
     name: "Cascader",
     group: "form",
     summary: l(
-      "Selecao hierarquica para arvores de categorias, areas ou taxonomias, com filtro opcional, clear, hover expansion e controle entre caminho completo ou ultimo nivel no trigger.",
-      "Hierarchical selection for category trees, areas, or taxonomies, with optional filtering, clear, hover expansion, and control over full-path versus last-level trigger display.",
+      "Seletor hierárquico com busca opcional, limpeza e exibição do caminho completo ou do último nível.",
+      "Hierarchical selector with optional search, clearing, and full-path or final-level labels.",
     ),
     classes: [
       "r8-cascader",
@@ -1763,11 +1763,11 @@ const formComponents = [
 </div>`,
     anatomy: ll(
       [
-        "`r8-cascader` e o root shell e recebe os flags de comportamento via `data-r8-*`.",
-        "`r8-cascader__trigger` abre o floating panel e expoe o caminho selecionado.",
+        "`r8-cascader` é o estrutura raiz e recebe os atributos de comportamento via `data-r8-*`.",
+        "`r8-cascader__trigger` abre o floating painel e expoe o caminho selecionado.",
         "`r8-cascader__panel` abriga toolbar, generated menus e a source tree oculta.",
         "`r8-cascader__node` e `r8-cascader__children` definem a hierarquia declarativa.",
-        "`data-r8-show-all-levels=\"false\"` deixa o trigger mais compacto ao exibir apenas o ultimo label, sem perder `data-r8-path` no host.",
+        "`data-r8-show-all-levels=\"false\"` deixa o acionador mais compacto ao exibir apenas o último rótulo, sem perder `data-r8-path` no elemento.",
       ],
       [
         "`r8-cascader` is the root shell and receives `data-r8-*` behavior flags.",
@@ -1779,10 +1779,10 @@ const formComponents = [
     ),
     accessibility: ll(
       [
-        "Use `aria-label` no trigger quando o label visivel nao for descritivo o bastante.",
-        "Marque disabled branches com `data-r8-disabled=\"true\"` para preservar keyboard semantics.",
+        "Use `aria-label` no acionador quando o rótulo visível não for descritivo o bastante.",
+        "Marque desabilitado branches com `data-r8-disabled=\"true\"` para preservar teclado semantics.",
         "Mantenha instances pesquisaveis com `r8-cascader__input` devidamente rotulado.",
-        "Quando optar por mostrar so o ultimo nivel no trigger, preserve contexto adicional no label visivel ao redor do campo.",
+        "Quando optar por mostrar só o último nível no acionador, preserve contexto adicional no rótulo visível ao redor do campo.",
       ],
       [
         "Use `aria-label` on the trigger when the visible label is not descriptive enough.",
@@ -1794,26 +1794,26 @@ const formComponents = [
     api: [
       {
         name: "data-r8-expand-trigger",
-        description: l("Switches expansion between click and hover.", "Switches expansion between click and hover."),
+        description: l("Switches expansion between clique and hover.", "Switches expansion between click and hover."),
       },
       {
         name: "data-r8-check-strictly",
-        description: l("Allows selecting parent nodes instead of leaves only.", "Allows selecting parent nodes instead of leaves only."),
+        description: l("Allows selecting parent nós instead of leaves only.", "Allows selecting parent nodes instead of leaves only."),
       },
       {
         name: "data-r8-show-all-levels / data-r8-filter-placeholder",
         description: l(
-          "Controla se o trigger mostra o caminho inteiro ou so o ultimo nivel, e permite ajustar o placeholder do filtro gerado pelo runtime.",
+          "Controla se o acionador mostra o caminho inteiro ou só o último nível, e permite ajustar o placeholder do filtro gerado pelo runtime.",
           "Controls whether the trigger shows the full path or only the last level, and lets you tune the placeholder of the runtime-generated filter input.",
         ),
       },
       {
         name: "r8:cascader-change",
-        description: l("Emits the final value, labels and full path after selection.", "Emits the final value, labels and full path after selection."),
+        description: l("Emits the final value, rótulos and full path after selection.", "Emits the final value, labels and full path after selection."),
       },
       {
         name: "r8:cascader-clear",
-        description: l("Emits an empty payload when the current selection is cleared.", "Emits an empty payload when the current selection is cleared."),
+        description: l("Emits an vazio dados do evento when the current selection is cleared.", "Emits an empty payload when the current selection is cleared."),
       },
     ],
   },
@@ -1822,8 +1822,8 @@ const formComponents = [
     name: "Checkbox",
     group: "form",
     summary: l(
-      "Controle binario para listas, preferencias e padroes de 'check all', com suporte a estado misto, tamanho e shell opcional com borda.",
-      "Binary control for lists, preferences, and 'check all' patterns, with support for mixed state, sizing, and an optional bordered shell.",
+      "Caixa de seleção com estado marcado, desmarcado ou misto, tamanhos e borda opcional.",
+      "Checkbox with checked, unchecked, and mixed states, size options, and an optional border.",
     ),
     classes: [
       "r8-checkbox",
@@ -1861,11 +1861,11 @@ const formComponents = [
 </label>`,
     anatomy: ll(
       [
-        "`r8-checkbox` e o host clicavel que recebe estado, foco e os helpers declarativos do componente.",
+        "`r8-checkbox` é o elemento clicável que recebe estado, foco e os auxiliares declarativos do componente.",
         "`r8-checkbox__box` desenha a caixa pixelada, o checkmark e a barra do estado misto.",
-        "O texto ao lado do box funciona como label visivel e ajuda a ampliar a area de clique.",
-        "`data-r8-indeterminate=\"true\"` e `aria-checked=\"mixed\"` comunicam selecao parcial sem inventar markup extra.",
-        "`data-r8-size` e `data-r8-border` ajustam footprint e shell visual sem trocar a estrutura base.",
+        "O texto ao lado do box funciona como rótulo visível e ajuda a ampliar a área de clique.",
+        "`data-r8-indeterminate=\"true\"` e `aria-checked=\"mixed\"` comunicam seleção parcial sem inventar marcação extra.",
+        "`data-r8-size` e `data-r8-border` ajustam footprint e estrutura visual sem trocar a estrutura base.",
       ],
       [
         "`r8-checkbox` is the clickable host that receives state, focus, and the component's declarative helpers.",
@@ -1877,10 +1877,10 @@ const formComponents = [
     ),
     accessibility: ll(
       [
-        "Mantenha texto visivel ou `aria-label` quando o copy ao lado do controle nao explicar a acao sozinho.",
-        "Use `aria-checked=\"mixed\"` apenas para estados parciais, como um parent control que resume um grupo.",
-        "Em hosts nao nativos, prefira `aria-disabled=\"true\"` para expor bloqueio sem perder semantica.",
-        "Se o state precisar participar de submit HTML tradicional, espelhe o valor em um input nativo ou hidden controlado pela aplicacao hospedeira.",
+        "Mantenha texto visível ou `aria-label` quando o texto ao lado do controle não explicar a ação sozinho.",
+        "Use `aria-checked=\"mixed\"` apenas para estados parciais, como um parent controle que resume um grupo.",
+        "Em hosts não nativos, prefira `aria-disabled=\"true\"` para expor bloqueio sem perder semântica.",
+        "Se o estado precisar participar de submit HTML tradicional, espelhe o valor em um input nativo ou hidden controlado pela aplicação hospedeira.",
       ],
       [
         "Keep visible text or an `aria-label` when the copy beside the control does not fully explain the action.",
@@ -1893,35 +1893,35 @@ const formComponents = [
       {
         name: "r8-checkbox / r8-checkbox__box",
         description: l(
-          "Root clicavel e caixa visual que sustentam o estado binario sem depender de wrappers extras.",
+          "Root clicável e caixa visual que sustentam o estado binário sem depender de contêineres extras.",
           "Clickable root and visual box that carry the binary state without extra wrappers.",
         ),
       },
       {
         name: "r8-checkbox--sm / --lg / --bordered",
         description: l(
-          "Modifiers para reduzir, ampliar ou envolver o controle em um shell com borda sem trocar o markup base.",
+          "Modificadores para reduzir, ampliar ou envolver o controle em uma estrutura com borda sem trocar a marcação base.",
           "Modifiers for compact, large, or bordered treatments without replacing the base markup.",
         ),
       },
       {
         name: "data-r8-size / data-r8-border / data-r8-indeterminate",
         description: l(
-          "Helpers declarativos para tamanho, shell com borda e estado misto antes da primeira interacao do usuario.",
+          "Auxiliares declarativos para tamanho, estrutura com borda e estado misto antes da primeira interação do usuário.",
           "Declarative helpers for size, bordered shell, and mixed state before the user's first interaction.",
         ),
       },
       {
         name: "aria-checked=\"mixed\" / aria-disabled=\"true\"",
         description: l(
-          "Explicita estados parcial e desabilitado quando o host nao e um input nativo.",
+          "Explicita estados parcial e desabilitado quando o elemento não é um input nativo.",
           "Makes partial and disabled states explicit when the host is not a native input.",
         ),
       },
       {
         name: "r8:binary-change",
         description: l(
-          "Evento emitido quando o Checkbox muda de estado, incluindo o recorte de `indeterminate` no payload.",
+          "Evento emitido quando o Checkbox muda de estado, incluindo o recorte de `indeterminate` no dados do evento.",
           "Event emitted when Checkbox changes state, including the `indeterminate` slice in the payload.",
         ),
       },
@@ -1932,8 +1932,8 @@ const formComponents = [
     name: "Color Picker",
     group: "form",
     summary: l(
-      "Seletor de cor com dois modos: swatches fixas para paletas controladas e picker dinamico com arraste para qualquer hue.",
-      "Color selector with two modes: fixed swatches for controlled palettes and a dynamic drag-based picker for any hue.",
+      "Seletor de cores com paleta predefinida ou controles dinâmicos de matiz e transparência.",
+      "Color selector with a preset palette or dynamic hue and optional transparency controls.",
     ),
     classes: [
       "r8-color-picker",
@@ -2020,11 +2020,11 @@ const formComponents = [
 </div>`,
     anatomy: ll(
       [
-        "`r8-color-picker` continua sendo o shell unico do componente, agora com `data-r8-mode=\"fixed\"` para swatches ou `data-r8-mode=\"dynamic\"` para o picker livre.",
-        "`r8-color-picker__trigger` e a surface clicavel que abre o painel e espelha o valor atual no estado fechado.",
+        "`r8-color-picker` continua sendo a estrutura único do componente, agora com `data-r8-mode=\"fixed\"` para amostras de cor ou `data-r8-mode=\"dynamic\"` para o seletor livre.",
+        "`r8-color-picker__trigger` é a superfície clicável que abre o painel e espelha o valor atual no estado fechado.",
         "`r8-color-picker__display` combina amostra visual e valor textual sem precisar improvisar badges soltas.",
         "No modo fixo, `r8-color-picker__toolbar`, `r8-color-picker__clear`, `r8-color-picker__swatches` e `r8-color-picker__swatch` organizam presets curados.",
-        "No modo dinamico, `r8-color-picker__workspace`, `r8-color-picker__spectrum`, `r8-color-picker__channel`, `r8-color-picker__input` e `r8-color-picker__confirm` montam o fluxo de arraste, input e confirmacao.",
+        "No modo dinâmico, `r8-color-picker__workspace`, `r8-color-picker__spectrum`, `r8-color-picker__channel`, `r8-color-picker__input` e `r8-color-picker__confirm` montam o fluxo de arraste, input e confirmação.",
       ],
       [
         "`r8-color-picker` stays the single shell for the component, now with `data-r8-mode=\"fixed\"` for swatches or `data-r8-mode=\"dynamic\"` for the free picker.",
@@ -2036,11 +2036,11 @@ const formComponents = [
     ),
     accessibility: ll(
       [
-        "Mantenha `aria-label` ou um texto visivel forte no trigger para explicar o contexto da cor escolhida.",
-        "Cada swatch deve ter `aria-label` descritivo quando a diferenca entre as opcoes nao puder ser entendida so pela cor.",
-        "No modo dinamico, preserve o valor textual e o input para que a escolha nao dependa apenas do board visual.",
-        "Use `data-r8-show-alpha` com valor textual visivel para nao depender apenas da transparencia como significado.",
-        "Se a cor final precisar entrar em submit HTML, espelhe `data-r8-value` em um input real controlado pela aplicacao hospedeira.",
+        "Mantenha `aria-label` ou um texto visível forte no acionador para explicar o contexto da cor escolhida.",
+        "Cada swatch deve ter `aria-label` descritivo quando a diferenca entre as opções não puder ser entendida só pela cor.",
+        "No modo dinâmico, preserve o valor textual e o input para que a escolha não dependa apenas do painel visual visual.",
+        "Use `data-r8-show-alpha` com valor textual visível para não depender apenas da transparencia como significado.",
+        "Se a cor final precisar entrar em submit HTML, espelhe `data-r8-value` em um input real controlado pela aplicação hospedeira.",
       ],
       [
         "Keep an `aria-label` or strong visible trigger text so the chosen color has context beyond the swatch alone.",
@@ -2054,35 +2054,35 @@ const formComponents = [
       {
         name: "r8-color-picker__display / r8-color-picker__sample",
         description: l(
-          "Par visual para mostrar a cor atual com texto legivel e uma amostra pequena dentro do trigger.",
+          "Par visual para mostrar a cor atual com texto legível e uma amostra pequena dentro do acionador.",
           "Visual pair for showing the current color with readable text and a compact sample inside the trigger.",
         ),
       },
       {
         name: "data-r8-mode / data-r8-clearable / data-r8-placeholder",
         description: l(
-          "Escolhe entre a paleta fixa e o picker dinamico, liga a acao de limpar e define qual copy volta para o trigger quando nenhuma cor estiver ativa.",
+          "Escolhe entre a paleta fixa e o seletor dinâmico, liga a ação de limpar e define qual texto volta para o acionador quando nenhuma cor estiver ativa.",
           "Chooses between the fixed palette and the dynamic picker, enables the clear action, and defines which copy returns to the trigger when no color is active.",
         ),
       },
       {
         name: "data-r8-size / data-r8-show-alpha",
         description: l(
-          "Controlam densidade do trigger e do painel, alem do alpha slider no modo dinamico e do checkerboard nas amostras translucidas.",
+          "Controlam densidade do acionador e do painel, além do alpha slider no modo dinâmico e do checkerboard nas amostras translucidas.",
           "Control trigger and panel density, plus the alpha slider in dynamic mode and checkerboard treatment for translucent samples.",
         ),
       },
       {
         name: "r8-color-picker__toolbar / r8-color-picker__workspace / r8-color-picker__clear",
         description: l(
-          "Organizam tanto os presets fixos quanto o workspace dinamico sem precisar criar wrappers paralelos fora do painel.",
+          "Organizam tanto os presets fixos quanto o workspace dinâmico sem precisar criar contêineres paralelos fora do painel.",
           "Organize both the fixed presets and the dynamic workspace without parallel wrappers outside the panel.",
         ),
       },
       {
         name: "r8:color-active-change / r8:color-change / r8:color-clear",
         description: l(
-          "Eventos dedicados para preview ativo, confirmacao final e reset, alem do fallback generico `r8:choice-change`.",
+          "Eventos dedicados para prévia ativo, confirmação final e reset, além do fallback genérico `r8:choice-change`.",
           "Dedicated events for active preview, final confirmation, and reset, alongside the generic `r8:choice-change` fallback.",
         ),
       },
@@ -2093,8 +2093,8 @@ const formComponents = [
     name: "Date Picker",
     group: "form",
     summary: l(
-      "Campo de data com painel retro, locale configuravel, atalhos declarativos e suporte opcional a week numbers.",
-      "Date field with a retro panel, configurable locale, declarative shortcuts, and optional week numbers.",
+      "Seletor de data com idioma configurável, atalhos e exibição opcional do número da semana.",
+      "Date selector with configurable locale, shortcuts, and optional week numbers.",
     ),
     classes: [
       "r8-date-picker",
@@ -2149,11 +2149,11 @@ const formComponents = [
 </div>`,
     anatomy: ll(
       [
-        "`r8-date-picker` agrupa trigger e popup calendar em um shell unico para selecao de datas.",
-        "`r8-date-picker__trigger` e a surface clicavel que espelha o label final formatado pelo runtime.",
-        "`r8-date-picker__shortcuts` e `r8-date-picker__shortcut` criam atalhos recorrentes no topo do calendario sem wrappers extras.",
+        "`r8-date-picker` agrupa acionador e popup calendar em uma estrutura único para seleção de datas.",
+        "`r8-date-picker__trigger` é a superfície clicável que espelha o rótulo final formatado pelo runtime.",
+        "`r8-date-picker__shortcuts` e `r8-date-picker__shortcut` criam atalhos recorrentes no topo do calendário sem contêineres extras.",
         "`r8-date-picker__week-number`, quando ativado, adiciona contexto semanal sem interferir na grade principal de dias.",
-        "`r8-date-picker__footer` fecha o fluxo com resumo da data atual e acoes de hoje/clear.",
+        "`r8-date-picker__footer` fecha o fluxo com resumo da data atual e ações de hoje/limpeza.",
       ],
       [
         "`r8-date-picker` groups the trigger and popup calendar into a single shell for date selection.",
@@ -2165,10 +2165,10 @@ const formComponents = [
     ),
     accessibility: ll(
       [
-        "Use `aria-label` forte no trigger quando o contexto da data nao estiver evidente no texto ao redor.",
-        "Mantenha o valor textual visivel no trigger para nao depender apenas da posicao visual dentro do calendario.",
-        "Atalhos devem usar labels claras, porque eles aparecem como acoes e nao como dias na grade.",
-        "Se a data fizer parte de submit HTML, espelhe `data-r8-value` em um input real controlado pela aplicacao.",
+        "Use `aria-label` forte no acionador quando o contexto da data não estiver evidente no texto ao redor.",
+        "Mantenha o valor textual visível no acionador para não depender apenas da posição visual dentro do calendário.",
+        "Atalhos devem usar rótulos claras, porque eles aparecem como ações e não como dias na grade.",
+        "Se a data fizer parte de submit HTML, espelhe `data-r8-value` em um input real controlado pela aplicação.",
       ],
       [
         "Use a strong `aria-label` on the trigger when the date context is not already obvious in nearby copy.",
@@ -2181,35 +2181,35 @@ const formComponents = [
       {
         name: "data-r8-locale / data-r8-week-start",
         description: l(
-          "Controlam a linguagem dos labels e o dia inicial da semana sem acoplar o componente a um framework.",
+          "Controlam a linguagem dos rótulos e o dia inicial da semana sem acoplar o componente a um framework.",
           "Control label language and which day starts the week without coupling the component to a framework.",
         ),
       },
       {
         name: "data-r8-shortcuts / r8-date-picker__shortcut",
         description: l(
-          "Geram atalhos declarativos no topo do painel para saltar a datas recorrentes como hoje, ontem e uma semana atras.",
+          "Geram atalhos declarativos no topo do painel para saltar a datas recorrentes como hoje, ontem e uma semana atrás.",
           "Generate declarative shortcuts at the top of the panel for recurring dates such as today, yesterday, and a week ago.",
         ),
       },
       {
         name: "data-r8-show-week-number / r8-date-picker__week-number",
         description: l(
-          "Adicionam o contexto de planejamento semanal sem mudar a logica principal de selecao de dia.",
+          "Adicionam o contexto de planejamento semanal sem mudar a lógica principal de seleção de dia.",
           "Add weekly planning context without changing the main day-selection logic.",
         ),
       },
       {
         name: "data-r8-min / data-r8-max / data-r8-month",
         description: l(
-          "Limitam o intervalo disponivel e definem o mes inicialmente visivel quando o popup abre.",
+          "Limitam o intervalo disponível e definem o mês inicialmente visível quando o popup abre.",
           "Limit the available range and define the initially visible month when the popup opens.",
         ),
       },
       {
         name: "r8:date-change",
         description: l(
-          "Evento emitido quando a data muda, incluindo o valor de storage e o label formatado.",
+          "Evento emitido quando a data muda, incluindo o valor de armazenamento e o rótulo formatado.",
           "Event emitted when the date changes, including the storage value and formatted label.",
         ),
       },
@@ -2220,8 +2220,8 @@ const formComponents = [
     name: "DateTime Picker",
     group: "form",
     summary: l(
-      "Composicao de data e hora para eventos, logs e jobs com precisao temporal.",
-      "Date and time composition for events, logs and jobs with time precision.",
+      "Seletor de data e hora com limites configuráveis e intervalos de tempo em minutos.",
+      "Date and time selector with configurable bounds and time intervals in minutes.",
     ),
     classes: [
       "r8-datetime-picker",
@@ -2257,8 +2257,8 @@ const formComponents = [
     name: "Form",
     group: "form",
     summary: l(
-      "Estrutura de formulario com linhas, itens, legenda e area de acoes para inputs semanticos.",
-      "Form structure with rows, items, legends and an actions area for semantic inputs.",
+      "Estrutura de formulário com campos, rótulos, textos de ajuda, validação visual e área de ações.",
+      "Form structure with fields, labels, help text, validation styles, and an actions area.",
     ),
     classes: ["r8-form", "r8-form__row", "r8-form__item", "r8-form__label", "r8-form__help", "r8-form__actions"],
     preview: `<form class="r8-form">
@@ -2335,8 +2335,8 @@ const formComponents = [
     name: "Input",
     group: "form",
     summary: l(
-      "Campo base para texto, email, senha, textarea e number com shell opcional para clear, contador, toggle de senha e autosize.",
-      "Base text, email, password, textarea, and number field with an optional shell for clear, counting, password toggle, and autosize.",
+      "Campos de texto, e-mail, senha, número e texto multilinha, com controles opcionais de limpeza e contagem.",
+      "Text, email, password, number, and multiline fields with optional clearing and character counts.",
     ),
     classes: [
       "r8-field",
@@ -2421,11 +2421,11 @@ const formComponents = [
 </label>`,
     anatomy: ll(
       [
-        "`r8-input` continua sendo a surface base para texto, email, senha, number, select e textarea.",
-        "`r8-input-shell` envolve o campo quando ele precisa de prefixo, sufixo, clear, contador ou toggle de senha.",
-        "`r8-input__prefix` e `r8-input__suffix` adicionam contexto curto sem trocar a semantica do input nativo.",
-        "`r8-input__actions` agrupa clear, toggle e contador no lado direito do shell.",
-        "`data-r8-autosize` deixa o textarea crescer com o conteudo sem um layout extra de framework.",
+        "`r8-input` continua sendo a superfície base para texto, email, senha, number, select e textarea.",
+        "`r8-input-shell` envolve o campo quando ele precisa de prefixo, sufixo, limpeza, contador ou alternância de senha.",
+        "`r8-input__prefix` e `r8-input__suffix` adicionam contexto curto sem trocar a semântica do input nativo.",
+        "`r8-input__actions` agrupa limpeza, alternância e contador no lado direito da estrutura.",
+        "`data-r8-autosize` deixa o textarea crescer com o conteúdo sem um layout extra de framework.",
       ],
       [
         "`r8-input` remains the base surface for text, email, password, number, select, and textarea fields.",
@@ -2437,10 +2437,10 @@ const formComponents = [
     ),
     accessibility: ll(
       [
-        "Mantenha `label` ou `aria-label` forte no campo, porque clear e toggle sao acoes auxiliares e nao substituem o nome acessivel principal.",
-        "Se usar contador, combine `maxlength` com texto de ajuda para que o limite nao apareca so como numero solto.",
-        "No modo senha, deixe o contexto do segredo claro no label para que o toggle nao fique ambiguo para teclado e leitores de tela.",
-        "Autosize melhora leitura, mas ainda vale limitar `max-rows` em blocos longos para o layout nao crescer sem controle.",
+        "Mantenha `label` ou `aria-label` forte no campo, porque limpeza e alternância sao ações auxiliares e não substituem o nome acessível principal.",
+        "Se usar contador, combine `maxlength` com texto de ajuda para que o limite não apareca só como número solto.",
+        "No modo senha, deixe o contexto do segredo claro no rótulo para que a alternância não fique ambiguo para teclado e leitores de tela.",
+        "Autosize melhora leitura, mas ainda vale limitar `max-rows` em blocos longos para o layout não crescer sem controle.",
       ],
       [
         "Keep a strong `label` or `aria-label` on the field because clear and reveal are helper actions, not the main accessible name.",
@@ -2453,35 +2453,35 @@ const formComponents = [
       {
         name: "r8-input-shell / r8-input__prefix / r8-input__suffix",
         description: l(
-          "Montam um shell opcional para adornos curtos e acoes auxiliares sem trocar o input nativo.",
+          "Montam uma estrutura opcional para adornos curtos e ações auxiliares sem trocar o input nativo.",
           "Build an optional shell for short adornments and helper actions without replacing the native input.",
         ),
       },
       {
         name: "data-r8-clearable / r8-input__clear",
         description: l(
-          "Mostram um botao de clear quando o campo tem valor e o shell estiver habilitado para isso.",
+          "Mostram um botão de limpeza quando o campo tem valor e a estrutura estiver habilitado para isso.",
           "Show a clear button when the field has a value and the shell is configured for it.",
         ),
       },
       {
         name: "data-r8-show-password / r8-input__toggle",
         description: l(
-          "Ativam o toggle declarativo de senha para alternar entre texto oculto e visivel.",
+          "Ativam a alternância declarativo de senha para alternar entre texto oculto e visível.",
           "Enable a declarative password toggle so the field can switch between hidden and visible text.",
         ),
       },
       {
         name: "data-r8-word-limit / r8-input__count",
         description: l(
-          "Exibem o contador no shell quando `maxlength` estiver presente no input ou textarea.",
+          "Exibem o contador na estrutura quando `maxlength` estiver presente no input ou textarea.",
           "Display a live counter inside the shell when `maxlength` is present on the input or textarea.",
         ),
       },
       {
         name: "data-r8-autosize / data-r8-min-rows / data-r8-max-rows",
         description: l(
-          "Controlam o crescimento automatico do textarea sem depender de JS externo da aplicacao.",
+          "Controlam o crescimento automático do textarea sem depender de JS externo da aplicação.",
           "Control textarea autosizing without depending on extra app-side JavaScript.",
         ),
       },
@@ -2492,8 +2492,8 @@ const formComponents = [
     name: "Input OTP",
     group: "form",
     summary: l(
-      "Entrada de codigo OTP com slots individuais, navegacao por teclado, paste completo e comprimentos de 4, 6 ou 8 digitos.",
-      "OTP code input with individual slots, keyboard navigation, full-code paste support, and 4, 6, or 8 digit lengths.",
+      "Entrada de código numérico com campos individuais, navegação por teclado e suporte à colagem do código completo.",
+      "Numeric code input with individual digit fields, keyboard navigation, and full-code paste support.",
     ),
     classes: ["r8-input-otp", "r8-input-otp__slot", "r8-input-otp__separator", "is-complete", "is-disabled"],
     preview: `<div class="r8-input-otp" data-r8-otp-length="6" aria-label="Verification code"></div>`,
@@ -2504,10 +2504,10 @@ const formComponents = [
 </div>`,
     anatomy: ll(
       [
-        "`r8-input-otp` e o wrapper raiz dos slots e controla tamanho, estado disabled e comprimento esperado.",
-        "`r8-input-otp__slot` representa cada digito do codigo e aceita digitacao, navegacao por setas e foco automatico.",
+        "`r8-input-otp` é o contêiner raiz dos campos e controla tamanho, estado desabilitado e comprimento esperado.",
+        "`r8-input-otp__slot` representa cada dígito do código e aceita digitacao, navegação por setas e foco automático.",
         "`r8-input-otp__separator` e opcional para agrupar visualmente blocos como 3+3 ou 4+4 sem quebrar o runtime.",
-        "Com `data-r8-otp-length`, o runtime pode gerar os slots automaticamente para 4, 6 ou 8 digitos.",
+        "Com `data-r8-otp-length`, o runtime pode gerar os campos automaticamente para 4, 6 ou 8 dígitos.",
       ],
       [
         "`r8-input-otp` is the root wrapper for slots and controls size, disabled state, and expected length.",
@@ -2518,9 +2518,9 @@ const formComponents = [
     ),
     accessibility: ll(
       [
-        "Defina `aria-label` ou `label` claro no wrapper para indicar o contexto do codigo (login, 2FA, validacao etc.).",
+        "Defina `aria-label` ou `label` claro no contêiner para indicar o contexto do código (login, 2FA, validação etc.).",
         "Mantenha cada slot com `maxlength=\"1\"` para preservar o fluxo de teclado e evitar ambiguidade de leitura.",
-        "Quando o codigo for sensivel, use `data-r8-otp-mask=\"true\"` e evite expor o valor completo em texto proximo.",
+        "Quando o código for sensivel, use `data-r8-otp-mask=\"true\"` e evite expor o valor completo em texto próximo.",
       ],
       [
         "Set a clear `aria-label` or linked `label` on the wrapper so the code context is explicit (login, 2FA, validation, etc.).",
@@ -2532,28 +2532,28 @@ const formComponents = [
       {
         name: "data-r8-otp-length",
         description: l(
-          "Define comprimento esperado do OTP e gera slots automaticos para 4, 6 ou 8 digitos.",
+          "Define comprimento esperado do OTP e gera campos automaticos para 4, 6 ou 8 dígitos.",
           "Defines the expected OTP length and auto-generates slots for 4, 6, or 8 digits.",
         ),
       },
       {
         name: "data-r8-size",
         description: l(
-          "Escala dimensao dos slots em `sm`, `md` ou `lg` sem alterar o markup base.",
+          "Escala dimensao dos campos em `sm`, `md` ou `lg` sem alterar a marcação base.",
           "Scales slot dimensions with `sm`, `md`, or `lg` without changing base markup.",
         ),
       },
       {
         name: "data-r8-otp-mask",
         description: l(
-          "Alterna os slots para modo mascarado mantendo o fluxo de preenchimento e navegacao.",
+          "Alterna os campos para modo mascarado mantendo o fluxo de preenchimento e navegação.",
           "Toggles masked slot mode while preserving the fill and navigation flow.",
         ),
       },
       {
         name: "r8:input-otp-change / r8:input-otp-complete",
         description: l(
-          "Eventos com valor atual e status de completude para sincronizar validacao, submit e feedback.",
+          "Eventos com valor atual e status de completude para sincronizar validação, submit e retorno visual.",
           "Events with current value and completion state for validation, submit flows, and feedback.",
         ),
       },
@@ -2564,8 +2564,8 @@ const formComponents = [
     name: "Input Number",
     group: "form",
     summary: l(
-      "Controle numerico com limites, precision, step strictly e opcao de empilhar os controles na lateral direita.",
-      "Numeric control with limits, precision, step-strict behavior, and an option to stack controls on the right.",
+      "Campo numérico com limites, precisão decimal, incrementos e controles laterais configuráveis.",
+      "Numeric field with bounds, decimal precision, step alignment, and configurable side controls.",
     ),
     classes: ["r8-input-number", "r8-input-number__button", "r8-input-number__input"],
     preview: `<div class="r8-input-number" data-r8-step-strictly="true" data-r8-precision="2" data-r8-controls-position="right">
@@ -2580,10 +2580,10 @@ const formComponents = [
 </div>`,
     anatomy: ll(
       [
-        "`r8-input-number` agrupa o campo nativo e os dois botoes de incremento sem esconder a semantica numerica original.",
-        "`r8-input-number__button` continua responsavel pelos passos declarativos e pelos limites min/max.",
+        "`r8-input-number` agrupa o campo nativo e os dois botões de incremento sem esconder a semântica numerica original.",
+        "`r8-input-number__button` continua responsável pelos passos declarativos e pelos limites min/max.",
         "`r8-input-number__input` aceita digitacao manual e agora sincroniza melhor com precision e step strictly.",
-        "`data-r8-controls-position=\"right\"` reorganiza os botoes em uma coluna compacta, mais proxima do padrao de paines densos.",
+        "`data-r8-controls-position=\"right\"` reorganiza os botões em uma coluna compacta, mais próxima do padrão de painéis densos.",
       ],
       [
         "`r8-input-number` groups the native field and both step buttons without hiding the original numeric semantics.",
@@ -2594,9 +2594,9 @@ const formComponents = [
     ),
     accessibility: ll(
       [
-        "Preserve `min`, `max` e `step` no input nativo para que teclado e validacao do browser continuem coerentes.",
-        "Quando usar precision, combine isso com texto de ajuda se os incrementos nao forem intuitivos no dominio do produto.",
-        "Se o numero tiver impacto critico, prefira limites estreitos e mensagens auxiliares em vez de depender so do bloqueio do botao.",
+        "Preserve `min`, `max` e `step` no input nativo para que teclado e validação do browser continuem coerentes.",
+        "Quando usar precision, combine isso com texto de ajuda se os incrementos não forem intuitivos no dominio do produto.",
+        "Se o número tiver impacto crítico, prefira limites estreitos e mensagens auxiliares em vez de depender só do bloqueio do botão.",
       ],
       [
         "Preserve `min`, `max`, and `step` on the native input so keyboard behavior and browser validation stay coherent.",
@@ -2622,14 +2622,14 @@ const formComponents = [
       {
         name: "data-r8-step-strictly",
         description: l(
-          "Alinha a digitacao manual e os cliques ao grid do step, aproximando o comportamento do recorte mais util do Element Plus.",
+          "Alinha a digitacao manual e os cliques ao grid do step, aproximando o comportamento do recorte mais útil do Element Plus.",
           "Aligns manual typing and button clicks to the step grid, matching the most useful slice of the Element Plus behavior.",
         ),
       },
       {
         name: "data-r8-controls-position",
         description: l(
-          "Move os botoes para a lateral direita em uma coluna quando o layout pedir mais densidade.",
+          "Move os botões para a lateral direita em uma coluna quando o layout pedir mais densidade.",
           "Moves the buttons into a right-side column when the layout needs a denser control.",
         ),
       },
@@ -2640,8 +2640,8 @@ const formComponents = [
     name: "Input Tag",
     group: "form",
     summary: l(
-      "Campo de tags com limite opcional, delimitadores configuraveis, clear all e remocao inline por clique ou backspace.",
-      "Tag entry field with optional limits, configurable delimiters, clear-all behavior, and inline removal by click or backspace.",
+      "Entrada de etiquetas com limite opcional, separadores configuráveis e remoção por clique ou teclado.",
+      "Tag input with optional limits, configurable separators, and removal by click or keyboard.",
     ),
     classes: [
       "r8-input-tag",
@@ -2664,9 +2664,9 @@ const formComponents = [
     anatomy: ll(
       [
         "`r8-input-tag` continua sendo o container flexivel das chips e do input nativo para novas entradas.",
-        "`r8-input-tag__label` separa o texto da tag do affordance de remocao, deixando o DOM mais claro do que o markup anterior em string.",
-        "`r8-input-tag__remove` remove a chip focada e `r8-input-tag__clear` limpa o conjunto inteiro quando habilitado.",
-        "`data-r8-delimiters` permite transformar listas coladas ou digitadas em varias tags sem sair do proprio campo.",
+        "`r8-input-tag__label` separa o texto da tag do affordance de remoção, deixando o DOM mais claro do que a marcação anterior em string.",
+        "`r8-input-tag__remove` remoção a chip focada e `r8-input-tag__clear` limpa o conjunto inteiro quando habilitado.",
+        "`data-r8-delimiters` permite transformar listas coladas ou digitadas em varias tags sem sair do próprio campo.",
       ],
       [
         "`r8-input-tag` remains the flexible container for both chips and the native input used for new values.",
@@ -2677,8 +2677,8 @@ const formComponents = [
     ),
     accessibility: ll(
       [
-        "Use placeholder curto e contextual, porque a acao principal continua sendo adicionar itens ao conjunto e nao um campo de busca generico.",
-        "Cada botao de remocao deve manter `aria-label` com o valor da tag para nao soar como varios `x` identicos.",
+        "Use placeholder curto e contextual, porque a ação principal continua sendo adicionar itens ao conjunto e não um campo de busca genérico.",
+        "Cada botão de remoção deve manter `aria-label` com o valor da tag para não soar como varios `x` identicos.",
         "Quando limitar o total de tags, deixe esse contrato claro em texto de ajuda perto do campo.",
       ],
       [
@@ -2705,7 +2705,7 @@ const formComponents = [
       {
         name: "data-r8-clearable / r8-input-tag__clear",
         description: l(
-          "Mostram um botao de clear all no proprio campo quando houver tags para remover.",
+          "Mostram um botão de limpeza all no próprio campo quando houver tags para remover.",
           "Show a clear-all button inside the field when there are tags to remove.",
         ),
       },
@@ -2723,8 +2723,8 @@ const formComponents = [
     name: "Radio",
     group: "form",
     summary: l(
-      "Escolha unica com circulo pixelado e leitura clara de estado ativo.",
-      "Single-choice control with a pixelated circle and a clear active state.",
+      "Controle de escolha única com indicador pixelado e estado selecionado visível.",
+      "Single-choice control with a pixelated indicator and a visible selected state.",
     ),
     classes: ["r8-radio", "r8-radio__box"],
     preview: `<div class="r8-stack">
@@ -2743,8 +2743,8 @@ const formComponents = [
     name: "Rate",
     group: "form",
     summary: l(
-      "Escala curta de avaliacao para feedback, ranking ou preferencia visual.",
-      "Short rating scale for feedback, ranking or visual preference.",
+      "Controle de avaliação por estrelas com seleção por clique ou teclado.",
+      "Star rating control with selection by click or keyboard.",
     ),
     classes: ["r8-rate", "r8-rate__item"],
     preview: `<div class="r8-rate">
@@ -2760,8 +2760,8 @@ const formComponents = [
     name: "Select",
     group: "form",
     summary: l(
-      "Lista de escolha com trigger compacto e opcoes retro em painel destacado.",
-      "Choice list with a compact trigger and retro options inside a highlighted panel.",
+      "Lista de escolha com acionador compacto, painel de opções e navegação por teclado.",
+      "Choice list with a compact trigger, options panel, and keyboard navigation.",
     ),
     classes: ["r8-select", "r8-select__trigger", "r8-select__menu", "r8-select__option"],
     preview: `<div class="docs-demo__stack docs-demo__stack--select">
@@ -2795,8 +2795,8 @@ const formComponents = [
     name: "Slider",
     group: "form",
     summary: l(
-      "Controle de faixa com track pixelado, thumb quadrado e valor exposto por CSS custom property.",
-      "Range control with a pixelated track, square thumb and a value exposed through a CSS custom property.",
+      "Controle deslizante de 0 a 100, com trilha pixelada e suporte a ponteiro e teclado.",
+      "Slider from 0 to 100 with a pixelated track and pointer and keyboard support.",
     ),
     classes: ["r8-slider", "r8-slider__track", "r8-slider__fill", "r8-slider__thumb", "--r8-progress-value"],
     preview: `<div class="r8-slider" style="--r8-progress-value: 68%;">
@@ -2812,8 +2812,8 @@ const formComponents = [
     name: "Switch",
     group: "form",
     summary: l(
-      "Toggle compacto para ligado e desligado com pista colorida e thumb destacado.",
-      "Compact on/off toggle with a colored track and a highlighted thumb.",
+      "Interruptor de dois estados com trilha colorida e indicador de posição.",
+      "Two-state switch with a colored track and position indicator.",
     ),
     classes: ["r8-switch", "r8-switch__track", "r8-switch__thumb"],
     preview: `<div class="r8-stack">
@@ -2832,8 +2832,8 @@ const formComponents = [
     name: "Theme Switch",
     group: "form",
     summary: l(
-      "Toggle de theme com icones pixelados de sol e lua para alternar light e dark mode.",
-      "Theme toggle with pixelated sun and moon icons for switching between light and dark mode.",
+      "Interruptor com sol e lua que emite um evento para a aplicação aplicar o tema claro ou escuro.",
+      "Sun-and-moon switch that emits a state event for the application to apply a light or dark theme.",
     ),
     classes: [
       "r8-theme-switch",
@@ -2842,17 +2842,27 @@ const formComponents = [
     preview: `<button class="r8-theme-switch is-checked" type="button" role="switch" aria-checked="true" aria-label="Toggle theme">
   <span class="r8-theme-switch__glyph" aria-hidden="true"></span>
 </button>`,
-    code: `<button class="r8-theme-switch" type="button" role="switch" aria-checked="false" aria-label="Toggle theme">
+    code: `<button id="theme-toggle" class="r8-theme-switch" type="button" role="switch" aria-checked="false" aria-label="Toggle theme">
   <span class="r8-theme-switch__glyph" aria-hidden="true"></span>
-</button>`,
+</button>
+
+<script>
+  document.querySelector("#theme-toggle").addEventListener("r8:binary-change", (event) => {
+    document.documentElement.dataset.theme = event.detail.checked ? "dark" : "light";
+  });
+</script>`,
+    anatomy: ll(
+      ["O runtime alterna o estado do controle e emite `r8:binary-change`. A aplicação aplica o tema ao documento e salva a preferência, se necessário."],
+      ["The runtime toggles the control and emits `r8:binary-change`. The application applies the document theme and saves the preference if needed."],
+    ),
   },
   {
     id: "transfer",
     name: "Transfer",
     group: "form",
     summary: l(
-      "Duas listas lado a lado para mover itens entre grupos com acoes centrais.",
-      "Two side-by-side lists for moving items between groups with central actions.",
+      "Duas listas para selecionar e mover itens entre grupos por clique ou teclado.",
+      "Two lists for selecting and moving items between groups by click or keyboard.",
     ),
     classes: ["r8-transfer", "r8-transfer__panel", "r8-transfer__header", "r8-transfer__item", "r8-transfer__actions"],
     preview: `<div class="r8-transfer">
@@ -2876,8 +2886,8 @@ const formComponents = [
     name: "Upload",
     group: "form",
     summary: l(
-      "Shell de upload com dropzone, variantes de lista e estados de arquivo para fluxos controlados pela aplicacao host.",
-      "Upload shell with a dropzone, list variants, and file states for flows controlled by the host app.",
+      "Seleção e prévia local de arquivos; validação e envio são responsabilidades da aplicação.",
+      "Local file selection and previews; validation and network uploads are handled by the host application.",
     ),
     classes: [
       "r8-upload",
@@ -2918,7 +2928,7 @@ const formComponents = [
     </div>
     <div class="r8-upload__dropzone" role="button" tabindex="0">
       <strong>Drop files here</strong>
-      <span class="r8-text r8-text--sm r8-text--muted">Or paste, browse, or replace the queue.</span>
+      <span class="r8-text r8-text--sm r8-text--muted">Drop files here or use the file chooser.</span>
     </div>
     <div class="r8-upload__list">
       <div class="r8-upload__file" data-r8-upload-state="uploading" aria-busy="true" style="--r8-upload-progress: 72%;">
@@ -3003,7 +3013,7 @@ const formComponents = [
   </div>
   <div class="r8-upload__dropzone" role="button" tabindex="0">
     <strong>Drop files here</strong>
-    <span class="r8-text r8-text--sm r8-text--muted">Or paste, browse, or replace the queue.</span>
+    <span class="r8-text r8-text--sm r8-text--muted">Drop files here or use the file chooser.</span>
   </div>
   <div class="r8-upload__list">
     <div class="r8-upload__file" data-r8-upload-state="uploading" aria-busy="true" style="--r8-upload-progress: 72%;">
@@ -3025,11 +3035,11 @@ const formComponents = [
 </div>`,
     anatomy: ll(
       [
-        "`r8-upload` organiza trigger, dropzone, dicas e lista, mas continua deixando validacao, input nativo e transporte na aplicacao host.",
+        "`r8-upload` organiza acionador, dropzone, dicas e lista, mas continua deixando validação, input nativo e transporte na aplicação elemento.",
         "`r8-upload__toolbar`, `r8-upload__copy`, `r8-upload__title`, `r8-upload__tip` e `r8-upload__input` agrupam contexto, limite, input nativo escondido e o CTA para escolher itens.",
-        "`r8-upload__dropzone` e a superficie clicavel ou focavel para drop, browse ou replace queue, com suporte visual a drag ativo.",
-        "`r8-upload__list` abriga os arquivos e pode virar grade com `r8-upload--picture` ou shell unico com `r8-upload--avatar`.",
-        "Cada `r8-upload__file` pode combinar `r8-upload__thumb`, `r8-upload__meta`, `r8-upload__details`, `r8-upload__progress` e `r8-upload__actions` para representar fila, sucesso, erro ou retry.",
+        "`r8-upload__dropzone` é a superfície clicável ou focável para drop, browse ou replace queue, com suporte visual a arraste ativo.",
+        "`r8-upload__list` abriga os arquivos e pode virar grade com `r8-upload--picture` ou estrutura único com `r8-upload--avatar`.",
+        "Cada `r8-upload__file` pode combinar `r8-upload__thumb`, `r8-upload__meta`, `r8-upload__details`, `r8-upload__progress` e `r8-upload__actions` para representar fila, sucesso, erro ou nova tentativa.",
       ],
       [
         "`r8-upload` organizes the trigger, dropzone, hints, and file list while keeping validation, native input, and transport in the host app.",
@@ -3041,10 +3051,10 @@ const formComponents = [
     ),
     accessibility: ll(
       [
-        "Conecte a dropzone a um `input[type=file]` real e use `aria-describedby` para anunciar formatos aceitos, limite e feedback de validacao.",
-        "Reflita indisponibilidade tanto no input nativo quanto no shell visual com `disabled` ou `aria-disabled=\"true\"`, evitando sugerir drop em um estado travado.",
+        "Conecte a dropzone a um `input[type=file]` real e use `aria-describedby` para anunciar formatos aceitos, limite e retorno visual de validação.",
+        "Reflita indisponibilidade tanto no input nativo quanto na estrutura visual com `disabled` ou `aria-disabled=\"true\"`, evitando sugerir drop em um estado travado.",
         "Marque arquivos em envio com `aria-busy=\"true\"` e itens com falha usando `aria-invalid=\"true\"` ou `data-r8-upload-state=\"error\"`.",
-        "Botoes de preview, retry e remove precisam de labels claros e ordem de foco consistente para keyboard e leitor de tela.",
+        "Botões de prévia, nova tentativa e remoção precisam de rótulos claros e ordem de foco consistente para teclado e leitor de tela.",
       ],
       [
         "Connect the dropzone to a real `input[type=file]` and use `aria-describedby` so accepted formats, limits, and validation feedback are announced.",
@@ -3057,49 +3067,49 @@ const formComponents = [
       {
         name: "r8-upload / r8-upload--picture / r8-upload--avatar",
         description: l(
-          "Shell base com variantes para lista linear, grade de thumbs ou uploader de avatar em um unico slot.",
+          "Estrutura base com variantes para lista linear, grade de miniaturas ou uploader de avatar em um único slot.",
           "Base shell with variants for linear lists, thumbnail grids, or a single-slot avatar uploader.",
         ),
       },
       {
         name: "r8-upload__toolbar / __copy / __title / __tip / __input",
         description: l(
-          "Agrupam trigger, limite, input nativo escondido e mensagens auxiliares sem acoplar a logica de envio ao estilo.",
+          "Agrupam acionador, limite, input nativo escondido e mensagens auxiliares sem acoplar a lógica de envio ao estilo.",
           "Group the trigger, limits, hidden native input, and helper copy without coupling transfer logic to the styling layer.",
         ),
       },
       {
         name: "data-r8-drag-active / .is-active",
         description: l(
-          "Expande a leitura do estado de dragover no shell para destacar a dropzone enquanto o host app acompanha eventos de drag.",
+          "Expande a leitura do estado de dragover na estrutura para destacar a dropzone enquanto a aplicação hospedeira acompanha eventos de arraste.",
           "Surfaces dragover state on the shell so the dropzone can highlight while the host app tracks drag events.",
         ),
       },
       {
         name: "r8-upload__file + data-r8-upload-state",
         description: l(
-          "Cada arquivo pode declarar `queued`, `uploading`, `success` ou `error`, combinando tambem `aria-busy` e `aria-invalid`.",
+          "Cada arquivo pode declarar `queued`, `uploading`, `success` ou `error`, combinando também `aria-busy` e `aria-invalid`.",
           "Each file can declare `queued`, `uploading`, `success`, or `error`, and can also pair that with `aria-busy` or `aria-invalid`.",
         ),
       },
       {
         name: "r8-upload__thumb / __meta / __progress / __actions",
         description: l(
-          "Partes opcionais para thumbs, metadados, progresso visual e acoes como preview, retry, pause ou remove.",
+          "Partes opcionais para miniaturas, metadados, progresso visual e ações como prévia, nova tentativa, pausa ou remoção.",
           "Optional parts for thumbnails, metadata, visual progress, and actions such as preview, retry, pause, or remove.",
         ),
       },
       {
         name: "data-r8-upload-preview-label / remove-label / selected-label",
         description: l(
-          "Customiza os labels usados pelo runtime local para preview, remove e status selecionado quando a fila e renderizada automaticamente.",
+          "Customiza os rótulos usados pelo runtime local para prévia, remoção e status selecionado quando a fila e renderizada automaticamente.",
           "Customizes the labels used by the local runtime for preview, remove, and selected status when the queue is rendered automatically.",
         ),
       },
       {
         name: "--r8-upload-*",
         description: l(
-          "Custom properties ajustam altura minima, thumb size, accent local e progresso preenchido por arquivo.",
+          "Propriedades CSS ajustam altura mínima, alça size, destaque local e progresso preenchido por arquivo.",
           "Custom properties tune minimum height, thumbnail size, local accent, and per-file filled progress.",
         ),
       },
@@ -3113,8 +3123,8 @@ const dataComponents = [
     name: "Avatar",
     group: "data",
     summary: l(
-      "Avatar pixelado para perfis e squads, com suporte a texto, imagem interna e fallback curto quando a midia falha.",
-      "Pixel-like avatar for profiles and squads, with support for text, inner images, and a short fallback when media fails.",
+      "Avatar com texto, imagem e conteúdo alternativo quando a imagem não pode ser carregada.",
+      "Avatar with text, an image, and fallback content when the image cannot be loaded.",
     ),
     classes: ["r8-avatar", "r8-avatar--sm", "r8-avatar--lg", "r8-avatar--round", "r8-avatar__fallback"],
     preview: `<div class="docs-demo__stack">
@@ -3149,9 +3159,9 @@ const dataComponents = [
 </div>`,
     anatomy: ll(
       [
-        "`r8-avatar` e o wrapper base para textos curtos, imagens internas e blocos de identidade com a mesma moldura pixelada.",
-        "`r8-avatar--sm`, `r8-avatar--lg` e `r8-avatar--round` ajustam escala e shape sem mudar o markup principal.",
-        "Quando houver `<img>` interno, o runtime tenta exibir a midia; se ela falhar ou vier vazia, usa `data-r8-avatar-fallback` com ate 2 caracteres.",
+        "`r8-avatar` é o contêiner base para textos curtos, imagens internas e blocos de identidade com a mesma moldura pixelada.",
+        "`r8-avatar--sm`, `r8-avatar--lg` e `r8-avatar--round` ajustam escala e shape sem mudar a marcação principal.",
+        "Quando houver `<img>` interno, o runtime tenta exibir a mídia; se ela falhar ou vier vazia, usa `data-r8-avatar-fallback` com até 2 caracteres.",
         "`data-r8-fit` aplica `cover`, `contain`, `fill`, `none` ou `scale-down` para controlar como a imagem ocupa a moldura.",
       ],
       [
@@ -3163,9 +3173,9 @@ const dataComponents = [
     ),
     accessibility: ll(
       [
-        "Forneca `alt` util nas imagens de avatar quando elas carregarem informacao relevante; se a foto for decorativa, deixe `alt=\"\"` e rotule o contexto ao redor.",
-        "Use `data-r8-avatar-fallback` como fallback curto, mas nao dependa apenas das iniciais para identificar a pessoa em contextos importantes.",
-        "Se o avatar for clicavel, envolva-o em um link ou botao semanticamente correto em vez de adicionar interacao no span puro.",
+        "Forneca `alt` útil nas imagens de avatar quando elas carregarem informação relevante; se a foto for decorativa, deixe `alt=\"\"` e rotule o contexto ao redor.",
+        "Use `data-r8-avatar-fallback` como fallback curto, mas não dependa apenas das iniciais para identificar a pessoa em contextos importantes.",
+        "Se o avatar for clicável, envolva-o em um link ou botão semanticamente correto em vez de adicionar interação no span puro.",
       ],
       [
         "Provide meaningful `alt` text on avatar images when they carry relevant identity information; if the photo is decorative, use `alt=\"\"` and label surrounding context instead.",
@@ -3177,14 +3187,14 @@ const dataComponents = [
       {
         name: "r8-avatar / --sm / --lg / --round",
         description: l(
-          "Wrapper base com variacoes de tamanho e shape para texto curto ou imagem interna.",
+          "Wrapper base com variações de tamanho e shape para texto curto ou imagem interna.",
           "Base wrapper with size and shape variants for short text or inner images.",
         ),
       },
       {
         name: "data-r8-avatar-fallback",
         description: l(
-          "Define ate 2 caracteres para o fallback quando a imagem falhar, estiver vazia ou nao existir.",
+          "Define até 2 caracteres para o fallback quando a imagem falhar, estiver vazia ou não existir.",
           "Defines up to 2 characters for the fallback when the image fails, is empty, or does not exist.",
         ),
       },
@@ -3198,7 +3208,7 @@ const dataComponents = [
       {
         name: "img + alt",
         description: l(
-          "Suporta imagem interna com `alt`; o runtime alterna para o fallback automaticamente se a midia falhar.",
+          "Suporta imagem interna com `alt`; o runtime alterna para o fallback automaticamente se a mídia falhar.",
           "Supports an inner image with `alt`; the runtime automatically switches to the fallback if the media fails.",
         ),
       },
@@ -3209,8 +3219,8 @@ const dataComponents = [
     name: "Badge",
     group: "data",
     summary: l(
-      "Rotulo compacto para status, categorias, versoes e metadados curtos.",
-      "Compact label for statuses, categories, versions and short metadata.",
+      "Rótulo compacto para estados, categorias, versões e metadados curtos.",
+      "Compact label for statuses, categories, versions, and short metadata.",
     ),
     classes: [
       "r8-badge",
@@ -3242,8 +3252,8 @@ const dataComponents = [
     name: "Card",
     group: "data",
     summary: l(
-      "Superficie padrao para blocos de conteudo com header, body e footer previsiveis.",
-      "Standard surface for content blocks with predictable header, body and footer areas.",
+      "Cartão de conteúdo com áreas de cabeçalho, corpo e rodapé.",
+      "Content card with header, body, and footer areas.",
     ),
     classes: ["r8-card", "r8-card__header", "r8-card__body", "r8-card__footer"],
     preview: `<section class="r8-card">
@@ -3263,8 +3273,8 @@ const dataComponents = [
     name: "Carousel",
     group: "data",
     summary: l(
-      "Carrossel para banners e galerias curtas, com setas laterais, dots e slides com imagem ou conteudo livre.",
-      "Carousel for banners and short galleries, with side arrows, dots, and slides that can hold images or custom content.",
+      "Carrossel de imagens ou conteúdo com setas, indicadores e reprodução automática opcional.",
+      "Image or content carousel with arrows, indicators, and optional autoplay.",
     ),
     classes: [
       "r8-carousel",
@@ -3363,10 +3373,10 @@ const dataComponents = [
 </div>`,
     anatomy: ll(
       [
-        "`r8-carousel` organiza viewport, trilho, slides, setas e dots em um shell unico para banners ou galerias curtas.",
-        "`r8-carousel__viewport` delimita a area visivel, enquanto `r8-carousel__track` guarda os slides que o runtime alterna usando `hidden`.",
-        "`r8-carousel__arrow` com `data-r8-direction=\"prev|next\"` habilita navegacao lateral; `r8-carousel__dot` permite salto direto para um slide.",
-        "`r8-carousel__media` e `r8-carousel__caption` ajudam a montar slides com imagem e legenda sem depender de markup extra fora do componente.",
+        "`r8-carousel` organiza viewport, trilho, slides, setas e pontos em uma estrutura único para banners ou galerias curtas.",
+        "`r8-carousel__viewport` delimita a área visível, enquanto `r8-carousel__track` guarda os slides que o runtime alterna usando `hidden`.",
+        "`r8-carousel__arrow` com `data-r8-direction=\"prev|next\"` habilita navegação lateral; `r8-carousel__dot` permite salto direto para um slide.",
+        "`r8-carousel__media` e `r8-carousel__caption` ajudam a montar slides com imagem e legenda sem depender de marcação extra fora do componente.",
       ],
       [
         "`r8-carousel` groups the viewport, track, slides, arrows, and dots into one shell for banners or short galleries.",
@@ -3377,9 +3387,9 @@ const dataComponents = [
     ),
     accessibility: ll(
       [
-        "Forneca `alt` util nas imagens quando o slide depender delas para contexto; se forem decorativas, use `alt=\"\"` e mantenha a legenda textual no slide.",
-        "As setas devem continuar sendo botoes reais com `aria-label`, e os dots precisam permanecer focaveis para navegacao por teclado.",
-        "Evite autoplay agressivo em carrosseis com informacao critica; se usar `data-r8-autoplay`, mantenha tempo suficiente para leitura.",
+        "Forneca `alt` útil nas imagens quando o slide depender delas para contexto; se forem decorativas, use `alt=\"\"` e mantenha a legenda textual no slide.",
+        "As setas devem continuar sendo botões reais com `aria-label`, e os pontos precisam permanecer focaveis para navegação por teclado.",
+        "Evite autoplay agressivo em carrosseis com informação crítica; se usar `data-r8-autoplay`, mantenha tempo suficiente para leitura.",
       ],
       [
         "Provide meaningful `alt` text on slide images when the image carries context; if it is decorative, use `alt=\"\"` and keep textual captioning in the slide.",
@@ -3391,7 +3401,7 @@ const dataComponents = [
       {
         name: "data-r8-autoplay / data-r8-interval",
         description: l(
-          "Liga a rotacao automatica e controla o intervalo em milissegundos.",
+          "Liga a rotação automática e controla o intervalo em milissegundos.",
           "Enables automatic rotation and controls the interval in milliseconds.",
         ),
       },
@@ -3405,14 +3415,14 @@ const dataComponents = [
       {
         name: "r8-carousel__arrow + data-r8-direction",
         description: l(
-          "Botoes opcionais para navegar para tras ou para frente dentro do mesmo viewport.",
+          "Botões opcionais para navegar para tras ou para frente dentro do mesmo viewport.",
           "Optional buttons for moving backward or forward inside the same viewport.",
         ),
       },
       {
         name: "--r8-carousel-height / --r8-carousel-media-fit",
         description: l(
-          "Ajusta a altura do bloco e como as imagens ocupam a area do slide.",
+          "Ajusta a altura do bloco e como as imagens ocupam a área do slide.",
           "Adjusts the block height and how images fill the slide area.",
         ),
       },
@@ -3423,8 +3433,8 @@ const dataComponents = [
     name: "Collapse",
     group: "data",
     summary: l(
-      "Blocos expansivos para FAQs, settings e grupos densos, com accordion, titulo rico, icone customizavel e estado desabilitado por item.",
-      "Expandable sections for FAQs, settings, and dense groups, with accordion mode, rich titles, custom icons, and per-item disabled state.",
+      "Seções expansíveis com modo sanfona, cabeçalhos configuráveis e itens desabilitados.",
+      "Expandable sections with accordion mode, configurable headers, and disabled items.",
     ),
     classes: [
       "r8-collapse",
@@ -3513,9 +3523,9 @@ const dataComponents = [
     anatomy: ll(
       [
         "`r8-collapse` organiza grupos expansivos e aceita `data-r8-accordion=\"true\"` quando apenas um item pode ficar aberto por vez.",
-        "Cada `r8-collapse__item` combina `r8-collapse__header` para o gatilho e `r8-collapse__body` para o conteudo expansivel.",
-        "`r8-collapse__copy`, `r8-collapse__title`, `r8-collapse__meta` e `r8-collapse__icon` deixam o header mais rico, no estilo de titulo customizado do Element Plus.",
-        "`data-r8-icon-position=\"left|right\"` muda o lado do icone, e `data-r8-disabled=\"true\"` bloqueia a interacao sem remover o item da hierarquia.",
+        "Cada `r8-collapse__item` combina `r8-collapse__header` para o gatilho e `r8-collapse__body` para o conteúdo expansivel.",
+        "`r8-collapse__copy`, `r8-collapse__title`, `r8-collapse__meta` e `r8-collapse__icon` deixam o cabeçalho mais rico, no estilo de título customizado do Element Plus.",
+        "`data-r8-icon-position=\"left|right\"` muda o lado do ícone, e `data-r8-disabled=\"true\"` bloqueia a interação sem remover o item da hierarquia.",
       ],
       [
         "`r8-collapse` groups expandable sections and accepts `data-r8-accordion=\"true\"` when only one item should stay open at a time.",
@@ -3526,9 +3536,9 @@ const dataComponents = [
     ),
     accessibility: ll(
       [
-        "Prefira `button` real para `r8-collapse__header`; o runtime completa `aria-expanded`, `aria-controls` e o vinculo com o painel.",
-        "Use `r8-collapse__title` como rotulo principal e deixe `r8-collapse__meta` para contexto secundario, sem depender apenas do icone para comunicar estado.",
-        "Itens com `data-r8-disabled=\"true\"` devem continuar legiveis, mas sem esconder informacao critica atras de um painel inativo.",
+        "Prefira `button` real para `r8-collapse__header`; o runtime completa `aria-expanded`, `aria-controls` é o vínculo com o painel.",
+        "Use `r8-collapse__title` como rótulo principal e deixe `r8-collapse__meta` para contexto secundário, sem depender apenas do ícone para comunicar estado.",
+        "Itens com `data-r8-disabled=\"true\"` devem continuar legiveis, mas sem esconder informação crítica atrás de um painel inativo.",
       ],
       [
         "Prefer a real `button` for `r8-collapse__header`; the runtime fills in `aria-expanded`, `aria-controls`, and the panel relationship.",
@@ -3547,21 +3557,21 @@ const dataComponents = [
       {
         name: "data-r8-icon-position",
         description: l(
-          "Posiciona o icone de expansao em `left` ou `right` no header do conjunto.",
+          "Posiciona o ícone de expansão em `left` ou `right` no cabeçalho do conjunto.",
           "Places the expand icon on the `left` or `right` side of the group header.",
         ),
       },
       {
         name: "data-r8-disabled / is-disabled",
         description: l(
-          "Desativa um item especifico sem removê-lo do layout ou do contexto visual.",
+          "Desativa um item específico sem removê-lo do layout ou do contexto visual.",
           "Disables an individual item without removing it from the layout or visual context.",
         ),
       },
       {
         name: "r8-collapse__copy / __title / __meta / __icon",
         description: l(
-          "Classes opcionais para montar titulos ricos com descricao curta e icone separado.",
+          "Classes opcionais para montar títulos ricos com descrição curta e ícone separado.",
           "Optional classes for building richer titles with a short description and a separate icon.",
         ),
       },
@@ -3572,8 +3582,8 @@ const dataComponents = [
     name: "Empty",
     group: "data",
     summary: l(
-      "Estado vazio mais flexivel, com mídia customizável, descrição, alinhamento e ações para listas, busca e telas sem conteúdo.",
-      "More flexible empty state with customizable media, description, alignment, and actions for lists, search, and screens with no content.",
+      "Estado vazio com imagem ou símbolo, descrição e ações para orientar o próximo passo.",
+      "Empty state with an image or glyph, description, and actions to guide the next step.",
     ),
     classes: ["r8-empty", "r8-empty__media", "r8-empty__icon", "r8-empty__copy", "r8-empty__title", "r8-empty__description", "r8-empty__actions"],
     preview: `<div class="r8-empty" style="--r8-empty-media-size: 9rem;">
@@ -3606,9 +3616,9 @@ const dataComponents = [
 </div>`,
     anatomy: ll(
       [
-        "`r8-empty` é o shell base do estado vazio e aceita `data-r8-align=\"left\"` para sair do layout centralizado quando o contexto pedir leitura mais editorial.",
-        "`r8-empty__media` funciona como área para imagem customizada, enquanto `r8-empty__icon` continua cobrindo casos mais simples com texto curto ou label técnica.",
-        "`r8-empty__copy` agrupa `r8-empty__title` e `r8-empty__description` para manter hierarquia clara entre headline e explicação.",
+        "`r8-empty` é a estrutura base do estado vazio e aceita `data-r8-align=\"left\"` para sair do layout centralizado quando o contexto pedir leitura mais editorial.",
+        "`r8-empty__media` funciona como área para imagem customizada, enquanto `r8-empty__icon` continua cobrindo casos mais simples com texto curto ou rótulo técnica.",
+        "`r8-empty__copy` agrupa `r8-empty__title` e `r8-empty__description` para manter hierarquia clara entre título e explicação.",
         "`r8-empty__actions` cria uma área de CTA inferior, inspirada no slot de conteúdo do Element Plus, sem exigir runtime novo.",
       ],
       [
@@ -3634,7 +3644,7 @@ const dataComponents = [
       {
         name: "data-r8-align",
         description: l(
-          "Alinha o estado vazio em `center` ou `left` sem trocar o markup base.",
+          "Alinha o estado vazio em `center` ou `left` sem trocar a marcação base.",
           "Aligns the empty state to `center` or `left` without changing the base markup.",
         ),
       },
@@ -3666,8 +3676,8 @@ const dataComponents = [
     name: "Image",
     group: "data",
     summary: l(
-      "Bloco de imagem mais flexível, com proporção, fit, placeholder e estado de erro para previews, covers e thumbnails retro.",
-      "More flexible image block with ratio, fit, placeholder, and error state for previews, covers, and retro thumbnails.",
+      "Moldura de imagem com proporção, ajuste, carregamento e estado de erro.",
+      "Image frame with aspect ratios, fit options, loading, and error states.",
     ),
     classes: ["r8-image", "r8-image__frame", "r8-image__placeholder", "r8-image__error", "r8-image__caption"],
     preview: `<figure class="r8-image" data-r8-fit="cover" data-r8-ratio="wide">
@@ -3688,7 +3698,7 @@ const dataComponents = [
 </figure>`,
     anatomy: ll(
       [
-        "`r8-image` é o wrapper base e aceita `data-r8-fit` e `data-r8-ratio` para controlar como a mídia ocupa a moldura.",
+        "`r8-image` é o contêiner base e aceita `data-r8-fit` e `data-r8-ratio` para controlar como a mídia ocupa a moldura.",
         "`r8-image__frame` é a área visual principal, pronta para receber `<img>`, placeholder e estado de erro dentro do mesmo bloco.",
         "`r8-image__placeholder` e `r8-image__error` são overlays opcionais que o runtime alterna conforme o carregamento ou falha da mídia.",
         "`r8-image__caption` mantém uma legenda curta abaixo da imagem, sem misturar a cópia com a área visual.",
@@ -3703,7 +3713,7 @@ const dataComponents = [
     accessibility: ll(
       [
         "Forneça `alt` útil quando a imagem trouxer contexto real; se ela for decorativa, use `alt=\"\"` e deixe a informação importante na legenda.",
-        "O placeholder e o estado de erro ajudam a dar feedback visual, mas a legenda ainda deve explicar o que a pessoa deveria ver ou fazer em seguida.",
+        "O placeholder e o estado de erro ajudam a dar retorno visual, mas a legenda ainda deve explicar o que a pessoa deveria ver ou fazer em seguida.",
         "Evite esconder informação essencial só na imagem sem um texto complementar, especialmente em fluxos críticos ou listas densas.",
       ],
       [
@@ -3730,7 +3740,7 @@ const dataComponents = [
       {
         name: "r8-image__placeholder / __error",
         description: l(
-          "Overlays opcionais para loading e falha de carregamento, alternados pelo runtime.",
+          "Overlays opcionais para carregamento e falha de carregamento, alternados pelo runtime.",
           "Optional loading and error overlays that the runtime toggles automatically.",
         ),
       },
@@ -3748,8 +3758,8 @@ const dataComponents = [
     name: "Pagination",
     group: "data",
     summary: l(
-      "Navegação de páginas com prev/next, pager dinâmico, resumo total e jumper opcional para listas maiores.",
-      "Page navigation with prev/next controls, dynamic pagers, total summary, and an optional jumper for larger lists.",
+      "Navegação entre páginas com controles anterior e próximo, resumo e salto para uma página específica.",
+      "Page navigation with previous and next controls, a summary, and an optional page jump.",
     ),
     classes: ["r8-pagination", "r8-pagination__summary", "r8-pagination__nav", "r8-pagination__pages", "r8-pagination__item", "r8-pagination__more", "r8-pagination__jumper", "r8-pagination__jump-input"],
     preview: `<div class="r8-pagination" data-r8-total-pages="9" data-r8-current-page="4" data-r8-pager-count="7">
@@ -3791,7 +3801,7 @@ const dataComponents = [
 </div>`,
     anatomy: ll(
       [
-        "`r8-pagination` é o shell base e aceita `data-r8-total-pages`, `data-r8-current-page` e `data-r8-pager-count` para o runtime desenhar o pager.",
+        "`r8-pagination` é a estrutura base e aceita `data-r8-total-pages`, `data-r8-current-page` e `data-r8-pager-count` para o runtime desenhar o pager.",
         "`r8-pagination__nav` cobre anterior e próxima página, enquanto `r8-pagination__pages` segura os botões numerados e elipses.",
         "`r8-pagination__summary` mostra o total do conjunto e `r8-pagination__jumper` cria a área de salto rápido com input numérico.",
         "`data-r8-hide-on-single-page=\"true\"` esconde o bloco quando existir apenas uma página, no mesmo espírito do Element Plus.",
@@ -3851,8 +3861,8 @@ const dataComponents = [
     name: "Progress",
     group: "data",
     summary: l(
-      "Indicador de progresso com barra linear ou dial circular, label opcional dentro do track e modo indeterminado para fluxos ainda sem percentual final.",
-      "Progress indicator with a linear bar or circular dial, an optional in-track label, and an indeterminate mode for flows without a final percentage yet.",
+      "Indicador de progresso linear ou circular, com valor opcional e modo indeterminado.",
+      "Linear or circular progress indicator with an optional value and an indeterminate mode.",
     ),
     classes: [
       "r8-progress",
@@ -3943,10 +3953,10 @@ const dataComponents = [
 </div>`,
     anatomy: ll(
       [
-        "`r8-progress` é o wrapper base e aceita valor, shape, tom, label interna e modo indeterminado pela mesma API pública.",
-        "`r8-progress__label` agrupa o título e a leitura percentual externa, enquanto `r8-progress__inside-value` cobre a versão compacta dentro do track.",
+        "`r8-progress` é o contêiner base e aceita valor, shape, tom, rótulo interna e modo indeterminado pela mesma API pública.",
+        "`r8-progress__label` agrupa o título e a leitura percentual externa, enquanto `r8-progress__inside-value` cobre a versão compacta dentro da trilha.",
         "`r8-progress__track` e `r8-progress__bar` formam a barra linear; `r8-progress__dial` e `r8-progress__content` cobrem o modo circular.",
-        "As custom properties ajustam altura, tamanho do dial, cor do preenchimento, trilha e velocidade da animação sem multiplicar classes.",
+        "As Propriedades CSS ajustam altura, tamanho do dial, cor do preenchimento, trilha e velocidade da animação sem multiplicar classes.",
       ],
       [
         "`r8-progress` is the base wrapper and accepts value, shape, tone, inside label, and indeterminate mode through the same public API.",
@@ -3971,21 +3981,21 @@ const dataComponents = [
       {
         name: "data-r8-value / data-r8-variant",
         description: l(
-          "Controlam o percentual e o tom sem precisar manipular a custom property diretamente.",
+          "Controlam o percentual e o tom sem precisar manipular a propriedade CSS diretamente.",
           "Control the percentage and tone without having to manipulate the custom property directly.",
         ),
       },
       {
         name: "data-r8-shape / data-r8-label-position / data-r8-indeterminate",
         description: l(
-          "Alternam entre barra linear, dial circular, label interna e animação contínua.",
+          "Alternam entre barra linear, dial circular, rótulo interna e animação contínua.",
           "Switch between a linear bar, a circular dial, an inside label, and continuous animation.",
         ),
       },
       {
         name: "data-r8-progress-value-output",
         description: l(
-          "Marca os nodes que devem receber a leitura textual atualizada pelo runtime.",
+          "Marca os nós que devem receber a leitura textual atualizada pelo runtime.",
           "Marks the nodes that should receive the textual readout updated by the runtime.",
         ),
       },
@@ -4003,8 +4013,8 @@ const dataComponents = [
     name: "Skeleton",
     group: "data",
     summary: l(
-      "Placeholder estrutural para loading de cards, listas e perfis, com avatar, media, linhas e bloco livre para circle/rectangle com dimensoes customizadas.",
-      "Structural loading placeholder for cards, lists, and profiles, with avatar, media, lines, and a free shape block for circle/rectangle custom sizing.",
+      "Estruturas temporárias de carregamento com linhas, avatar, imagem e formas de tamanho configurável.",
+      "Temporary loading structures with lines, avatars, media, and configurable shapes.",
     ),
     classes: [
       "r8-skeleton",
@@ -4071,9 +4081,9 @@ const dataComponents = [
 </div>`,
     anatomy: ll(
       [
-        "`r8-skeleton` e o wrapper base. Ele organiza as pecas falsas e aceita variaveis para espacamento, alturas e velocidade do shimmer.",
-        "`r8-skeleton__media`, `__avatar`, `__title`, `__line`, `__button` e `__shape` permitem aproximar o placeholder do layout real sem inventar markup aleatorio.",
-        "`r8-skeleton--card` adiciona moldura e padding quando o loading precisa reservar o mesmo volume de um card real.",
+        "`r8-skeleton` é o contêiner base. Ele organiza as peças falsas e aceita variáveis para espaçamento, alturas e velocidade do shimmer.",
+        "`r8-skeleton__media`, `__avatar`, `__title`, `__line`, `__button` e `__shape` permitem aproximar o placeholder do layout real sem inventar marcação aleatorio.",
+        "`r8-skeleton--card` adiciona moldura e espaçamento interno quando o carregamento precisa reservar o mesmo volume de um card real.",
         "As variantes de largura como `r8-skeleton__line--medium` e `--short` ajudam a quebrar a repeticao e deixam a leitura mais natural.",
         "Use `r8-skeleton__shape--circle` ou `--rectangle` e ajuste `--r8-skeleton-shape-width`/`--r8-skeleton-shape-height` para montar placeholders livres.",
       ],
@@ -4087,9 +4097,9 @@ const dataComponents = [
     ),
     accessibility: ll(
       [
-        "Use skeleton apenas como feedback temporario. Quando os dados chegarem, troque pelo conteudo real em vez de deixar a UI em estado ambiguo por muito tempo.",
+        "Use skeleton apenas como retorno visual temporario. Quando os dados chegarem, troque pelo conteúdo real em vez de deixar a UI em estado ambiguo por muito tempo.",
         "Desative ou reduza a animacao em contextos sensiveis a movimento; `data-r8-animated=\"false\"` cobre esse caso sem trocar classes.",
-        "O ideal e que o placeholder reserve dimensoes proximas das do DOM final para evitar saltos visuais grandes quando o conteudo carregar.",
+        "O ideal e que o placeholder reserve dimensoes proximas das do DOM final para evitar saltos visuais grandes quando o conteúdo carregar.",
       ],
       [
         "Use skeletons only as temporary feedback. Once data arrives, swap them for real content instead of leaving the UI in an ambiguous state for too long.",
@@ -4115,7 +4125,7 @@ const dataComponents = [
       {
         name: "r8-skeleton__media / __avatar / __title / __button",
         description: l(
-          "Pecas estruturais para aproximar o loading de cards, perfis, listas e CTAs reais.",
+          "Peças estruturais para aproximar o carregamento de cards, perfis, listas e CTAs reais.",
           "Structural pieces for matching cards, profiles, lists, and real CTAs during loading.",
         ),
       },
@@ -4136,7 +4146,7 @@ const dataComponents = [
       {
         name: "--r8-skeleton-media-height / --r8-skeleton-avatar-size / --r8-skeleton-shape-width / --r8-skeleton-shape-height / --r8-skeleton-shape-radius / --r8-skeleton-speed",
         description: l(
-          "Ajusta altura de media, escala do avatar, geometria livre (width/height/radius) e ritmo da animacao sem sair da API publica.",
+          "Ajusta altura de mídia, escala do avatar, geometria livre (largura/altura/radius) e ritmo da animacao sem sair da API pública.",
           "Adjusts media height, avatar scale, free geometry (width/height/radius), and animation pace without leaving the public API.",
         ),
       },
@@ -4147,8 +4157,8 @@ const dataComponents = [
     name: "Table",
     group: "data",
     summary: l(
-      "Tabela retro mais flexivel para grades densas, com zebra, hover, status por linha, modo compacto e wrapper opcional para header fixo.",
-      "More flexible retro table for dense grids, with striping, hover, row status states, compact mode, and an optional fixed-header wrapper.",
+      "Tabela com linhas alternadas, destaque de estados, modo compacto e cabeçalho fixo opcional.",
+      "Table with striped rows, status styling, compact mode, and an optional fixed header.",
     ),
     classes: [
       "r8-table-wrap",
@@ -4239,8 +4249,8 @@ const dataComponents = [
 </div>`,
     anatomy: ll(
       [
-        "`r8-table-wrap` segura overflow horizontal e, com `r8-table-wrap--fixed`, habilita header sticky via `--r8-table-max-height`.",
-        "`r8-table` continua sendo a raiz semantica da grade e aceita modifiers como `--striped`, `--hover` e `--sm` para mudar leitura e densidade.",
+        "`r8-table-wrap` segura overflow horizontal e, com `r8-table-wrap--fixed`, habilita cabeçalho sticky via `--r8-table-max-height`.",
+        "`r8-table` continua sendo a raiz semântica da grade e aceita modificadores como `--striped`, `--hover` e `--sm` para mudar leitura e densidade.",
         "As classes `r8-table__row--success|warning|danger|info` destacam linhas sem depender de runtime.",
         "`r8-table__cell--truncate` e `__cell--numeric` ajudam em colunas longas e valores alinhados a direita.",
       ],
@@ -4253,9 +4263,9 @@ const dataComponents = [
     ),
     accessibility: ll(
       [
-        "Use `th scope=\"col\"` no header e mantenha a ordem das colunas previsivel, principalmente quando houver scroll horizontal.",
-        "Nao use cor sozinha para estados de linha. O texto da coluna de status ainda deve explicar o que mudou.",
-        "Se truncar conteudo longo, preserve o dado completo em `title` ou em um detalhe acessivel no fluxo real da aplicacao.",
+        "Use `th scope=\"col\"` no cabeçalho e mantenha a ordem das colunas previsível, principalmente quando houver scroll horizontal.",
+        "Não use cor sozinha para estados de linha. O texto da coluna de status ainda deve explicar o que mudou.",
+        "Se truncar conteúdo longo, preserve o dado completo em `title` ou em um detalhe acessível no fluxo real da aplicação.",
       ],
       [
         "Use `th scope=\"col\"` in the header and keep column order predictable, especially when horizontal scrolling is present.",
@@ -4267,7 +4277,7 @@ const dataComponents = [
       {
         name: "r8-table-wrap / r8-table-wrap--fixed",
         description: l(
-          "Wrapper opcional para overflow horizontal e header fixo com scroll vertical.",
+          "Wrapper opcional para overflow horizontal e cabeçalho fixo com scroll vertical.",
           "Optional wrapper for horizontal overflow and a fixed header with vertical scrolling.",
         ),
       },
@@ -4288,7 +4298,7 @@ const dataComponents = [
       {
         name: "--r8-table-max-height / r8-table__cell--truncate / r8-table__cell--numeric",
         description: l(
-          "Ajustam altura do wrapper, truncamento de texto e alinhamento numerico de colunas.",
+          "Ajustam altura do contêiner, truncamento de texto e alinhamento numérico de colunas.",
           "Adjust wrapper height, text truncation, and numeric column alignment.",
         ),
       },
@@ -4299,8 +4309,8 @@ const dataComponents = [
     name: "Tag",
     group: "data",
     summary: l(
-      "Tag compacta para agrupamento visual de estado, categoria e contexto curto.",
-      "Compact tag for visually grouping status, category and short context.",
+      "Etiqueta compacta para identificar estados, categorias e informações relacionadas.",
+      "Compact tag for identifying statuses, categories, and related information.",
     ),
     classes: ["r8-tag", "r8-tag--success", "r8-tag--danger"],
     preview: `<div class="r8-cluster">
@@ -4317,8 +4327,8 @@ const navigationComponents = [
     name: "Breadcrumb",
     group: "navigation",
     summary: l(
-      "Trilha de navegacao mais flexivel, com separador configuravel, links reais, estado atual claro e modos compacto ou sem quebra.",
-      "More flexible navigation trail with configurable separators, real links, a clear current state, and compact or no-wrap modes.",
+      "Trilha de navegação com links, separador configurável e indicação da página atual.",
+      "Navigation trail with links, configurable separators, and a current-page indicator.",
     ),
     classes: [
       "r8-breadcrumb",
@@ -4352,7 +4362,7 @@ const navigationComponents = [
     anatomy: ll(
       [
         "`r8-breadcrumb` organiza a trilha horizontal e aceita `data-r8-separator` para trocar o divisor sem mexer no HTML dos itens.",
-        "`r8-breadcrumb__item` funciona bem com `li`, `span` ou wrappers leves para manter semantica de lista.",
+        "`r8-breadcrumb__item` funciona bem com `li`, `span` ou contêineres leves para manter semântica de lista.",
         "`r8-breadcrumb__link` aplica estados interativos apenas aos niveis clicaveis, preservando o item atual como texto ou `aria-current`.",
         "`r8-breadcrumb--compact` e `r8-breadcrumb--nowrap` ajudam quando a trilha precisa caber em headers densos ou barras superiores.",
       ],
@@ -4365,9 +4375,9 @@ const navigationComponents = [
     ),
     accessibility: ll(
       [
-        "Envolva a trilha em `nav` com `aria-label=\"Breadcrumb\"` para expor o contexto de navegacao para leitores de tela.",
-        "Marque apenas o ultimo item com `aria-current=\"page\"` e evite transforma-lo em link se ele nao realmente navegar.",
-        "Se usar `r8-breadcrumb--nowrap`, garanta que a ordem continue previsivel e que o usuario consiga rolar horizontalmente quando necessario.",
+        "Envolva a trilha em `nav` com `aria-label=\"Breadcrumb\"` para expor o contexto de navegação para leitores de tela.",
+        "Marque apenas o último item com `aria-current=\"page\"` e evite transforma-lo em link se ele não realmente navegar.",
+        "Se usar `r8-breadcrumb--nowrap`, garanta que a ordem continue previsível e que o usuário consiga rolar horizontalmente quando necessário.",
       ],
       [
         "Wrap the trail in `nav` with `aria-label=\"Breadcrumb\"` so assistive tech gets clear navigation context.",
@@ -4393,14 +4403,14 @@ const navigationComponents = [
       {
         name: "r8-breadcrumb--compact / r8-breadcrumb--nowrap",
         description: l(
-          "Ajustam densidade e quebra de linha para headers, toolbars ou areas com pouco espaco horizontal.",
+          "Ajustam densidade e quebra de linha para headers, toolbars ou áreas com pouco espaco horizontal.",
           "Adjust density and line wrapping for headers, toolbars, or areas with limited horizontal space.",
         ),
       },
       {
         name: "--r8-breadcrumb-gap / --r8-breadcrumb-separator-color / --r8-breadcrumb-link-color",
         description: l(
-          "Permitem alinhar espacamento, cor do separador e tom dos links ao contexto visual local.",
+          "Permitem alinhar espaçamento, cor do separador e tom dos links ao contexto visual local.",
           "Let you tune spacing, separator color, and link tone to the local visual context.",
         ),
       },
@@ -4411,8 +4421,8 @@ const navigationComponents = [
     name: "Dropdown",
     group: "navigation",
     summary: l(
-      "Dropdown mais completo para acoes contextuais, com item selecionado, estados disabled e danger, divisorias e trigger simples ou dividido.",
-      "More complete dropdown for contextual actions, with selected items, disabled and danger states, dividers, and simple or split triggers.",
+      "Menu de ações com itens selecionados, desabilitados ou de exclusão, divisórias e acionador simples ou dividido.",
+      "Actions menu with selected, disabled, and destructive items, dividers, and a simple or split trigger.",
     ),
     classes: [
       "r8-dropdown",
@@ -4453,9 +4463,9 @@ const navigationComponents = [
 </div>`,
     anatomy: ll(
       [
-        "`r8-dropdown` agrupa trigger e menu, e aceita `r8-dropdown--end` quando o painel precisa alinhar pela borda direita.",
-        "`r8-dropdown__trigger` identifica o botao que abre ou recolhe o menu; `r8-dropdown__action` cobre o botao lateral de um split trigger.",
-        "`r8-dropdown__item` continua semantico o bastante para usar `button`, `a` ou outros action-like elements preparados pelo runtime.",
+        "`r8-dropdown` agrupa acionador e menu, e aceita `r8-dropdown--end` quando o painel precisa alinhar pela borda direita.",
+        "`r8-dropdown__trigger` identifica o botão que abre ou recolhe o menu; `r8-dropdown__action` cobre o botão lateral de um dividido acionador.",
+        "`r8-dropdown__item` continua semântico o bastante para usar `button`, `a` ou outros action-like elements preparados pelo runtime.",
         "`r8-dropdown__item--divided`, `__item--danger` e `aria-disabled=\"true\"` resolvem os estados mais comuns sem inventar uma API grande demais.",
       ],
       [
@@ -4467,8 +4477,8 @@ const navigationComponents = [
     ),
     accessibility: ll(
       [
-        "Use `button` ou `a` nos itens quando possivel, e marque apenas itens indisponiveis com `aria-disabled=\"true\"`.",
-        "Quando houver split trigger, mantenha o botao lateral principal com acao clara e o trigger do menu com rotulo proprio.",
+        "Use `button` ou `a` nos itens quando possível, e marque apenas itens indisponiveis com `aria-disabled=\"true\"`.",
+        "Quando houver dividido acionador, mantenha o botão lateral principal com ação clara e o acionador do menu com rótulo próprio.",
         "Se usar `data-r8-close-on-select=\"false\"`, garanta outra forma simples de fechar o menu por teclado ou clique fora.",
       ],
       [
@@ -4488,14 +4498,14 @@ const navigationComponents = [
       {
         name: "data-r8-close-on-select",
         description: l(
-          "Aceita `false` para manter o painel aberto apos uma selecao, util em menus de inspeção ou batch actions.",
+          "Aceita `false` para manter o painel aberto apos uma seleção, útil em menus de inspeção ou batch ações.",
           "Accepts `false` to keep the panel open after selection, useful for inspection menus or batch actions.",
         ),
       },
       {
         name: "r8-dropdown--end / r8-dropdown__split",
         description: l(
-          "Cobrem alinhamento a direita e o layout de split trigger sem depender de JS adicional.",
+          "Cobrem alinhamento a direita e o layout de dividido acionador sem depender de JS adicional.",
           "Cover right-edge alignment and split-trigger layout without extra JS.",
         ),
       },
@@ -4513,8 +4523,8 @@ const navigationComponents = [
     name: "Steps",
     group: "navigation",
     summary: l(
-      "Fluxo sequencial em etapas para onboarding, checkout e assistentes.",
-      "Sequential flow pattern for onboarding, checkout and wizard-like journeys.",
+      "Indicador visual de etapas para cadastros, compras e processos guiados.",
+      "Visual step indicator for registration, checkout, and guided workflows.",
     ),
     classes: ["r8-steps", "r8-step", "r8-step__index", "r8-step__body", "r8-step__title"],
     preview: `<div class="r8-steps">
@@ -4539,8 +4549,8 @@ const navigationComponents = [
     name: "Tabs",
     group: "navigation",
     summary: l(
-      "Estrutura visual para conteudo em abas com tablist clara e painel associado.",
-      "Visual structure for tabbed content with a clear tablist and associated panel.",
+      "Abas com painéis associados e navegação por clique, setas, Home e End.",
+      "Tabs with associated panels and navigation by click, arrow keys, Home, and End.",
     ),
     classes: ["r8-tabs", "r8-tabs__list", "r8-tabs__tab", "r8-tabs__tab--active", "r8-tabs__panel"],
     preview: `<div class="r8-tabs">
@@ -4576,8 +4586,8 @@ const feedbackComponents = [
     name: "Alert",
     group: "feedback",
     summary: l(
-      "Feedback contextual inline para status, warnings e dismissible callouts com a mesma intencao de um alert classico.",
-      "Inline contextual feedback surface for status messages, warnings and dismissible callouts with the same intent as a classic alert.",
+      "Mensagem contextual de informação, sucesso, aviso ou erro, com fechamento opcional.",
+      "Contextual information, success, warning, or error message with optional dismissal.",
     ),
     classes: [
       "r8-alert",
@@ -4715,11 +4725,11 @@ const feedbackComponents = [
 </section>`,
     anatomy: ll(
       [
-        "`r8-alert` define o frame base, enquanto os tons continuam em modifiers como `--success`, `--warning` ou `--danger`.",
-        "`r8-alert--surface` troca o bloco solido por uma leitura mais leve, e `r8-alert--center` recentraliza icone, copy e acoes.",
-        "`r8-alert__layout` organiza o icone ao lado do conteudo; `r8-alert__icon` pode ser texto curto, glifo ou SVG inline.",
+        "`r8-alert` define o moldura base, enquanto os tons continuam em modificadores como `--success`, `--warning` ou `--danger`.",
+        "`r8-alert--surface` troca o bloco sólido por uma leitura mais leve, e `r8-alert--center` recentraliza ícone, texto e ações.",
+        "`r8-alert__layout` organiza o ícone ao lado do conteúdo; `r8-alert__icon` pode ser texto curto, glifo ou SVG inline.",
         "`r8-alert__title`, `r8-alert__description`, `r8-alert__body` e `r8-alert__actions` deixam mensagens simples e callouts longos no mesmo sistema.",
-        "`r8-alert__close` continua opcional e agora aceita tanto um `x` quanto labels curtos como `Got it` ou `Close`.",
+        "`r8-alert__close` continua opcional e agora aceita tanto um `x` quanto rótulos curtos como `Got it` ou `Close`.",
       ],
       [
         "`r8-alert` defines the base frame, while tones stay in modifiers such as `--success`, `--warning`, or `--danger`.",
@@ -4731,10 +4741,10 @@ const feedbackComponents = [
     ),
     accessibility: ll(
       [
-        "Use `role=\"alert\"` para mensagens urgentes e `role=\"status\"` com `aria-live=\"polite\"` quando o update nao deve interromper a leitura atual.",
+        "Use `role=\"alert\"` para mensagens urgentes e `role=\"status\"` com `aria-live=\"polite\"` quando o update não deve interromper a leitura atual.",
         "Quando o close for icon-only, mantenha um `aria-label` explicito como `Dismiss alert`.",
-        "Nao dependa so da cor para semantica; combine tom, titulo e descricao para deixar sucesso, aviso e erro claros.",
-        "Se o Alert abrir por trigger declarativo, preserve o foco no fluxo principal e use copy curta para anuncios live.",
+        "Não dependa só da cor para semântica; combine tom, título e descrição para deixar sucesso, aviso e erro claros.",
+        "Se o Alert abrir por acionador declarativo, preserve o foco no fluxo principal e use texto curta para anúncios live.",
       ],
       [
         "Use `role=\"alert\"` for urgent messages and `role=\"status\"` with `aria-live=\"polite\"` when the update should not interrupt current reading.",
@@ -4747,35 +4757,35 @@ const feedbackComponents = [
       {
         name: "r8-alert--surface / r8-alert--center",
         description: l(
-          "Modifiers visuais para alternar entre o look solido e uma superficie mais leve, ou recentralizar o conteudo quando a mensagem e curta.",
+          "Modificadores visuais para alternar entre o look sólido e uma superfície mais leve, ou recentralizar o conteúdo quando a mensagem e curta.",
           "Visual modifiers for switching between the solid look and a lighter surface, or recentering content when the message is short.",
         ),
       },
       {
         name: "r8-alert__layout / r8-alert__icon",
         description: l(
-          "Estruturam um alert com icone sem exigir runtime extra; o icone pode ser texto curto, glyph ou SVG inline.",
+          "Estruturam um alert com ícone sem exigir runtime extra; o ícone pode ser texto curto, símbolo ou SVG inline.",
           "Structure an icon-driven alert without extra runtime; the icon can be short text, a glyph, or inline SVG.",
         ),
       },
       {
         name: "r8-alert__description / r8-alert__body / r8-alert__actions",
         description: l(
-          "Cobrem desde alerts de uma linha ate callouts maiores com descricao detalhada e CTA inline.",
+          "Cobrem desde alerts de uma linha até callouts maiores com descrição detalhada e CTA inline.",
           "Cover everything from one-line alerts to larger callouts with detailed description and inline CTAs.",
         ),
       },
       {
         name: "r8-alert__close + data-r8-dismiss",
         description: l(
-          "Permitem fechar o host imediatamente e aceitar texto customizado no botao, nao apenas um simbolo fixo.",
+          "Permitem fechar o elemento imediatamente e aceitar texto customizado no botão, não apenas um símbolo fixo.",
           "Allow closing the host immediately while accepting custom button text, not only a fixed symbol.",
         ),
       },
       {
         name: "data-r8-toggle / data-r8-target",
         description: l(
-          "Abrem ou recolhem um Alert hidden para previews live e mensagens inline controladas declarativamente.",
+          "Abrem ou recolhem um Alert hidden para prévias live e mensagens inline controladas declarativamente.",
           "Open or collapse a hidden Alert for live previews and inline messages controlled declaratively.",
         ),
       },
@@ -4786,8 +4796,8 @@ const feedbackComponents = [
     name: "Dialog",
     group: "feedback",
     summary: l(
-      "Moldura modal para confirmacoes e interrupcoes, pronta para usar com dialog nativo ou runtime do app.",
-      "Modal frame for confirmations and interruptions, ready for native dialog or host app runtime.",
+      "Diálogo modal para confirmações e interrupções, usando o elemento HTML nativo ou lógica da aplicação.",
+      "Modal dialog for confirmations and interruptions, using native HTML or application logic.",
     ),
     classes: ["r8-dialog", "r8-dialog__titlebar", "r8-dialog__title", "r8-dialog__body", "r8-dialog__footer", "r8-dialog--danger"],
     preview: `<div class="docs-demo__stack">
@@ -4818,8 +4828,8 @@ const feedbackComponents = [
     name: "Drawer",
     group: "feedback",
     summary: l(
-      "Painel deslizante para settings, filtros e fluxos laterais mais longos, com controle de backdrop, escape e scroll lock.",
-      "Sliding panel for settings, filters, and longer side flows, with backdrop, escape, and scroll-lock controls.",
+      "Painel deslizante com modo modal opcional, gerenciamento de foco e controles de fechamento e rolagem.",
+      "Sliding panel with optional modal behavior, focus management, and dismissal and scroll controls.",
     ),
     classes: [
       "r8-drawer",
@@ -4948,9 +4958,9 @@ const feedbackComponents = [
 </div>`,
     anatomy: ll(
       [
-        "`r8-drawer` define o shell do painel e combina com `r8-drawer--right`, `--left`, `--top` ou `--bottom` para a direcao de entrada.",
-        "`r8-drawer__header` pode receber um bloco `r8-drawer__copy` com `r8-drawer__title` e `r8-drawer__meta`, alem de um `r8-drawer__close` opcional.",
-        "`r8-drawer__body` concentra o conteudo rolavel; `r8-drawer__footer` fecha o fluxo com acoes persistentes quando houver formulario ou confirmacao.",
+        "`r8-drawer` define a estrutura do painel e combina com `r8-drawer--right`, `--left`, `--top` ou `--bottom` para a direção de entrada.",
+        "`r8-drawer__header` pode receber um bloco `r8-drawer__copy` com `r8-drawer__title` e `r8-drawer__meta`, além de um `r8-drawer__close` opcional.",
+        "`r8-drawer__body` concentra o conteúdo rolavel; `r8-drawer__footer` fecha o fluxo com ações persistentes quando houver formulário ou confirmação.",
         "`data-r8-modal`, `data-r8-close-on-backdrop`, `data-r8-close-on-escape` e `data-r8-lock-scroll` ajustam o comportamento sem exigir JS customizado.",
       ],
       [
@@ -4962,9 +4972,9 @@ const feedbackComponents = [
     ),
     accessibility: ll(
       [
-        "Prefira dar nome acessivel ao painel com `aria-labelledby` apontando para `r8-drawer__title`; se remover o header, use `aria-label` direto no host.",
+        "Prefira dar nome acessível ao painel com `aria-labelledby` apontando para `r8-drawer__title`; se remover o cabeçalho, use `aria-label` direto no elemento.",
         "Mantenha sempre uma forma explicita de fechar o Drawer quando desabilitar clique no backdrop ou fechamento por `Esc`.",
-        "Quando o corpo trouxer formularios longos, preserve a ordem logica do foco e deixe as acoes principais no footer ou no topo do painel.",
+        "Quando o corpo trouxer formulários longos, preserve a ordem lógica do foco e deixe as ações principais no rodapé ou no topo do painel.",
       ],
       [
         "Prefer giving the panel an accessible name with `aria-labelledby` pointing to `r8-drawer__title`; if you remove the header, use `aria-label` on the host.",
@@ -4983,21 +4993,21 @@ const feedbackComponents = [
       {
         name: "r8-drawer--right / --left / --top / --bottom",
         description: l(
-          "Definem a direcao do painel para filtros laterais, trays superiores ou folhas curtas vindas da base.",
+          "Definem a direção do painel para filtros laterais, trays superiores ou folhas curtas vindas da base.",
           "Set the panel direction for side filters, top trays, or shorter sheets entering from the bottom.",
         ),
       },
       {
         name: "r8-drawer__copy / __meta / __close",
         description: l(
-          "Estruturam headers mais ricos sem depender de slots: copy, contexto secundario e close action dedicada.",
+          "Estruturam headers mais ricos sem depender de campos: texto, contexto secundário e close ação dedicada.",
           "Structure richer headers without slots: copy, secondary context, and a dedicated close action.",
         ),
       },
       {
         name: "--r8-drawer-size / --r8-drawer-min-size / --r8-drawer-body-padding",
         description: l(
-          "Permitem ajustar tamanho e densidade do painel para flows compactos, forms longos ou drawers de conteudo mais denso.",
+          "Permitem ajustar tamanho e densidade do painel para flows compactos, forms longos ou drawers de conteúdo mais denso.",
           "Let you tune panel size and density for compact flows, longer forms, or denser drawers.",
         ),
       },
@@ -5008,18 +5018,11 @@ const feedbackComponents = [
     name: "Loading",
     group: "feedback",
     summary: l(
-      "Colecao de loaders retro para estados curtos, sincronizacao, scan e feedback visual persistente.",
-      "Retro loader collection for short waits, sync states, scan patterns and persistent visual feedback.",
+      "Indicadores animados de carregamento com pixels, pontos, barras e outras formas retrô.",
+      "Animated loading indicators with pixels, dots, bars, and other retro shapes.",
     ),
     classes: [
       "r8-loading",
-      "r8-loading--dots",
-      "r8-loading--bar",
-      "r8-loading--equalizer",
-      "r8-loading--spinner",
-      "r8-loading--ticker",
-      "r8-loading--radar",
-      "r8-loading--beacon",
       "r8-loading--sm",
       "r8-loading--lg",
       "r8-loading__label",
@@ -5056,7 +5059,7 @@ const feedbackComponents = [
 
   <div class="r8-stack">
     <span class="r8-badge">Dots</span>
-    <div class="r8-loading r8-loading--dots" role="status" aria-live="polite">
+    <div class="r8-loading" role="status" aria-live="polite">
       <span class="r8-loading__dots" aria-hidden="true">
         <span class="r8-loading__dot"></span>
         <span class="r8-loading__dot"></span>
@@ -5069,7 +5072,7 @@ const feedbackComponents = [
 
   <div class="r8-stack">
     <span class="r8-badge">Bar</span>
-    <div class="r8-loading r8-loading--bar" role="status" aria-live="polite">
+    <div class="r8-loading" role="status" aria-live="polite">
       <span class="r8-loading__track" aria-hidden="true">
         <span class="r8-loading__fill"></span>
       </span>
@@ -5079,7 +5082,7 @@ const feedbackComponents = [
 
   <div class="r8-stack">
     <span class="r8-badge">Equalizer</span>
-    <div class="r8-loading r8-loading--equalizer" role="status" aria-live="polite">
+    <div class="r8-loading" role="status" aria-live="polite">
       <span class="r8-loading__bars" aria-hidden="true">
         <span class="r8-loading__bar"></span>
         <span class="r8-loading__bar"></span>
@@ -5092,7 +5095,7 @@ const feedbackComponents = [
 
   <div class="r8-stack">
     <span class="r8-badge">Spinner</span>
-    <div class="r8-loading r8-loading--spinner r8-loading--lg" role="status" aria-live="polite">
+    <div class="r8-loading r8-loading--lg" role="status" aria-live="polite">
       <span class="r8-loading__spinner" aria-hidden="true">
         <span class="r8-loading__spinner-cell"></span>
         <span class="r8-loading__spinner-cell"></span>
@@ -5109,7 +5112,7 @@ const feedbackComponents = [
 
   <div class="r8-stack">
     <span class="r8-badge">Ticker</span>
-    <div class="r8-loading r8-loading--ticker" role="status" aria-live="polite">
+    <div class="r8-loading" role="status" aria-live="polite">
       <span class="r8-loading__ticker" aria-hidden="true">
         <span class="r8-loading__ticker-cell"></span>
         <span class="r8-loading__ticker-cell"></span>
@@ -5124,7 +5127,7 @@ const feedbackComponents = [
 
   <div class="r8-stack">
     <span class="r8-badge">Radar</span>
-    <div class="r8-loading r8-loading--radar" role="status" aria-live="polite">
+    <div class="r8-loading" role="status" aria-live="polite">
       <span class="r8-loading__radar" aria-hidden="true">
         <span class="r8-loading__radar-dot"></span>
       </span>
@@ -5134,7 +5137,7 @@ const feedbackComponents = [
 
   <div class="r8-stack">
     <span class="r8-badge">Beacon</span>
-    <div class="r8-loading r8-loading--beacon" role="status" aria-live="polite">
+    <div class="r8-loading" role="status" aria-live="polite">
       <span class="r8-loading__beacon" aria-hidden="true">
         <span class="r8-loading__beacon-ring"></span>
         <span class="r8-loading__beacon-ring"></span>
@@ -5159,7 +5162,7 @@ const feedbackComponents = [
 
   <div class="r8-stack">
     <span class="r8-badge">Dots</span>
-    <div class="r8-loading r8-loading--dots" role="status" aria-live="polite">
+    <div class="r8-loading" role="status" aria-live="polite">
       <span class="r8-loading__dots" aria-hidden="true">
         <span class="r8-loading__dot"></span>
         <span class="r8-loading__dot"></span>
@@ -5172,7 +5175,7 @@ const feedbackComponents = [
 
   <div class="r8-stack">
     <span class="r8-badge">Bar</span>
-    <div class="r8-loading r8-loading--bar" role="status" aria-live="polite">
+    <div class="r8-loading" role="status" aria-live="polite">
       <span class="r8-loading__track" aria-hidden="true">
         <span class="r8-loading__fill"></span>
       </span>
@@ -5182,7 +5185,7 @@ const feedbackComponents = [
 
   <div class="r8-stack">
     <span class="r8-badge">Equalizer</span>
-    <div class="r8-loading r8-loading--equalizer" role="status" aria-live="polite">
+    <div class="r8-loading" role="status" aria-live="polite">
       <span class="r8-loading__bars" aria-hidden="true">
         <span class="r8-loading__bar"></span>
         <span class="r8-loading__bar"></span>
@@ -5195,7 +5198,7 @@ const feedbackComponents = [
 
   <div class="r8-stack">
     <span class="r8-badge">Spinner</span>
-    <div class="r8-loading r8-loading--spinner r8-loading--lg" role="status" aria-live="polite">
+    <div class="r8-loading r8-loading--lg" role="status" aria-live="polite">
       <span class="r8-loading__spinner" aria-hidden="true">
         <span class="r8-loading__spinner-cell"></span>
         <span class="r8-loading__spinner-cell"></span>
@@ -5212,7 +5215,7 @@ const feedbackComponents = [
 
   <div class="r8-stack">
     <span class="r8-badge">Ticker</span>
-    <div class="r8-loading r8-loading--ticker" role="status" aria-live="polite">
+    <div class="r8-loading" role="status" aria-live="polite">
       <span class="r8-loading__ticker" aria-hidden="true">
         <span class="r8-loading__ticker-cell"></span>
         <span class="r8-loading__ticker-cell"></span>
@@ -5227,7 +5230,7 @@ const feedbackComponents = [
 
   <div class="r8-stack">
     <span class="r8-badge">Radar</span>
-    <div class="r8-loading r8-loading--radar" role="status" aria-live="polite">
+    <div class="r8-loading" role="status" aria-live="polite">
       <span class="r8-loading__radar" aria-hidden="true">
         <span class="r8-loading__radar-dot"></span>
       </span>
@@ -5237,7 +5240,7 @@ const feedbackComponents = [
 
   <div class="r8-stack">
     <span class="r8-badge">Beacon</span>
-    <div class="r8-loading r8-loading--beacon" role="status" aria-live="polite">
+    <div class="r8-loading" role="status" aria-live="polite">
       <span class="r8-loading__beacon" aria-hidden="true">
         <span class="r8-loading__beacon-ring"></span>
         <span class="r8-loading__beacon-ring"></span>
@@ -5249,9 +5252,9 @@ const feedbackComponents = [
 </div>`,
     anatomy: ll(
       [
-        "Use `r8-loading` como shell base e escolha uma substructure visual por instancia.",
-        "Adicione `r8-loading__label` quando o loading precisar de copy visivel no layout.",
-        "Marque pixels, dots, bars, track/fill e spinner cells como `aria-hidden=\"true\"`.",
+        "Use `r8-loading` como estrutura base e escolha uma subestrutura visual por instância.",
+        "Adicione `r8-loading__label` quando o carregamento precisar de texto visível no layout.",
+        "Marque pixels, pontos, barras, trilha/preenchimento e células do indicador giratório como `aria-hidden=\"true\"`.",
       ],
       [
         "Use `r8-loading` as the base shell and choose one visual substructure per instance.",
@@ -5261,9 +5264,9 @@ const feedbackComponents = [
     ),
     accessibility: ll(
       [
-        "Use `role=\"status\"` e `aria-live=\"polite\"` quando o loading anunciar atualizacoes reais.",
-        "Prefira label visivel; se nao houver, forneca `aria-label` no host.",
-        "As animacoes respeitam `prefers-reduced-motion` e recuam para uma apresentacao estatica.",
+        "Use `role=\"status\"` e `aria-live=\"polite\"` quando o carregamento anunciar atualizações reais.",
+        "Prefira rótulo visível; se não houver, forneça `aria-label` no elemento.",
+        "As animações respeitam `prefers-reduced-motion` e recuam para uma apresentação estática.",
       ],
       [
         "Use `role=\"status\"` and `aria-live=\"polite\"` when the loading state announces real updates.",
@@ -5273,58 +5276,58 @@ const feedbackComponents = [
     ),
     api: [
       {
-        name: "r8-loading--dots",
+        name: "r8-loading__dots / r8-loading__dot",
         description: l(
-          "Variant com dots menores para sincronizacao curta e estados leves.",
+          "Variante com pontos menores para sincronização curta e estados leves.",
           "Variant with smaller dots for short sync states and lightweight waits.",
         ),
       },
       {
-        name: "r8-loading--bar",
+        name: "r8-loading__track / r8-loading__fill",
         description: l(
-          "Variant com track e fill em scan loop, boa para compilacao e fetch continuo.",
+          "Variante com trilha e preenchimento em varredura loop, boa para compilacao e fetch continuo.",
           "Variant with a track and looping scan fill, great for compile and continuous fetch states.",
         ),
       },
       {
-        name: "r8-loading--equalizer",
+        name: "r8-loading__bars / r8-loading__bar",
         description: l(
-          "Variant em bars verticais, ideal para audio, stream e monitoramento.",
+          "Variante em barras verticais, ideal para audio, stream e monitoramento.",
           "Vertical bar variant, ideal for audio, stream and monitoring states.",
         ),
       },
       {
-        name: "r8-loading--spinner",
+        name: "r8-loading__spinner / r8-loading__spinner-cell",
         description: l(
-          "Variant com oito cells em rotacao step-based para estados mais longos.",
+          "Variante com oito células em rotação step-based para estados mais longos.",
           "Eight-cell step-based rotation variant for longer waits.",
         ),
       },
       {
-        name: "r8-loading--ticker",
+        name: "r8-loading__ticker / r8-loading__ticker-cell",
         description: l(
-          "Variant com segmentos horizontais em sequencia, boa para buffering, sync pipelines e filas curtas.",
+          "Variante com segmentos horizontais em sequencia, boa para buffering, sync pipelines e filas curtas.",
           "Sequential horizontal segment variant, good for buffering, sync pipelines, and short queues.",
         ),
       },
       {
-        name: "r8-loading--radar",
+        name: "r8-loading__radar / r8-loading__radar-dot",
         description: l(
-          "Variant com sweep retro e target marker para scan, discovery e procura de sinais.",
+          "Variante com sweep retrô e alvo marker para varredura, discovery e procura de sinais.",
           "Retro sweep variant with a target marker for scan, discovery, and signal search states.",
         ),
       },
       {
-        name: "r8-loading--beacon",
+        name: "r8-loading__beacon / r8-loading__beacon-ring / r8-loading__beacon-core",
         description: l(
-          "Variant com pulsos concentricos para waiting rooms, uplinks e estados de espera persistentes.",
+          "Variante com pulsos concentricos para waiting rooms, uplinks e estados de espera persistentes.",
           "Concentric pulse variant for waiting rooms, uplinks, and persistent wait states.",
         ),
       },
       {
         name: "r8-loading--sm / r8-loading--lg",
         description: l(
-          "Size presets para encaixar o loading em toolbars, cards ou superficies maiores.",
+          "Size presets para encaixar o carregamento em toolbars, cards ou superfícies maiores.",
           "Size presets for fitting loaders into toolbars, cards or larger surfaces.",
         ),
       },
@@ -5335,8 +5338,8 @@ const feedbackComponents = [
     name: "Poptip",
     group: "feedback",
     summary: l(
-      "Overlay flutuante unificado para dicas breves ou paineis curtos, com trigger por clique, hover ou foco.",
-      "Unified floating overlay for short hints or compact panels, with click, hover, or focus triggers.",
+      "Painel flutuante ou dica curta com abertura por clique, foco, passagem do mouse ou menu de contexto.",
+      "Floating panel or short hint opened by click, focus, hover, or context menu.",
     ),
     classes: ["r8-poptip", "r8-poptip__title", "r8-poptip__body", "r8-poptip__actions"],
     preview: `<div class="docs-demo__stack docs-demo__stack--poptip" data-r8-overlay-scope>
@@ -5362,10 +5365,10 @@ const feedbackComponents = [
 </div>`,
     anatomy: ll(
       [
-        "`r8-poptip` e o shell flutuante reutilizavel para modos panel e hint sem duplicar a API.",
-        "`r8-poptip__title` apresenta um heading curto quando o conteudo precisa de contexto adicional.",
-        "`r8-poptip__body` organiza texto, badges, metadata e blocos mais ricos com espaco previsivel.",
-        "`r8-poptip__actions` fecha o painel com acoes compactas, incluindo botao com `data-r8-close` quando fizer sentido.",
+        "`r8-poptip` é a estrutura flutuante reutilizavel para modos painel e dica sem duplicar a API.",
+        "`r8-poptip__title` apresenta um heading curto quando o conteúdo precisa de contexto adicional.",
+        "`r8-poptip__body` organiza texto, badges, metadata e blocos mais ricos com espaco previsível.",
+        "`r8-poptip__actions` fecha o painel com ações compactas, incluindo botão com `data-r8-close` quando fizer sentido.",
       ],
       [
         "`r8-poptip` is the reusable floating shell for both panel and hint modes without duplicating the API.",
@@ -5376,10 +5379,10 @@ const feedbackComponents = [
     ),
     accessibility: ll(
       [
-        "Use trigger focavel para que modos `hover` e `focus` continuem acessiveis no teclado.",
+        "Use acionador focável para que modos `hover` e `focus` continuem acessíveis no teclado.",
         "Para hints curtos, prefira `data-r8-variant=\"hint\"` e mantenha o texto direto o bastante para leitura rapida.",
-        "Em paineis clicaveis, inclua acao clara de fechar quando o conteudo trouxer varias escolhas ou instrucoes.",
-        "Evite depender apenas da posicao do overlay; o label do trigger deve continuar explicando a acao principal.",
+        "Em painéis clicaveis, inclua ação clara de fechar quando o conteúdo trouxer varias escolhas ou instruções.",
+        "Evite depender apenas da posição do overlay; o rótulo do acionador deve continuar explicando a ação principal.",
       ],
       [
         "Use a focusable trigger so `hover` and `focus` modes remain keyboard-accessible.",
@@ -5392,28 +5395,28 @@ const feedbackComponents = [
       {
         name: "data-r8-trigger",
         description: l(
-          "Escolhe entre interacao por clique, hover ou foco sem trocar a estrutura base do componente.",
+          "Escolhe entre interação por clique, hover ou foco sem trocar a estrutura base do componente.",
           "Chooses between click, hover, or focus interaction without changing the component's base structure.",
         ),
       },
       {
         name: "data-r8-variant / r8-poptip__title",
         description: l(
-          "Alternam entre um painel mais rico (`panel`) e um hint compacto (`hint`) com titulo opcional.",
+          "Alternam entre um painel mais rico (`panel`) e uma dica compacta (`hint`) com título opcional.",
           "Switch between a richer panel (`panel`) and a compact hint (`hint`) with an optional title.",
         ),
       },
       {
         name: "data-r8-placement / --r8-poptip-width",
         description: l(
-          "Controlam a ancoragem e a largura maxima do overlay em relacao ao trigger.",
+          "Controlam a ancoragem e a largura máxima do overlay em relação ao acionador.",
           "Control anchoring and the overlay's maximum width relative to the trigger.",
         ),
       },
       {
         name: "data-r8-close / r8-poptip__actions",
         description: l(
-          "Permitem fechar o painel por helper declarativo e acomodar acoes curtas dentro do proprio overlay.",
+          "Permitem fechar o painel por auxiliar declarativo e acomodar ações curtas dentro do próprio overlay.",
           "Let you close the panel through the declarative helper and place short actions inside the overlay itself.",
         ),
       },
@@ -5427,8 +5430,8 @@ const otherComponents = [
     name: "Divider",
     group: "others",
     summary: l(
-      "Separador horizontal ou vertical para grupos de conteudo e toolbars.",
-      "Horizontal or vertical separator for content groups and toolbars.",
+      "Separador horizontal ou vertical para organizar grupos de conteúdo.",
+      "Horizontal or vertical separator for organizing content groups.",
     ),
     classes: ["r8-divider", "r8-divider__label", "r8-divider--vertical"],
     preview: `<div class="docs-demo__stack">
@@ -5449,8 +5452,8 @@ const otherComponents = [
     name: "Watermark",
     group: "others",
     summary: l(
-      "Marca d'agua retro para previews, assets internos e areas de protecao visual.",
-      "Retro watermark layer for previews, internal assets and protected visual areas.",
+      "Marca-d'água decorativa para identificar conteúdo; não impede cópia nem captura de tela.",
+      "Decorative watermark for identifying content; it does not prevent copying or screenshots.",
     ),
     classes: ["r8-watermark"],
     preview: `<div class="r8-watermark" data-watermark="retro8-ui"></div>`,
@@ -5464,8 +5467,8 @@ const retroExtraComponents = [
     group: "retro-extras",
     core: false,
     summary: l(
-      "Superficie nativa da Retro8 UI para cards e blocos editoriais, paralela ao Card do catalogo core.",
-      "Native Retro8 UI surface for cards and editorial blocks, complementing the core Card component.",
+      "Painel de conteúdo da Retro8 UI com cabeçalho, corpo e rodapé.",
+      "Retro8 UI content panel with a header, body, and footer.",
     ),
     classes: ["r8-panel", "r8-panel--muted", "r8-panel__header", "r8-panel__title", "r8-panel__meta", "r8-panel__body", "r8-panel__footer"],
     preview: `<section class="r8-panel">
@@ -5491,8 +5494,8 @@ const retroExtraComponents = [
     group: "retro-extras",
     core: false,
     summary: l(
-      "Janela estilo desktop 8-bit com titlebar e statusbar para HUDs, consoles e overlays persistentes.",
-      "8-bit desktop-like window with a titlebar and statusbar for HUDs, consoles and persistent overlays.",
+      "Janela em estilo desktop de 8 bits com barra de título e barra de estado.",
+      "8-bit desktop-style window with a title bar and status bar.",
     ),
     classes: ["r8-window", "r8-window__titlebar", "r8-window__title", "r8-window__controls", "r8-window__control", "r8-window__body", "r8-window__statusbar", "r8-window--danger", "r8-window--success"],
     preview: `<section class="r8-window">
@@ -5523,8 +5526,8 @@ const retroExtraComponents = [
     group: "retro-extras",
     core: false,
     summary: l(
-      "Barra superior responsiva com brand, nav, texto, acoes e colapso declarativo para cabecalhos de app, docs e landing pages.",
-      "Responsive top bar with brand, nav, text, actions, and declarative collapse for app headers, docs, and landing pages.",
+      "Barra de navegação responsiva com marca, links, ações e menu recolhível.",
+      "Responsive navigation bar with branding, links, actions, and a collapsible menu.",
     ),
     classes: [
       "r8-navbar",
@@ -5604,11 +5607,11 @@ const retroExtraComponents = [
 </nav>`,
     anatomy: ll(
       [
-        "`r8-navbar` e a shell principal e aceita brand, nav, texto, form e acoes sem exigir wrappers extras.",
-        "`r8-navbar__container` agrupa o miolo quando voce quiser um inner wrapper previsivel, mas o componente continua funcionando sem ele.",
+        "`r8-navbar` é a estrutura principal e aceita marca, nav, texto, form e ações sem exigir contêineres extras.",
+        "`r8-navbar__container` agrupa o miolo quando você quiser um interno contêiner previsível, mas o componente continua funcionando sem ele.",
         "`r8-navbar__toggle` + `r8-navbar__collapse` cuidam do colapso responsivo em conjunto com `data-r8-expand`.",
         "`r8-navbar__menu` organiza os links principais; use `r8-navbar__menu--scroll` quando a coluna colapsada puder crescer demais.",
-        "`r8-navbar__text`, `r8-navbar__form` e `r8-navbar__actions` ocupam slots opcionais, como no padrao do Bootstrap.",
+        "`r8-navbar__text`, `r8-navbar__form` e `r8-navbar__actions` ocupam campos opcionais, como no padrão do Bootstrap.",
       ],
       [
         "`r8-navbar` is the main shell and accepts brand, nav, text, form, and actions without requiring extra wrappers.",
@@ -5620,11 +5623,11 @@ const retroExtraComponents = [
     ),
     accessibility: ll(
       [
-        "Prefira `<nav>` para expor o componente como landmark; se usar outro host, adicione `role=\"navigation\"`.",
-        "O toggle precisa de nome acessivel claro, como `Toggle navigation`, e deve controlar uma area identificavel por `aria-controls`.",
-        "Marque o link atual com `aria-current=\"page\"` para manter o contexto da navegacao.",
-        "Se houver busca no header, use `role=\"search\"` no form e preserve labels explicitos no campo.",
-        "Nao esconda informacao importante apenas dentro do menu colapsado; brand e acao principal devem continuar claras mesmo fechado.",
+        "Prefira `<nav>` para expor o componente como landmark; se usar outro elemento, adicione `role=\"navigation\"`.",
+        "O alternância precisa de nome acessível claro, como `Toggle navigation`, e deve controlar uma área identificavel por `aria-controls`.",
+        "Marque o link atual com `aria-current=\"page\"` para manter o contexto da navegação.",
+        "Se houver busca no cabeçalho, use `role=\"search\"` no form e preserve rótulos explicitos no campo.",
+        "Não esconda informação importante apenas dentro do menu colapsado; marca e ação principal devem continuar claras mesmo fechado.",
       ],
       [
         "Prefer `<nav>` so the component is exposed as a landmark; if you use another host, add `role=\"navigation\"`.",
@@ -5638,35 +5641,35 @@ const retroExtraComponents = [
       {
         name: "r8-navbar / data-r8-expand",
         description: l(
-          "Base do header e ponto de entrada para o comportamento responsivo, com breakpoints no estilo navbar-expand do Bootstrap.",
+          "Base do cabeçalho e ponto de entrada para o comportamento responsivo, com breakpoints no estilo navbar-expand do Bootstrap.",
           "Header base and entry point for the responsive behavior, with Bootstrap-like navbar-expand breakpoints.",
         ),
       },
       {
         name: "r8-navbar__toggle / r8-navbar__collapse",
         description: l(
-          "Par declarativo para abrir e fechar a navegacao colapsada sem JS de aplicacao.",
+          "Par declarativo para abrir e fechar a navegação colapsada sem JS de aplicação.",
           "Declarative pair used to open and close the collapsed navigation without app-level JS.",
         ),
       },
       {
         name: "r8-navbar__brand / r8-navbar__menu / r8-navbar__item",
         description: l(
-          "Blocos para brand textual ou com imagem e para a lista principal de links.",
+          "Blocos para marca textual ou com imagem e para a lista principal de links.",
           "Building blocks for text or image brands and for the main list of links.",
         ),
       },
       {
         name: "r8-navbar__text / r8-navbar__form / r8-navbar__actions",
         description: l(
-          "Slots opcionais para copy curta, busca e CTAs auxiliares dentro da mesma barra.",
+          "Slots opcionais para texto curta, busca e CTAs auxiliares dentro da mesma barra.",
           "Optional slots for short copy, search, and secondary CTAs inside the same bar.",
         ),
       },
       {
         name: "r8-navbar--dark / data-r8-variant=\"dark\"",
         description: l(
-          "Ativa o tema escuro do navbar sem duplicar a estrutura do markup.",
+          "Ativa o tema escuro do navbar sem duplicar a estrutura da marcação.",
           "Enables the dark navbar theme without duplicating the markup structure.",
         ),
       },
@@ -5678,8 +5681,8 @@ const retroExtraComponents = [
     group: "retro-extras",
     core: false,
     summary: l(
-      "Exemplo de pagina completa montada com shell retro, inventario tabular e bloco lateral com opcoes de editar perfil.",
-      "Complete page example built with a retro shell, tabular inventory, and a side block with profile editing options.",
+      "Exemplo de composição com inventário em tabela e painel de perfil; as ações exigem implementação da aplicação.",
+      "Page composition example with a tabular inventory and profile panel; actions require application logic.",
     ),
     classes: [
       "r8-window",
@@ -5913,11 +5916,11 @@ const retroExtraComponents = [
 </section>`,
     anatomy: ll(
       [
-        "Use `r8-window` como moldura principal da pagina e reserve `r8-window__statusbar` para telemetria curta ou contexto operacional.",
-        "`r8-navbar` funciona como topo da pagina e organiza navegacao, acao primaria e status da sessao no mesmo bloco.",
-        "`r8-container r8-container--aside-end` separa area principal e rail lateral sem precisar de grid customizado no app.",
+        "Use `r8-window` como moldura principal da página e reserve `r8-window__statusbar` para telemetria curta ou contexto operacional.",
+        "`r8-navbar` funciona como topo da página e organiza navegação, ação primária e status da sessao no mesmo bloco.",
+        "`r8-container r8-container--aside-end` separa área principal e rail lateral sem precisar de grid customizado no app.",
         "No miolo, `r8-panel` + `r8-table-wrap` + `r8-table` sustentam a listagem de inventario com scroll horizontal seguro.",
-        "No rail, `r8-avatar`, badges e botoes `Edit profile` montam um bloco claro para manutencao de perfil.",
+        "No rail, `r8-avatar`, badges e botões `Edit profile` montam um bloco claro para manutencao de perfil.",
       ],
       [
         "Use `r8-window` as the main page frame and reserve `r8-window__statusbar` for short telemetry or operational context.",
@@ -5929,11 +5932,11 @@ const retroExtraComponents = [
     ),
     accessibility: ll(
       [
-        "Mantenha landmarks reais (`nav`, `main`, `aside`) para leitores de tela entenderem a estrutura da pagina.",
-        "No avatar de perfil, preserve `alt` util e fallback curto (`data-r8-avatar-fallback`) para falha de imagem.",
+        "Mantenha landmarks reais (`nav`, `main`, `aside`) para leitores de tela entenderem a estrutura da página.",
+        "No avatar de perfil, preserve `alt` útil e fallback curto (`data-r8-avatar-fallback`) para falha de imagem.",
         "Na tabela, use headers claros e `r8-table__cell--numeric` para reforcar leitura de quantidade.",
-        "Acoes de perfil devem ser botoes com labels diretos (`Edit profile`, `Edit avatar`) e sem depender apenas de icone.",
-        "Se o navbar colapsar, valide foco no toggle e em links para manter navegacao por teclado previsivel.",
+        "Ações de perfil devem ser botões com rótulos diretos (`Edit profile`, `Edit avatar`) e sem depender apenas de ícone.",
+        "Se o navbar colapsar, valide foco na alternância e em links para manter navegação por teclado previsível.",
       ],
       [
         "Keep real landmarks (`nav`, `main`, `aside`) so screen readers can understand the page structure.",
@@ -5947,14 +5950,14 @@ const retroExtraComponents = [
       {
         name: "r8-window + r8-window__body + r8-window__statusbar",
         description: l(
-          "Shell externo para enquadrar a pagina e exibir estado operacional persistente na base.",
+          "Estrutura externo para enquadrar a página e exibir estado operacional persistente na base.",
           "Outer shell used to frame the page and show persistent operational state at the bottom.",
         ),
       },
       {
         name: "r8-navbar / r8-navbar__menu / r8-navbar__actions",
         description: l(
-          "Topo navegavel da pagina com links primarios e acao rapida de inventario.",
+          "Topo navegavel da página com links primarios e ação rapida de inventario.",
           "Navigable top bar with primary links and a quick inventory action.",
         ),
       },
@@ -5975,7 +5978,7 @@ const retroExtraComponents = [
       {
         name: "r8-avatar / data-r8-avatar-fallback / r8-btn--sm",
         description: l(
-          "Compoe a area de perfil com identidade visual e acoes de manutencao como editar perfil, avatar e senha.",
+          "Compoe a área de perfil com identidade visual e ações de manutencao como editar perfil, avatar e senha.",
           "Composes the profile area with visual identity and maintenance actions such as editing profile, avatar, and password.",
         ),
       },
@@ -6003,7 +6006,7 @@ export const defaultAnatomyByGroup: Record<ComponentGroupId, LocalizedList> = {
   basic: ll(
     [
       "Use a classe base como o bloco principal e combine somente os modificadores que fazem sentido para o contexto.",
-      "Esses componentes servem como fundacao visual para outras superficies, layouts e documentos da biblioteca.",
+      "Esses componentes servem como fundação visual para outras superfícies, layouts e documentos da biblioteca.",
     ],
     [
       "Use the base class as the main block and only combine modifiers that make sense for the context.",
@@ -6012,8 +6015,8 @@ export const defaultAnatomyByGroup: Record<ComponentGroupId, LocalizedList> = {
   ),
   configuration: ll(
     [
-      "Aplique o provider em um escopo local quando quiser alterar skin ou contraste sem afetar a pagina inteira.",
-      "Use esse padrao para demonstracao, theming localizado e containers de preview.",
+      "Aplique o provider em um escopo local quando quiser alterar tema ou contraste sem afetar a página inteira.",
+      "Use esse padrão para demonstracao, theming localizado e containers de prévia.",
     ],
     [
       "Apply the provider to a local scope when you want to change skin or contrast without affecting the whole page.",
@@ -6022,8 +6025,8 @@ export const defaultAnatomyByGroup: Record<ComponentGroupId, LocalizedList> = {
   ),
   form: ll(
     [
-      "Prefira HTML nativo para o comportamento e use as classes r8-* como shell visual previsivel.",
-      "Agrupe labels, ajuda e feedback proximo do campo para manter leitura e acessibilidade.",
+      "Prefira HTML nativo para o comportamento e use as classes r8-* como estrutura visual previsível.",
+      "Agrupe rótulos, ajuda e retorno visual próximo do campo para manter leitura e acessibilidade.",
     ],
     [
       "Prefer native HTML for behavior and use r8-* classes as the predictable visual shell.",
@@ -6032,8 +6035,8 @@ export const defaultAnatomyByGroup: Record<ComponentGroupId, LocalizedList> = {
   ),
   data: ll(
     [
-      "Esses componentes priorizam leitura, agrupamento e ritmo visual em dashboards, docs e paineis.",
-      "Combine badges, texto e superficies para adicionar contexto sem poluir o HTML consumidor.",
+      "Esses componentes priorizam leitura, agrupamento e ritmo visual em dashboards, docs e painéis.",
+      "Combine badges, texto e superfícies para adicionar contexto sem poluir o HTML consumidor.",
     ],
     [
       "These components prioritize readability, grouping and visual rhythm in dashboards, docs and panels.",
@@ -6042,8 +6045,8 @@ export const defaultAnatomyByGroup: Record<ComponentGroupId, LocalizedList> = {
   ),
   navigation: ll(
     [
-      "Use estados ativos, ordem logica e landmarks semanticos para deixar o fluxo de navegacao claro.",
-      "As classes lidam com a casca visual; a aplicacao pode conectar rotas, scroll ou expansao conforme necessario.",
+      "Use estados ativos, ordem lógica e landmarks semânticos para deixar o fluxo de navegação claro.",
+      "As classes lidam com a casca visual; a aplicação pode conectar rotas, scroll ou expansão conforme necessário.",
     ],
     [
       "Use active states, logical order and semantic landmarks to keep navigation flow clear.",
@@ -6052,8 +6055,8 @@ export const defaultAnatomyByGroup: Record<ComponentGroupId, LocalizedList> = {
   ),
   feedback: ll(
     [
-      "A retro8-ui entrega a superficie visual, enquanto exibicao, fechamento e stack podem ficar no app hospedeiro.",
-      "Prefira acoplamento leve com dialog nativo, portais ou runtime proprio apenas quando o caso exigir.",
+      "A retro8-ui entrega a superfície visual, enquanto exibição, fechamento e stack podem ficar na aplicação hospedeira.",
+      "Prefira acoplamento leve com dialog nativo, portais ou runtime próprio apenas quando o caso exigir.",
     ],
     [
       "retro8-ui provides the visual surface, while showing, closing and stacking can stay in the host app.",
@@ -6062,8 +6065,8 @@ export const defaultAnatomyByGroup: Record<ComponentGroupId, LocalizedList> = {
   ),
   others: ll(
     [
-      "Sao pecas de apoio que ajudam a costurar a interface sem exigir JavaScript adicional.",
-      "Funcionam melhor quando reforcam hierarquia e legibilidade, nao apenas decoracao.",
+      "Sao peças de apoio que ajudam a costurar a interface sem exigir JavaScript adicional.",
+      "Funcionam melhor quando reforcam hierarquia e legibilidade, não apenas decoração.",
     ],
     [
       "These are support pieces that help stitch the interface together without extra JavaScript.",
@@ -6072,8 +6075,8 @@ export const defaultAnatomyByGroup: Record<ComponentGroupId, LocalizedList> = {
   ),
   "retro-extras": ll(
     [
-      "Esses componentes nasceram da linguagem propria da retro8-ui e complementam o catalogo core.",
-      "Use-os quando quiser uma camada mais forte de fantasia desktop, HUD ou shell proprietario.",
+      "Esses componentes nasceram da linguagem própria da retro8-ui e complementam o catálogo principais.",
+      "Use-os quando quiser uma camada mais forte de fantasia desktop, HUD ou estrutura proprietario.",
     ],
     [
       "These components come from retro8-ui own visual language and complement the core catalog.",
@@ -6085,8 +6088,8 @@ export const defaultAnatomyByGroup: Record<ComponentGroupId, LocalizedList> = {
 export const defaultAccessibilityByGroup: Record<ComponentGroupId, LocalizedList> = {
   basic: ll(
     [
-      "Prefira o elemento HTML semanticamente correto: button para acoes, a para links e headings reais para titulos.",
-      "Mantenha foco visivel e contraste suficiente, especialmente nas variacoes de cor mais fortes.",
+      "Prefira o elemento HTML semanticamente correto: button para ações, a para links e títulos reais para títulos.",
+      "Mantenha foco visível e contraste suficiente, especialmente nas variações de cor mais fortes.",
     ],
     [
       "Prefer the semantically correct HTML element: button for actions, a for links and real headings for titles.",
@@ -6095,8 +6098,8 @@ export const defaultAccessibilityByGroup: Record<ComponentGroupId, LocalizedList
   ),
   configuration: ll(
     [
-      "Trocas de tema ou skin nao devem reduzir contraste nem esconder estados de foco.",
-      "Quando mudar o contexto visual, valide componentes de formulario e texto dentro do novo escopo.",
+      "Mudanças de tema não devem reduzir o contraste nem esconder os estados de foco.",
+      "Quando mudar o contexto visual, valide componentes de formulário e texto dentro do novo escopo.",
     ],
     [
       "Theme or skin changes should not reduce contrast or hide focus states.",
@@ -6105,8 +6108,8 @@ export const defaultAccessibilityByGroup: Record<ComponentGroupId, LocalizedList
   ),
   form: ll(
     [
-      "Associe labels e mensagens de erro aos campos com os atributos nativos apropriados sempre que houver interacao real.",
-      "Nao dependa apenas de cor para estados de validacao; exponha texto, estado ou valor junto do controle.",
+      "Associe rótulos e mensagens de erro aos campos com os atributos nativos apropriados sempre que houver interação real.",
+      "Não dependa apenas de cor para estados de validação; exponha texto, estado ou valor junto do controle.",
     ],
     [
       "Associate labels and error messages with fields using the proper native attributes whenever there is real interaction.",
@@ -6115,8 +6118,8 @@ export const defaultAccessibilityByGroup: Record<ComponentGroupId, LocalizedList
   ),
   data: ll(
     [
-      "Ofereca equivalentes textuais para estados visuais, icones ou indicadores quando eles carregarem informacao importante.",
-      "Em tabelas, listas e metricas, mantenha ordem de leitura coerente e headings claros.",
+      "Ofereca equivalentes textuais para estados visuais, ícones ou indicadores quando eles carregarem informação importante.",
+      "Em tabelas, listas e métricas, mantenha ordem de leitura coerente e títulos claros.",
     ],
     [
       "Provide textual equivalents for visual states, icons or indicators when they carry important meaning.",
@@ -6125,7 +6128,7 @@ export const defaultAccessibilityByGroup: Record<ComponentGroupId, LocalizedList
   ),
   navigation: ll(
     [
-      "Use aria-current, nav e labels descritivos quando houver mais de uma area de navegacao na tela.",
+      "Use aria-current, nav e rótulos descritivos quando houver mais de uma área de navegação na tela.",
       "Se o componente for interativo, sincronize o estado visual com foco, tecla e rota atual.",
     ],
     [
@@ -6145,8 +6148,8 @@ export const defaultAccessibilityByGroup: Record<ComponentGroupId, LocalizedList
   ),
   others: ll(
     [
-      "Divisores devem ser usados com moderacao e watermarks nao devem comprometer legibilidade do conteudo.",
-      "Quando houver significado semantico, mantenha roles ou textos auxiliares adequados.",
+      "Divisores devem ser usados com moderação e watermarks não devem comprometer legibilidade do conteúdo.",
+      "Quando houver significado semântico, mantenha roles ou textos auxiliares adequados.",
     ],
     [
       "Dividers should be used sparingly and watermarks should not compromise content readability.",
@@ -6155,8 +6158,8 @@ export const defaultAccessibilityByGroup: Record<ComponentGroupId, LocalizedList
   ),
   "retro-extras": ll(
     [
-      "Mesmo em shells mais decorativos, preserve landmarks, headings reais e ordem de leitura consistente.",
-      "Evite usar fantasia visual para esconder controles essenciais ou informacao critica.",
+      "Mesmo em estruturas mais decorativos, preserve landmarks, títulos reais e ordem de leitura consistente.",
+      "Evite usar fantasia visual para esconder controles essenciais ou informação crítica.",
     ],
     [
       "Even in more decorative shells, preserve landmarks, real headings and a consistent reading order.",

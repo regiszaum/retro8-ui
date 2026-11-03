@@ -15,7 +15,16 @@ const baseURL = process.env.R8_AUDIT_URL || "http://127.0.0.1:3100";
 (async () => {
   const browser = await chromium.launch({ headless: true });
   const out = [];
-  const queue = [...catalog];
+  const queue = [
+    ...catalog,
+    ...["en", "pt-br"].flatMap((locale) =>
+      ["tokens", "components"].map((slug) => ({
+        id: `${locale}-${slug}`,
+        route: `/${locale}/${slug}`,
+        guide: true,
+      })),
+    ),
+  ];
   await Promise.all(
     [0, 1].map(async (worker) => {
       const context = await browser.newContext({
@@ -45,10 +54,24 @@ const baseURL = process.env.R8_AUDIT_URL || "http://127.0.0.1:3100";
         const result = { id: component.id, layouts: [] };
         try {
           const response = await page.goto(
-            baseURL + "/en/components/" + component.id,
+            baseURL + (component.route || "/en/components/" + component.id),
             { waitUntil: "networkidle", timeout: 45000 },
           );
           result.status = response.status();
+          if (component.guide && component.route.endsWith("/components")) {
+            const counts = await page
+              .locator(".docs-catalog-counts .r8-badge")
+              .allTextContents();
+            if (
+              counts.length !== 3 ||
+              counts.some((text) => !/^\d+\s+\S/.test(text.trim()))
+            ) {
+              throw new Error(
+                "Catalog statistics must include labels, not just numbers",
+              );
+            }
+            result.catalogSummary = counts;
+          }
           await page.waitForFunction(
             () =>
               !!window.Retro8UI &&
@@ -121,7 +144,9 @@ const baseURL = process.env.R8_AUDIT_URL || "http://127.0.0.1:3100";
               await toggle.click();
             await page.waitForTimeout(60);
             const a = await new AxeBuilder({ page })
-              .include(".docs-preview__surface")
+              .include(
+                component.guide ? ".docs-main" : ".docs-preview__surface",
+              )
               .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
               .analyze();
             result.a11y.push(
@@ -146,7 +171,10 @@ const baseURL = process.env.R8_AUDIT_URL || "http://127.0.0.1:3100";
           result.errors = [...new Set(errors)];
           result.consoleErrors = [...new Set(consoleErrors)].slice(0, 10);
           const pt = await context.request.get(
-            baseURL + "/pt-br/components/" + component.id,
+            baseURL +
+              (component.route
+                ? component.route.replace(/^\/en\//, "/pt-br/")
+                : "/pt-br/components/" + component.id),
           );
           result.ptStatus = pt.status();
           if (

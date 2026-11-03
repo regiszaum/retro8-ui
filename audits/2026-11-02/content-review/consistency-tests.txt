@@ -1,0 +1,54 @@
+
+> retro8-ui@0.4.0 test:content
+> node --test tests/content.cjs
+
+TAP version 13
+# Subtest: theme reference includes every light token and the real dark overrides
+ok 1 - theme reference includes every light token and the real dark overrides
+  ---
+  duration_ms: 1.463807
+  ...
+# Subtest: every CSS token reference resolves to a declaration or a fallback
+ok 2 - every CSS token reference resolves to a declaration or a fallback
+  ---
+  duration_ms: 0.144732
+  ...
+# Subtest: documented component variables are individual, real CSS properties with accurate defaults
+ok 3 - documented component variables are individual, real CSS properties with accurate defaults
+  ---
+  duration_ms: 1.719017
+  ...
+# Subtest: component-specific API descriptions override generic fallback rows
+ok 4 - component-specific API descriptions override generic fallback rows
+  ---
+  duration_ms: 0.116901
+  ...
+# Subtest: documented selectors and native defaults match their actual API
+ok 5 - documented selectors and native defaults match their actual API
+  ---
+  duration_ms: 0.190571
+  ...
+# Subtest: both languages have complete catalog copy and counts use the catalog
+ok 6 - both languages have complete catalog copy and counts use the catalog
+  ---
+  duration_ms: 1.046464
+  ...
+# Subtest: examples use implemented loader elements and make theme ownership explicit
+ok 7 - examples use implemented loader elements and make theme ownership explicit
+  ---
+  duration_ms: 0.170574
+  ...
+# Subtest: catalog API class names match CSS or the runtime schema
+ok 8 - catalog API class names match CSS or the runtime schema
+  ---
+  duration_ms: 11.92145
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 139.042027

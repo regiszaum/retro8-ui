@@ -1,0 +1,16 @@
+[
+  {
+    "locale": "en",
+    "keyboardScroll": true,
+    "tokenCount": 73,
+    "darkOverrides": 39,
+    "counts": "51 CORE COMPONENTS\n55 COMPONENT PAGES\n8 GROUPS"
+  },
+  {
+    "locale": "pt-br",
+    "keyboardScroll": true,
+    "tokenCount": 73,
+    "darkOverrides": 39,
+    "counts": "51 COMPONENTES PRINCIPAIS\n55 PÁGINAS DE COMPONENTES\n8 GRUPOS"
+  }
+]

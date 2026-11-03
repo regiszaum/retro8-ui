@@ -180,6 +180,7 @@
     --r8-font-size-xs: 0.6875rem;
     --r8-font-size-sm: 0.8125rem;
     --r8-font-size-base: 0.9375rem;
+    --r8-letter-spacing-wide: 0.08em;
     --r8-font-size-lg: 1.125rem;
 
     --r8-focus-width: 3px;
@@ -7127,6 +7128,11 @@
   .r8-grid {
     display: grid;
     gap: var(--r8-space-4);
+  }
+
+  .r8-focus-ring:focus-visible {
+    outline: var(--r8-focus-width) solid var(--r8-color-focus);
+    outline-offset: var(--r8-focus-offset);
   }
 
   .r8-sr-only {

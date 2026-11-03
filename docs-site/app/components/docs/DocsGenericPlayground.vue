@@ -368,7 +368,7 @@ function buildPaginationItems(total: number, active: number, pagerCount: number)
 }
 
 function buildLoadingVisual(variant: string, sizeClass: string, label: string) {
-  const rootClass = classList("r8-loading", variant !== "pixels" && `r8-loading--${variant}`, sizeClass);
+  const rootClass = classList("r8-loading", sizeClass);
 
   if (variant === "dots") {
     return `<div class="${rootClass}" role="status" aria-live="polite">
@@ -918,7 +918,7 @@ function buildConfig(id: string): PlaygroundConfig {
       const hintLabel =
         layout === "avatar"
           ? localize("PNG ou JPG quadrado até 2 MB.", "Square PNG or JPG up to 2 MB.")
-          : localize("PNG, JPG ou ZIP até 8 MB. O app host valida e envia os arquivos.", "PNG, JPG, or ZIP up to 8 MB. The host app validates and sends files.");
+          : localize("PNG, JPG ou ZIP até 8 MB. A aplicação valida e envia os arquivos.", "PNG, JPG, or ZIP up to 8 MB. The host app validates and sends files.");
       const classes = classList("r8-upload", layout === "picture" && "r8-upload--picture", layout === "avatar" && "r8-upload--avatar");
 
       return {
@@ -985,7 +985,7 @@ function buildConfig(id: string): PlaygroundConfig {
   </div>
   <div class="r8-upload__dropzone" role="button" tabindex="0"${state.disabled ? ' aria-disabled="true"' : ""}>
     <strong>${escapeHtml(dropLabel)}</strong>
-    <span class="r8-text r8-text--xs r8-text--muted">${escapeHtml(localize("Ou cole, navegue e reorganize a fila no host app.", "Or paste, browse, and reorder the queue in the host app."))}</span>
+    <span class="r8-text r8-text--xs r8-text--muted">${escapeHtml(localize("Arraste arquivos ou use o seletor de arquivos.", "Drop files here or use the file chooser."))}</span>
   </div>
   ${files > 0 ? `<div class="r8-upload__list">
     ${buildUploadFiles(files, status)}
