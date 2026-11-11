@@ -7,7 +7,11 @@ export function extractThemeTokens(source: string) {
       }),
     );
 
-  const lightBlock = source.match(/:root\s*\{([\s\S]*?)\n\s*\}/)?.[1] ?? "";
+  // Palette and layout defaults have separate root blocks so local themes
+  // change colors without resetting inherited spacing or typography.
+  const defaults = source.split(/\n\s*@media\b/)[0];
+  const lightBlock = [...defaults.matchAll(/:root\s*\{([\s\S]*?)\n\s*\}/g)]
+    .map((match) => match[1]).join("\n");
   const darkBlock =
     source.match(
       /:where\(\[data-theme="dark"\][^\n]*\)\s*\{([\s\S]*?)\n\s*\}/,

@@ -56,15 +56,15 @@ for (const source of sources) {
 
 test("theme reference includes every light token and the real dark overrides", () => {
   const tokens = extractThemeTokens(base);
-  const rootRule = postcss
+  const rootDeclarations = postcss
     .parse(base)
     .nodes.find((node) => node.type === "atrule")
-    .nodes.find((node) => node.selector === ":root");
+    .nodes.filter((node) => node.selector?.endsWith(":root"))
+    .flatMap((node) => node.nodes)
+    .filter((node) => node.type === "decl" && node.prop.startsWith("--r8-"));
   assert.equal(
     tokens.length,
-    rootRule.nodes.filter(
-      (node) => node.type === "decl" && node.prop.startsWith("--r8-"),
-    ).length,
+    rootDeclarations.length,
   );
   assert.equal(new Set(tokens.map((token) => token.token)).size, tokens.length);
   assert.deepEqual(

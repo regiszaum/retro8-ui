@@ -105,6 +105,46 @@ function luminance(color) {
     ).join("") + '<button class="r8-btn r8-btn--tertiary">Action</button></section>',
   );
   await test(
+    "documented custom palettes update semantic components and nested themes",
+    "config-provider",
+    async (p) => {
+      await p.locator("#fixture").evaluate((el) => {
+        el.style.setProperty("--r8-space-4", "2rem");
+        el.style.setProperty("--r8-font-size-sm", "17px");
+      });
+      const read = (selector, property = "backgroundColor") => p.locator(selector).evaluate(
+        (el, key) => getComputedStyle(el)[key], property,
+      );
+      for (const locale of ["en", "pt-br"]) {
+        const guide = fs.readFileSync(path.join(root, `docs-site/content/${locale}/tokens.md`), "utf8");
+        const css = [...guide.matchAll(/```css\n([\s\S]*?)```/g)].map((match) => match[1]).join("\n");
+        const style = await p.addStyleTag({ content: css });
+        for (const [theme, colors] of [["light", ["rgb(124, 58, 237)", "rgb(15, 118, 110)", "rgb(190, 18, 60)"]], ["dark", ["rgb(196, 181, 253)", "rgb(94, 234, 212)", "rgb(253, 164, 175)"]]]) {
+          await p.locator("html").evaluate((el, value) => el.dataset.theme = value, theme);
+          for (const [index, role] of ["primary", "success", "danger"].entries()) {
+            assert.equal(await read(`.r8-btn--${role}`), colors[index], `${locale} ${theme} ${role} button`);
+            assert.equal(await read(`.r8-badge--${role}`), colors[index], `${locale} ${theme} ${role} badge`);
+          }
+          assert.equal(await read(".r8-progress__bar"), colors[0], "legacy accent components must follow the custom primary");
+        }
+        for (const [attribute, value] of [["data-theme", "light"], ["data-r8-theme", "light"], ["class", "r8-panel r8-theme-light"]]) {
+          await p.locator("#local-theme").evaluate((el, [key, val]) => el.setAttribute(key, val), [attribute, value]);
+          assert.equal(await read("#local-theme"), "rgb(248, 250, 252)", "local light theme must reset the dark surface");
+          assert.equal(await read("#local-theme", "color"), "rgb(15, 23, 42)", "local light theme must restore dark text");
+          assert.deepEqual(await p.locator("#local-theme").evaluate((el) => [
+            getComputedStyle(el).getPropertyValue("--r8-space-4").trim(),
+            getComputedStyle(el).getPropertyValue("--r8-font-size-sm").trim(),
+          ]), ["2rem", "17px"], "local color themes must preserve inherited layout tokens");
+          await p.locator("#local-theme").evaluate((el, key) => key === "class" ? el.setAttribute("class", "r8-panel") : el.removeAttribute(key), attribute);
+        }
+        await style.evaluate((el) => el.remove());
+      }
+    },
+    '<section class="r8-panel">' + ["primary", "success", "danger"].map((tone) =>
+      `<button class="r8-btn r8-btn--${tone}">Action</button><span class="r8-badge r8-badge--${tone}">Status</span>`,
+    ).join("") + '<div class="r8-progress"><div class="r8-progress__track"><div class="r8-progress__bar"></div></div></div><section id="local-theme" class="r8-panel">Local</section></section>',
+  );
+  await test(
     "checkbox click, Space, disabled and refresh idempotence",
     "checkbox",
     async (p) => {

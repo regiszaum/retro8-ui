@@ -74,6 +74,8 @@ const componentPageStrings = computed(() => props.site.componentPage);
     </div>
   </section>
 
+  <DocsThemeExamples v-if="pageId === 'tokens'" :locale="locale" />
+
   <section v-if="pageId === 'tokens'" class="docs-section">
     <div class="docs-token-sections">
       <section class="docs-token-section">

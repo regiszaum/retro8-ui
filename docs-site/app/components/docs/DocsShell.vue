@@ -119,7 +119,7 @@ watch(
   <div class="docs-shell">
     <header class="docs-topbar">
       <nav class="r8-navbar r8-navbar--dark" aria-label="Retro8 UI documentation navigation">
-        <NuxtLink class="r8-navbar__brand" :to="buildDocsPath(locale)">
+        <NuxtLink class="r8-navbar__brand" :to="buildDocsPath(locale)" :aria-label="site.meta.title">
           <span class="docs-brand">
             <img
               class="docs-brand__mark"

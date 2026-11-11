@@ -244,6 +244,37 @@ The design system is built on CSS custom properties covering:
 
 All components consume the same token layer, which helps preserve visual consistency and makes future theme or skin variations easier to introduce.
 
+### Customize colors and light/dark themes
+
+Load your own CSS after `retro8-ui/retro8.css`. Override each semantic color's
+base, `-strong`, and `-contrast` tokens; no library rebuild is required:
+
+```css
+:root {
+  --r8-color-primary: #7c3aed;
+  --r8-color-primary-strong: #6d28d9;
+  --r8-color-primary-contrast: #ffffff;
+  --r8-color-success: #0f766e;
+  --r8-color-success-strong: #115e59;
+  --r8-color-success-contrast: #ffffff;
+  --r8-color-danger: #be123c;
+  --r8-color-danger-strong: #9f1239;
+  --r8-color-danger-contrast: #ffffff;
+}
+
+:root[data-theme="dark"] {
+  --r8-color-primary: #c4b5fd;
+  --r8-color-primary-strong: #a78bfa;
+  --r8-color-primary-contrast: #2e1065;
+}
+```
+
+Switch the document with `document.documentElement.dataset.theme = "dark"` or
+`"light"`. Use `data-r8-theme="light"` / `"dark"` on a container for an independent
+local theme. Existing classes such as `r8-btn--primary` stay the same. The
+[Tokens guide](https://regiszaum.github.io/retro8-ui/en/tokens) includes the complete
+palette, surface/text customization, scoped overrides, and live examples in both themes.
+
 ## Documentation Site
 
 The public docs are built with Nuxt and live in `docs-site/`. The site includes:
