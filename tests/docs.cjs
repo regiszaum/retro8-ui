@@ -157,6 +157,7 @@ const baseURL = process.env.R8_AUDIT_URL || "http://127.0.0.1:3100";
           }
           await page.setViewportSize({ width: 1440, height: 1000 });
           result.a11y = [];
+          result.codeThemes = [];
           result.themes = ["light", "dark"];
           for (const theme of result.themes) {
             const toggle = page.locator(".docs-theme-switch");
@@ -167,6 +168,31 @@ const baseURL = process.env.R8_AUDIT_URL || "http://127.0.0.1:3100";
               await toggle.click();
             // Link colors transition for 75ms; inspect the settled theme.
             await page.waitForTimeout(120);
+            const codeTheme = await page.locator(".docs-main pre").evaluateAll((blocks, theme) => {
+              const luminance = (color) => {
+                const channels = color.match(/[\d.]+/g).slice(0, 3).map(Number)
+                  .map((n) => n / 255)
+                  .map((n) => n <= 0.04045 ? n / 12.92 : ((n + 0.055) / 1.055) ** 2.4);
+                return channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722;
+              };
+              return blocks.map((pre) => {
+                let surface = pre;
+                while (surface.parentElement && getComputedStyle(surface).backgroundColor === "rgba(0, 0, 0, 0)") surface = surface.parentElement;
+                const background = getComputedStyle(surface).backgroundColor;
+                const foreground = getComputedStyle(pre.querySelector("code") || pre).color;
+                const bg = luminance(background);
+                const fg = luminance(foreground);
+                return {
+                  theme, background, foreground,
+                  correctScheme: theme === "light" ? bg >= 0.75 && fg < bg : bg < 0.15 && fg > bg,
+                  contrast: (Math.max(bg, fg) + 0.05) / (Math.min(bg, fg) + 0.05),
+                };
+              });
+            }, theme);
+            result.codeThemes.push(...codeTheme);
+            if (codeTheme.some((block) => !block.correctScheme || block.contrast < 4.5)) {
+              throw new Error("Code surfaces and text must match the selected theme and retain readable contrast");
+            }
             const a = await new AxeBuilder({ page })
               .include("body")
               .exclude("nuxt-devtools-panel")

@@ -35,6 +35,7 @@ html[data-theme="dark"] {
   --docs-toolbar-height: 2.5rem;
   --docs-toolbar-inner-height: calc(var(--docs-toolbar-height) - 4px);
   --docs-focus: #facc15;
+  --docs-theme-icon: #facc15;
   --docs-focus-soft: rgba(250, 204, 21, 0.12);
   --docs-accent: #2563eb;
   --docs-accent-strong: #1d4ed8;
@@ -90,15 +91,16 @@ html[data-theme="light"] {
   --docs-toolbar-active-text: #ffffff;
   --docs-toolbar-height: 2.5rem;
   --docs-toolbar-inner-height: calc(var(--docs-toolbar-height) - 4px);
-  --docs-focus: #facc15;
-  --docs-focus-soft: rgba(250, 204, 21, 0.1);
+  --docs-focus: #1d4ed8;
+  --docs-theme-icon: #92400e;
+  --docs-focus-soft: rgba(37, 99, 235, 0.08);
   --docs-accent: #2563eb;
   --docs-accent-strong: #1d4ed8;
   --docs-accent-soft: rgba(37, 99, 235, 0.14);
   --docs-overlay: rgba(15, 23, 42, 0.56);
-  --docs-code-bg: #0f172a;
-  --docs-code-text: #f8fafc;
-  --docs-code-border: rgba(15, 23, 42, 0.14);
+  --docs-code-bg: #f1f5f9;
+  --docs-code-text: #0f172a;
+  --docs-code-border: #cbd5e1;
   --docs-inline-code-bg: rgba(15, 23, 42, 0.08);
   --docs-inline-code-border: rgba(15, 23, 42, 0.16);
   --docs-link: #1d4ed8;
@@ -740,7 +742,7 @@ pre {
   background: transparent;
   box-shadow: none;
   border-color: transparent;
-  color: #facc15;
+  color: var(--docs-theme-icon);
   min-height: var(--docs-toolbar-inner-height);
   min-width: var(--docs-toolbar-inner-height);
 }
@@ -1626,9 +1628,9 @@ html[data-theme="light"] .docs-theme-switch:focus-visible {
   padding: 0.9rem 1rem;
   overflow: auto;
   border: 2px solid var(--docs-inline-code-border);
-  background: color-mix(in srgb, var(--docs-panel-surface) 82%, var(--docs-code-bg) 18%);
+  background: var(--docs-code-bg);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--docs-panel-border) 72%, transparent);
-  color: var(--docs-panel-text);
+  color: var(--docs-code-text);
   font-size: 0.84rem;
   line-height: 1.7;
   white-space: pre;
@@ -2129,6 +2131,16 @@ dialog.r8-dialog {
   color: var(--docs-link-hover);
 }
 
+.docs-prose :is(h1, h2, h3, h4, h5, h6) a:not(.r8-btn) {
+  color: var(--docs-panel-text);
+  text-decoration: none;
+}
+
+.docs-prose :is(h1, h2, h3, h4, h5, h6) a:not(.r8-btn):hover {
+  color: var(--docs-panel-text);
+  text-decoration: underline;
+}
+
 .docs-prose code {
   font-size: 0.82em;
   background: var(--docs-inline-code-bg);
@@ -2144,10 +2156,10 @@ dialog.r8-dialog {
   white-space: pre;
   overflow-wrap: normal;
   word-break: normal;
-  border: 2px solid var(--docs-inline-code-border);
-  background: color-mix(in srgb, var(--docs-panel-surface) 82%, var(--docs-code-bg) 18%);
+  border: 2px solid var(--docs-code-border);
+  background: var(--docs-code-bg);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--docs-panel-border) 72%, transparent);
-  color: var(--docs-panel-text);
+  color: var(--docs-code-text);
   line-height: 1.65;
   font-size: 0.875rem;
 }

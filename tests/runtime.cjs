@@ -98,6 +98,17 @@ function luminance(color) {
           const values = [luminance(sample.foreground), luminance(sample.background)].sort((a, b) => b - a);
           assert.ok((values[0] + 0.05) / (values[1] + 0.05) >= 4.5, `${theme}: ${sample.name} contrast`);
         }
+        const focus = await p.locator(".r8-btn--tertiary").evaluate((el) => {
+          el.focus();
+          return {
+            color: getComputedStyle(el).outlineColor,
+            width: parseFloat(getComputedStyle(el).outlineWidth),
+            background: getComputedStyle(el.parentElement).backgroundColor,
+          };
+        });
+        const values = [luminance(focus.color), luminance(focus.background)].sort((a, b) => b - a);
+        assert.ok(focus.width > 0, `${theme}: keyboard focus must be visible`);
+        assert.ok((values[0] + 0.05) / (values[1] + 0.05) >= 3, `${theme}: focus ring must contrast with its surface`);
       }
     },
     '<section class="r8-panel">' + ["secondary", "dark", "tertiary"].map((tone) =>
