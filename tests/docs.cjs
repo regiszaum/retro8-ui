@@ -82,6 +82,21 @@ const baseURL = process.env.R8_AUDIT_URL || "http://127.0.0.1:3100";
               document.body.dataset.r8GlobalReady === "true",
           );
           await page.evaluate(() => document.fonts.ready);
+          result.codeBlocks = await page.locator(".docs-main pre").evaluateAll((blocks) => blocks.map((pre) => {
+            const code = pre.querySelector("code");
+            const style = getComputedStyle(pre);
+            const start = pre.getBoundingClientRect().left + parseFloat(style.borderLeftWidth) + parseFloat(style.paddingLeft);
+            return {
+              snippet: code?.textContent.slice(0, 70),
+              extraWhitespace: !!code && pre.textContent !== code.textContent,
+              misaligned: !!code && Math.abs(code.getBoundingClientRect().left - start) > 1,
+              scrollable: pre.scrollWidth > pre.clientWidth + 2 || pre.scrollHeight > pre.clientHeight + 2,
+              focusable: pre.tabIndex >= 0,
+            };
+          }));
+          if (result.codeBlocks.some((block) => block.extraWhitespace || block.misaligned || (block.scrollable && !block.focusable))) {
+            throw new Error("Code blocks must preserve source indentation, align to their padding and allow keyboard scrolling");
+          }
           if (
             (await page
               .locator(".docs-theme-switch")
@@ -95,6 +110,9 @@ const baseURL = process.env.R8_AUDIT_URL || "http://127.0.0.1:3100";
               await page.evaluate((width) => {
                 const overflow = [];
                 const clipped = [];
+                const inaccessibleCode = [...document.querySelectorAll("main pre")]
+                  .filter((pre) => (pre.scrollWidth > pre.clientWidth + 2 || pre.scrollHeight > pre.clientHeight + 2) && pre.tabIndex < 0)
+                  .map((pre) => pre.textContent.slice(0, 70));
                 for (const el of document.querySelectorAll("main *")) {
                   const rect = el.getBoundingClientRect();
                   const style = getComputedStyle(el);
@@ -104,7 +122,7 @@ const baseURL = process.env.R8_AUDIT_URL || "http://127.0.0.1:3100";
                     style.position === "fixed" ||
                     el.parentElement?.closest(".r8-table-wrap") ||
                     el.closest(
-                      "[hidden],pre,.docs-code-block,.docs-api-table__viewport",
+                      "[hidden],pre,.docs-code-block,.docs-api-table__viewport,.docs-prose-table",
                     )
                   )
                     continue;
@@ -132,6 +150,7 @@ const baseURL = process.env.R8_AUDIT_URL || "http://127.0.0.1:3100";
                   document: document.documentElement.scrollWidth,
                   overflow: overflow.slice(0, 18),
                   clipped,
+                  inaccessibleCode,
                 };
               }, width),
             );
@@ -234,7 +253,7 @@ const baseURL = process.env.R8_AUDIT_URL || "http://127.0.0.1:3100";
       r.a11y?.length ||
       r.layouts.some(
         (l) =>
-          l.overflow.length || l.document > l.width + 2 || l.clipped.length,
+          l.overflow.length || l.document > l.width + 2 || l.clipped.length || l.inaccessibleCode.length,
       ),
   )
     ? 1

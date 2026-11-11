@@ -15,11 +15,13 @@ const labels = computed(() =>
         copy: "Copiar",
         copied: "Copiado",
         unavailable: "Sem clipboard",
+        code: "Bloco de código",
       }
     : {
         copy: "Copy",
         copied: "Copied",
         unavailable: "No clipboard",
+        code: "Code block",
       },
 );
 
@@ -93,8 +95,7 @@ onBeforeUnmount(() => {
         {{ buttonLabel }}
       </button>
     </div>
-    <pre ref="preRef">
-      <slot />
-    </pre>
+    <!-- Keep the slot inline: whitespace inside pre becomes visible code. -->
+    <pre ref="preRef" tabindex="0" :aria-label="labels.code"><slot /></pre>
   </div>
 </template>
