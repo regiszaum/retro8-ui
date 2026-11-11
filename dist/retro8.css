@@ -1693,8 +1693,8 @@
 
   .r8-input-otp__slot:focus-visible {
     background-color: var(--r8-color-surface-raised);
-    outline: var(--r8-focus-width) solid var(--r8-color-focus);
-    outline-offset: var(--r8-focus-offset);
+    outline: var(--r8-border-thin) solid var(--r8-field-focus-color, var(--r8-color-primary-strong));
+    outline-offset: calc(-1 * var(--r8-border-thin));
   }
 
   .r8-input-otp__slot:disabled,
@@ -1728,8 +1728,9 @@
 
   .r8-input-number:focus-within,
   .r8-input-tag:focus-within {
-    outline: var(--r8-focus-width) solid var(--r8-color-focus);
-    outline-offset: 1px;
+    border-color: var(--r8-field-focus-color, var(--r8-color-primary-strong));
+    outline: var(--r8-border-thin) solid var(--r8-field-focus-color, var(--r8-color-primary-strong));
+    outline-offset: calc(-1 * var(--r8-border-thin));
   }
 
   .r8-input-number[data-r8-size="sm"] {
@@ -1792,27 +1793,8 @@
   .r8-switch:focus-visible,
   .r8-theme-switch:focus-visible,
   .r8-rate__item:focus-visible,
-  .r8-input__clear:focus-visible,
-  .r8-input__toggle:focus-visible,
-  .r8-input-number__button:focus-visible,
-  .r8-input-number__input:focus-visible,
-  .r8-input-tag__clear:focus-visible,
-  .r8-input-tag__remove:focus-visible,
-  .r8-input-tag__input:focus-visible,
-  .r8-autocomplete__trigger:focus-visible,
-  .r8-cascader__trigger:focus-visible,
-  .r8-cascader__input:focus-visible,
-  .r8-color-picker__trigger:focus-visible,
-  .r8-date-picker__trigger:focus-visible,
-  .r8-datetime-picker__trigger:focus-visible,
-  .r8-select__trigger:focus-visible,
-  .r8-autocomplete__option:focus-visible,
-  .r8-autocomplete__clear:focus-visible,
-  .r8-cascader__option:focus-visible,
-  .r8-select__option:focus-visible,
   .r8-color-picker__swatch:focus-visible,
   .r8-color-picker__spectrum:focus-visible,
-  .r8-color-picker__channel:focus-visible,
   .r8-date-picker__nav:focus-visible,
   .r8-date-picker__action:focus-visible,
   .r8-date-picker__shortcut:focus-visible,
@@ -1957,8 +1939,10 @@
   .r8-select {
     display: grid;
     gap: var(--r8-space-2);
+    min-width: 0;
   }
 
+  .r8-autocomplete,
   .r8-color-picker,
   .r8-select,
   .r8-cascader {
@@ -1979,10 +1963,14 @@
     cursor: pointer;
     display: flex;
     font-family: var(--r8-font-body);
+    font-size: var(--r8-font-size-sm);
     gap: var(--r8-space-3);
     justify-content: space-between;
     min-height: 3rem;
+    min-width: 0;
     padding: var(--r8-space-3);
+    text-align: left;
+    width: 100%;
   }
 
   .r8-color-picker {
@@ -2057,8 +2045,9 @@
   }
 
   .r8-autocomplete__trigger:focus-within {
-    outline: var(--r8-focus-width) solid var(--r8-color-focus);
-    outline-offset: 1px;
+    border-color: var(--r8-field-focus-color, var(--r8-color-primary-strong));
+    outline: var(--r8-border-thin) solid var(--r8-field-focus-color, var(--r8-color-primary-strong));
+    outline-offset: calc(-1 * var(--r8-border-thin));
   }
 
   .r8-autocomplete__input {
@@ -2125,11 +2114,16 @@
     padding: var(--r8-space-3);
   }
 
-  .r8-select__menu {
+  .r8-autocomplete__menu,
+  .r8-select__menu,
+  .r8-cascader__panel {
     left: 0;
+    min-width: 0;
+    max-width: 100%;
     position: absolute;
-    right: 0;
+    right: auto;
     top: calc(100% + var(--r8-space-2));
+    width: 100%;
     z-index: 40;
   }
 
@@ -2145,15 +2139,7 @@
   }
 
   .r8-cascader__panel {
-    left: 0;
     max-height: none;
-    min-width: min(100%, 40rem);
-    position: absolute;
-    right: auto;
-    top: calc(100% + var(--r8-space-2));
-    width: -moz-max-content;
-    width: max-content;
-    z-index: 40;
   }
 
   .r8-autocomplete__menu:not(.is-open) {
@@ -2189,7 +2175,10 @@
     font-size: var(--r8-font-size-sm);
     line-height: 1.45;
     min-height: 2.5rem;
+    min-width: 0;
+    overflow-wrap: anywhere;
     padding: var(--r8-space-3);
+    text-align: left;
   }
 
   .r8-autocomplete__option {
@@ -2308,8 +2297,9 @@
   .r8-cascader__menus {
     gap: 0;
     grid-auto-flow: column;
-    grid-auto-columns: minmax(12rem, 1fr);
-    min-width: min(100%, 16rem);
+    grid-auto-columns: minmax(min(12rem, 100%), 1fr);
+    min-width: 0;
+    max-width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
   }
@@ -2321,7 +2311,8 @@
     display: grid;
     gap: var(--r8-space-2);
     max-height: 16rem;
-    min-height: 14rem;
+    min-height: 0;
+    min-width: 0;
     overflow-y: auto;
     padding: var(--r8-space-2);
   }
@@ -2364,7 +2355,7 @@
     border: var(--r8-border-thick) dashed var(--r8-color-border);
     color: var(--r8-color-ink-muted);
     font-family: var(--r8-font-body);
-    min-width: 12rem;
+    min-width: 0;
     padding: var(--r8-space-4);
     text-align: center;
   }
@@ -2375,14 +2366,47 @@
   }
 
   @media (max-width: 40rem) {
-    .r8-cascader__panel {
-      min-width: 100%;
-      width: min(100%, 100%);
-    }
-
     .r8-cascader__menus {
       grid-auto-columns: minmax(100%, 1fr);
     }
+  }
+
+  .r8-cascader__trigger [data-r8-choice-display],
+  .r8-select__trigger [data-r8-choice-display] {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .r8-cascader__trigger:focus-visible,
+  .r8-cascader__input:focus-visible,
+  .r8-select__trigger:focus-visible,
+  .r8-color-picker__trigger:focus-visible,
+  .r8-color-picker__channel:focus-visible,
+  .r8-date-picker__trigger:focus-visible,
+  .r8-datetime-picker__trigger:focus-visible,
+  .r8-input__clear:focus-visible,
+  .r8-input__toggle:focus-visible,
+  .r8-input-number__button:focus-visible,
+  .r8-input-tag__clear:focus-visible,
+  .r8-input-tag__remove:focus-visible,
+  .r8-autocomplete__clear:focus-visible,
+  .r8-autocomplete__option:focus-visible,
+  .r8-cascader__option:focus-visible,
+  .r8-select__option:focus-visible {
+    outline: var(--r8-border-thin) solid var(--r8-field-focus-color, var(--r8-color-primary-strong));
+    outline-offset: calc(-1 * var(--r8-border-thin));
+  }
+
+  .r8-input-number__input:focus-visible,
+  .r8-input-tag__input:focus-visible {
+    outline: 0;
+  }
+
+  :is(.r8-autocomplete__option, .r8-cascader__option, .r8-select__option):is(.is-selected, [aria-selected="true"]):focus-visible {
+    outline-color: currentColor;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -3309,6 +3333,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--r8-space-2);
+    min-width: 0;
 }
 
   .r8-field--inline {
@@ -3350,6 +3375,7 @@
   --tw-shadow-colored: var(--r8-shadow-inset);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
     min-height: 3rem;
+    min-width: 0;
 }
 
   .r8-input[data-r8-size="sm"] {
@@ -3376,8 +3402,9 @@
 
   .r8-input:focus-visible {
     background-color: var(--r8-color-surface-raised);
-    outline: var(--r8-focus-width) solid var(--r8-color-focus);
-    outline-offset: var(--r8-focus-offset);
+    border-color: var(--r8-field-focus-color, var(--r8-color-primary-strong));
+    outline: var(--r8-border-thin) solid var(--r8-field-focus-color, var(--r8-color-primary-strong));
+    outline-offset: calc(-1 * var(--r8-border-thin));
   }
 
   .r8-input:disabled {
@@ -3387,7 +3414,8 @@
   }
 
   .r8-input[aria-invalid="true"],
-  .r8-input--invalid {
+  .r8-input--invalid,
+  .r8-input--invalid:focus-visible {
     border-color: var(--r8-color-danger);
     box-shadow: inset 0 0 0 var(--r8-border-thin) rgba(220, 38, 38, 0.18);
   }
@@ -3400,6 +3428,7 @@
     display: flex;
     gap: var(--r8-space-2);
     min-height: 3rem;
+    min-width: 0;
     padding: 0 var(--r8-space-3);
     width: 100%;
   }
@@ -3416,14 +3445,16 @@
 
   .r8-input-shell:focus-within {
     background-color: var(--r8-color-surface-raised);
-    outline: var(--r8-focus-width) solid var(--r8-color-focus);
-    outline-offset: var(--r8-focus-offset);
+    border-color: var(--r8-field-focus-color, var(--r8-color-primary-strong));
+    outline: var(--r8-border-thin) solid var(--r8-field-focus-color, var(--r8-color-primary-strong));
+    outline-offset: calc(-1 * var(--r8-border-thin));
   }
 
   .r8-input-shell > .r8-input {
     background: transparent;
     border: 0;
     box-shadow: none;
+    flex: 1 1 0%;
     min-height: 0;
     padding-left: 0;
     padding-right: 0;

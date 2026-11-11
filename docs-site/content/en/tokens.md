@@ -155,6 +155,18 @@ Re-declare the legacy `accent` aliases in the same scope when changing `primary`
 
 ## Foundation and component variables
 
+Inputs, selects, autocomplete, and cascader use a subtle inset focus without
+increasing the control's size. Its color follows `primary-strong`; to customize it
+without changing the palette, set `--r8-field-focus-color` on your theme or a local
+container. Composite fields use a single indicator on their wrapper. Always
+preserve a visible keyboard focus indicator.
+
+```css
+.checkout {
+  --r8-field-focus-color: #0f766e;
+}
+```
+
 Foundation tokens affect shared styles. Component variables, such as `--r8-dialog-width`, target one component family. Their defaults may refer to foundation tokens, and modifiers can override them. Set component variables on the component itself when its base class declares a default there.
 
 Motion tokens are reduced automatically when the user requests reduced motion. Loading and other animated components also include reduced-motion styles.

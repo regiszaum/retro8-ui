@@ -231,6 +231,82 @@ function luminance(color) {
       assert.equal(await p.locator(".r8-select__menu").isVisible(), false);
     },
   );
+  for (const [id, panelClass] of [["select", "r8-select__menu"], ["cascader", "r8-cascader__panel"], ["autocomplete", "r8-autocomplete__menu"]]) {
+    await test(`${id} panel matches its field without moving surrounding content`, id, async (p) => {
+      const root = p.locator(`.r8-${id}`).first();
+      const trigger = root.locator(`.r8-${id}__trigger`);
+      const panel = root.locator(`.${panelClass}`);
+      for (const theme of ["light", "dark"]) {
+        await p.locator("html").evaluate((el, value) => el.dataset.theme = value, theme);
+        for (const [viewport, width] of [[1280, 640], [1280, 280], [390, 280], [320, 240], [320, 180]]) {
+          await p.setViewportSize({ width: viewport, height: 900 });
+          await root.evaluate((el, width) => el.style.width = `${width}px`, width);
+          const before = await root.boundingBox();
+          if (id === "autocomplete") await root.locator("input").first().click();
+          else await trigger.click();
+          assert.equal(await panel.isVisible(), true);
+          const fieldBox = await trigger.boundingBox();
+          const panelBox = await panel.boundingBox();
+          const after = await root.boundingBox();
+          assert.ok(Math.abs(fieldBox.width - panelBox.width) <= 1, `${theme} ${width}: matching width`);
+          assert.ok(Math.abs(fieldBox.x - panelBox.x) <= 1, `${theme} ${width}: aligned left edge`);
+          assert.ok(Math.abs(before.height - after.height) <= 1, "opening must not move the following fields");
+          const display = trigger.locator("[data-r8-choice-display]");
+          if (await display.count()) {
+            await display.evaluate((el) => el.textContent = "Very long selected label ".repeat(15));
+            assert.ok(await trigger.evaluate((el) => el.scrollWidth <= el.clientWidth + 2), "long labels must stay inside the field");
+          }
+          assert.ok(await panel.evaluate((el) => el.scrollWidth <= el.clientWidth + 2), "overflow must stay inside the option list");
+          assert.ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth), "page must not scroll horizontally");
+          if (id === "cascader") {
+            const search = root.locator(".r8-cascader__input");
+            await search.fill("not-a-route");
+            assert.equal(await panel.locator(".r8-cascader__option:visible").count(), 0, "unmatched search must not show the original tree");
+            assert.equal(await panel.locator(".r8-cascader__empty").isVisible(), true);
+            assert.ok(await panel.evaluate((el) => el.scrollWidth <= el.clientWidth + 2), "empty results must fit the field width");
+            await search.fill("");
+            assert.ok(await panel.locator(".r8-cascader__option:visible").count() > 0, "clearing the search must restore the hierarchy");
+          }
+          await p.keyboard.press("Escape");
+          assert.equal(await panel.isVisible(), false);
+          await p.locator("#outside").focus();
+        }
+      }
+    });
+  }
+  await test("input focus stays inset, avoids duplicate rings and fits narrow forms", "input", async (p) => {
+    await p.setViewportSize({ width: 320, height: 900 });
+    await p.locator("#fixture").evaluate((el) => el.insertAdjacentHTML("beforeend",
+      '<select class="r8-input" aria-label="Native select"><option>A long native select label that must fit the field</option></select><input class="r8-input r8-input--invalid" aria-label="Invalid field" value="Invalid value">',
+    ));
+    const inputs = p.locator(".r8-input:not(:disabled)");
+    for (const theme of ["light", "dark"]) {
+      await p.locator("html").evaluate((el, value) => el.dataset.theme = value, theme);
+      for (const input of await inputs.all()) {
+        const before = await input.boundingBox();
+        const invalidBorder = await input.evaluate((el) => el.matches(".r8-input--invalid") ? getComputedStyle(el).borderTopColor : null);
+        await input.focus();
+        const state = await input.evaluate((el) => {
+          const wrapper = el.closest(".r8-input-shell") || el;
+          const style = getComputedStyle(wrapper);
+          return { width: parseFloat(style.outlineWidth), offset: parseFloat(style.outlineOffset),
+            inner: parseFloat(getComputedStyle(el).outlineWidth), composite: wrapper !== el,
+            fits: wrapper.scrollWidth <= wrapper.clientWidth + 2 };
+        });
+        assert.ok(state.width > 0 && state.width <= 2, "one restrained focus indicator must remain visible");
+        assert.ok(state.offset <= 0, "focus must stay inside the field");
+        if (state.composite) assert.equal(state.inner, 0, "inner inputs must not add another ring");
+        assert.ok(state.fits, "input actions and counters must fit narrow fields");
+        const after = await input.boundingBox();
+        assert.equal(after.width, before.width);
+        assert.equal(after.height, before.height);
+        if (invalidBorder) assert.equal(await input.evaluate((el) => getComputedStyle(el).borderTopColor), invalidBorder, "focus must preserve the error border");
+      }
+    }
+    await p.locator("#fixture").evaluate((el) => el.style.setProperty("--r8-field-focus-color", "#0f766e"));
+    await inputs.first().focus();
+    assert.equal(await inputs.first().evaluate((el) => getComputedStyle(el.closest(".r8-input-shell") || el).outlineColor), "rgb(15, 118, 110)");
+  });
   await test("select keyboard opens and selects", "select", async (p) => {
     await p.locator(".r8-select__trigger").focus();
     await p.keyboard.press("ArrowDown");

@@ -1588,5 +1588,13 @@ export function getComponentContract(component: CatalogEntry): ComponentContract
       break;
   }
 
+  if (["input", "input-otp", "input-number", "input-tag", "autocomplete", "cascader", "select", "color-picker", "date-picker", "datetime-picker"].includes(component.id)) {
+    contract.cssVariables.push(row(
+      "--r8-field-focus-color", "color", "var(--r8-color-primary-strong)",
+      "Personaliza o foco interno dos campos sem alterar as dimensões do controle ou a cor de foco de outros componentes.",
+      "Customizes the inset field focus without changing control dimensions or the focus color of other components.",
+    ));
+  }
+
   return contract;
 }

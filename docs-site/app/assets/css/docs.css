@@ -1198,7 +1198,16 @@ html[data-theme="light"] .docs-theme-switch:focus-visible {
 }
 
 .docs-demo__stack--cascader {
-  padding-bottom: 19rem;
+  padding-bottom: 14rem;
+}
+
+.docs-demo__stack--autocomplete {
+  width: min(100%, 34rem);
+  padding-bottom: 17rem;
+}
+
+.docs-demo__stack--input {
+  width: min(100%, 34rem);
 }
 
 .docs-demo__stack--date-picker {

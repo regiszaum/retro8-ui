@@ -1459,7 +1459,7 @@ const formComponents = [
       "r8-autocomplete__empty",
       "r8-autocomplete__loading",
     ],
-    preview: `<div class="docs-demo__stack">
+    preview: `<div class="docs-demo__stack docs-demo__stack--autocomplete">
   <div
     class="r8-autocomplete"
     data-r8-clearable="true"
@@ -1551,6 +1551,7 @@ const formComponents = [
     anatomy: ll(
       [
         "`r8-autocomplete` é o contêiner raiz que conecta acionador, input, painel e opções no mesmo escopo do runtime.",
+        "O painel de sugestões acompanha a largura do campo e flutua sobre o conteúdo seguinte sem deslocar o layout.",
         "`r8-autocomplete__trigger` agrupa o input, o botão opcional de limpar e um badge de contagem ou retorno visual curto.",
         "`r8-autocomplete__option` aceita marcação rico; use `data-r8-value` para controlar o texto que volta ao input e `data-r8-search` para indexacao extra.",
         "`r8-autocomplete__empty` e `r8-autocomplete__loading` funcionam como retorno visual para busca vazia ou remota.",
@@ -1558,6 +1559,7 @@ const formComponents = [
       ],
       [
         "`r8-autocomplete` is the root wrapper that keeps trigger, input, panel, and options in the same runtime scope.",
+        "The suggestions panel matches the field width and floats over the following content without moving the layout.",
         "`r8-autocomplete__trigger` groups the input, optional clear action, and a count badge or short feedback token.",
         "`r8-autocomplete__option` accepts richer markup; use `data-r8-value` to control the text written back to the input and `data-r8-search` for extra indexing.",
         "`r8-autocomplete__empty` and `r8-autocomplete__loading` work as visual feedback for empty or remote states.",
@@ -1765,14 +1767,14 @@ const formComponents = [
       [
         "`r8-cascader` é o estrutura raiz e recebe os atributos de comportamento via `data-r8-*`.",
         "`r8-cascader__trigger` abre o floating painel e expoe o caminho selecionado.",
-        "`r8-cascader__panel` abriga toolbar, generated menus e a source tree oculta.",
+        "`r8-cascader__panel` acompanha a largura do campo; suas colunas rolam internamente quando não há espaço para todos os níveis.",
         "`r8-cascader__node` e `r8-cascader__children` definem a hierarquia declarativa.",
         "`data-r8-show-all-levels=\"false\"` deixa o acionador mais compacto ao exibir apenas o último rótulo, sem perder `data-r8-path` no elemento.",
       ],
       [
         "`r8-cascader` is the root shell and receives `data-r8-*` behavior flags.",
         "`r8-cascader__trigger` opens the floating panel and exposes the selected path.",
-        "`r8-cascader__panel` contains toolbar, generated menus and the hidden source tree.",
+        "`r8-cascader__panel` matches the field width; its columns scroll internally when there is not enough space for every level.",
         "`r8-cascader__node` and `r8-cascader__children` define the declarative hierarchy.",
         "`data-r8-show-all-levels=\"false\"` keeps the trigger more compact by showing only the last label while preserving `data-r8-path` on the host.",
       ],
@@ -2353,7 +2355,7 @@ const formComponents = [
       "r8-input__count",
       "r8-input--invalid",
     ],
-    preview: `<div class="docs-demo__stack">
+    preview: `<div class="docs-demo__stack docs-demo__stack--input">
   <label class="r8-field">
     <span class="r8-label">Pilot name</span>
     <div class="r8-input-shell" data-r8-clearable="true" data-r8-word-limit="true">
@@ -2764,6 +2766,10 @@ const formComponents = [
       "Choice list with a compact trigger, options panel, and keyboard navigation.",
     ),
     classes: ["r8-select", "r8-select__trigger", "r8-select__menu", "r8-select__option"],
+    anatomy: ll(
+      ["O menu acompanha a largura do acionador; rótulos longos não alargam o campo e as opções rolam dentro do painel.", "O foco interno permanece visível pelo teclado, sem deslocar ou aumentar o controle."],
+      ["The menu matches the trigger width; long labels do not widen the field and options scroll inside the panel.", "Inset keyboard focus stays visible without moving or enlarging the control."],
+    ),
     preview: `<div class="docs-demo__stack docs-demo__stack--select">
   <div class="r8-select">
     <button class="r8-select__trigger" type="button">

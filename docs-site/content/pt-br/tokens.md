@@ -155,6 +155,18 @@ Ao alterar `primary`, declare novamente os aliases legados `accent` no mesmo esc
 
 ## Variáveis fundamentais e de componentes
 
+Inputs, selects, autocomplete e cascader usam um foco interno discreto, sem aumentar
+o tamanho do controle. A cor acompanha `primary-strong`; para personalizá-la sem
+alterar a paleta, defina `--r8-field-focus-color` no seu tema ou em um contêiner local.
+Os campos compostos usam um único indicador no contêiner. Preserve sempre uma
+indicação visível para navegação por teclado.
+
+```css
+.checkout {
+  --r8-field-focus-color: #0f766e;
+}
+```
+
 Os tokens fundamentais afetam estilos compartilhados. Variáveis como `--r8-dialog-width` controlam uma família de componentes. Seus valores padrão podem referenciar tokens fundamentais, e modificadores podem alterá-los. Defina as variáveis no próprio componente quando a classe base declarar o valor padrão nesse elemento.
 
 Os tokens de movimento são reduzidos automaticamente quando o usuário solicita menos animações. Os indicadores de carregamento e outros componentes animados também oferecem estilos para essa preferência.

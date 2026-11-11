@@ -1,6 +1,7 @@
 @layer components {
   .r8-field {
     @apply flex flex-col gap-r8-2;
+    min-width: 0;
   }
 
   .r8-field--inline {
@@ -20,6 +21,7 @@
   .r8-input {
     @apply w-full border-r8 border-r8-border bg-r8-surface-3 px-r8-3 py-r8-3 font-body text-r8-sm leading-relaxed text-r8-ink shadow-r8-inset;
     min-height: 3rem;
+    min-width: 0;
   }
 
   .r8-input[data-r8-size="sm"] {
@@ -41,8 +43,9 @@
 
   .r8-input:focus-visible {
     background-color: var(--r8-color-surface-raised);
-    outline: var(--r8-focus-width) solid var(--r8-color-focus);
-    outline-offset: var(--r8-focus-offset);
+    border-color: var(--r8-field-focus-color, var(--r8-color-primary-strong));
+    outline: var(--r8-border-thin) solid var(--r8-field-focus-color, var(--r8-color-primary-strong));
+    outline-offset: calc(-1 * var(--r8-border-thin));
   }
 
   .r8-input:disabled {
@@ -52,7 +55,8 @@
   }
 
   .r8-input[aria-invalid="true"],
-  .r8-input--invalid {
+  .r8-input--invalid,
+  .r8-input--invalid:focus-visible {
     border-color: var(--r8-color-danger);
     box-shadow: inset 0 0 0 var(--r8-border-thin) rgba(220, 38, 38, 0.18);
   }
@@ -65,6 +69,7 @@
     display: flex;
     gap: var(--r8-space-2);
     min-height: 3rem;
+    min-width: 0;
     padding: 0 var(--r8-space-3);
     width: 100%;
   }
@@ -81,14 +86,16 @@
 
   .r8-input-shell:focus-within {
     background-color: var(--r8-color-surface-raised);
-    outline: var(--r8-focus-width) solid var(--r8-color-focus);
-    outline-offset: var(--r8-focus-offset);
+    border-color: var(--r8-field-focus-color, var(--r8-color-primary-strong));
+    outline: var(--r8-border-thin) solid var(--r8-field-focus-color, var(--r8-color-primary-strong));
+    outline-offset: calc(-1 * var(--r8-border-thin));
   }
 
   .r8-input-shell > .r8-input {
     background: transparent;
     border: 0;
     box-shadow: none;
+    flex: 1 1 0%;
     min-height: 0;
     padding-left: 0;
     padding-right: 0;

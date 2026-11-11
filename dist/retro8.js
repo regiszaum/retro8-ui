@@ -2846,9 +2846,10 @@
     };
 
     const filteredResults = getCascaderFilterResults(state);
-    state.panel.classList.toggle("is-filtering", filteredResults.length > 0);
+    const isFiltering = state.query.trim().length > 0;
+    state.panel.classList.toggle("is-filtering", isFiltering);
 
-    if (filteredResults.length > 0) {
+    if (isFiltering) {
       appendMenu(filteredResults, 0, (node) => formatCascaderPath(state, node));
     } else {
       const activePath = state.activePath.length
