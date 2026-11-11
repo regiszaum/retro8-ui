@@ -1,6 +1,6 @@
 ---
 name: retro8-ui
-description: Design and implement interfaces with retro8-ui semantic classes (`r8-*`) and optional runtime behavior. Use when requests mention retro8-ui, `r8-` classes, retro 8-bit UI composition, migrating utility-heavy markup to semantic classes, or building screens/components guided by Retro8 documentation.
+description: Compose or refactor consumer interfaces using retro8-ui semantic classes (r8-*) and optional runtime behavior. Use for screens, component composition, and replacing utility-heavy markup. For maintaining this library's internals, use retro8-maintenance.
 ---
 
 # Retro8 UI
@@ -44,6 +44,8 @@ Use this skill to produce production-ready UI patches with correct imports, vali
 - Prefer minimal diffs that fit the current codebase structure.
 - Preserve existing design language unless the user asks for a broader visual overhaul.
 - If a requested component pattern is unclear, check docs first and then implement.
+- When working in this repository, follow the root `AGENTS.md`, including validation
+  and the Conventional Commit message at the end of file-changing responses.
 
 ## References
 

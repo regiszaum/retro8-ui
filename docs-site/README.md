@@ -48,3 +48,5 @@ The documentation requires Node `^22.22.3 || ^24.15.0 || >=26.0.0`; `.nvmrc` sel
 The `minimatch`, `glob`, and `zod` overrides select patched transitive releases. Nuxt Content supports Zod 4 schemas, and the generated Markdown collections and documentation routes are checked after upgrades. Keep these overrides until the parent dependencies adopt patched ranges, then remove them with a fresh audit and build.
 
 The remaining low-severity audit entries come from `deepmerge@4.3.1` through Nitro's Rollup resolver. The upstream advisory currently lists no patched version; do not hide this finding by downgrading Nuxt or forcing an incompatible merge implementation.
+
+The lockfile uses `node-forge@1.4.3`, which fixes the advisories affecting versions through 1.4.2. Run `npm ci` in this directory to install the locked versions. The current audit reports seven low-severity entries from the `deepmerge` dependency chain and no moderate, high, or critical entries.

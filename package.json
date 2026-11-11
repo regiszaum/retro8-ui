@@ -55,7 +55,8 @@
     "test": "node tests/runtime.cjs",
     "test:dist": "node tests/runtime.cjs --dist",
     "test:docs": "node tests/docs.cjs",
-    "test:content": "node --test tests/content.cjs"
+    "test:content": "node --test tests/content.cjs",
+    "check": "npm run build && npm run test:content && npm test && npm run test:dist"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",

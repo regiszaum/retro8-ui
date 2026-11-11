@@ -1,0 +1,4 @@
+interface:
+  display_name: "Retro8 Maintenance"
+  short_description: "Maintain Retro8 source, contracts and bilingual docs"
+  default_prompt: "Use $retro8-maintenance to implement a repository change, validate the affected behavior, and suggest a Conventional Commit message."

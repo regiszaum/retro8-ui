@@ -19,7 +19,7 @@ export default defineNuxtConfig({
     browserDevtoolsTiming: false,
   },
   modules: ["@nuxt/content"],
-  css: ["@fontsource/press-start-2p/index.css", "../dist/retro8.css", "~/assets/css/docs.css"],
+  css: ["@fontsource/press-start-2p/index.css", "~/../../dist/retro8.css", "~/assets/css/docs.css"],
   content: {
     experimental: {
       sqliteConnector: "native",

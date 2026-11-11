@@ -1,0 +1,71 @@
+name: Project checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: checks-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            docs-site/package-lock.json
+      - name: Install dependencies
+        run: |
+          npm ci
+          npm --prefix docs-site ci
+      - name: Install browser
+        run: npx playwright install --with-deps chromium
+      - name: Check library and content contracts
+        run: npm run check
+      - name: Generate documentation for deployment base path
+        env:
+          NUXT_APP_BASE_URL: /retro8-ui/
+        run: npm --prefix docs-site run generate
+      - name: Audit documentation in browser
+        env:
+          R8_AUDIT_OUTPUT: ${{ runner.temp }}/retro8-docs-audit
+        run: |
+          npm --prefix docs-site run dev -- --port 3100 > "$RUNNER_TEMP/retro8-docs.log" 2>&1 &
+          DOCS_PID=$!
+          trap 'kill "$DOCS_PID" 2>/dev/null || true' EXIT
+          for attempt in {1..60}; do
+            if curl --fail --silent http://127.0.0.1:3100/en > /dev/null; then
+              npm run test:docs
+              exit $?
+            fi
+            if ! kill -0 "$DOCS_PID" 2>/dev/null; then
+              cat "$RUNNER_TEMP/retro8-docs.log"
+              exit 1
+            fi
+            sleep 1
+          done
+          cat "$RUNNER_TEMP/retro8-docs.log"
+          exit 1
+      - name: Upload browser audit diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-audit
+          path: |
+            ${{ runner.temp }}/retro8-docs-audit
+            ${{ runner.temp }}/retro8-docs.log
+            /tmp/retro8-audit-reproduction
+          if-no-files-found: ignore
+          retention-days: 7

@@ -320,6 +320,21 @@ npm run preview
 
 Builds everything and previews the generated documentation locally.
 
+## Agent harness
+
+Repository instructions live in [AGENTS.md](AGENTS.md). They route agents to the
+consumer UI and library maintenance skills in `.codex/skills/`, with focused
+[architecture](.codex/references/architecture.md) and
+[validation](.codex/references/validation.md) references. File-changing responses
+include a Conventional Commit message for the completed change.
+The `.agents/skills` symlink exposes the same skills through the current Codex
+repository discovery path, keeping a single maintained copy.
+
+Run `npm run check` after installing Chromium with `npx playwright install chromium`.
+It builds the library and runs content contracts and both browser runtime suites.
+The Project checks workflow also generates the documentation and audits it in a
+browser on pull requests and pushes to `main`.
+
 ## Project Structure
 
 ```text
