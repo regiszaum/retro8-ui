@@ -53,7 +53,7 @@ const markup = computed(() => {
   }
   attrs.push(`data-r8-precision="${precision.value}"`);
 
-  return `<div ${attrs.join(" ")}>\n  <button class="r8-input-number__button" type="button"${disabled.value ? " disabled" : ""}>-</button>\n  <input class="r8-input-number__input" type="number" min="${min.value}" max="${max.value}" step="${step.value}" value="${value.value ?? ""}"${disabled.value ? " disabled" : ""} />\n  <button class="r8-input-number__button" type="button"${disabled.value ? " disabled" : ""}>+</button>\n</div>`;
+  return `<div class="r8-field">\n  <label class="r8-label" for="quantity">${strings.value.previewLabel}</label>\n  <div ${attrs.join(" ")}>\n    <button class="r8-input-number__button" type="button"${disabled.value ? " disabled" : ""}>-</button>\n    <input id="quantity" class="r8-input-number__input" type="number" min="${min.value}" max="${max.value}" step="${step.value}" value="${value.value ?? ""}"${disabled.value ? " disabled" : ""} />\n    <button class="r8-input-number__button" type="button"${disabled.value ? " disabled" : ""}>+</button>\n  </div>\n</div>`;
 });
 
 function resetPlayground() {
@@ -184,7 +184,7 @@ onMounted(async () => {
 
       <div class="docs-demo__stage docs-input-number-playground__stage">
         <div class="docs-input-number-playground__preview">
-          <span class="r8-label">{{ strings.previewLabel }}</span>
+          <span class="r8-label" id="docs-input-number-preview-label">{{ strings.previewLabel }}</span>
           <div ref="previewSurface" class="docs-input-number-playground__surface">
             <div
               :key="previewKey"
@@ -198,6 +198,7 @@ onMounted(async () => {
               <input
                 class="r8-input-number__input"
                 type="number"
+                aria-labelledby="docs-input-number-preview-label"
                 :min="min"
                 :max="max"
                 :step="step"

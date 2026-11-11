@@ -12,6 +12,10 @@ The reference below lists the defaults declared in the library stylesheet. It sh
 
 Set `data-theme="light"` or `data-theme="dark"` on the document root. Dark mode can also be scoped to a container with `data-r8-theme="dark"` or `r8-theme-dark`.
 
+Dark mode updates surfaces and foregrounds together, including pagination summaries,
+helper text, and links. Use the `ink`, `ink-muted`, and `ink-subtle` tokens for text
+instead of fixed dark colors so it remains readable when the theme changes.
+
 ```html
 <html lang="en" data-theme="dark">
 ```

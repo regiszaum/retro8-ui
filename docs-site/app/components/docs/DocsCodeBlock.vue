@@ -50,7 +50,7 @@ async function copyCode() {
           {{ buttonText }}
         </button>
       </div>
-      <pre class="docs-code__pre"><code>{{ code }}</code></pre>
+      <pre class="docs-code__pre" tabindex="0" :aria-label="title"><code>{{ code }}</code></pre>
     </div>
   </section>
 </template>

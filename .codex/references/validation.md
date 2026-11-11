@@ -36,8 +36,10 @@ In another terminal:
 npm run test:docs
 ```
 
-The suite covers component pages, token and catalog guides, four viewport widths,
-both languages and axe checks in both themes. `R8_AUDIT_URL` overrides the default
+The suite covers every component page, the home page and all guides in both
+languages at four viewport widths. Axe checks the whole page in both themes,
+including the docs shell and playgrounds, excluding the injected Nuxt developer
+toolbar. `R8_AUDIT_URL` overrides the default
 `http://127.0.0.1:3100`. Reports go to `/tmp/retro8-audit-reproduction` unless
 `R8_AUDIT_OUTPUT` is set. Source and minified runtime suites both write
 `behavior.json`; use separate output directories if retaining both reports.

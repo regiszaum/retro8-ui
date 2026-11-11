@@ -12,6 +12,10 @@ A referência abaixo lista os valores padrão declarados no CSS da biblioteca. O
 
 Defina `data-theme="light"` ou `data-theme="dark"` na raiz do documento. O tema escuro também pode ser aplicado a um contêiner com `data-r8-theme="dark"` ou `r8-theme-dark`.
 
+O tema escuro atualiza fundos e textos juntos, incluindo resumos de paginação,
+textos auxiliares e links. Use os tokens `ink`, `ink-muted` e `ink-subtle` para os
+textos, em vez de cores escuras fixas, para manter a leitura ao trocar o tema.
+
 ```html
 <html lang="pt-BR" data-theme="dark">
 ```

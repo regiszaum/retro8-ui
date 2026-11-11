@@ -16,11 +16,15 @@ const baseURL = process.env.R8_AUDIT_URL || "http://127.0.0.1:3100";
   const browser = await chromium.launch({ headless: true });
   const out = [];
   const queue = [
-    ...catalog,
+    ...["en", "pt-br"].flatMap((locale) => catalog.map((component) => ({
+      ...component,
+      id: `${locale}-${component.id}`,
+      route: `/${locale}/components/${component.id}`,
+    }))),
     ...["en", "pt-br"].flatMap((locale) =>
-      ["tokens", "components"].map((slug) => ({
-        id: `${locale}-${slug}`,
-        route: `/${locale}/${slug}`,
+      ["", "getting-started", "tokens", "icons", "components", "llms.txt", "skills"].map((slug) => ({
+        id: `${locale}-${slug || "home"}`,
+        route: `/${locale}${slug ? `/${slug}` : ""}`,
         guide: true,
       })),
     ),
@@ -142,11 +146,12 @@ const baseURL = process.env.R8_AUDIT_URL || "http://127.0.0.1:3100";
               (theme === "dark")
             )
               await toggle.click();
-            await page.waitForTimeout(60);
+            // Link colors transition for 75ms; inspect the settled theme.
+            await page.waitForTimeout(120);
             const a = await new AxeBuilder({ page })
-              .include(
-                component.guide ? ".docs-main" : ".docs-preview__surface",
-              )
+              .include("body")
+              .exclude("nuxt-devtools-panel")
+              .exclude("nuxt-devtools-frame")
               .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
               .analyze();
             result.a11y.push(

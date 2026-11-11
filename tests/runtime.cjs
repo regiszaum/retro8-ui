@@ -12,6 +12,13 @@ const outputDir =
   path.join(require("node:os").tmpdir(), "retro8-audit-reproduction");
 fs.mkdirSync(outputDir, { recursive: true });
 
+function luminance(color) {
+  const channels = color.match(/[\d.]+/g).slice(0, 3).map(Number)
+    .map((n) => color.startsWith("color(srgb ") ? n : n / 255)
+    .map((n) => n <= 0.04045 ? n / 12.92 : ((n + 0.055) / 1.055) ** 2.4);
+  return channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722;
+}
+
 (async () => {
   const browser = await chromium.launch({ headless: true });
   const results = [];
@@ -50,6 +57,53 @@ fs.mkdirSync(outputDir, { recursive: true });
       JSON.stringify(results, null, 2),
     );
   }
+  await test(
+    "dark themes apply at the document root and nested scopes with readable pagination",
+    "pagination",
+    async (p) => {
+      const readColors = () => p.locator(".r8-pagination__summary").evaluate((el) => ({
+        text: getComputedStyle(el).color,
+        background: getComputedStyle(el.closest(".r8-panel")).backgroundColor,
+      }));
+      const light = await readColors();
+      for (const scope of ["html", "#fixture"]) {
+        for (const [attribute, value] of [["data-theme", "dark"], ["data-r8-theme", "dark"], ["class", "r8-theme-dark"]]) {
+          await p.locator(scope).evaluate((el, [key, val]) => el.setAttribute(key, val), [attribute, value]);
+          const dark = await readColors();
+          assert.notEqual(dark.background, light.background, `${scope} ${attribute}: dark surface must change`);
+          const foreground = luminance(dark.text);
+          const background = luminance(dark.background);
+          assert.ok(foreground > background, "dark pagination must use light text");
+          assert.ok((foreground + 0.05) / (background + 0.05) >= 4.5, "pagination summary must remain readable");
+          await p.locator(scope).evaluate((el, key) => el.removeAttribute(key), attribute);
+          assert.deepEqual(await readColors(), light, "switching back must restore light colors");
+        }
+      }
+    },
+    '<section class="r8-panel"><div class="r8-pagination"><span class="r8-pagination__summary">Total 9</span></div></section>',
+  );
+  await test(
+    "text variants and tertiary controls retain contrast in both themes",
+    "typography",
+    async (p) => {
+      for (const theme of ["light", "dark"]) {
+        await p.locator("html").evaluate((el, value) => el.dataset.theme = value, theme);
+        await p.waitForTimeout(120);
+        const samples = await p.locator(".r8-panel > *").evaluateAll((els) => els.map((el) => ({
+          name: el.className,
+          foreground: getComputedStyle(el).color,
+          background: getComputedStyle(el.matches("button") ? el : el.parentElement).backgroundColor,
+        })));
+        for (const sample of samples) {
+          const values = [luminance(sample.foreground), luminance(sample.background)].sort((a, b) => b - a);
+          assert.ok((values[0] + 0.05) / (values[1] + 0.05) >= 4.5, `${theme}: ${sample.name} contrast`);
+        }
+      }
+    },
+    '<section class="r8-panel">' + ["secondary", "dark", "tertiary"].map((tone) =>
+      `<a class="r8-link r8-link--${tone}" href="#fixture">Link</a><p class="r8-text r8-text--${tone}">Text</p>`,
+    ).join("") + '<button class="r8-btn r8-btn--tertiary">Action</button></section>',
+  );
   await test(
     "checkbox click, Space, disabled and refresh idempotence",
     "checkbox",

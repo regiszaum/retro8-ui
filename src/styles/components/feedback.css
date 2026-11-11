@@ -140,7 +140,7 @@
   .r8-alert--surface .r8-alert__icon {
     background: color-mix(in srgb, var(--r8-alert-accent) 16%, var(--r8-color-surface) 84%);
     border-color: var(--r8-alert-accent);
-    color: var(--r8-alert-accent);
+    color: color-mix(in srgb, var(--r8-alert-accent) 80%, var(--r8-alert-foreground));
   }
 
   .r8-alert__body > :where(p, ul, ol, li) {
