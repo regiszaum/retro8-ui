@@ -26,6 +26,27 @@ Choose checks using [.codex/references/validation.md](.codex/references/validati
 Documentation changes also need a generated build; UI and interaction changes need
 the relevant browser coverage. Report exactly what ran and any blocked checks.
 
+## Efficient agent workflow
+
+- Identify the affected component, expected behavior, and relevant areas (runtime,
+  CSS, or docs) from the request and repository context. Make reasonable assumptions;
+  ask only when missing details materially affect the work.
+- Search targeted source and contracts first: `src/`, `docs-site/shared/`, and the
+  relevant documentation. Consult `dist/` when generated output is relevant, not as
+  the primary source for source-code questions.
+- Keep searches and command output focused. Preserve exit status, errors, warnings,
+  and test failures; inspect complete output when a failure or investigation needs it.
+- When `rtk` is available, prefer it for supported, verbose Git, search, and test
+  commands. Fall back to the original command if unavailable or unsuitable; use
+  `rtk bypass` or the original command when complete output is needed. RTK use is
+  optional and must not change which checks run or hide relevant diagnostics.
+- Apply the validation matrix above. Do not repeat or broaden checks without a
+  reason, and never omit required checks merely to save tokens.
+- For an unrelated task, suggest a new session when doing so would avoid carrying
+  substantial irrelevant context. Do not discard context or interrupt ongoing work.
+- Communicate concisely while retaining the result, relevant errors, risks, and
+  exact validation performed.
+
 ## Skills
 
 - Use [retro8-ui](.codex/skills/retro8-ui/SKILL.md) for composing consumer interfaces.
